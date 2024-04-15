@@ -1,0 +1,14 @@
+{
+  "name": "visu",
+  "version": "1.0.0",
+  "description": "Visu",
+  "main": "yyp",
+  "author": "Alkapivo",
+  "license": "ISC",
+  "dependencies": {
+    "core-gml": "main",
+    "visu-gml": "main",
+    "gmtf-gml": "main",
+    "odditica.bktGlitch-gml": "main"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "model":"Collection<io.alkapivo.visu.service.lyrics.LyricsTemplate>",
+  "data":{
+    "lyrics 1 ":{
+      "lines":[
+        "I'm an error; an intentional mistake.",
+        "birthed from those atomic numbers that encompass us.",
+        "yet i blame them, the easy impossible.",
+        "because if i don't have a reason, I'm better off",
+        "",
+        "that's right, i'm the victim here",
+        "but this time, the choice is mine.",
+        "",
+        "is this really the paradise i asked for?",
+        "yes, yes it is.",
+        "i could never be happier.",
+        "i am happy. forever.",
+        ""
+      ]
+    }
+  }
+}

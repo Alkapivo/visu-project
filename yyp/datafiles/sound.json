@@ -1,0 +1,8 @@
+{
+  "model":"Collection<io.alkapivo.core.service.sound.SoundIntent>",
+  "data":{
+    "sound_external":{
+      "file":"KAIDECA.ogg"
+    }
+  }
+}

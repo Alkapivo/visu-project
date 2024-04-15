@@ -1,0 +1,32 @@
+{
+  "model":"Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>",
+  "data":[
+    {
+      "type":"brush_view_lyrics",
+      "properties":{
+        "view-lyrics_use-timeout":0.0,
+        "view-lyrics_timeout":0.0,
+        "view-lyrics_color":"#FFEFFF",
+        "view-lyrics_use-outline":1.0,
+        "view-lyrics_outline":"#006BCF",
+        "view-lyrics_align-v":"TOP",
+        "view-lyrics_align-h":"LEFT",
+        "view-lyrics_x":0.20000000000000001,
+        "view-lyrics_y":0.094737000000000002,
+        "view-lyrics_width":0.20000000000000001,
+        "view-lyrics_height":0.24210499999999999,
+        "view-lyrics_char-speed":2.2999999999999998,
+        "view-lyrics_use-line-delay":0.0,
+        "view-lyrics_template":"lyrics-01",
+        "view-lyrics_line-delay":1.0,
+        "view-lyrics_font":"font_inter_24_regular",
+        "view-lyrics_use-finish-delay":1.0,
+        "view-lyrics_finish-delay":2.0,
+        "view-lyrics_font-height":26.0
+      },
+      "name":"Lorem ipsum",
+      "color":"#009EB9",
+      "texture":"texture_baron"
+    }
+  ]
+}

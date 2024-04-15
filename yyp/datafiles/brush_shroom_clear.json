@@ -1,0 +1,27 @@
+{
+  "model":"Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>",
+  "data":[
+    {
+      "type":"brush_shroom_clear",
+      "properties":{
+        "shroom-clear_use-clear-all-shrooms":1.0,
+        "shroom-clear_use-clear-amount":0.0,
+        "shroom-clear_clear-amount":1.0
+      },
+      "name":"clear all",
+      "color":"#FF0000",
+      "texture":"texture_visu_editor_icon_event_shroom_clear"
+    },
+    {
+      "type":"brush_shroom_clear",
+      "properties":{
+        "shroom-clear_use-clear-all-shrooms":0.0,
+        "shroom-clear_use-clear-amount":1.0,
+        "shroom-clear_clear-amount":1.0
+      },
+      "name":"clear 1",
+      "color":"#FFDF43",
+      "texture":"texture_visu_editor_icon_event_shroom_clear"
+    }
+  ]
+}

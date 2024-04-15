@@ -1,0 +1,18 @@
+{
+  "visu.debug-overlay": false,
+  "visu.fullscreen": false,
+  "visu.autoplay": false,
+  "visu.autosave.interval": 5,
+  "visu.manifest.autoload": true,
+  "_visu.manifest.path": "C:/Users/Alkapivo/projects/io.alkapivo/tracks/lolratz/KAIDECA/manifest.visu",
+  "visu.window.width": 1400,
+  "visu.window.height": 900,
+  "visu.editor.bpm": 90,
+  "visu.editor.bpm-sub": 1,
+  "visu.editor.render-event": true,
+  "visu.editor.render-timeline": true,
+  "visu.editor.render-brush": true,
+  "visu.editor.accordion.render-event-inspector": false,
+  "visu.editor.accordion.render-template-toolbar": true,
+  "end-property": null
+}
