@@ -120,7 +120,7 @@
   "maintainGms1Font": false,
   "parent": {
     "name": "font",
-    "path": "folders/io.alkapivo.core/resource/font.yy",
+    "path": "folders/core-gml/resource/font.yy",
   },
   "pointRounding": 0,
   "ranges": [

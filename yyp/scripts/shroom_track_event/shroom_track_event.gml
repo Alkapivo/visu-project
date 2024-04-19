@@ -1,8 +1,8 @@
 ///@package io.alkapivo.visu.service.track
 
 ///@static
-///@type {Map<String, Callable>}
-global.__shroom_track_event = new Map(String, Callable, {
+///@type {Struct}
+global.__shroom_track_event = {
   "brush_shroom_spawn": function(data) {
     var controller = Beans.get(BeanVisuController)
     var shroom = {
@@ -100,5 +100,5 @@ global.__shroom_track_event = new Map(String, Callable, {
       }))
     }
   },
-})
+}
 #macro shroom_track_event global.__shroom_track_event

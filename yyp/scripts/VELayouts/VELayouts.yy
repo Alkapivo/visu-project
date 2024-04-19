@@ -1,11 +1,13 @@
 {
-  "resourceType": "GMScript",
-  "resourceVersion": "1.0",
-  "name": "VELayouts",
-  "isCompatibility": false,
-  "isDnD": false,
-  "parent": {
-    "name": "ui",
-    "path": "folders/visu-gml/src/ui.yy",
+  "$GMScript":"",
+  "%Name":"VELayouts",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"VELayouts",
+  "parent":{
+    "name":"ui",
+    "path":"folders/visu-gml/src/ui.yy",
   },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
 }

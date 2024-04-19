@@ -17,8 +17,8 @@ function VEBrushTemplate(json) constructor {
   ///@type {String}
   texture = Struct.contains(json, "texture")
     ? Assert.isType(json.texture, String)
-    : BRUSH_TEXTURES.getFirst()
-  Assert.isTrue(BRUSH_TEXTURES.contains(this.texture))
+    : BRUSH_TEXTURES[0]
+  Assert.isTrue(GMArray.contains(BRUSH_TEXTURES, this.texture))
   
   ///@type {?Struct}
   properties = Struct.contains(json, "properties")

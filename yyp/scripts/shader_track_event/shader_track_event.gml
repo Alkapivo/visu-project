@@ -1,8 +1,8 @@
 ///@package io.alkapivo.visu.service.track
 
 ///@static
-///@type {Map<String, Callable>}
-global.__shader_track_event = new Map(String, Callable, {
+///@type {Struct}
+global.__shader_track_event = {
   "brush_shader_spawn": function(data) {
     var eventData = {
       template: Struct.get(data, "shader-spawn_template"),
@@ -202,5 +202,5 @@ global.__shader_track_event = new Map(String, Callable, {
       }))
     }
   },
-})
+}
 #macro shader_track_event global.__shader_track_event

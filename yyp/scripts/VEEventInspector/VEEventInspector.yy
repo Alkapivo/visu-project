@@ -1,11 +1,13 @@
 {
-  "resourceType": "GMScript",
-  "resourceVersion": "1.0",
-  "name": "VEEventInspector",
-  "isCompatibility": false,
-  "isDnD": false,
-  "parent": {
-    "name": "ui",
-    "path": "folders/visu-gml/src/editor/ui.yy",
+  "$GMScript":"",
+  "%Name":"VEEventInspector",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"VEEventInspector",
+  "parent":{
+    "name":"ui",
+    "path":"folders/visu-gml/src/editor/ui.yy",
   },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
 }

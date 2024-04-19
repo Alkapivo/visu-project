@@ -1,11 +1,13 @@
 {
-  "resourceType": "GMScript",
-  "resourceVersion": "1.0",
-  "name": "UIImage",
-  "isCompatibility": false,
-  "isDnD": false,
-  "parent": {
-    "name": "item",
-    "path": "folders/core-gml/src/service/ui/item.yy",
+  "$GMScript":"",
+  "%Name":"UIImage",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"UIImage",
+  "parent":{
+    "name":"item",
+    "path":"folders/core-gml/src/service/ui/item.yy",
   },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
 }

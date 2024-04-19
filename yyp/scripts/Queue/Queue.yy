@@ -1,11 +1,13 @@
 {
-  "resourceType": "GMScript",
-  "resourceVersion": "1.0",
-  "name": "Queue",
-  "isCompatibility": false,
-  "isDnD": false,
-  "parent": {
-    "name": "collection",
-    "path": "folders/core-gml/src/collection.yy",
+  "$GMScript":"",
+  "%Name":"Queue",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"Queue",
+  "parent":{
+    "name":"collection",
+    "path":"folders/core-gml/src/collection.yy",
   },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
 }

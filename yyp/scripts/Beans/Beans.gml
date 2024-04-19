@@ -26,7 +26,6 @@ function Bean(_prototype, gmInstance) constructor {
 }
 
 
-///@static
 function _Beans() constructor {
 
   ///@private
@@ -130,5 +129,9 @@ function _Beans() constructor {
     return this
   }
 }
-global.__Beans = new _Beans()
+global.__Beans = null
 #macro Beans global.__Beans
+
+function initBeans() {
+  global.__Beans = new _Beans()
+}

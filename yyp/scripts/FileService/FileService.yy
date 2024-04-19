@@ -1,11 +1,13 @@
 {
-  "resourceType": "GMScript",
-  "resourceVersion": "1.0",
-  "name": "FileService",
-  "isCompatibility": false,
-  "isDnD": false,
-  "parent": {
-    "name": "file",
-    "path": "folders/core-gml/src/service/file.yy",
+  "$GMScript":"",
+  "%Name":"FileService",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"FileService",
+  "parent":{
+    "name":"file",
+    "path":"folders/core-gml/src/service/file.yy",
   },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
 }

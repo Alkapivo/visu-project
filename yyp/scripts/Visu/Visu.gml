@@ -9,6 +9,9 @@ function _Visu() constructor {
   ///@param {Number} [layerDefaultDepth]
   ///@return {Visu}
   static run = function(layerName = "layer_main", layerDefaultDepth = 100) {
+
+    initGPU()
+    initBeans()
     Assert.isType(layerName, String)
     Core.loadProperties()
 

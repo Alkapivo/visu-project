@@ -1,11 +1,13 @@
 {
-  "resourceType": "GMScript",
-  "resourceVersion": "1.0",
-  "name": "GridService",
-  "isCompatibility": false,
-  "isDnD": false,
-  "parent": {
-    "name": "grid",
-    "path": "folders/visu-gml/src/service/grid.yy",
+  "$GMScript":"",
+  "%Name":"GridService",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"GridService",
+  "parent":{
+    "name":"grid",
+    "path":"folders/visu-gml/src/service/grid.yy",
   },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
 }

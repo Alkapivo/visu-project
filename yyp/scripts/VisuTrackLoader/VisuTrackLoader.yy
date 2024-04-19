@@ -1,11 +1,13 @@
 {
-  "resourceType": "GMScript",
-  "resourceVersion": "1.0",
-  "name": "VisuTrackLoader",
-  "isCompatibility": false,
-  "isDnD": false,
-  "parent": {
-    "name": "track-loader",
-    "path": "folders/visu-gml/src/service/track-loader.yy",
+  "$GMScript":"",
+  "%Name":"VisuTrackLoader",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"VisuTrackLoader",
+  "parent":{
+    "name":"track-loader",
+    "path":"folders/visu-gml/src/service/track-loader.yy",
   },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
 }

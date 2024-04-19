@@ -165,6 +165,11 @@ function VisuTrackLoader(_controller): Service() constructor {
                         Logger.debug("VisuTrackLoader", $"load sound intent '{key}'")
                         var soundIntent = new prototype(json)
                         var soundService = acc.soundService
+                        if (Core.getRuntimeType() == RuntimeType.GXGAMES) {
+                          soundService.sounds.add(sound_visu_wasm, key)
+                          return
+                        }
+
                         var path = FileUtil.get($"{acc.path}{soundIntent.file}")
                         Assert.fileExists(path)
                         Assert.isFalse(soundService.sounds.contains(key), "GMSound already loaded")

@@ -24,30 +24,31 @@ global.__VEBrushType = new _VEBrushType()
 
 
 ///@static
-///@type {Map<VEBrushType, String>}
-global.__VEBrushTypeNames = new Map(String, String)
-  .set(VEBrushType.SHADER_SPAWN, "Shader spawn")
-  .set(VEBrushType.SHADER_OVERLAY, "Shader overlay")
-  .set(VEBrushType.SHADER_CLEAR, "Shader clear")
-  .set(VEBrushType.SHADER_CONFIG, "Shader config")
-  .set(VEBrushType.SHROOM_SPAWN, "Shroom spawn")
-  .set(VEBrushType.SHROOM_CLEAR, "Shroom clear")
-  .set(VEBrushType.SHROOM_CONFIG, "Shroom config")
-  .set(VEBrushType.VIEW_WALLPAPER, "View wallpaper")
-  .set(VEBrushType.VIEW_CAMERA, "View camera")
-  .set(VEBrushType.VIEW_CONFIG, "View config")
-  .set(VEBrushType.VIEW_LYRICS, "View lyrics")
-  .set(VEBrushType.GRID_CHANNEL, "Grid channel")
-  .set(VEBrushType.GRID_CONFIG, "Grid config")
-  .set(VEBrushType.GRID_PARTICLE, "Grid particle")
-  .set(VEBrushType.GRID_PLAYER, "Grid player")
-  .set(VEBrushType.GRID_SEPARATOR, "Grid separator")
+///@type {Struct}
+global.__VEBrushTypeNames = {
+  "brush_shader_spawn": "Shader spawn",
+  "brush_shader_overlay": "Shader overlay",
+  "brush_shader_clear": "Shader clear",
+  "brush_shader_config": "Shader config",
+  "brush_shroom_spawn": "Shroom spawn",
+  "brush_shroom_clear": "Shroom clear",
+  "brush_shroom_config": "Shroom config",
+  "brush_view_wallpaper": "View wallpaper",
+  "brush_view_camera": "View camera",
+  "brush_view_lyrics": "View config",
+  "brush_view_config": "View lyrics",
+  "brush_grid_channel": "Grid channel",
+  "brush_grid_config": "Grid config",
+  "brush_grid_particle": "Grid particle",
+  "brush_grid_player": "Grid player",
+  "brush_grid_separator": "Grid separator",
+}
 #macro VEBrushTypeNames global.__VEBrushTypeNames
 
 
 ///@static
 ///@type {Array<String>}
-global.__BRUSH_TEXTURES = new Array(String, [
+global.__BRUSH_TEXTURES = [
   "texture_white",
   "texture_baron",
   "texture_bazyl",
@@ -71,7 +72,7 @@ global.__BRUSH_TEXTURES = new Array(String, [
   "texture_visu_editor_icon_event_view_foreground",
   "texture_visu_editor_icon_event_view_camera",
   "texture_visu_editor_icon_event_view_config",
-])
+]
 #macro BRUSH_TEXTURES global.__BRUSH_TEXTURES
 
 
@@ -101,7 +102,7 @@ function VEBrush(template) constructor {
         Assert.isType(TextureUtil.parse(value), Texture)
         Assert.isTrue(this.data.contains(value))
       },
-      data: BRUSH_TEXTURES,
+      data: new Array(String, BRUSH_TEXTURES),
     }
   })
 
@@ -113,7 +114,7 @@ function VEBrush(template) constructor {
       layout: VELayouts.get("property"),
       config: { 
         layout: { type: UILayoutType.VERTICAL },
-        label: { text: $"{VEBrushTypeNames.get(template.type)}" },
+        label: { text: $"{Struct.get(VEBrushTypeNames, template.type)}" },
       },
     },
     {

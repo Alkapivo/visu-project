@@ -2,10 +2,10 @@
 
 ///@static
 ///@type {Array<String>}
-global.__WALLPAPER_TYPES = new Array(String, [
+global.__WALLPAPER_TYPES = [
   "Background",
   "Foreground",
-])
+]
 #macro WALLPAPER_TYPES global.__WALLPAPER_TYPES
 
 
@@ -17,11 +17,11 @@ function brush_view_wallpaper(json = null) {
     store: new Map(String, Struct, {
       "view-wallpaper_type": {
         type: String,
-        value: Struct.getDefault(json, "view-wallpaper_type", WALLPAPER_TYPES.get(0)),
+        value: Struct.getDefault(json, "view-wallpaper_type", WALLPAPER_TYPES[0]),
         validate: function(value) {
           Assert.areEqual(true, this.data.contains(value))
         },
-        data: WALLPAPER_TYPES,
+        data: new Array(String, WALLPAPER_TYPES),
       },
       "view-wallpaper_fade-in-speed": {
         type: Number,

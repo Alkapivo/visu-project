@@ -1,11 +1,13 @@
 {
-  "resourceType": "GMScript",
-  "resourceVersion": "1.0",
-  "name": "PlayerService",
-  "isCompatibility": false,
-  "isDnD": false,
-  "parent": {
-    "name": "player",
-    "path": "folders/visu-gml/src/service/player.yy",
+  "$GMScript":"",
+  "%Name":"PlayerService",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"PlayerService",
+  "parent":{
+    "name":"player",
+    "path":"folders/visu-gml/src/service/player.yy",
   },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
 }

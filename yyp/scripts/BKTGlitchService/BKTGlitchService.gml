@@ -1,8 +1,8 @@
 ///@package com.janvorisek.bktglitch
 
 ///@static
-///@type {Map<String, Struct>}
-global.__BKTGlitchFields = new Map(String, Struct, {
+///@type {Struct}
+global.__BKTGlitchFields = {
   "lineSpeed": {
     field: prop.lineSpeed,
     setter: bktglitch_set_line_speed
@@ -63,7 +63,7 @@ global.__BKTGlitchFields = new Map(String, Struct, {
     field: prop.intensity,
     setter: bktglitch_set_intensity
   },
-})
+}
 #macro BKTGlitchFields global.__BKTGlitchFields
 
 
@@ -134,7 +134,7 @@ function BKTGlitchService() constructor {
       for (var index = 0; index < size; index++) {
         var key = keys[index]
         var property = Struct.get(event.data, key)
-        var item = BKTGlitchFields.get(key)
+        var item = Struct.get(BKTGlitchFields, key)
         __bktgtlich_setup_property(item.field, property.defValue, name, item.setter, property.minValue, property.maxValue)
       }
     },

@@ -1665,7 +1665,7 @@ function VETemplateToolbar(_editor) constructor {
         Assert.isType(ShaderUtil.fetch(value), Shader)
         Assert.isTrue(this.data.contains(value))
       },
-      data: SHADERS.keys(),
+      data: new Array(String, Struct.keys(SHADERS)),
     },
     "texture-intent": {
       type: TextureIntent,

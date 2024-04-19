@@ -1,11 +1,13 @@
 {
-  "resourceType": "GMScript",
-  "resourceVersion": "1.0",
-  "name": "GridServiceTest",
-  "isCompatibility": false,
-  "isDnD": false,
-  "parent": {
-    "name": "grid",
-    "path": "folders/visu-gml/test/grid.yy",
+  "$GMScript":"",
+  "%Name":"GridServiceTest",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"GridServiceTest",
+  "parent":{
+    "name":"grid",
+    "path":"folders/visu-gml/test/grid.yy",
   },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
 }

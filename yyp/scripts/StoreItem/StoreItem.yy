@@ -1,11 +1,13 @@
 {
-  "resourceType": "GMScript",
-  "resourceVersion": "1.0",
-  "name": "StoreItem",
-  "isCompatibility": false,
-  "isDnD": false,
-  "parent": {
-    "name": "store",
-    "path": "folders/core-gml/src/util/store.yy",
+  "$GMScript":"",
+  "%Name":"StoreItem",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"StoreItem",
+  "parent":{
+    "name":"store",
+    "path":"folders/core-gml/src/util/store.yy",
   },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
 }

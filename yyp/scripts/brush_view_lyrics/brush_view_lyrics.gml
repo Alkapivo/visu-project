@@ -1,6 +1,6 @@
 ///@package io.alkapivo.visu.editor.service.brush.view
 
-global.__VISU_FONT = new Array(String, [
+global.__VISU_FONT = [
   "font_inter_8_regular",
   "font_inter_10_regular",
   "font_inter_12_regular",
@@ -8,7 +8,7 @@ global.__VISU_FONT = new Array(String, [
   "font_consolas_10_regular",
   "font_consolas_10_bold",
   "font_consolas_12_bold",
-])
+]
 #macro VISU_FONT global.__VISU_FONT
 
 ///@param {?Struct} [json]
@@ -27,11 +27,11 @@ function brush_view_lyrics(json = null) {
       },
       "view-lyrics_font": {
         type: String,
-        value: Struct.getDefault(json, "view-lyrics_font", VISU_FONT.get(0)),
+        value: Struct.getDefault(json, "view-lyrics_font", VISU_FONT[0]),
         validate: function(value) {
           Assert.areEqual(true, this.data.contains(value))
         },
-        data: VISU_FONT
+        data: new Array(String, VISU_FONT)
       },
       "view-lyrics_font-height": {
         type: Number,

@@ -21,7 +21,7 @@
       "originX":0.0,
       "originY":0.0,
       "prefetch":1.0,
-      "file":"SPOT.png",
+      "file":"spot.png",
       "name":"texture_lolratz_spot",
       "frames":1.0
     },
@@ -53,7 +53,7 @@
       "originX":0.0,
       "originY":0.0,
       "prefetch":1.0,
-      "file":"SPOILER_image (1).png",
+      "file":"spoiler_image (1).png",
       "name":"texture_lolratz_muck_anim_16",
       "frames":16.0
     },
@@ -69,7 +69,7 @@
       "originX":0.0,
       "originY":0.0,
       "prefetch":1.0,
-      "file":"SPOILER_image (2).png",
+      "file":"spoiler_image (2).png",
       "name":"texture_lolratz_muck_anim_8",
       "frames":8.0
     },
@@ -125,7 +125,7 @@
       "originX":0.0,
       "originY":0.0,
       "prefetch":1.0,
-      "file":"SPOILER_image.png",
+      "file":"spoiler_image.png",
       "name":"texture_lolratz_lime",
       "frames":1.0
     },
@@ -133,7 +133,7 @@
       "originX":0.0,
       "originY":0.0,
       "prefetch":1.0,
-      "file":"SPOILER_realgirl.png",
+      "file":"spoiler_realgirl.png",
       "name":"texture_lolratz_tomo_realgirl",
       "frames":1.0
     }

@@ -26,17 +26,32 @@ void main() {
   vec2 uv = (v_vTexcoord * 2.0 - iResolution.xy) / iResolution.y;
   vec2 uv0 = uv;
   vec3 finalColor = vec3(0.0);
-    
-  for (float i = 0.0; i < iIterations; i++) {
-      uv = fract(uv * 1.5) - 0.5;
-      float d = length(uv) * exp(-length(uv0));
-      vec3 col = palette(length(uv0) + i * 0.4 + iTime * 0.4);
-      d = sin(d*8. + iTime)/8.;
-      d = abs(d);
-      d = pow(0.01 / d, 1.2);
-      finalColor += col * d;
-  }
   
+  // Requires webgl 3.0
+  //for (float idx = 0.0; idx < iIterations; idx++) {
+  //    uv = fract(uv * 1.5) - 0.5;
+  //    float d = length(uv) * exp(-length(uv0));
+  //    vec3 col = palette(length(uv0) + idx * 0.4 + iTime * 0.4);
+  //    d = sin(d*8. + iTime)/8.;
+  //    d = abs(d);
+  //    d = pow(0.01 / d, 1.2);
+  //    finalColor += col * d;
+  //}
+
+  for (float index = 0.0; index < 100.0; index++) {
+    if (index >= iIterations) {
+      break;
+    }
+
+    uv = fract(uv * 1.5) - 0.5;
+    float d = length(uv) * exp(-length(uv0));
+    vec3 col = palette(length(uv0) + index * 0.4 + iTime * 0.4);
+    d = sin(d*8. + iTime)/8.;
+    d = abs(d);
+    d = pow(0.01 / d, 1.2);
+    finalColor += col * d;
+  }
+
   float alpha = (finalColor.r + finalColor.g + finalColor.b) / 3.0;
   gl_FragColor = vec4(finalColor, min(v_vColour.a, alpha)) * texture2D(gm_BaseTexture, v_vTexcoord);
 }

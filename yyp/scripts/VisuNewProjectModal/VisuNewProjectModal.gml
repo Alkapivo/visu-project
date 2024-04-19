@@ -585,7 +585,6 @@ function VisuNewProjectForm(json = null) constructor {
       FileUtil.copyFile(json.shroom, $"{path}{manifest.data.shroom}")
     }
 
-    FileUtil.createDirectory($"{path}editor")
     var visuTrack = global.__VisuTrack
     if (json.includeBrushes && Core.isType(visuTrack, VisuTrack)) {
       visuTrack.editor.forEach(function(brush, index, acc) {

@@ -20,8 +20,12 @@ global.GMTF_DATA = {
 	jumped: false,
 	switch_tick: 0,
 	active_drawn: false,
-	timer: new Timer(3.0, { loop: Infinity }),
+	timer: null,
 	update: function() {
+		if (!Optional.is(global.GMTF_DATA.timer)) {
+			global.GMTF_DATA.timer = new Timer(3.0, { loop: Infinity })
+		}
+		
 		if (global.GMTF_DATA.active != null 
 			&& global.GMTF_DATA.active.uiItem != null) {
 

@@ -1,11 +1,13 @@
 {
-  "resourceType": "GMScript",
-  "resourceVersion": "1.0",
-  "name": "GMObject",
-  "isCompatibility": false,
-  "isDnD": false,
-  "parent": {
-    "name": "lang",
-    "path": "folders/core-gml/src/lang.yy",
+  "$GMScript":"",
+  "%Name":"GMObject",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"GMObject",
+  "parent":{
+    "name":"lang",
+    "path":"folders/core-gml/src/lang.yy",
   },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
 }

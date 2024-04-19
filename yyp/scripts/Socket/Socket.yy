@@ -1,11 +1,13 @@
 {
-  "resourceType": "GMScript",
-  "resourceVersion": "1.0",
-  "name": "Socket",
-  "isCompatibility": false,
-  "isDnD": false,
-  "parent": {
-    "name": "network",
-    "path": "folders/core-gml/src/service/network.yy",
+  "$GMScript":"",
+  "%Name":"Socket",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"Socket",
+  "parent":{
+    "name":"network",
+    "path":"folders/core-gml/src/service/network.yy",
   },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
 }

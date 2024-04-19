@@ -1,11 +1,13 @@
 {
-  "resourceType": "GMScript",
-  "resourceVersion": "1.0",
-  "name": "Sprite",
-  "isCompatibility": false,
-  "isDnD": false,
-  "parent": {
-    "name": "texture",
-    "path": "folders/core-gml/src/service/texture.yy",
+  "$GMScript":"",
+  "%Name":"Sprite",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"Sprite",
+  "parent":{
+    "name":"texture",
+    "path":"folders/core-gml/src/service/texture.yy",
   },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
 }

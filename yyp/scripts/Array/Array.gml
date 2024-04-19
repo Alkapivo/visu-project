@@ -446,6 +446,24 @@ function _GMArray() constructor {
     return arr
   }
 
+  ///@override
+  ///@param {GMArray} arr
+  ///@param {any} searchItem
+  ///@param {Callable} [comparator]
+  ///@return {Boolean}
+  static contains = function(arr, searchItem, comparator = function(a, b) { return a == b }) {
+    var size = this.size(arr)
+    var found = false
+    for (var index = 0; index < size; index++) {
+      var item = arr[index]
+      if (comparator(item, searchItem)) {
+        found = true
+        break
+      }
+    }
+    return found
+  }
+
   ///@param {GMArray} arr
   ///@param {Callable} callback
   ///@param {any} [acc]

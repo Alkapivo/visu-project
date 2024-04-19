@@ -1,11 +1,13 @@
 {
-  "resourceType": "GMScript",
-  "resourceVersion": "1.0",
-  "name": "UISlider",
-  "isCompatibility": false,
-  "isDnD": false,
-  "parent": {
-    "name": "item",
-    "path": "folders/core-gml/src/service/ui/item.yy",
+  "$GMScript":"",
+  "%Name":"UISlider",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"UISlider",
+  "parent":{
+    "name":"item",
+    "path":"folders/core-gml/src/service/ui/item.yy",
   },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
 }

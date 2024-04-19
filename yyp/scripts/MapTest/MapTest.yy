@@ -1,11 +1,13 @@
 {
-  "resourceType": "GMScript",
-  "resourceVersion": "1.0",
-  "name": "MapTest",
-  "isCompatibility": false,
-  "isDnD": false,
-  "parent": {
-    "name": "collection",
-    "path": "folders/core-gml/test/collection.yy",
+  "$GMScript":"",
+  "%Name":"MapTest",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"MapTest",
+  "parent":{
+    "name":"collection",
+    "path":"folders/core-gml/test/collection.yy",
   },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
 }

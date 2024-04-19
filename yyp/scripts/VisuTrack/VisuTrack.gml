@@ -69,7 +69,7 @@ function VisuTrack(_path, json) constructor {
         "editor": controller.editor.brushService.templates
           .keys()
           .map(function(filename) {
-            return $"editor/{filename}.json"
+            return $"{filename}.json"
           })
           .getContainer(),
       }
@@ -77,7 +77,6 @@ function VisuTrack(_path, json) constructor {
 
     #region Serialize
     var track = controller.trackService.track.serialize()
-    FileUtil.createDirectory($"{path}editor")
 
     var sound = {
       "model": "Collection<io.alkapivo.core.service.sound.SoundIntent>",
@@ -236,7 +235,7 @@ function VisuTrack(_path, json) constructor {
     Struct.forEach(editor, function(data, filename, acc) {
       acc.fileService.send(new Event("save-file-sync")
         .setData(new File({
-          path: $"{acc.path}editor/{filename}.json",
+          path: $"{acc.path}{filename}.json",
           data: JSON.stringify(data, { pretty: true }),
       })))
     }, { path: path, fileService: fileService })

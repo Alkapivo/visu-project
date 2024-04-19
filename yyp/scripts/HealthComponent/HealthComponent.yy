@@ -1,11 +1,13 @@
 {
-  "resourceType": "GMScript",
-  "resourceVersion": "1.0",
-  "name": "HealthComponent",
-  "isCompatibility": false,
-  "isDnD": false,
-  "parent": {
-    "name": "component",
-    "path": "folders/visu-gml/src/ecs/grid/component.yy",
+  "$GMScript":"",
+  "%Name":"HealthComponent",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"HealthComponent",
+  "parent":{
+    "name":"component",
+    "path":"folders/visu-gml/src/ecs/grid/component.yy",
   },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
 }

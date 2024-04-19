@@ -7,8 +7,8 @@
 function _GMObjectUtil() constructor {
 
   ///@private
-  ///@type {Map<String, Struct>}
-  bindings = new Map(String, Struct, {
+  ///@type {Struct}
+  bindings = {
     updateBegin: {
       gmObject: "__updateBegin",
       factoryWrapper: function() {
@@ -89,7 +89,7 @@ function _GMObjectUtil() constructor {
         }
       }
     },
-  })
+  }
 
   ///@param {GMObject} gmObject
   ///@param {String} key
@@ -191,7 +191,7 @@ function _GMObjectUtil() constructor {
 
     Struct.set(context, "__gmObject", gmObject)
     GMObjectUtil.set(gmObject, "__context", context)
-    GMObjectUtil.bindings.forEach(bindWrapper, { 
+    Struct.forEach(GMObjectUtil.bindings, bindWrapper, { 
       context: context, 
       gmObject: gmObject 
     })
@@ -210,7 +210,7 @@ function _GMObjectUtil() constructor {
 
     Struct.set(GMObjectUtil.get(gmObject, "__context"), "__gmObject", null)
     GMObjectUtil.set(gmObject, "__context", null)
-    GMObjectUtil.bindings.forEach(unbindWrapper, { gmObject: gmObject })
+    Struct.forEach(GMObjectUtil.bindings, unbindWrapper, { gmObject: gmObject })
 
     return GMObjectUtil
   }

@@ -1,11 +1,13 @@
 {
-  "resourceType": "GMScript",
-  "resourceVersion": "1.0",
-  "name": "Transformer",
-  "isCompatibility": false,
-  "isDnD": false,
-  "parent": {
-    "name": "util",
-    "path": "folders/core-gml/src/util.yy",
+  "$GMScript":"",
+  "%Name":"Transformer",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"Transformer",
+  "parent":{
+    "name":"util",
+    "path":"folders/core-gml/src/util.yy",
   },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
 }

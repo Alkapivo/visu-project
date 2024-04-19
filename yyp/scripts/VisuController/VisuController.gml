@@ -259,10 +259,10 @@ function VisuController(layerName) constructor {
     handlers: new Map(String, Callable)
       .merge(
         DEFAULT_TRACK_EVENT_HANDLERS,
-        grid_track_event,
-        shader_track_event,
-        shroom_track_event,
-        view_track_event
+        new Map(String, Callable, grid_track_event),
+        new Map(String, Callable, shader_track_event),
+        new Map(String, Callable, shroom_track_event),
+        new Map(String, Callable, view_track_event)
       ),
     isTrackLoaded: function() {
       var stateName = this.context.fsm.getStateName()
@@ -807,10 +807,7 @@ function VisuController(layerName) constructor {
     try {
       service.struct.update()
     } catch (exception) {
-      var name = Core.isType(Struct.get(controller, "name"), String) 
-        ? service.name 
-        : iterator
-      var message = $"'update-service-{name}' fatal error: {exception.message}"
+      var message = $"'update-service-{service.name }' fatal error: {exception.message}"
       Logger.error("VisuController", message)
       Core.printStackTrace()
       controller.send(new Event("spawn-popup", { message: message }))

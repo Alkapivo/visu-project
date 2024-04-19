@@ -1,8 +1,8 @@
 ///@package io.alkapivo.visu.service.grid
 
 ///@static
-///@type {Map<String, Callable>}
-global.__VISU_GRID_CONDITIONS = new Map(String, Callable, {
+///@type {Struct}
+global.__VISU_GRID_CONDITIONS = {
   "kill": function() {
     return function(shroom, controller) {
       return shroom.signals.kill
@@ -81,7 +81,7 @@ global.__VISU_GRID_CONDITIONS = new Map(String, Callable, {
       }
     }
   },
-})
+}
 #macro VISU_GRID_CONDITIONS global.__VISU_GRID_CONDITIONS
 
 
@@ -97,6 +97,6 @@ function GridItemCondition(json) constructor {
   ///@param {GridItem} item
   ///@param {VisuController} controller
   ///@return {Boolean}
-  check = method(this, Assert.isType(Callable
-    .run(VISU_GRID_CONDITIONS.get(this.type)), Callable))
+  check = method(this, Assert.isType(Callable.run(Struct
+    .get(VISU_GRID_CONDITIONS, this.type)), Callable))
 }

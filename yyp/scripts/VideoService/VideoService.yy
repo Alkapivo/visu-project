@@ -1,11 +1,13 @@
 {
-  "resourceType": "GMScript",
-  "resourceVersion": "1.0",
-  "name": "VideoService",
-  "isCompatibility": false,
-  "isDnD": false,
-  "parent": {
-    "name": "video",
-    "path": "folders/core-gml/src/service/video.yy",
+  "$GMScript":"",
+  "%Name":"VideoService",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"VideoService",
+  "parent":{
+    "name":"video",
+    "path":"folders/core-gml/src/service/video.yy",
   },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
 }

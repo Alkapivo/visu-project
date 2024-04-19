@@ -1,11 +1,13 @@
 {
-  "resourceType": "GMScript",
-  "resourceVersion": "1.0",
-  "name": "TestRunner",
-  "isCompatibility": false,
-  "isDnD": false,
-  "parent": {
-    "name": "test",
-    "path": "folders/core-gml/test.yy",
+  "$GMScript":"",
+  "%Name":"TestRunner",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"TestRunner",
+  "parent":{
+    "name":"test",
+    "path":"folders/core-gml/test.yy",
   },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
 }

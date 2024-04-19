@@ -1,7 +1,7 @@
 {
   "model":"io.alkapivo.visu.controller.VisuTrack",
   "data":{
-    "video":"KAIDECA.mp4",
+    "video":"kaideca.mp4",
     "editor":[
       "brush_shader_config.json",
       "brush_grid_channel.json",

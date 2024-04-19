@@ -11,19 +11,19 @@ global.__GridEntityType = new _GridEntityType()
 
 
 ///@static
-///@type {Map<Callable, String>}
-global.__GridComponentNames = new Map(Callable, String, {
-  DamageComponent: "damage",
-  GameModeComponent: "gameMode",
-  HealthComponent: "health",
-  HitBoxComponent: "hitBox",
-  LifespawnComponent: "lifespawn",
-  ParticleBurstComponent: "particleBurst",
-  PositionComponent: "position",
-  RenderSpriteComponent: "renderSprite",
-  ShootComponent: "shoot",
-  VelocityComponent: "velocity",
-})
+///@type {Struct}
+global.__GridComponentNames = {
+  "DamageComponent": "damage",
+  "GameModeComponent": "gameMode",
+  "HealthComponent": "health",
+  "HitBoxComponent": "hitBox",
+  "LifespawnComponent": "lifespawn",
+  "ParticleBurstComponent": "particleBurst",
+  "PositionComponent": "position",
+  "RenderSpriteComponent": "renderSprite",
+  "ShootComponent": "shoot",
+  "VelocityComponent": "velocity",
+}
 #macro GridComponentNames global.__GridComponentNames
 
 
@@ -70,7 +70,7 @@ function GridEntity(json) constructor {
   ///@param {Struct} json
   static installComponents = function(json) {
     var entity = this
-    GridComponentNames.forEach(function(name, prototype, acc) {
+    Struct.forEach(GridComponentNames, function(name, prototype, acc) {
       var factory = Core.getConstructor(prototype)
       Struct.set(acc.entity, name, Struct.contains(acc.json, name)
         ? new factory(Struct.get(acc.json, name))

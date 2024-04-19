@@ -44,7 +44,7 @@ function VEEvent(_context, json = null) constructor {
         Assert.isType(TextureUtil.parse(value), Texture)
         Assert.areEqual(true, this.data.contains(value))
       },
-      data: BRUSH_TEXTURES,
+      data: new Array(String, BRUSH_TEXTURES),
     },
   })
 
@@ -56,7 +56,7 @@ function VEEvent(_context, json = null) constructor {
       layout: VELayouts.get("property"),
       config: { 
         layout: { type: UILayoutType.VERTICAL },
-        label: { text: $"{VEBrushTypeNames.get(json.type)}" },
+        label: { text: $"{Struct.get(VEBrushTypeNames, json.type)}" },
       },
     },
     {

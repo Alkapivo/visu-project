@@ -1,11 +1,13 @@
 {
-  "resourceType": "GMScript",
-  "resourceVersion": "1.0",
-  "name": "DisplayService",
-  "isCompatibility": false,
-  "isDnD": false,
-  "parent": {
-    "name": "display",
-    "path": "folders/core-gml/src/service/display.yy",
+  "$GMScript":"",
+  "%Name":"DisplayService",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"DisplayService",
+  "parent":{
+    "name":"display",
+    "path":"folders/core-gml/src/service/display.yy",
   },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
 }

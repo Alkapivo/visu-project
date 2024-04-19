@@ -1,8 +1,8 @@
 ///@package io.alkapivo.visu.service.track
 
 ///@static
-///@type {Map<String, Callable>}
-global.__grid_track_event = new Map(String, Callable, {
+///@type {Struct}
+global.__grid_track_event = {
   "brush_grid_channel": function(data) {
     var controller = Beans.get(BeanVisuController)
     if (Struct.get(data, "grid-channel_use-transform-amount") == true) {
@@ -453,5 +453,5 @@ global.__grid_track_event = new Map(String, Callable, {
       }))
     }
   },
-})
+}
 #macro grid_track_event global.__grid_track_event

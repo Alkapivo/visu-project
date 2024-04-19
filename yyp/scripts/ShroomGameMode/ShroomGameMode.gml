@@ -56,10 +56,10 @@ function ShroomPlatformerGameMode(json) {
 
 
 ///@static
-///@type {Map<String, Callable>}
-global.__SHROOM_GAME_MODES = new Map(String, any) ///@todo bug, ShroomBulletHellGameMode is type of Number instead of ref
-  .set(GameMode.IDLE, ShroomIdleGameMode)
-  .set(GameMode.BULLETHELL, ShroomBulletHellGameMode)
-  .set(GameMode.PLATFORMER, ShroomPlatformerGameMode)
+///@type {Struct}
+global.__SHROOM_GAME_MODES = {
+  "idle": ShroomIdleGameMode,
+  "bulletHell": ShroomBulletHellGameMode,
+  "platformer": ShroomPlatformerGameMode,
+}
 #macro SHROOM_GAME_MODES global.__SHROOM_GAME_MODES
-SHROOM_GAME_MODES.valueType = Callable

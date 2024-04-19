@@ -1,11 +1,13 @@
 {
-  "resourceType": "GMScript",
-  "resourceVersion": "1.0",
-  "name": "Collection",
-  "isCompatibility": false,
-  "isDnD": false,
-  "parent": {
-    "name": "collection",
-    "path": "folders/core-gml/src/collection.yy",
+  "$GMScript":"",
+  "%Name":"Collection",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"Collection",
+  "parent":{
+    "name":"collection",
+    "path":"folders/core-gml/src/collection.yy",
   },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
 }

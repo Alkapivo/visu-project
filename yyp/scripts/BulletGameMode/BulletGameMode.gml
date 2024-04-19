@@ -74,10 +74,10 @@ function BulletPlatformerGameMode(json) {
 
 
 ///@static
-///@type {Map<String, Callable>}
-global.__BULLET_GAME_MODES = new Map(String, any)
-  .set(GameMode.IDLE, BulletIdleGameMode)
-  .set(GameMode.BULLETHELL, BulletBulletHellGameMode)
-  .set(GameMode.PLATFORMER, BulletPlatformerGameMode)
+///@type {Struct}
+global.__BULLET_GAME_MODES = {
+  "idle": BulletIdleGameMode,
+  "bulletHell": BulletBulletHellGameMode,
+  "platformer": BulletPlatformerGameMode,
+}
 #macro BULLET_GAME_MODES global.__BULLET_GAME_MODES
-BULLET_GAME_MODES.valueType = Callable

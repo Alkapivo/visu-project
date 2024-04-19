@@ -4,8 +4,8 @@
 
 ///@todo load from file
 ///@static
-///@type {Map<String, Struct>}
-global.__shaders = new Map(String, Struct, {
+///@type {Struct}
+global.__shaders = {
   "shader_art": {
     "type": "GLSL_ES",
     "uniforms": {
@@ -170,7 +170,7 @@ global.__shaders = new Map(String, Struct, {
       "time": "FLOAT"
     }
   }
-})
+}
 #macro SHADERS global.__shaders
 
 ///@enum
@@ -223,7 +223,7 @@ function _ShaderUtil() constructor {
       return null
     }
 
-    var config = SHADERS.get(name)
+    var config = Struct.get(SHADERS, name)
     if (!Core.isType(config, Struct)) {
       Logger.warn("ShaderUtil", String.template("{0} was not found: { \"name\": \"{1}\" }", "Shader", name))
 

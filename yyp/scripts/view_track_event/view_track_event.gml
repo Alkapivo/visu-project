@@ -1,8 +1,8 @@
 ///@package io.alkapivo.visu.service.track
 
 ///@static
-///@type {Map<String, Callable>}
-global.__view_track_event = new Map(String, Callable, {
+///@type {Struct}
+global.__view_track_event = {
   "brush_view_wallpaper": function(data) {
     var controller = Beans.get(BeanVisuController)
     if (Struct.get(data, "view-wallpaper_use-color") == true) {
@@ -226,5 +226,5 @@ global.__view_track_event = new Map(String, Callable, {
       }
     }
   },
-})
+}
 #macro view_track_event global.__view_track_event

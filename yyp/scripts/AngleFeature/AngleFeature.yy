@@ -1,11 +1,13 @@
 {
-  "resourceType": "GMScript",
-  "resourceVersion": "1.0",
-  "name": "AngleFeature",
-  "isCompatibility": false,
-  "isDnD": false,
-  "parent": {
-    "name": "feature",
-    "path": "folders/visu-gml/src/service/grid/feature.yy",
+  "$GMScript":"",
+  "%Name":"AngleFeature",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"AngleFeature",
+  "parent":{
+    "name":"feature",
+    "path":"folders/visu-gml/src/service/grid/feature.yy",
   },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
 }

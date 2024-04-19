@@ -20,7 +20,7 @@ function PlayerTemplate(json) constructor {
     Struct.filter(Struct.getDefault(json, "gameModes", {}), function(gameMode, key) { 
       return Core.isType(gameMode, Struct) && Core.isEnum(key, GameMode)
     }),
-    PLAYER_GAME_MODES.toStruct(function() { return {} })
+    PLAYER_GAME_MODES
   )
 
   ///@return {Struct}

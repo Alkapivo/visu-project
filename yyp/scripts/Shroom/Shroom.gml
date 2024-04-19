@@ -20,7 +20,7 @@ function ShroomTemplate(_name, json) constructor {
     Struct.filter(Struct.getDefault(json, "gameModes", {}), function(gameMode, key) { 
       return Core.isType(gameMode, Struct) && Core.isEnum(key, GameMode)
     }),
-    SHROOM_GAME_MODES.toStruct(function() { return {} })
+    SHROOM_GAME_MODES
   )
 
   //@return {Struct}

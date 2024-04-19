@@ -1,11 +1,13 @@
 {
-  "resourceType": "GMScript",
-  "resourceVersion": "1.0",
-  "name": "Track",
-  "isCompatibility": false,
-  "isDnD": false,
-  "parent": {
-    "name": "track",
-    "path": "folders/core-gml/src/service/track.yy",
+  "$GMScript":"",
+  "%Name":"Track",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"Track",
+  "parent":{
+    "name":"track",
+    "path":"folders/core-gml/src/service/track.yy",
   },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
 }

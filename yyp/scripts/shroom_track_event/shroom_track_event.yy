@@ -1,11 +1,13 @@
 {
-  "resourceType": "GMScript",
-  "resourceVersion": "1.0",
-  "name": "shroom_track_event",
-  "isCompatibility": false,
-  "isDnD": false,
-  "parent": {
-    "name": "track",
-    "path": "folders/visu-gml/src/service/track.yy",
+  "$GMScript":"",
+  "%Name":"shroom_track_event",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"shroom_track_event",
+  "parent":{
+    "name":"track",
+    "path":"folders/visu-gml/src/service/track.yy",
   },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
 }

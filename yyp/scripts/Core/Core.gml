@@ -1,4 +1,5 @@
 ///@package io.alkapivo.core
+show_debug_message("init Core.gml")
 
 #macro this self
 #macro null undefined
@@ -20,8 +21,8 @@ function _Core() constructor {
 
   ///@private
   ///@final
-  ///@type {Map<String, String>}
-  typeofMap = new Map(String, String, {
+  ///@type {Struct}
+  typeofMap = {
     "array": "GMArray",
     "bool": Boolean,
     "int32": Number,
@@ -35,10 +36,10 @@ function _Core() constructor {
     "struct": "Struct",
     "undefined": any,
     "unknown": any,
-  })
+  }
 
-  ///@type {Map<String, any>}
-  properties = new Map(String, any)
+  ///@type {?Map<String, any>}
+  properties = null
 
   ///@param {any} object
   ///@param {any} type
@@ -68,8 +69,7 @@ function _Core() constructor {
         case GMShaderUniform: return (result == "number" || result == "ref") && object != -1
         case GMSound: return (result == "number" || result == "ref") && audio_exists(object)
         case GMSurface: return result == "ref" && surface_exists(object)
-        ///@bug https://github.com/YoYoGames/GameMaker-Bugs/issues/2543
-        case GMVideoSurface: return result == "number" && surface_exists(object)
+        case GMVideoSurface: return result == "ref" && surface_exists(object)
         case GMTexture: return (result == "ref" || result == "number") && sprite_exists(object)
         ///@todo bug, ref will be returned only when gamemaker is initalizing
         case NonNull: return object != null
@@ -118,7 +118,7 @@ function _Core() constructor {
     try {
       type = Core.hasConstructor(object) 
         ? instanceof(object) 
-        : Core.typeofMap.getDefault(typeof(object), null)
+        : StructgetDefault(typeofMap, typeof(object), null)
     } catch (exception) { }
     return type
   }
@@ -191,6 +191,10 @@ function _Core() constructor {
   ///@param {String} [_path]
   ///@return {Core}
   static loadProperties = function(_path = $"{working_directory}properties.json") {
+    if (!Core.isType(this.properties, Map)) {
+      this.properties = new Map(String, any)
+    }
+    
     try {
       var path = FileUtil.get(_path)
       Logger.debug("Core", $"Start loading properties from '{path}'")
@@ -227,6 +231,44 @@ function _Core() constructor {
     show_debug_overlay(value)
     return this
   }
+
+  ///@return {RuntimeType}
+  static getRuntimeType = function() {
+    switch (os_type) {
+      case os_windows: return RuntimeType.WINDOWS
+      case os_gxgames: return RuntimeType.GXGAMES
+      case os_linux: return RuntimeType.LINUX
+      case os_macosx: return RuntimeType.MACOSX
+      case os_ios: return RuntimeType.IOS
+      case os_tvos: return RuntimeType.TVOS
+      case os_android: return RuntimeType.ANDROID
+      case os_ps4: return RuntimeType.PS4
+      case os_ps5: return RuntimeType.PS5
+      case os_gdk: return RuntimeType.GDK
+      case os_switch: return RuntimeType.SWITCH
+      case os_unknown: return RuntimeType.UNKNOWN
+      default: return RuntimeType.UNKNOWN
+    }
+  }
 }
 global.__Core = new _Core()
 #macro Core global.__Core
+
+
+///@enum
+function _RuntimeType(): Enum() constructor {
+  WINDOWS = "Windows"
+  GXGAMES = "GXGames"
+  LINUX = "Linux"
+  MACOSX = "macOS"
+  IOS = "iOS"
+  TVOS = "tvOS"
+  ANDROID = "Android"
+  PS4 = "PS4"
+  PS5 = "PS5"
+  GDK = "GDK"
+  SWITCH = "Switch"
+  UNKNOWN = "unknown"
+}
+global.__RuntimeType = new _RuntimeType()
+#macro RuntimeType global.__RuntimeType

@@ -1,13 +1,13 @@
 ///@package io.alkapivo.core.renderer.GPU
 show_debug_message("init GPU.gml")
 
-///@type {Texture}
-global.__GPU_DEFAULT_LINE_TEXTURE = new Texture(texture_grid_line_default)
+///@type {?Texture}
+global.__GPU_DEFAULT_LINE_TEXTURE = null
 #macro GPU_DEFAULT_LINE_TEXTURE global.__GPU_DEFAULT_LINE_TEXTURE
 
 
-///@type {Texture}
-global.__GPU_DEFAULT_LINE_TEXTURE_CORNER = new Texture(texture_grid_line_corner_default)
+///@type {?Texture}
+global.__GPU_DEFAULT_LINE_TEXTURE_CORNER = null
 #macro GPU_DEFAULT_LINE_TEXTURE_CORNER global.__GPU_DEFAULT_LINE_TEXTURE_CORNER
 
 
@@ -199,3 +199,8 @@ function _GPU() constructor {
 }
 global.__GPU = new _GPU()
 #macro GPU global.__GPU
+
+function initGPU() {
+  GPU_DEFAULT_LINE_TEXTURE = new Texture(texture_grid_line_default)
+  GPU_DEFAULT_LINE_TEXTURE_CORNER = new Texture(texture_grid_line_corner_default)
+}

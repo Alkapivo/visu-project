@@ -12,7 +12,6 @@ function PlayerIdleGameMode(json) {
 }
 
 
-
 ///@param {Struct} json
 ///@return {GridItemGameMode}
 function PlayerBulletHellGameMode(json) {
@@ -239,12 +238,12 @@ function PlayerPlatformerGameMode(json) {
 
 
 ///@static
-///@type {Map<String, Callable>}
-global.__PLAYER_GAME_MODES = new Map(String, any)
-  .set(GameMode.IDLE, PlayerIdleGameMode)
-  .set(GameMode.BULLETHELL, PlayerBulletHellGameMode)
-  .set(GameMode.PLATFORMER, PlayerPlatformerGameMode)
+///@type {Struct}
+global.__PLAYER_GAME_MODES = {
+  "idle": PlayerIdleGameMode,
+  "bulletHell": PlayerBulletHellGameMode,
+  "platformer": PlayerPlatformerGameMode,
+}
 #macro PLAYER_GAME_MODES global.__PLAYER_GAME_MODES
-PLAYER_GAME_MODES.valueType = Callable
 
 

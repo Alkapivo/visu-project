@@ -1,11 +1,13 @@
 {
-  "resourceType": "GMScript",
-  "resourceVersion": "1.0",
-  "name": "JSON",
-  "isCompatibility": false,
-  "isDnD": false,
-  "parent": {
-    "name": "util",
-    "path": "folders/core-gml/src/util.yy",
+  "$GMScript":"",
+  "%Name":"JSON",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"JSON",
+  "parent":{
+    "name":"util",
+    "path":"folders/core-gml/src/util.yy",
   },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
 }

@@ -1,11 +1,13 @@
 {
-  "resourceType": "GMScript",
-  "resourceVersion": "1.0",
-  "name": "BulletService",
-  "isCompatibility": false,
-  "isDnD": false,
-  "parent": {
-    "name": "bullet",
-    "path": "folders/visu-gml/src/service/bullet.yy",
+  "$GMScript":"",
+  "%Name":"BulletService",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"BulletService",
+  "parent":{
+    "name":"bullet",
+    "path":"folders/visu-gml/src/service/bullet.yy",
   },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
 }
