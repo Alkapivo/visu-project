@@ -1,413 +1,617 @@
 {
-  "model":"Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>",
   "data":[
     {
-      "type":"brush_grid_channel",
+      "texture":"texture_visu_editor_icon_event_grid_channel",
+      "name":"channel default",
+      "color":"#FF0000",
       "properties":{
+        "grid-channel_transform-secondary-alpha":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":999.0,
+          "target":1.0,
+          "increase":0.0,
+          "finished":0.0
+        },
+        "grid-channel_transform-amount":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":9999.0,
+          "target":1.0,
+          "increase":0.0,
+          "finished":0.0
+        },
+        "grid-channel_use-transform-secondary-size":1.0,
+        "grid-channel_use-transform-z":1.0,
+        "grid-channel_transform-secondary-size":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":999.0,
+          "target":4.0,
+          "increase":0.0,
+          "finished":0.0
+        },
+        "grid-channel_transform-z":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":9999.0,
+          "target":1.0,
+          "increase":0.0,
+          "finished":0.0
+        },
+        "grid-channel_use-primary-color":1.0,
+        "grid-channel_primary-color":"#0071FF",
         "grid-channel_primary-color-speed":0.01,
         "grid-channel_use-transform-primary-alpha":1.0,
         "grid-channel_transform-primary-alpha":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.0,
+          "value":0.0,
           "factor":9999.0,
           "target":1.0,
-          "value":0.0,
-          "startValue":0.0
+          "increase":0.0,
+          "finished":0.0
         },
         "grid-channel_use-transform-primary-size":1.0,
         "grid-channel_transform-primary-size":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.0,
+          "value":0.0,
           "factor":999.0,
           "target":4.0,
-          "value":0.0,
-          "startValue":0.0
+          "increase":0.0,
+          "finished":0.0
         },
         "grid-channel_use-secondary-color":1.0,
         "grid-channel_secondary-color":"#FF5BC3",
         "grid-channel_secondary-color-speed":0.01,
         "grid-channel_use-transform-secondary-alpha":1.0,
-        "grid-channel_transform-secondary-alpha":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":999.0,
-          "target":1.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-channel_use-transform-secondary-size":1.0,
-        "grid-channel_use-transform-amount":1.0,
-        "grid-channel_transform-amount":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":9999.0,
-          "target":1.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-channel_transform-secondary-size":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":999.0,
-          "target":4.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-channel_use-transform-z":1.0,
-        "grid-channel_transform-z":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":9999.0,
-          "target":1.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-channel_use-primary-color":1.0,
-        "grid-channel_primary-color":"#0071FF"
+        "grid-channel_use-transform-amount":1.0
       },
-      "name":"channel default",
-      "color":"#FF0000",
-      "texture":"texture_visu_editor_icon_event_grid_channel"
+      "type":"brush_grid_channel"
     },
     {
-      "type":"brush_grid_channel",
-      "properties":{
-        "grid-channel_primary-color-speed":0.01,
-        "grid-channel_use-transform-primary-alpha":0.0,
-        "grid-channel_transform-primary-alpha":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":999.0,
-          "target":1.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-channel_use-transform-primary-size":1.0,
-        "grid-channel_transform-primary-size":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":999.0,
-          "target":32.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-channel_use-secondary-color":0.0,
-        "grid-channel_secondary-color":"#FF5BC3",
-        "grid-channel_secondary-color-speed":0.01,
-        "grid-channel_use-transform-secondary-alpha":0.0,
-        "grid-channel_transform-secondary-alpha":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.01,
-          "target":1.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-channel_use-transform-secondary-size":0.0,
-        "grid-channel_use-transform-amount":1.0,
-        "grid-channel_transform-amount":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.01,
-          "target":8.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-channel_transform-secondary-size":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.01,
-          "target":1.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-channel_use-transform-z":0.0,
-        "grid-channel_transform-z":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.01,
-          "target":1.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-channel_use-primary-color":0.0,
-        "grid-channel_primary-color":"#0071FF"
-      },
+      "texture":"texture_visu_editor_icon_event_grid_channel",
       "name":"channels 8",
       "color":"#1B9EA4",
-      "texture":"texture_visu_editor_icon_event_grid_channel"
-    },
-    {
-      "type":"brush_grid_channel",
       "properties":{
+        "grid-channel_transform-secondary-alpha":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":1.0,
+          "increase":0.0,
+          "finished":0.0
+        },
+        "grid-channel_transform-amount":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":8.0,
+          "increase":0.0,
+          "finished":0.0
+        },
+        "grid-channel_use-transform-secondary-size":0.0,
+        "grid-channel_use-transform-z":0.0,
+        "grid-channel_transform-secondary-size":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":1.0,
+          "increase":0.0,
+          "finished":0.0
+        },
+        "grid-channel_transform-z":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":1.0,
+          "increase":0.0,
+          "finished":0.0
+        },
+        "grid-channel_use-primary-color":0.0,
+        "grid-channel_primary-color":"#0071FF",
         "grid-channel_primary-color-speed":0.01,
         "grid-channel_use-transform-primary-alpha":0.0,
         "grid-channel_transform-primary-alpha":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.0,
+          "value":0.0,
           "factor":999.0,
           "target":1.0,
-          "value":0.0,
-          "startValue":0.0
+          "increase":0.0,
+          "finished":0.0
         },
         "grid-channel_use-transform-primary-size":1.0,
         "grid-channel_transform-primary-size":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.0,
+          "value":0.0,
           "factor":999.0,
           "target":32.0,
-          "value":0.0,
-          "startValue":0.0
+          "increase":0.0,
+          "finished":0.0
         },
         "grid-channel_use-secondary-color":0.0,
         "grid-channel_secondary-color":"#FF5BC3",
         "grid-channel_secondary-color-speed":0.01,
         "grid-channel_use-transform-secondary-alpha":0.0,
-        "grid-channel_transform-secondary-alpha":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.01,
-          "target":1.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-channel_use-transform-secondary-size":0.0,
-        "grid-channel_use-transform-amount":1.0,
-        "grid-channel_transform-amount":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.01,
-          "target":5.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-channel_transform-secondary-size":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.01,
-          "target":1.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-channel_use-transform-z":0.0,
-        "grid-channel_transform-z":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.01,
-          "target":1.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-channel_use-primary-color":0.0,
-        "grid-channel_primary-color":"#0071FF"
+        "grid-channel_use-transform-amount":1.0
       },
+      "type":"brush_grid_channel"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_grid_channel",
       "name":"channels 5",
       "color":"#1B9EA4",
-      "texture":"texture_visu_editor_icon_event_grid_channel"
-    },
-    {
-      "type":"brush_grid_channel",
       "properties":{
+        "grid-channel_transform-secondary-alpha":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":1.0,
+          "increase":0.0,
+          "finished":0.0
+        },
+        "grid-channel_transform-amount":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":5.0,
+          "increase":0.0,
+          "finished":0.0
+        },
+        "grid-channel_use-transform-secondary-size":0.0,
+        "grid-channel_use-transform-z":0.0,
+        "grid-channel_transform-secondary-size":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":1.0,
+          "increase":0.0,
+          "finished":0.0
+        },
+        "grid-channel_transform-z":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":1.0,
+          "increase":0.0,
+          "finished":0.0
+        },
+        "grid-channel_use-primary-color":0.0,
+        "grid-channel_primary-color":"#0071FF",
         "grid-channel_primary-color-speed":0.01,
         "grid-channel_use-transform-primary-alpha":0.0,
         "grid-channel_transform-primary-alpha":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.0,
+          "value":0.0,
           "factor":999.0,
           "target":1.0,
-          "value":0.0,
-          "startValue":0.0
+          "increase":0.0,
+          "finished":0.0
         },
         "grid-channel_use-transform-primary-size":1.0,
         "grid-channel_transform-primary-size":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.0,
+          "value":0.0,
           "factor":999.0,
           "target":32.0,
-          "value":0.0,
-          "startValue":0.0
+          "increase":0.0,
+          "finished":0.0
         },
         "grid-channel_use-secondary-color":0.0,
         "grid-channel_secondary-color":"#FF5BC3",
         "grid-channel_secondary-color-speed":0.01,
         "grid-channel_use-transform-secondary-alpha":0.0,
-        "grid-channel_transform-secondary-alpha":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.01,
-          "target":1.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-channel_use-transform-secondary-size":0.0,
-        "grid-channel_use-transform-amount":1.0,
-        "grid-channel_transform-amount":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.01,
-          "target":5.0999999999999996,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-channel_transform-secondary-size":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.01,
-          "target":1.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-channel_use-transform-z":0.0,
-        "grid-channel_transform-z":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.01,
-          "target":1.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-channel_use-primary-color":0.0,
-        "grid-channel_primary-color":"#0071FF"
+        "grid-channel_use-transform-amount":1.0
       },
+      "type":"brush_grid_channel"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_grid_channel",
       "name":"channels 5.1",
       "color":"#1B9EA4",
-      "texture":"texture_visu_editor_icon_event_grid_channel"
-    },
-    {
-      "type":"brush_grid_channel",
       "properties":{
+        "grid-channel_transform-secondary-alpha":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":1.0,
+          "increase":0.0,
+          "finished":0.0
+        },
+        "grid-channel_transform-amount":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":5.0999999999999996,
+          "increase":0.0,
+          "finished":0.0
+        },
+        "grid-channel_use-transform-secondary-size":0.0,
+        "grid-channel_use-transform-z":0.0,
+        "grid-channel_transform-secondary-size":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":1.0,
+          "increase":0.0,
+          "finished":0.0
+        },
+        "grid-channel_transform-z":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":1.0,
+          "increase":0.0,
+          "finished":0.0
+        },
+        "grid-channel_use-primary-color":0.0,
+        "grid-channel_primary-color":"#0071FF",
         "grid-channel_primary-color-speed":0.01,
         "grid-channel_use-transform-primary-alpha":0.0,
         "grid-channel_transform-primary-alpha":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.0,
+          "value":0.0,
           "factor":999.0,
           "target":1.0,
-          "value":0.0,
-          "startValue":0.0
+          "increase":0.0,
+          "finished":0.0
         },
         "grid-channel_use-transform-primary-size":1.0,
         "grid-channel_transform-primary-size":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.0,
+          "value":0.0,
           "factor":999.0,
           "target":32.0,
-          "value":0.0,
-          "startValue":0.0
+          "increase":0.0,
+          "finished":0.0
         },
         "grid-channel_use-secondary-color":0.0,
         "grid-channel_secondary-color":"#FF5BC3",
         "grid-channel_secondary-color-speed":0.01,
         "grid-channel_use-transform-secondary-alpha":0.0,
-        "grid-channel_transform-secondary-alpha":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.01,
-          "target":1.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-channel_use-transform-secondary-size":0.0,
-        "grid-channel_use-transform-amount":1.0,
-        "grid-channel_transform-amount":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.10000000000000001,
-          "target":3.1000000000000001,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-channel_transform-secondary-size":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.01,
-          "target":1.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-channel_use-transform-z":0.0,
-        "grid-channel_transform-z":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.01,
-          "target":1.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-channel_use-primary-color":0.0,
-        "grid-channel_primary-color":"#0071FF"
+        "grid-channel_use-transform-amount":1.0
       },
+      "type":"brush_grid_channel"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_grid_channel",
       "name":"channels 3.1",
       "color":"#1B9EA4",
-      "texture":"texture_visu_editor_icon_event_grid_channel"
-    },
-    {
-      "type":"brush_grid_channel",
       "properties":{
+        "grid-channel_transform-secondary-alpha":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":1.0,
+          "increase":0.0,
+          "finished":0.0
+        },
+        "grid-channel_transform-amount":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.10000000000000001,
+          "target":3.1000000000000001,
+          "increase":0.0,
+          "finished":0.0
+        },
+        "grid-channel_use-transform-secondary-size":0.0,
+        "grid-channel_use-transform-z":0.0,
+        "grid-channel_transform-secondary-size":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":1.0,
+          "increase":0.0,
+          "finished":0.0
+        },
+        "grid-channel_transform-z":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":1.0,
+          "increase":0.0,
+          "finished":0.0
+        },
+        "grid-channel_use-primary-color":0.0,
+        "grid-channel_primary-color":"#0071FF",
         "grid-channel_primary-color-speed":0.01,
         "grid-channel_use-transform-primary-alpha":0.0,
         "grid-channel_transform-primary-alpha":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.0,
+          "value":0.0,
           "factor":999.0,
           "target":1.0,
-          "value":0.0,
-          "startValue":0.0
+          "increase":0.0,
+          "finished":0.0
         },
         "grid-channel_use-transform-primary-size":1.0,
         "grid-channel_transform-primary-size":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.0,
+          "value":0.0,
           "factor":999.0,
           "target":32.0,
-          "value":0.0,
-          "startValue":0.0
+          "increase":0.0,
+          "finished":0.0
         },
         "grid-channel_use-secondary-color":0.0,
         "grid-channel_secondary-color":"#FF5BC3",
         "grid-channel_secondary-color-speed":0.01,
         "grid-channel_use-transform-secondary-alpha":0.0,
-        "grid-channel_transform-secondary-alpha":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.01,
-          "target":1.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-channel_use-transform-secondary-size":0.0,
-        "grid-channel_use-transform-amount":1.0,
-        "grid-channel_transform-amount":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.10000000000000001,
-          "target":3.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-channel_transform-secondary-size":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.01,
-          "target":1.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-channel_use-transform-z":0.0,
-        "grid-channel_transform-z":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.01,
-          "target":1.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-channel_use-primary-color":0.0,
-        "grid-channel_primary-color":"#0071FF"
+        "grid-channel_use-transform-amount":1.0
       },
+      "type":"brush_grid_channel"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_grid_channel",
       "name":"channels 3",
       "color":"#1B9EA4",
-      "texture":"texture_visu_editor_icon_event_grid_channel"
+      "properties":{
+        "grid-channel_transform-secondary-alpha":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":1.0,
+          "increase":0.0,
+          "finished":0.0
+        },
+        "grid-channel_transform-amount":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.10000000000000001,
+          "target":3.0,
+          "increase":0.0,
+          "finished":0.0
+        },
+        "grid-channel_use-transform-secondary-size":0.0,
+        "grid-channel_use-transform-z":0.0,
+        "grid-channel_transform-secondary-size":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":1.0,
+          "increase":0.0,
+          "finished":0.0
+        },
+        "grid-channel_transform-z":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":1.0,
+          "increase":0.0,
+          "finished":0.0
+        },
+        "grid-channel_use-primary-color":0.0,
+        "grid-channel_primary-color":"#0071FF",
+        "grid-channel_primary-color-speed":0.01,
+        "grid-channel_use-transform-primary-alpha":0.0,
+        "grid-channel_transform-primary-alpha":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":999.0,
+          "target":1.0,
+          "increase":0.0,
+          "finished":0.0
+        },
+        "grid-channel_use-transform-primary-size":1.0,
+        "grid-channel_transform-primary-size":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":999.0,
+          "target":32.0,
+          "increase":0.0,
+          "finished":0.0
+        },
+        "grid-channel_use-secondary-color":0.0,
+        "grid-channel_secondary-color":"#FF5BC3",
+        "grid-channel_secondary-color-speed":0.01,
+        "grid-channel_use-transform-secondary-alpha":0.0,
+        "grid-channel_use-transform-amount":1.0
+      },
+      "type":"brush_grid_channel"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_grid_channel",
+      "name":"channels red",
+      "color":"#FF1800",
+      "properties":{
+        "grid-channel_transform-secondary-alpha":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":1.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-channel_transform-amount":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.10000000000000001,
+          "target":3.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-channel_use-transform-secondary-size":0.0,
+        "grid-channel_use-transform-z":0.0,
+        "grid-channel_transform-secondary-size":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":1.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-channel_transform-z":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":1.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-channel_use-primary-color":true,
+        "grid-channel_primary-color":"#FF051E",
+        "grid-channel_primary-color-speed":0.01,
+        "grid-channel_use-transform-primary-alpha":0.0,
+        "grid-channel_transform-primary-alpha":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":999.0,
+          "target":1.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-channel_use-transform-primary-size":false,
+        "grid-channel_transform-primary-size":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":999.0,
+          "target":32.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-channel_use-secondary-color":true,
+        "grid-channel_secondary-color":"#FF1858",
+        "grid-channel_secondary-color-speed":0.01,
+        "grid-channel_use-transform-secondary-alpha":0.0,
+        "grid-channel_use-transform-amount":false
+      },
+      "type":"brush_grid_channel"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_grid_channel",
+      "name":"channels alpha on",
+      "color":"#D04DF1",
+      "properties":{
+        "grid-channel_transform-secondary-alpha":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":0.59999999999999998,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-channel_transform-amount":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.10000000000000001,
+          "target":3.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-channel_use-transform-secondary-size":0.0,
+        "grid-channel_use-transform-z":0.0,
+        "grid-channel_transform-secondary-size":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":1.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-channel_transform-z":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":1.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-channel_use-primary-color":false,
+        "grid-channel_primary-color":"#FF051E",
+        "grid-channel_primary-color-speed":0.01,
+        "grid-channel_use-transform-primary-alpha":true,
+        "grid-channel_transform-primary-alpha":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":0.80000000000000004,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-channel_use-transform-primary-size":false,
+        "grid-channel_transform-primary-size":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":999.0,
+          "target":32.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-channel_use-secondary-color":false,
+        "grid-channel_secondary-color":"#FF1858",
+        "grid-channel_secondary-color-speed":0.01,
+        "grid-channel_use-transform-secondary-alpha":true,
+        "grid-channel_use-transform-amount":false
+      },
+      "type":"brush_grid_channel"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_grid_channel",
+      "name":"channels alpha off",
+      "color":"#DD2222",
+      "properties":{
+        "grid-channel_transform-secondary-alpha":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":0.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-channel_transform-amount":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.10000000000000001,
+          "target":3.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-channel_use-transform-secondary-size":0.0,
+        "grid-channel_use-transform-z":0.0,
+        "grid-channel_transform-secondary-size":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":1.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-channel_transform-z":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":1.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-channel_use-primary-color":false,
+        "grid-channel_primary-color":"#FF1400",
+        "grid-channel_primary-color-speed":0.01,
+        "grid-channel_use-transform-primary-alpha":true,
+        "grid-channel_transform-primary-alpha":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":0.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-channel_use-transform-primary-size":false,
+        "grid-channel_transform-primary-size":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":999.0,
+          "target":32.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-channel_use-secondary-color":false,
+        "grid-channel_secondary-color":"#FF1858",
+        "grid-channel_secondary-color-speed":0.01,
+        "grid-channel_use-transform-secondary-alpha":true,
+        "grid-channel_use-transform-amount":false
+      },
+      "type":"brush_grid_channel"
     }
-  ]
+  ],
+  "model":"Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>"
 }

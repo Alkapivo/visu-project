@@ -1,22 +1,67 @@
 {
-  "model":"Collection<io.alkapivo.visu.service.lyrics.LyricsTemplate>",
   "data":{
-    "lyrics 1 ":{
+    "lyrics_lolratz_kaideca_error":{
       "lines":[
-        "I'm an error; an intentional mistake.",
-        "birthed from those atomic numbers that encompass us.",
-        "yet i blame them, the easy impossible.",
-        "because if i don't have a reason, I'm better off",
-        "",
-        "that's right, i'm the victim here",
-        "but this time, the choice is mine.",
-        "",
-        "is this really the paradise i asked for?",
-        "yes, yes it is.",
-        "i could never be happier.",
-        "i am happy. forever.",
+        "ERROR ",
+        "ERROR  ",
+        "ERROR   ",
+        "ERROR    ",
+        "ERROR     ",
+        "ERROR      ",
+        "ERROR       ",
+        "ERROR        ",
+        "ERROR         "
+      ]
+    },
+    "lyrics_lolratz_kaideca_scanning":{
+      "lines":[
+        "SCANNING        ",
+        " SCANNING       ",
+        "  SCANNING      ",
+        "   SCANNING     ",
+        "    SCANNING    ",
+        "     SCANNING   ",
+        "      SCANNING  ",
+        "       SCANNING ",
+        "        SCANNING",
         ""
       ]
+    },
+    "lyrics_lolratz_kaideca_intro":{
+      "lines":[
+        "Initialize visual engine...                               ",
+        "Initialize gameplay engine...                        ",
+        "",
+        "[ System initialized ]",
+        "",
+        "Load track: Lolratz - KAIDECA",
+        "                                                                ",
+        "[ Track loaded ]"
+      ]
+    },
+    "lyrics_platformer":{
+      "lines":[
+        "Initialize platformer...",
+        "                           ",
+        "[ System initialized ]",
+        "",
+        "Press [Z] ",
+        "or [ARROW_UP]",
+        "to jump ",
+        "or double jump",
+        "                     ",
+        "Press [ARROW_DOWN]",
+        "to get off",
+        "the shroom"
+      ]
+    },
+    "lyrics_bullethell":{
+      "lines":[
+        "Press [Z]",
+        "to spread",
+        "violence "
+      ]
     }
-  }
+  },
+  "model":"Collection<io.alkapivo.visu.service.lyrics.LyricsTemplate>"
 }

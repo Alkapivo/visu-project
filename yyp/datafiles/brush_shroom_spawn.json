@@ -1,272 +1,214 @@
 {
-  "model":"Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>",
   "data":[
     {
-      "type":"brush_shroom_spawn",
+      "texture":"texture_visu_editor_icon_event_shroom_spawn",
+      "name":"shroom tomo",
+      "color":"#FF003D",
       "properties":{
-        "shroom-spawn_use-angle":1.0,
-        "shroom-spawn_angle":270.0,
-        "shroom-spawn_use-preview":1.0,
-        "shroom-spawn_template":"shroom_gabii",
-        "shroom-spawn_speed":1.0,
-        "shroom-spawn_use-spawn-x":1.0,
-        "shroom-spawn_spawn-x":0.49190299999999998,
+        "shroom-spawn_spawn-x":0.71862348178137658,
         "shroom-spawn_use-spawn-y":1.0,
         "shroom-spawn_spawn-y":0.10728699999999999,
-        "shroom-spawn_use-snap-h":1.0,
-        "shroom-spawn_use-snap-v":1.0
-      },
-      "name":"shroom TOP",
-      "color":"#00ACFF",
-      "texture":"texture_visu_editor_icon_event_shroom_spawn"
-    },
-    {
-      "type":"brush_shroom_spawn",
-      "properties":{
-        "shroom-spawn_template":"shroom-01",
-        "shroom-spawn_use-angle":1.0,
-        "shroom-spawn_angle":180.0,
-        "shroom-spawn_speed":8.0,
-        "shroom-spawn_use-spawn-x":1.0,
-        "shroom-spawn_spawn-x":2.5,
-        "shroom-spawn_use-spawn-y":1.0,
-        "shroom-spawn_spawn-y":-0.5
-      },
-      "name":"shroom RIGHT",
-      "color":"#4EFFA1",
-      "texture":"texture_visu_editor_icon_event_shroom_spawn"
-    },
-    {
-      "type":"brush_shroom_spawn",
-      "properties":{
-        "shroom-spawn_template":"shroom-01",
-        "shroom-spawn_use-angle":1.0,
-        "shroom-spawn_angle":90.0,
-        "shroom-spawn_speed":8.0,
-        "shroom-spawn_use-spawn-x":1.0,
-        "shroom-spawn_spawn-x":-0.5,
-        "shroom-spawn_use-spawn-y":1.0,
-        "shroom-spawn_spawn-y":1.5
-      },
-      "name":"shroom BOTTOM",
-      "color":"#FFF44B",
-      "texture":"texture_visu_editor_icon_event_shroom_spawn"
-    },
-    {
-      "type":"brush_shroom_spawn",
-      "properties":{
-        "shroom-spawn_template":"shroom-01",
-        "shroom-spawn_use-angle":1.0,
-        "shroom-spawn_angle":0.0,
-        "shroom-spawn_speed":8.0,
-        "shroom-spawn_use-spawn-x":1.0,
-        "shroom-spawn_spawn-x":-1.5,
-        "shroom-spawn_use-spawn-y":1.0,
-        "shroom-spawn_spawn-y":-0.5
-      },
-      "name":"shroom LEFT",
-      "color":"#FF61B4",
-      "texture":"texture_visu_editor_icon_event_shroom_spawn"
-    },
-    {
-      "type":"brush_shroom_spawn",
-      "properties":{
-        "shroom-spawn_template":"shroom-01",
-        "shroom-spawn_use-angle":1.0,
-        "shroom-spawn_angle":270.0,
-        "shroom-spawn_speed":0.20000000000000001,
-        "shroom-spawn_use-spawn-x":1.0,
-        "shroom-spawn_spawn-x":1.0,
-        "shroom-spawn_use-spawn-y":1.0,
-        "shroom-spawn_spawn-y":-0.20000000000000001
-      },
-      "name":"shroom TOP1",
-      "color":"#00ACFF",
-      "texture":"texture_visu_editor_icon_event_shroom_spawn"
-    },
-    {
-      "type":"brush_shroom_spawn",
-      "properties":{
-        "shroom-spawn_template":"shroom-01",
-        "shroom-spawn_use-angle":1.0,
-        "shroom-spawn_angle":270.0,
-        "shroom-spawn_speed":0.20000000000000001,
-        "shroom-spawn_use-spawn-x":1.0,
-        "shroom-spawn_spawn-x":0.0,
-        "shroom-spawn_use-spawn-y":1.0,
-        "shroom-spawn_spawn-y":-0.20000000000000001
-      },
-      "name":"shroom TOP0",
-      "color":"#00ACFF",
-      "texture":"texture_visu_editor_icon_event_shroom_spawn"
-    },
-    {
-      "type":"brush_shroom_spawn",
-      "properties":{
-        "shroom-spawn_template":"shroom-01",
-        "shroom-spawn_use-angle":1.0,
-        "shroom-spawn_angle":270.0,
-        "shroom-spawn_speed":0.20000000000000001,
-        "shroom-spawn_use-spawn-x":1.0,
-        "shroom-spawn_spawn-x":-1.0,
-        "shroom-spawn_use-spawn-y":1.0,
-        "shroom-spawn_spawn-y":-0.20000000000000001
-      },
-      "name":"shroom TOP-1",
-      "color":"#00ACFF",
-      "texture":"texture_visu_editor_icon_event_shroom_spawn"
-    },
-    {
-      "type":"brush_shroom_spawn",
-      "properties":{
-        "shroom-spawn_use-angle":1.0,
-        "shroom-spawn_angle":270.0,
-        "shroom-spawn_use-preview":1.0,
-        "shroom-spawn_template":"shroom_gabii",
-        "shroom-spawn_speed":1.0,
-        "shroom-spawn_use-spawn-x":1.0,
-        "shroom-spawn_spawn-x":0.49190299999999998,
-        "shroom-spawn_use-spawn-y":1.0,
-        "shroom-spawn_spawn-y":0.10728699999999999,
-        "shroom-spawn_use-snap-h":1.0,
-        "shroom-spawn_use-snap-v":1.0
-      },
-      "name":"shroom gabii",
-      "color":"#54FF5C",
-      "texture":"texture_visu_editor_icon_event_shroom_spawn"
-    },
-    {
-      "type":"brush_shroom_spawn",
-      "properties":{
+        "shroom-spawn_use-snap-h":true,
+        "shroom-spawn_use-snap-v":true,
         "shroom-spawn_use-angle":1.0,
         "shroom-spawn_angle":270.0,
         "shroom-spawn_use-preview":1.0,
         "shroom-spawn_template":"shroom_tomo",
-        "shroom-spawn_speed":1.0,
-        "shroom-spawn_use-spawn-x":1.0,
+        "shroom-spawn_speed":5.0,
+        "shroom-spawn_use-spawn-x":1.0
+      },
+      "type":"brush_shroom_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shroom_spawn",
+      "name":"shroom kaideca",
+      "color":"#00AA85",
+      "properties":{
         "shroom-spawn_spawn-x":0.49190299999999998,
         "shroom-spawn_use-spawn-y":1.0,
         "shroom-spawn_spawn-y":0.10728699999999999,
-        "shroom-spawn_use-snap-h":1.0,
-        "shroom-spawn_use-snap-v":1.0
-      },
-      "name":"shroom tomo",
-      "color":"#FF003D",
-      "texture":"texture_visu_editor_icon_event_shroom_spawn"
-    },
-    {
-      "type":"brush_shroom_spawn",
-      "properties":{
+        "shroom-spawn_use-snap-h":true,
+        "shroom-spawn_use-snap-v":true,
         "shroom-spawn_use-angle":1.0,
         "shroom-spawn_angle":270.0,
         "shroom-spawn_use-preview":1.0,
         "shroom-spawn_template":"shroom_kaideca",
-        "shroom-spawn_speed":1.0,
-        "shroom-spawn_use-spawn-x":1.0,
-        "shroom-spawn_spawn-x":0.49190299999999998,
-        "shroom-spawn_use-spawn-y":1.0,
-        "shroom-spawn_spawn-y":0.10728699999999999,
-        "shroom-spawn_use-snap-h":1.0,
-        "shroom-spawn_use-snap-v":1.0
+        "shroom-spawn_speed":6.0,
+        "shroom-spawn_use-spawn-x":1.0
       },
-      "name":"shroom kaideca",
-      "color":"#00AA85",
-      "texture":"texture_visu_editor_icon_event_shroom_spawn"
+      "type":"brush_shroom_spawn"
     },
     {
-      "type":"brush_shroom_spawn",
+      "texture":"texture_visu_editor_icon_event_shroom_spawn",
+      "name":"shroom gabii left",
+      "color":"#54FF5C",
       "properties":{
+        "shroom-spawn_spawn-x":1.116541,
+        "shroom-spawn_use-spawn-y":1.0,
+        "shroom-spawn_spawn-y":-0.72556390977443619,
+        "shroom-spawn_use-snap-h":true,
+        "shroom-spawn_use-snap-v":true,
         "shroom-spawn_use-angle":1.0,
         "shroom-spawn_angle":270.0,
         "shroom-spawn_use-preview":1.0,
-        "shroom-spawn_template":"shroom_spot",
-        "shroom-spawn_speed":1.0,
-        "shroom-spawn_use-spawn-x":1.0,
+        "shroom-spawn_template":"shroom_gabii_left",
+        "shroom-spawn_speed":9.0,
+        "shroom-spawn_use-spawn-x":1.0
+      },
+      "type":"brush_shroom_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shroom_spawn",
+      "name":"shroom gabii right",
+      "color":"#54B65C",
+      "properties":{
+        "shroom-spawn_spawn-x":-0.62782000000000004,
+        "shroom-spawn_use-spawn-y":1.0,
+        "shroom-spawn_spawn-y":-1.2669170000000001,
+        "shroom-spawn_use-snap-h":true,
+        "shroom-spawn_use-snap-v":true,
+        "shroom-spawn_use-angle":1.0,
+        "shroom-spawn_angle":270.0,
+        "shroom-spawn_use-preview":1.0,
+        "shroom-spawn_template":"shroom_gabii_right",
+        "shroom-spawn_speed":5.0,
+        "shroom-spawn_use-spawn-x":1.0
+      },
+      "type":"brush_shroom_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shroom_spawn",
+      "name":"shroom spot left",
+      "color":"#B52271",
+      "properties":{
+        "shroom-spawn_spawn-x":2.1390980000000002,
+        "shroom-spawn_use-spawn-y":1.0,
+        "shroom-spawn_spawn-y":-1.2067669999999999,
+        "shroom-spawn_use-snap-h":true,
+        "shroom-spawn_use-snap-v":true,
+        "shroom-spawn_use-angle":1.0,
+        "shroom-spawn_angle":273.38345864661653,
+        "shroom-spawn_use-preview":1.0,
+        "shroom-spawn_template":"shroom_spot_left",
+        "shroom-spawn_speed":10.0,
+        "shroom-spawn_use-spawn-x":1.0
+      },
+      "type":"brush_shroom_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shroom_spawn",
+      "name":"shroom spot right",
+      "color":"#FF2271",
+      "properties":{
+        "shroom-spawn_spawn-x":0.093984962406014949,
+        "shroom-spawn_use-spawn-y":1.0,
+        "shroom-spawn_spawn-y":-1.3872180000000001,
+        "shroom-spawn_use-snap-h":true,
+        "shroom-spawn_use-snap-v":true,
+        "shroom-spawn_use-angle":1.0,
+        "shroom-spawn_angle":262.55639097744364,
+        "shroom-spawn_use-preview":1.0,
+        "shroom-spawn_template":"shroom_spot_right",
+        "shroom-spawn_speed":10.0,
+        "shroom-spawn_use-spawn-x":1.0
+      },
+      "type":"brush_shroom_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shroom_spawn",
+      "name":"shroom lime",
+      "color":"#00FF00",
+      "properties":{
         "shroom-spawn_spawn-x":0.49190299999999998,
         "shroom-spawn_use-spawn-y":1.0,
         "shroom-spawn_spawn-y":0.10728699999999999,
-        "shroom-spawn_use-snap-h":1.0,
-        "shroom-spawn_use-snap-v":1.0
-      },
-      "name":"shroom spot",
-      "color":"#FF2271",
-      "texture":"texture_visu_editor_icon_event_shroom_spawn"
-    },
-    {
-      "type":"brush_shroom_spawn",
-      "properties":{
+        "shroom-spawn_use-snap-h":true,
+        "shroom-spawn_use-snap-v":true,
         "shroom-spawn_use-angle":1.0,
         "shroom-spawn_angle":270.0,
         "shroom-spawn_use-preview":1.0,
         "shroom-spawn_template":"shroom_lime",
-        "shroom-spawn_speed":1.0,
-        "shroom-spawn_use-spawn-x":1.0,
-        "shroom-spawn_spawn-x":0.49190299999999998,
-        "shroom-spawn_use-spawn-y":1.0,
-        "shroom-spawn_spawn-y":0.10728699999999999,
-        "shroom-spawn_use-snap-h":1.0,
-        "shroom-spawn_use-snap-v":1.0
+        "shroom-spawn_speed":8.0,
+        "shroom-spawn_use-spawn-x":1.0
       },
-      "name":"shroom lime",
-      "color":"#00FF00",
-      "texture":"texture_visu_editor_icon_event_shroom_spawn"
+      "type":"brush_shroom_spawn"
     },
     {
-      "type":"brush_shroom_spawn",
+      "texture":"texture_visu_editor_icon_event_shroom_spawn",
+      "name":"shroom 404",
+      "color":"#9428FF",
       "properties":{
+        "shroom-spawn_spawn-x":1.357143,
+        "shroom-spawn_use-spawn-y":1.0,
+        "shroom-spawn_spawn-y":0.10728699999999999,
+        "shroom-spawn_use-snap-h":true,
+        "shroom-spawn_use-snap-v":true,
         "shroom-spawn_use-angle":1.0,
         "shroom-spawn_angle":270.0,
         "shroom-spawn_use-preview":1.0,
         "shroom-spawn_template":"shroom_404",
-        "shroom-spawn_speed":4.0,
-        "shroom-spawn_use-spawn-x":1.0,
-        "shroom-spawn_spawn-x":1.3571428571428572,
-        "shroom-spawn_use-spawn-y":1.0,
-        "shroom-spawn_spawn-y":0.10728699999999999,
-        "shroom-spawn_use-snap-h":1.0,
-        "shroom-spawn_use-snap-v":1.0
+        "shroom-spawn_speed":5.5,
+        "shroom-spawn_use-spawn-x":1.0
       },
-      "name":"shroom 404",
-      "color":"#9428FF",
-      "texture":"texture_visu_editor_icon_event_shroom_spawn"
+      "type":"brush_shroom_spawn"
     },
     {
-      "type":"brush_shroom_spawn",
+      "texture":"texture_visu_editor_icon_event_shroom_spawn",
+      "name":"shroom muck 16",
+      "color":"#1C353F",
       "properties":{
+        "shroom-spawn_spawn-x":-0.09109311740890691,
+        "shroom-spawn_use-spawn-y":1.0,
+        "shroom-spawn_spawn-y":0.10728699999999999,
+        "shroom-spawn_use-snap-h":true,
+        "shroom-spawn_use-snap-v":true,
         "shroom-spawn_use-angle":1.0,
         "shroom-spawn_angle":270.0,
         "shroom-spawn_use-preview":1.0,
         "shroom-spawn_template":"shroom_muck_16",
-        "shroom-spawn_speed":1.0,
-        "shroom-spawn_use-spawn-x":1.0,
-        "shroom-spawn_spawn-x":0.49190299999999998,
-        "shroom-spawn_use-spawn-y":1.0,
-        "shroom-spawn_spawn-y":0.10728699999999999,
-        "shroom-spawn_use-snap-h":1.0,
-        "shroom-spawn_use-snap-v":1.0
+        "shroom-spawn_speed":8.0,
+        "shroom-spawn_use-spawn-x":1.0
       },
-      "name":"shroom muck 16",
-      "color":"#1C353F",
-      "texture":"texture_visu_editor_icon_event_shroom_spawn"
+      "type":"brush_shroom_spawn"
     },
     {
-      "type":"brush_shroom_spawn",
+      "texture":"texture_visu_editor_icon_event_shroom_spawn",
+      "name":"shroom muck 8",
+      "color":"#5E2E3F",
       "properties":{
+        "shroom-spawn_spawn-x":1.5607287449392713,
+        "shroom-spawn_use-spawn-y":1.0,
+        "shroom-spawn_spawn-y":0.10728699999999999,
+        "shroom-spawn_use-snap-h":true,
+        "shroom-spawn_use-snap-v":true,
         "shroom-spawn_use-angle":1.0,
         "shroom-spawn_angle":270.0,
         "shroom-spawn_use-preview":1.0,
         "shroom-spawn_template":"shroom_muck_8",
-        "shroom-spawn_speed":1.0,
-        "shroom-spawn_use-spawn-x":1.0,
-        "shroom-spawn_spawn-x":0.49190299999999998,
-        "shroom-spawn_use-spawn-y":1.0,
-        "shroom-spawn_spawn-y":0.10728699999999999,
-        "shroom-spawn_use-snap-h":1.0,
-        "shroom-spawn_use-snap-v":1.0
+        "shroom-spawn_speed":8.0,
+        "shroom-spawn_use-spawn-x":1.0
       },
-      "name":"shroom muck 8",
-      "color":"#5E2E3F",
-      "texture":"texture_visu_editor_icon_event_shroom_spawn"
+      "type":"brush_shroom_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shroom_spawn",
+      "name":"shroom spot swing",
+      "color":"#FF4971",
+      "properties":{
+        "shroom-spawn_spawn-x":0.5,
+        "shroom-spawn_use-spawn-y":1.0,
+        "shroom-spawn_spawn-y":-1.876884,
+        "shroom-spawn_use-snap-h":true,
+        "shroom-spawn_use-snap-v":true,
+        "shroom-spawn_use-angle":1.0,
+        "shroom-spawn_angle":270.0,
+        "shroom-spawn_use-preview":1.0,
+        "shroom-spawn_template":"shroom_spot_swing",
+        "shroom-spawn_speed":17.0,
+        "shroom-spawn_use-spawn-x":1.0
+      },
+      "type":"brush_shroom_spawn"
     }
-  ]
+  ],
+  "model":"Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>"
 }

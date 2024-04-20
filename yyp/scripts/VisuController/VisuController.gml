@@ -77,10 +77,7 @@ function VisuController(layerName) constructor {
       "play": {
         actions: {
           onStart: function(fsm, fsmState, data) {
-            var promises = new Map(String, Promise, {
-              "player": fsm.context.playerService
-                .send(new Event("spawn-player")),
-            })
+            var promises = new Map(String, Promise, {})
 
             if (Optional.is(fsm.context.videoService.video)) {
               promises.set("video", fsm.context.videoService
@@ -328,6 +325,11 @@ function VisuController(layerName) constructor {
       cloneTool: "C",
       previewBrush: "P",
       previewEvent: "I",
+      snapToGrid: "G",
+      zoomIn: KeyboardKeyType.PLUS,
+      zoomOut: KeyboardKeyType.MINUS,
+      numZoomIn: KeyboardKeyType.NUM_PLUS,
+      numZoomOut: KeyboardKeyType.NUM_MINUS,
       controlLeft: KeyboardKeyType.CONTROL_LEFT,
     }
   )
@@ -523,7 +525,7 @@ function VisuController(layerName) constructor {
 
   ///@private
   ///@type {Boolean}
-  autosaveEnabled = true
+  autosaveEnabled = false
 
   ///@private
   ///@return {VisuController}
@@ -563,9 +565,10 @@ function VisuController(layerName) constructor {
     this.mouse.update()  
 
     global.GMTF_DATA.update()
+
+    var isGMTFFocus = Optional.is(global.GMTF_DATA.active)
     
-    if (!Optional.is(global.GMTF_DATA.active) && 
-      this.keyboard.keys.controlTrack.pressed) {
+    if (!isGMTFFocus && this.keyboard.keys.controlTrack.pressed) {
       switch (this.fsm.getStateName()) {
         case "play": this.send(new Event("pause")) break
         case "pause": this.send(new Event("play")) break
@@ -583,8 +586,7 @@ function VisuController(layerName) constructor {
       this.renderUI = !this.renderUI
     }
 
-    if (!Optional.is(global.GMTF_DATA.active)
-      && this.keyboard.keys.exitModal.pressed) {
+    if (!isGMTFFocus &&  this.keyboard.keys.exitModal.pressed) {
 
       if (Core.isType(this.uiService.find("visu-new-project-modal"), UI)) {
         this.newProjectModal.send(new Event("close"))
@@ -629,9 +631,7 @@ function VisuController(layerName) constructor {
       this.gridRenderer.camera.enableMouseLook = !this.gridRenderer.camera.enableMouseLook
     }
 
-    if (this.keyboard.keys.controlLeft.on 
-      && this.keyboard.keys.newProject.pressed
-      && !Optional.is(global.GMTF_DATA.active)) {
+    if (!isGMTFFocus && this.keyboard.keys.controlLeft.on && this.keyboard.keys.newProject.pressed) {
       Beans.get(BeanVisuController).newProjectModal
       .send(new Event("open").setData({
         layout: new UILayout({
@@ -694,24 +694,23 @@ function VisuController(layerName) constructor {
       }
     }
 
-    if (this.keyboard.keys.selectTool.pressed) {
+    if (!isGMTFFocus && this.keyboard.keys.selectTool.pressed) {
       this.editor.store.get("tool").set("tool_select")
     }
 
-    if (this.keyboard.keys.eraseTool.pressed) {
+    if (!isGMTFFocus && this.keyboard.keys.eraseTool.pressed) {
       this.editor.store.get("tool").set("tool_erase")
     }
 
-    if (this.keyboard.keys.brushTool.pressed) {
+    if (!isGMTFFocus && this.keyboard.keys.brushTool.pressed) {
       this.editor.store.get("tool").set("tool_brush")
     }
 
-    if (this.keyboard.keys.cloneTool.pressed) {
+    if (!isGMTFFocus && this.keyboard.keys.cloneTool.pressed) {
       this.editor.store.get("tool").set("tool_clone")
     }
 
-    if (!this.keyboard.keys.controlLeft.on 
-      && this.keyboard.keys.previewBrush.pressed) {
+    if (!isGMTFFocus && !this.keyboard.keys.controlLeft.on && this.keyboard.keys.previewBrush.pressed) {
       var brush = this.editor.brushToolbar.store.getValue("brush")
       if (Core.isType(brush, VEBrush)) {
         var handler = this.trackService.handlers.get(brush.type)
@@ -719,7 +718,7 @@ function VisuController(layerName) constructor {
       }
     }
 
-    if (this.keyboard.keys.previewEvent.pressed) {
+    if (!isGMTFFocus && this.keyboard.keys.previewEvent.pressed) {
       var event = this.editor.accordion.eventInspector.store.getValue("event")
       if (Core.isType(event, VEEvent)) {
         var handler = this.trackService.handlers.get(event.type)
@@ -729,6 +728,28 @@ function VisuController(layerName) constructor {
 
     if (!this.renderUI) {
       return this
+    }
+
+    
+    
+
+    if (!isGMTFFocus && (this.keyboard.keys.zoomIn.pressed 
+      || this.keyboard.keys.numZoomIn.pressed)) {
+
+      var item = this.editor.store.get("timeline-zoom")
+      item.set(clamp(item.get() - 1, 5, 20))
+    }
+
+    if (!isGMTFFocus && (this.keyboard.keys.zoomOut.pressed 
+      || this.keyboard.keys.numZoomOut.pressed)) {
+
+      var item = this.editor.store.get("timeline-zoom")
+      item.set(clamp(item.get() + 1, 5, 20))
+    }
+
+    if (!isGMTFFocus && this.keyboard.keys.snapToGrid.pressed) {
+      var item = this.editor.store.get("snap")
+      item.set(!item.get())
     }
 
     if (this.mouse.buttons.left.pressed) {

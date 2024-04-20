@@ -1,1125 +1,1139 @@
 {
-  "model":"Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>",
   "data":[
     {
-      "type":"brush_shader_spawn",
-      "properties":{
-        "shader-spawn_fade-in":1.0,
-        "shader-spawn_fade-out":1.0,
-        "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Background",
-        "shader-spawn_template":"70s Melt 01",
-        "shader-spawn_duration":10.0
-      },
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader 70s Melt 01",
       "color":"#42BB38",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"70s Melt 01",
+        "shader-spawn_duration":10.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"70s Melt 04",
-        "shader-spawn_duration":10.0
+        "shader-spawn_pipeline":"Background"
       },
-      "name":"shader 70s Melt 04",
-      "color":"#42BB38",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
+      "type":"brush_shader_spawn"
     },
     {
-      "type":"brush_shader_spawn",
-      "properties":{
-        "shader-spawn_fade-in":1.0,
-        "shader-spawn_fade-out":1.0,
-        "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Background",
-        "shader-spawn_template":"70s Melt 05",
-        "shader-spawn_duration":10.0
-      },
-      "name":"shader 70s Melt 05",
-      "color":"#42BB38",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
-      "properties":{
-        "shader-spawn_fade-in":1.0,
-        "shader-spawn_fade-out":1.0,
-        "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"70s Melt 02",
-        "shader-spawn_duration":10.0
-      },
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader 70s Melt 02",
       "color":"#42BB38",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"70s Melt 02",
+        "shader-spawn_duration":10.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"70s Melt 03",
-        "shader-spawn_duration":10.0
+        "shader-spawn_pipeline":"Grid"
       },
-      "name":"shader 70s Melt 03",
-      "color":"#42BB38",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
+      "type":"brush_shader_spawn"
     },
     {
-      "type":"brush_shader_spawn",
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
+      "name":"shader 70s Melt 03",
+      "color":"#42BB38",
       "properties":{
+        "shader-spawn_template":"70s Melt 03",
+        "shader-spawn_duration":10.0,
+        "shader-spawn_fade-in":1.0,
+        "shader-spawn_fade-out":1.0,
+        "shader-spawn_alpha-max":1.0,
+        "shader-spawn_pipeline":"Grid"
+      },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
+      "name":"shader 70s Melt 04",
+      "color":"#42BB38",
+      "properties":{
+        "shader-spawn_template":"70s Melt 04",
+        "shader-spawn_duration":10.0,
+        "shader-spawn_fade-in":1.0,
+        "shader-spawn_fade-out":1.0,
+        "shader-spawn_alpha-max":1.0,
+        "shader-spawn_pipeline":"Grid"
+      },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
+      "name":"shader 70s Melt 05",
+      "color":"#42BB38",
+      "properties":{
+        "shader-spawn_template":"70s Melt 05",
+        "shader-spawn_duration":10.0,
+        "shader-spawn_fade-in":1.0,
+        "shader-spawn_fade-out":1.0,
+        "shader-spawn_alpha-max":1.0,
+        "shader-spawn_pipeline":"Background"
+      },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
+      "name":"shader ART 01",
+      "color":"#FF82FF",
+      "properties":{
+        "shader-spawn_template":"ART 01",
+        "shader-spawn_duration":10.0,
         "shader-spawn_fade-in":0.33000000000000002,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Background",
-        "shader-spawn_template":"ART 01",
-        "shader-spawn_duration":10.0
+        "shader-spawn_pipeline":"Background"
       },
-      "name":"shader ART 01",
-      "color":"#FF82FF",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
+      "type":"brush_shader_spawn"
     },
     {
-      "type":"brush_shader_spawn",
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
+      "name":"shader ART 02",
+      "color":"#FF82FF",
       "properties":{
+        "shader-spawn_template":"ART 02",
+        "shader-spawn_duration":16.0,
         "shader-spawn_fade-in":0.33000000000000002,
         "shader-spawn_fade-out":2.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Background",
-        "shader-spawn_template":"ART 02",
-        "shader-spawn_duration":16.0
+        "shader-spawn_pipeline":"Background"
       },
-      "name":"shader ART 02",
-      "color":"#FF82FF",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
+      "type":"brush_shader_spawn"
     },
     {
-      "type":"brush_shader_spawn",
-      "properties":{
-        "shader-spawn_fade-in":0.33000000000000002,
-        "shader-spawn_fade-out":1.0,
-        "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Background",
-        "shader-spawn_template":"ART 03",
-        "shader-spawn_duration":20.0
-      },
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader ART 03",
       "color":"#FF82FF",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"ART 03",
+        "shader-spawn_duration":20.0,
         "shader-spawn_fade-in":0.33000000000000002,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Background",
-        "shader-spawn_template":"ART 04",
-        "shader-spawn_duration":12.0
+        "shader-spawn_pipeline":"Background"
       },
-      "name":"shader ART 04",
-      "color":"#FF82FF",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
+      "type":"brush_shader_spawn"
     },
     {
-      "type":"brush_shader_spawn",
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
+      "name":"shader ART 04",
+      "color":"#FF82FF",
       "properties":{
+        "shader-spawn_template":"ART 04",
+        "shader-spawn_duration":12.0,
+        "shader-spawn_fade-in":0.33000000000000002,
+        "shader-spawn_fade-out":1.0,
+        "shader-spawn_alpha-max":1.0,
+        "shader-spawn_pipeline":"Background"
+      },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
+      "name":"shader ART 05",
+      "color":"#FF82FF",
+      "properties":{
+        "shader-spawn_template":"ART 05",
+        "shader-spawn_duration":15.0,
         "shader-spawn_fade-in":2.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Background",
-        "shader-spawn_template":"ART 05",
-        "shader-spawn_duration":15.0
+        "shader-spawn_pipeline":"Background"
       },
-      "name":"shader ART 05",
-      "color":"#FF82FF",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
+      "type":"brush_shader_spawn"
     },
     {
-      "type":"brush_shader_spawn",
-      "properties":{
-        "shader-spawn_fade-in":1.0,
-        "shader-spawn_fade-out":2.0,
-        "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Background",
-        "shader-spawn_template":"Phantom Star 01",
-        "shader-spawn_duration":12.0
-      },
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Phanom Star 01",
       "color":"#B141FF",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Phantom Star 01",
+        "shader-spawn_duration":12.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":2.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Background",
-        "shader-spawn_template":"Phantom Star 02",
-        "shader-spawn_duration":12.0
+        "shader-spawn_pipeline":"Background"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Phanom Star 02",
       "color":"#B141FF",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
+      "properties":{
+        "shader-spawn_template":"Phantom Star 02",
+        "shader-spawn_duration":12.0,
+        "shader-spawn_fade-in":1.0,
+        "shader-spawn_fade-out":2.0,
+        "shader-spawn_alpha-max":1.0,
+        "shader-spawn_pipeline":"Background"
+      },
+      "type":"brush_shader_spawn"
     },
     {
-      "type":"brush_shader_spawn",
-      "properties":{
-        "shader-spawn_fade-in":1.0,
-        "shader-spawn_fade-out":1.0,
-        "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Background",
-        "shader-spawn_template":"Phantom Star 03",
-        "shader-spawn_duration":16.0
-      },
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Phanom Star 03",
       "color":"#B141FF",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Phantom Star 03",
+        "shader-spawn_duration":16.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"Phantom Star 04",
-        "shader-spawn_duration":13.0
+        "shader-spawn_pipeline":"Background"
       },
-      "name":"shader Phanom Star 04",
-      "color":"#B141FF",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
+      "type":"brush_shader_spawn"
     },
     {
-      "type":"brush_shader_spawn",
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
+      "name":"shader Phanom Star 04",
+      "color":"#B141FF",
       "properties":{
+        "shader-spawn_template":"Phantom Star 04",
+        "shader-spawn_duration":13.0,
+        "shader-spawn_fade-in":1.0,
+        "shader-spawn_fade-out":1.0,
+        "shader-spawn_alpha-max":1.0,
+        "shader-spawn_pipeline":"Grid"
+      },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
+      "name":"shader Phanom Star 05",
+      "color":"#B141FF",
+      "properties":{
+        "shader-spawn_template":"Phantom Star 05",
+        "shader-spawn_duration":13.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":3.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Background",
-        "shader-spawn_template":"Phantom Star 05",
-        "shader-spawn_duration":13.0
+        "shader-spawn_pipeline":"Background"
       },
-      "name":"shader Phanom Star 05",
-      "color":"#B141FF",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
+      "type":"brush_shader_spawn"
     },
     {
-      "type":"brush_shader_spawn",
-      "properties":{
-        "shader-spawn_fade-in":1.0,
-        "shader-spawn_fade-out":1.0,
-        "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Background",
-        "shader-spawn_template":"Warp 01",
-        "shader-spawn_duration":10.0
-      },
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Warp 01",
       "color":"#00B87B",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Warp 01",
+        "shader-spawn_duration":10.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Background",
-        "shader-spawn_template":"Warp 02",
-        "shader-spawn_duration":10.0
+        "shader-spawn_pipeline":"Background"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Warp 02",
       "color":"#00B87B",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Warp 02",
+        "shader-spawn_duration":10.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Background",
-        "shader-spawn_template":"Warp 03",
-        "shader-spawn_duration":10.0
+        "shader-spawn_pipeline":"Background"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Warp 03",
       "color":"#00B87B",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Warp 03",
+        "shader-spawn_duration":10.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Background",
-        "shader-spawn_template":"Warp 04",
-        "shader-spawn_duration":10.0
+        "shader-spawn_pipeline":"Background"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Warp 04",
       "color":"#00B87B",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Warp 04",
+        "shader-spawn_duration":10.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Background",
-        "shader-spawn_template":"Warp 05",
-        "shader-spawn_duration":10.0
+        "shader-spawn_pipeline":"Background"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Warp 05",
       "color":"#00B87B",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Warp 05",
+        "shader-spawn_duration":10.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Background",
-        "shader-spawn_template":"Octagrams 01",
-        "shader-spawn_duration":10.0
+        "shader-spawn_pipeline":"Background"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Octagrams 01",
       "color":"#4B6BBC",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Octagrams 01",
+        "shader-spawn_duration":10.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"Octagrams 02",
-        "shader-spawn_duration":10.0
+        "shader-spawn_pipeline":"Background"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Octagrams 02",
       "color":"#4B6BBC",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Octagrams 02",
+        "shader-spawn_duration":10.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"Octagrams 03",
-        "shader-spawn_duration":10.0
+        "shader-spawn_pipeline":"Grid"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Octagrams 03",
       "color":"#4B6BBC",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Octagrams 03",
+        "shader-spawn_duration":10.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"Octagrams 04",
-        "shader-spawn_duration":10.0
+        "shader-spawn_pipeline":"Grid"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Octagrams 04",
       "color":"#4B6BBC",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Octagrams 04",
+        "shader-spawn_duration":10.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"Octagrams 05",
-        "shader-spawn_duration":10.0
+        "shader-spawn_pipeline":"Grid"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Octagrams 05",
       "color":"#4B6BBC",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Octagrams 05",
+        "shader-spawn_duration":10.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"Wave 01",
-        "shader-spawn_duration":10.0
+        "shader-spawn_pipeline":"Grid"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Wave 01",
       "color":"#CC6351",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Wave 01",
+        "shader-spawn_duration":10.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"Wave 02",
-        "shader-spawn_duration":10.0
+        "shader-spawn_pipeline":"Grid"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Wave 02",
       "color":"#CC6351",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Wave 02",
+        "shader-spawn_duration":10.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"Wave 03",
-        "shader-spawn_duration":10.0
+        "shader-spawn_pipeline":"Grid"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Wave 03",
       "color":"#CC6351",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Wave 03",
+        "shader-spawn_duration":10.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"Wave 04",
-        "shader-spawn_duration":10.0
+        "shader-spawn_pipeline":"Grid"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Wave 04",
       "color":"#CC6351",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Wave 04",
+        "shader-spawn_duration":10.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"Wave 05",
-        "shader-spawn_duration":10.0
+        "shader-spawn_pipeline":"Grid"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Wave 05",
       "color":"#CC6351",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Wave 05",
+        "shader-spawn_duration":10.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"CRT 01",
-        "shader-spawn_duration":10.0
+        "shader-spawn_pipeline":"Grid"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader CRT 01",
       "color":"#00ACFF",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"CRT 01",
+        "shader-spawn_duration":10.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"CRT 02",
-        "shader-spawn_duration":10.0
+        "shader-spawn_pipeline":"Grid"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader CRT 02",
       "color":"#00ACFF",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"CRT 02",
+        "shader-spawn_duration":10.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"CRT 03",
-        "shader-spawn_duration":10.0
+        "shader-spawn_pipeline":"Grid"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader CRT 03",
       "color":"#00ACFF",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"CRT 03",
+        "shader-spawn_duration":10.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"LED 01",
-        "shader-spawn_duration":10.0
+        "shader-spawn_pipeline":"Grid"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
+      "name":"shader CRT 04",
+      "color":"#00ACFF",
+      "properties":{
+        "shader-spawn_template":"CRT 04",
+        "shader-spawn_duration":5.0,
+        "shader-spawn_fade-in":1.0,
+        "shader-spawn_fade-out":1.0,
+        "shader-spawn_alpha-max":1.0,
+        "shader-spawn_pipeline":"Background"
+      },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader LED 01",
       "color":"#63D171",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"LED 01",
+        "shader-spawn_duration":10.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"LED 02",
-        "shader-spawn_duration":9.0
+        "shader-spawn_pipeline":"Grid"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader LED 02",
       "color":"#63D171",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"LED 02",
+        "shader-spawn_duration":9.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Background",
-        "shader-spawn_template":"LED 03",
-        "shader-spawn_duration":8.0
+        "shader-spawn_pipeline":"Grid"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader LED 03",
       "color":"#63D171",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"LED 03",
+        "shader-spawn_duration":8.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Background",
-        "shader-spawn_template":"LED 04",
-        "shader-spawn_duration":8.0
+        "shader-spawn_pipeline":"Background"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader LED 04",
       "color":"#63D171",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"LED 04",
+        "shader-spawn_duration":8.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Background",
-        "shader-spawn_template":"LED 05",
-        "shader-spawn_duration":8.0
+        "shader-spawn_pipeline":"Background"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader LED 05",
       "color":"#63D171",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"LED 05",
+        "shader-spawn_duration":8.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Background",
-        "shader-spawn_template":"HUE 01",
-        "shader-spawn_duration":8.0
+        "shader-spawn_pipeline":"Background"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader HUE 01",
       "color":"#FF598E",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"HUE 01",
+        "shader-spawn_duration":8.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Background",
-        "shader-spawn_template":"HUE 02",
-        "shader-spawn_duration":8.0
+        "shader-spawn_pipeline":"Background"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader HUE 02",
       "color":"#FF598E",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"HUE 02",
+        "shader-spawn_duration":8.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Background",
-        "shader-spawn_template":"HUE 03",
-        "shader-spawn_duration":10.0
+        "shader-spawn_pipeline":"Background"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader HUE 03",
       "color":"#FF598E",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"HUE 03",
+        "shader-spawn_duration":10.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Background",
-        "shader-spawn_template":"HUE 04",
-        "shader-spawn_duration":8.0
+        "shader-spawn_pipeline":"Background"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader HUE 04",
       "color":"#FF598E",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"HUE 04",
+        "shader-spawn_duration":8.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Background",
-        "shader-spawn_template":"HUE 05",
-        "shader-spawn_duration":8.0
+        "shader-spawn_pipeline":"Background"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader HUE 05",
       "color":"#FF598E",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"HUE 05",
+        "shader-spawn_duration":8.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"Magnify 01",
-        "shader-spawn_duration":5.0
+        "shader-spawn_pipeline":"Background"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Magnify 01",
       "color":"#0AFF00",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Magnify 01",
+        "shader-spawn_duration":5.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"Magnify 02",
-        "shader-spawn_duration":8.0
+        "shader-spawn_pipeline":"Background"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Magnify 02",
       "color":"#0AFF00",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Magnify 02",
+        "shader-spawn_duration":8.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Background",
-        "shader-spawn_template":"Magnify 03",
-        "shader-spawn_duration":8.0
+        "shader-spawn_pipeline":"Grid"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Magnify 03",
       "color":"#0AFF00",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Magnify 03",
+        "shader-spawn_duration":8.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"Magnify 04",
-        "shader-spawn_duration":8.0
+        "shader-spawn_pipeline":"Background"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Magnify 04",
       "color":"#0AFF00",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Magnify 04",
+        "shader-spawn_duration":8.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Background",
-        "shader-spawn_template":"Magnify 05",
-        "shader-spawn_duration":8.0
+        "shader-spawn_pipeline":"Grid"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Magnify 05",
       "color":"#0AFF00",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Magnify 05",
+        "shader-spawn_duration":8.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"Mosaic 01",
-        "shader-spawn_duration":5.0
+        "shader-spawn_pipeline":"Background"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Mosaic 01",
       "color":"#ABFF71",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Mosaic 01",
+        "shader-spawn_duration":5.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"Mosaic 02",
-        "shader-spawn_duration":8.0
+        "shader-spawn_pipeline":"Grid"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Mosaic 02",
       "color":"#ABFF71",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Mosaic 02",
+        "shader-spawn_duration":8.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Background",
-        "shader-spawn_template":"Mosaic 03",
-        "shader-spawn_duration":8.0
+        "shader-spawn_pipeline":"Grid"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Mosaic 03",
       "color":"#ABFF71",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Mosaic 03",
+        "shader-spawn_duration":8.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"Mosaic 04",
-        "shader-spawn_duration":8.0
+        "shader-spawn_pipeline":"Background"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Mosaic 04",
       "color":"#ABFF71",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Mosaic 04",
+        "shader-spawn_duration":8.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"Mosaic 05",
-        "shader-spawn_duration":8.0
+        "shader-spawn_pipeline":"Background"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Mosaic 05",
       "color":"#ABFF71",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Mosaic 05",
+        "shader-spawn_duration":8.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Background",
-        "shader-spawn_template":"Posterization 01",
-        "shader-spawn_duration":5.0
+        "shader-spawn_pipeline":"Grid"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Posterization 01",
       "color":"#9C6BDC",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
+      "properties":{
+        "shader-spawn_template":"Posterization 01",
+        "shader-spawn_duration":5.0,
+        "shader-spawn_fade-in":1.0,
+        "shader-spawn_fade-out":1.0,
+        "shader-spawn_alpha-max":1.0,
+        "shader-spawn_pipeline":"Background"
+      },
+      "type":"brush_shader_spawn"
     },
     {
-      "type":"brush_shader_spawn",
-      "properties":{
-        "shader-spawn_fade-in":0.20000000000000001,
-        "shader-spawn_fade-out":0.20000000000000001,
-        "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Background",
-        "shader-spawn_template":"Posterization 02",
-        "shader-spawn_duration":8.0
-      },
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Posterization 02",
       "color":"#9C6BDC",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Posterization 02",
+        "shader-spawn_duration":8.0,
         "shader-spawn_fade-in":0.20000000000000001,
         "shader-spawn_fade-out":0.20000000000000001,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Background",
-        "shader-spawn_template":"Posterization 03",
-        "shader-spawn_duration":8.0
+        "shader-spawn_pipeline":"Background"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Posterization 03",
       "color":"#9C6BDC",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Posterization 03",
+        "shader-spawn_duration":8.0,
         "shader-spawn_fade-in":0.20000000000000001,
         "shader-spawn_fade-out":0.20000000000000001,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Background",
-        "shader-spawn_template":"Posterization 04",
-        "shader-spawn_duration":8.0
+        "shader-spawn_pipeline":"Background"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Posterization 04",
       "color":"#9C6BDC",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Posterization 04",
+        "shader-spawn_duration":8.0,
         "shader-spawn_fade-in":0.20000000000000001,
         "shader-spawn_fade-out":0.20000000000000001,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Background",
-        "shader-spawn_template":"Posterization 05",
-        "shader-spawn_duration":8.0
+        "shader-spawn_pipeline":"Background"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Posterization 05",
       "color":"#9C6BDC",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
+      "properties":{
+        "shader-spawn_template":"Posterization 05",
+        "shader-spawn_duration":8.0,
+        "shader-spawn_fade-in":0.20000000000000001,
+        "shader-spawn_fade-out":0.20000000000000001,
+        "shader-spawn_alpha-max":1.0,
+        "shader-spawn_pipeline":"Background"
+      },
+      "type":"brush_shader_spawn"
     },
     {
-      "type":"brush_shader_spawn",
-      "properties":{
-        "shader-spawn_fade-in":1.0,
-        "shader-spawn_fade-out":1.0,
-        "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Background",
-        "shader-spawn_template":"Ripple 01",
-        "shader-spawn_duration":10.0
-      },
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Ripple 01",
       "color":"#006077",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Ripple 01",
+        "shader-spawn_duration":10.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"Ripple 02",
-        "shader-spawn_duration":5.0
+        "shader-spawn_pipeline":"Background"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Ripple 02",
       "color":"#006077",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Ripple 02",
+        "shader-spawn_duration":5.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"Ripple 03",
-        "shader-spawn_duration":5.0
+        "shader-spawn_pipeline":"Grid"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Ripple 03",
       "color":"#006077",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Ripple 03",
+        "shader-spawn_duration":5.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"Ripple 04",
-        "shader-spawn_duration":5.0
+        "shader-spawn_pipeline":"Grid"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Ripple 04",
       "color":"#006077",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Ripple 04",
+        "shader-spawn_duration":5.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"Ripple 05",
-        "shader-spawn_duration":5.0
+        "shader-spawn_pipeline":"Grid"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Ripple 05",
       "color":"#006077",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Ripple 05",
+        "shader-spawn_duration":5.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Background",
-        "shader-spawn_template":"Shock-wave 01",
-        "shader-spawn_duration":5.0
+        "shader-spawn_pipeline":"Grid"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Shok Wave 01",
       "color":"#1594FF",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Shock-wave 01",
+        "shader-spawn_duration":5.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"Shock-wave 02",
-        "shader-spawn_duration":5.0
+        "shader-spawn_pipeline":"Background"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Shok Wave 02",
       "color":"#1594FF",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Shock-wave 02",
+        "shader-spawn_duration":5.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"Shock-wave 03",
-        "shader-spawn_duration":5.0
+        "shader-spawn_pipeline":"Grid"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Shok Wave 03",
       "color":"#1594FF",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Shock-wave 03",
+        "shader-spawn_duration":5.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"Shock-wave 04",
-        "shader-spawn_duration":5.0
+        "shader-spawn_pipeline":"Grid"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Shok Wave 04",
       "color":"#1594FF",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Shock-wave 04",
+        "shader-spawn_duration":5.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"Shock-wave 05",
-        "shader-spawn_duration":5.0
+        "shader-spawn_pipeline":"Grid"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Shok Wave 05",
       "color":"#1594FF",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Shock-wave 05",
+        "shader-spawn_duration":5.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Background",
-        "shader-spawn_template":"Sketch 01",
-        "shader-spawn_duration":5.0
+        "shader-spawn_pipeline":"Grid"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Sketch 01",
       "color":"#FF8C5E",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Sketch 01",
+        "shader-spawn_duration":5.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"Sketch 02",
-        "shader-spawn_duration":1.0
+        "shader-spawn_pipeline":"Background"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Sketch 02",
       "color":"#FF8C5E",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Sketch 02",
+        "shader-spawn_duration":1.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"Sketch 03",
-        "shader-spawn_duration":1.0
+        "shader-spawn_pipeline":"Grid"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Sketch 03",
       "color":"#FF8C5E",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Sketch 03",
+        "shader-spawn_duration":1.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"Scanlines 01",
-        "shader-spawn_duration":5.0
+        "shader-spawn_pipeline":"Grid"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Scanlines 01",
       "color":"#2ECCD1",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Scanlines 01",
+        "shader-spawn_duration":5.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"Scanlines 02",
-        "shader-spawn_duration":5.0
+        "shader-spawn_pipeline":"Grid"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Scanlines 02",
       "color":"#2ECCD1",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Scanlines 02",
+        "shader-spawn_duration":5.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"Scanlines 03",
-        "shader-spawn_duration":5.0
+        "shader-spawn_pipeline":"Grid"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Scanlines 03",
       "color":"#2ECCD1",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Scanlines 03",
+        "shader-spawn_duration":5.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"Emboss 01",
-        "shader-spawn_duration":5.0
+        "shader-spawn_pipeline":"Grid"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Emboss 01",
       "color":"#A381FF",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Emboss 01",
+        "shader-spawn_duration":5.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"Emboss 02",
-        "shader-spawn_duration":5.0
+        "shader-spawn_pipeline":"Grid"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Emboss 02",
       "color":"#A381FF",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Emboss 02",
+        "shader-spawn_duration":5.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"Emboss 03",
-        "shader-spawn_duration":5.0
+        "shader-spawn_pipeline":"Grid"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Emboss 03",
       "color":"#A381FF",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Emboss 03",
+        "shader-spawn_duration":5.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"Abberation",
-        "shader-spawn_duration":10.0
+        "shader-spawn_pipeline":"Grid"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Abberation",
       "color":"#9C0DE4",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Abberation",
+        "shader-spawn_duration":10.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"Thermal",
-        "shader-spawn_duration":5.0
+        "shader-spawn_pipeline":"Grid"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Thermal",
       "color":"#D62800",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
-    },
-    {
-      "type":"brush_shader_spawn",
       "properties":{
+        "shader-spawn_template":"Thermal",
+        "shader-spawn_duration":5.0,
         "shader-spawn_fade-in":1.0,
         "shader-spawn_fade-out":1.0,
         "shader-spawn_alpha-max":1.0,
-        "shader-spawn_pipeline":"Grid",
-        "shader-spawn_template":"Revert",
-        "shader-spawn_duration":5.0
+        "shader-spawn_pipeline":"Grid"
       },
+      "type":"brush_shader_spawn"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_shader_spawn",
       "name":"shader Revert",
       "color":"#009EB1",
-      "texture":"texture_visu_editor_icon_event_shader_spawn"
+      "properties":{
+        "shader-spawn_template":"Revert",
+        "shader-spawn_duration":5.0,
+        "shader-spawn_fade-in":1.0,
+        "shader-spawn_fade-out":1.0,
+        "shader-spawn_alpha-max":1.0,
+        "shader-spawn_pipeline":"Grid"
+      },
+      "type":"brush_shader_spawn"
     }
-  ]
+  ],
+  "model":"Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>"
 }

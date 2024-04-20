@@ -33,7 +33,7 @@ function brush_shader_overlay(json = null) {
         type: NumberTransformer,
         value: new NumberTransformer(Struct.getDefault(json, 
           "shader-overlay_transform-support-grid-alpha", 
-          { value: 0, target: 4, factor: 0.02, increase: 1 }
+          { value: 0, target: 1, factor: 0.01, increase: 0 }
         )),
       },
     }),

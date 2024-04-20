@@ -202,10 +202,12 @@ global.__view_track_event = {
           : null,
         angleTransformer: Struct.get(data, "view-lyrics_use-transform-angle")
           ? new NumberTransformer(Struct.get(data, "view-lyrics_transform-angle"))
-          : null,
+          : new NumberTransformer({ value: 0.0, target: 0.0, factor: 0.0, increase: 0.0 }),
         speedTransformer: Struct.get(data, "view-lyrics_use-transform-speed")
           ? new NumberTransformer(Struct.get(data, "view-lyrics_transform-speed"))
           : null,
+        fadeIn: Struct.get(data, "view-lyrics_fade-in"),
+        fadeOut: Struct.get(data, "view-lyrics_fade-out"),
       }))
   },
   "brush_view_config": function(data) {

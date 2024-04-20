@@ -19,7 +19,7 @@ function brush_view_lyrics(json = null) {
     store: new Map(String, Struct, {
       "view-lyrics_template": {
         type: String,
-        value: Struct.getDefault(json, "view-lyrics-template", "lyrics ID"),
+        value: Struct.getDefault(json, "view-lyrics_template", "lyrics ID"),
         passthrough: function(value) {
           return Beans.get(BeanVisuController).lyricsService.templates
             .contains(value) ? value : "lyrics ID"
@@ -53,7 +53,7 @@ function brush_view_lyrics(json = null) {
       },
       "view-lyrics_color": {
         type: Color,
-        value: ColorUtil.fromHex(Struct.getDefault(json, "view-lyrics-color"), "#ffffff"),
+        value: ColorUtil.fromHex(Struct.getDefault(json, "view-lyrics_color"), "#ffffff"),
       },
       "view-lyrics_use-outline": {
         type: Boolean,
@@ -61,7 +61,7 @@ function brush_view_lyrics(json = null) {
       },
       "view-lyrics_outline": {
         type: Color,
-        value: ColorUtil.fromHex(Struct.getDefault(json, "view-lyrics-outline"), "#000000"),
+        value: ColorUtil.fromHex(Struct.getDefault(json, "view-lyrics_outline"), "#000000"),
       },
       "view-lyrics_align-v": {
         type: String,
@@ -157,6 +157,20 @@ function brush_view_lyrics(json = null) {
           "view-lyrics_transform-speed", 
           { value: 0, target: 8, factor: 0.01, increase: 0 }
         )),
+      },
+      "view-lyrics_fade-in": {
+        type: Number,
+        value: Struct.getDefault(json, "view-lyrics_fade-in", 1.0),
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), 0.0, 999.0) 
+        },
+      },
+      "view-lyrics_fade-out": {
+        type: Number,
+        value: Struct.getDefault(json, "view-lyrics_fade-out", 1.0),
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), 0.0, 999.0) 
+        },
       },
     }),
     components: new Array(Struct, [
@@ -562,9 +576,9 @@ function brush_view_lyrics(json = null) {
               enable: { key: "view-lyrics_use-transform-angle" },
             },
           },
-          increment: {
+          increase: {
             label: {
-              text: "Increment",
+              text: "Increase",
               enable: { key: "view-lyrics_use-transform-angle" },
             },
             field: {
@@ -573,7 +587,7 @@ function brush_view_lyrics(json = null) {
             },
           },
         },
-      },
+      }, 
       {
         name: "view-lyrics_transform-speed",
         template: VEComponents.get("transform-numeric-uniform"),
@@ -621,9 +635,9 @@ function brush_view_lyrics(json = null) {
               enable: { key: "view-lyrics_use-transform-speed" },
             },
           },
-          increment: {
+          increase: {
             label: {
-              text: "Increment",
+              text: "Increase",
               enable: { key: "view-lyrics_use-transform-speed" },
             },
             field: {
@@ -631,6 +645,27 @@ function brush_view_lyrics(json = null) {
               enable: { key: "view-lyrics_use-transform-speed" },
             },
           },
+        },
+      },
+
+      {
+        name: "view-lyrics_fade-in",  
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "Fade in" },
+          field: { store: { key: "view-lyrics_fade-in" } },
+        },
+      },
+      {
+        name: "view-lyrics_fade-out",  
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "Fade out" },
+          field: { store: { key: "view-lyrics_fade-out" } },
         },
       },
     ]),

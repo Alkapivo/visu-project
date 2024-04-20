@@ -12,7 +12,7 @@
   "visu.editor.render-event": true,
   "visu.editor.render-timeline": true,
   "visu.editor.render-brush": true,
-  "visu.editor.accordion.render-event-inspector": false,
+  "visu.editor.accordion.render-event-inspector": true,
   "visu.editor.accordion.render-template-toolbar": true,
   "end-property": null
 }

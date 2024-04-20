@@ -39,9 +39,9 @@ function PlayerService(_controller, config = {}): Service() constructor {
           action: "Z",
         },
         gameModes: {
-          idle: Struct.getDefault(event.data, "idle", {}),
-          bulletHell: Struct.getDefault(event.data, "bulletHell", {}),
-          platformer: Struct.getDefault(event.data, "platformer", {}),
+          idle: JSON.clone(Struct.getDefault(event.data, "idle", {})),
+          bulletHell: JSON.clone(Struct.getDefault(event.data, "bulletHell", {})),
+          platformer: JSON.clone(Struct.getDefault(event.data, "platformer", {})),
         },
       })
 

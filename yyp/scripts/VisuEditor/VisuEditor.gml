@@ -84,7 +84,7 @@ function VisuEditor(_controller) constructor {
     },
     "snap": {
       type: Boolean,
-      value: false,
+      value: true,
     },
     "render-event": {
       type: Boolean,

@@ -17,7 +17,7 @@ function VETimeline(_editor) constructor {
   ///@return {ChunkService}
   factoryChunkService = function() {
     return new ChunkService(this, {
-      step: 10,
+      step: 15,
       fetchKey: function(timestamp) {
         var from = timestamp div this.step * this.step
         var to = from + this.step

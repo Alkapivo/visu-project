@@ -82,4 +82,14 @@ function Lyrics(json) constructor {
   speedTransformer = Optional.is(Struct.get(json, "speedTransformer"))
     ? Assert.isType(json.speedTransformer, NumberTransformer)
     : null
+
+  ///@type {Number}
+  fadeIn = Optional.is(Struct.get(json, "fadeIn"))
+    ? Assert.isType(json.fadeIn, Number)
+    : 0.0
+
+  ///@type {Number}
+  fadeOut = Optional.is(Struct.get(json, "fadeOut"))
+    ? Assert.isType(json.fadeOut, Number)
+    : 0.0
 }

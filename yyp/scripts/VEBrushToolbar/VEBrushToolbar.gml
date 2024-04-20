@@ -686,8 +686,9 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                         blend: VETheme.color.textShadow,
                       },
                       callback: function() {
-                        this.context.brushToolbar.editor.brushService
-                          .removeTemplate(this.brushTemplate)
+                        var brushToolbar = this.context.brushToolbar
+                        brushToolbar.editor.brushService.removeTemplate(this.brushTemplate)
+                        brushToolbar.store.get("type").set(brushToolbar.store.getValue("type"))
                       },
                       brushTemplate: template,
                     },

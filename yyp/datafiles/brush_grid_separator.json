@@ -1,141 +1,345 @@
 {
-  "model":"Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>",
   "data":[
     {
-      "type":"brush_grid_separator",
+      "texture":"texture_visu_editor_icon_event_grid_separator",
+      "name":"separator default",
+      "color":"#FF0000",
       "properties":{
-        "grid-separator_use-transform-primary-alpha":1.0,
-        "grid-separator_transform-primary-alpha":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":9999.0,
-          "target":1.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-separator_use-transform-primary-size":1.0,
-        "grid-separator_transform-primary-size":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":9999.0,
-          "target":4.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-separator_use-secondary-color":1.0,
         "grid-separator_secondary-color":"#DF3363",
         "grid-separator_secondary-color-speed":0.01,
         "grid-separator_use-transform-secondary-alpha":1.0,
-        "grid-separator_use-transform-amount":1.0,
         "grid-separator_transform-secondary-alpha":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.0,
+          "value":0.0,
           "factor":9999.0,
           "target":1.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-separator_transform-amount":{
           "increase":0.0,
-          "finished":0.0,
+          "finished":0.0
+        },
+        "grid-separator_use-transform-amount":1.0,
+        "grid-separator_use-transform-secondary-size":1.0,
+        "grid-separator_transform-amount":{
+          "startValue":0.0,
+          "value":0.0,
           "factor":9999.0,
           "target":2.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-separator_use-transform-secondary-size":1.0,
-        "grid-separator_use-transform-z":1.0,
-        "grid-separator_transform-secondary-size":{
           "increase":0.0,
-          "finished":0.0,
+          "finished":0.0
+        },
+        "grid-separator_transform-secondary-size":{
+          "startValue":0.0,
+          "value":0.0,
           "factor":9999.0,
           "target":4.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-separator_transform-z":{
           "increase":0.0,
-          "finished":0.0,
+          "finished":0.0
+        },
+        "grid-separator_use-transform-z":1.0,
+        "grid-separator_transform-z":{
+          "startValue":0.0,
+          "value":0.0,
           "factor":9999.0,
           "target":1.0,
-          "value":0.0,
-          "startValue":0.0
+          "increase":0.0,
+          "finished":0.0
         },
         "grid-separator_use-primary-color":1.0,
         "grid-separator_primary-color":"#59FC15",
-        "grid-separator_primary-color-speed":0.01
-      },
-      "name":"separator default",
-      "color":"#FF0000",
-      "texture":"texture_visu_editor_icon_event_grid_separator"
-    },
-    {
-      "type":"brush_grid_separator",
-      "properties":{
+        "grid-separator_primary-color-speed":0.01,
         "grid-separator_use-transform-primary-alpha":1.0,
         "grid-separator_transform-primary-alpha":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":999.0,
-          "target":0.0,
+          "startValue":0.0,
           "value":0.0,
-          "startValue":0.0
+          "factor":9999.0,
+          "target":1.0,
+          "increase":0.0,
+          "finished":0.0
         },
-        "grid-separator_use-transform-primary-size":0.0,
+        "grid-separator_use-transform-primary-size":1.0,
         "grid-separator_transform-primary-size":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":99.0,
-          "target":64.0,
+          "startValue":0.0,
           "value":0.0,
-          "startValue":0.0
+          "factor":9999.0,
+          "target":4.0,
+          "increase":0.0,
+          "finished":0.0
         },
-        "grid-separator_use-secondary-color":0.0,
+        "grid-separator_use-secondary-color":1.0
+      },
+      "type":"brush_grid_separator"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_grid_separator",
+      "name":"separator 4",
+      "color":"#00A4F2",
+      "properties":{
         "grid-separator_secondary-color":"#DF3363",
         "grid-separator_secondary-color-speed":0.01,
         "grid-separator_use-transform-secondary-alpha":1.0,
         "grid-separator_transform-secondary-alpha":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.0,
+          "value":0.0,
           "factor":9993.0,
           "target":0.0,
-          "value":0.0,
-          "startValue":0.0
+          "increase":0.0,
+          "finished":0.0
         },
         "grid-separator_use-transform-amount":0.0,
+        "grid-separator_use-transform-secondary-size":0.0,
         "grid-separator_transform-amount":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.0,
+          "value":0.0,
           "factor":0.01,
           "target":2.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-separator_use-transform-secondary-size":0.0,
-        "grid-separator_use-transform-z":0.0,
-        "grid-separator_transform-secondary-size":{
           "increase":0.0,
-          "finished":0.0,
+          "finished":0.0
+        },
+        "grid-separator_transform-secondary-size":{
+          "startValue":0.0,
+          "value":0.0,
           "factor":99.0,
           "target":32.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-separator_transform-z":{
           "increase":0.0,
-          "finished":0.0,
+          "finished":0.0
+        },
+        "grid-separator_use-transform-z":0.0,
+        "grid-separator_transform-z":{
+          "startValue":0.0,
+          "value":0.0,
           "factor":0.01,
           "target":1.0,
-          "value":0.0,
-          "startValue":0.0
+          "increase":0.0,
+          "finished":0.0
         },
         "grid-separator_use-primary-color":0.0,
         "grid-separator_primary-color":"#59FC15",
-        "grid-separator_primary-color-speed":0.01
+        "grid-separator_primary-color-speed":0.01,
+        "grid-separator_use-transform-primary-alpha":1.0,
+        "grid-separator_transform-primary-alpha":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":999.0,
+          "target":0.0,
+          "increase":0.0,
+          "finished":0.0
+        },
+        "grid-separator_use-transform-primary-size":0.0,
+        "grid-separator_transform-primary-size":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":99.0,
+          "target":64.0,
+          "increase":0.0,
+          "finished":0.0
+        },
+        "grid-separator_use-secondary-color":0.0
       },
-      "name":"separator 4",
-      "color":"#00A4F2",
-      "texture":"texture_visu_editor_icon_event_grid_separator"
+      "type":"brush_grid_separator"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_grid_separator",
+      "name":"separator red",
+      "color":"#FF1200",
+      "properties":{
+        "grid-separator_secondary-color":"#FF3363",
+        "grid-separator_secondary-color-speed":0.01,
+        "grid-separator_use-transform-secondary-alpha":false,
+        "grid-separator_transform-secondary-alpha":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":9993.0,
+          "target":0.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-separator_use-transform-secondary-size":0.0,
+        "grid-separator_use-transform-amount":0.0,
+        "grid-separator_transform-secondary-size":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":99.0,
+          "target":32.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-separator_transform-amount":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":2.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-separator_use-transform-z":0.0,
+        "grid-separator_transform-z":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":1.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-separator_use-primary-color":true,
+        "grid-separator_primary-color":"#FF1452",
+        "grid-separator_primary-color-speed":0.01,
+        "grid-separator_use-transform-primary-alpha":false,
+        "grid-separator_transform-primary-alpha":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":999.0,
+          "target":0.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-separator_use-transform-primary-size":0.0,
+        "grid-separator_transform-primary-size":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":99.0,
+          "target":64.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-separator_use-secondary-color":true
+      },
+      "type":"brush_grid_separator"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_grid_separator",
+      "name":"separator alpha off",
+      "color":"#FF1200",
+      "properties":{
+        "grid-separator_secondary-color":"#FF3363",
+        "grid-separator_secondary-color-speed":0.01,
+        "grid-separator_use-transform-secondary-alpha":true,
+        "grid-separator_transform-secondary-alpha":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":0.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-separator_use-transform-secondary-size":false,
+        "grid-separator_use-transform-amount":0.0,
+        "grid-separator_transform-secondary-size":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":0.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-separator_transform-amount":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":2.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-separator_use-transform-z":0.0,
+        "grid-separator_transform-z":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":1.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-separator_use-primary-color":false,
+        "grid-separator_primary-color":"#FF1452",
+        "grid-separator_primary-color-speed":0.01,
+        "grid-separator_use-transform-primary-alpha":true,
+        "grid-separator_transform-primary-alpha":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":0.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-separator_use-transform-primary-size":0.0,
+        "grid-separator_transform-primary-size":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":99.0,
+          "target":64.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-separator_use-secondary-color":false
+      },
+      "type":"brush_grid_separator"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_grid_separator",
+      "name":"separator alpha on",
+      "color":"#D31270",
+      "properties":{
+        "grid-separator_secondary-color":"#FF3363",
+        "grid-separator_secondary-color-speed":0.01,
+        "grid-separator_use-transform-secondary-alpha":true,
+        "grid-separator_transform-secondary-alpha":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":0.80000000000000004,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-separator_use-transform-secondary-size":false,
+        "grid-separator_use-transform-amount":0.0,
+        "grid-separator_transform-secondary-size":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":0.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-separator_transform-amount":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":2.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-separator_use-transform-z":0.0,
+        "grid-separator_transform-z":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":1.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-separator_use-primary-color":false,
+        "grid-separator_primary-color":"#FF1452",
+        "grid-separator_primary-color-speed":0.01,
+        "grid-separator_use-transform-primary-alpha":true,
+        "grid-separator_transform-primary-alpha":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":0.90000000000000002,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-separator_use-transform-primary-size":0.0,
+        "grid-separator_transform-primary-size":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":99.0,
+          "target":64.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-separator_use-secondary-color":false
+      },
+      "type":"brush_grid_separator"
     }
-  ]
+  ],
+  "model":"Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>"
 }

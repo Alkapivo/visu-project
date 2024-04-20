@@ -37,6 +37,10 @@ function _KeyboardKeyType(): Enum() constructor {
   HOME = vk_home
   INSERT = vk_insert
   END = vk_end
+  PLUS = 187
+  MINUS = 189
+  NUM_PLUS = vk_add
+  NUM_MINUS = vk_subtract
 }
 global.__KeyboardKeyType = new _KeyboardKeyType()
 #macro KeyboardKeyType global.__KeyboardKeyType

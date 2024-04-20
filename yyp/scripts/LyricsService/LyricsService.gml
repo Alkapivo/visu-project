@@ -42,6 +42,8 @@ function LyricsService(config = null): Service() constructor {
         finishDelay: Struct.getDefault(event.data, "finishDelay", null),
         angleTransformer: Struct.getDefault(event.data, "angleTransformer", null),
         speedTransformer: Struct.getDefault(event.data, "speedTransformer", null),
+        fadeIn: Struct.getDefault(event.data, "fadeIn", 1.0),
+        fadeOut: Struct.getDefault(event.data, "fadeOut", 1.0),
       })
 
       var task = new Task("lyrics-task")
@@ -49,21 +51,13 @@ function LyricsService(config = null): Service() constructor {
           lyrics: lyrics,
           charPointer: 0,
           linePointer: 0,
+          time: 0.0,
         })
         .setTimeout(event.data.timeout)
         .whenUpdate(function() { 
           var state = this.state
-          if (state.linePointer == state.lyrics.lines.size()) {
-            if (Optional.is(state.lyrics.finishDelay)) {
-              if (state.lyrics.finishDelay.update().finished) {
-                this.fullfill()
-              }
-            } else {
-              this.fullfill()
-            }
-            return
-          }
-
+          state.time = state.time + DeltaTime.apply(FRAME_MS)
+          
           var angleTransformer = state.lyrics.angleTransformer
           var speedTransformer = state.lyrics.speedTransformer
           if (Optional.is(angleTransformer) 
@@ -76,6 +70,17 @@ function LyricsService(config = null): Service() constructor {
             var area = state.lyrics.area
             area.setX(area.getX() + _x)
             area.setY(area.getY() + _y)
+          }
+
+          if (state.linePointer == state.lyrics.lines.size()) {
+            if (Optional.is(state.lyrics.finishDelay)) {
+              if (state.lyrics.finishDelay.update().finished) {
+                this.fullfill()
+              }
+            } else {
+              this.fullfill()
+            }
+            return
           }
 
           if (Optional.is(state.lyrics.lineDelay) 

@@ -1,4262 +1,4403 @@
 {
-  "model":"Collection<io.alkapivo.core.service.shader.ShaderTemplate>",
   "data":{
-    "Posterization 04":{
-      "shader":"shader_posterization",
+    "CRT 04":{
+      "name":"CRT 04",
+      "shader":"shader_crt",
       "properties":{
-        "gamma":{
-          "increase":0.00020000000000000001,
-          "finished":0.0,
-          "factor":0.02,
-          "target":1.0,
-          "value":4.0,
-          "startValue":2.5
+        "uni_crt_sizes":{
+          "x":{
+            "startValue":256.0,
+            "value":256.0,
+            "factor":0.10000000000000001,
+            "target":256.0,
+            "increase":0.0,
+            "finished":false
+          },
+          "y":{
+            "startValue":256.0,
+            "value":256.0,
+            "factor":0.10000000000000001,
+            "target":512.0,
+            "increase":0.0,
+            "finished":false
+          },
+          "startValue":{
+            "x":256.0,
+            "y":256.0,
+            "a":1024.0,
+            "z":1024.0
+          },
+          "a":{
+            "startValue":1024.0,
+            "value":1024.0,
+            "factor":0.10000000000000001,
+            "target":1024.0,
+            "increase":0.0,
+            "finished":false
+          },
+          "value":{
+            "x":256.0,
+            "y":256.0,
+            "a":1024.0,
+            "z":1024.0
+          },
+          "finished":false,
+          "z":{
+            "startValue":1024.0,
+            "value":1024.0,
+            "factor":0.10000000000000001,
+            "target":1024.0,
+            "increase":0.0,
+            "finished":false
+          }
         },
-        "colorNumber":{
-          "increase":0.0050000000000000001,
-          "finished":0.0,
-          "factor":0.10000000000000001,
-          "target":4.0,
-          "value":30.0,
-          "startValue":30.0
-        }
-      },
-      "name":"Posterization 04"
-    },
-    "Posterization 05":{
-      "shader":"shader_posterization",
-      "properties":{
-        "gamma":{
+        "uni_radial_distortion_amount":{
+          "startValue":0.080000000000000002,
+          "value":0.029999999999999999,
+          "factor":0.0040000000000000001,
+          "target":2.0,
           "increase":0.0,
-          "finished":0.0,
-          "factor":0.0050000000000000001,
-          "target":6.0,
+          "finished":false
+        },
+        "uni_use_radial_distortion":{
+          "startValue":1.0,
           "value":1.0,
-          "startValue":0.29999999999999999
-        },
-        "colorNumber":{
+          "factor":1.0,
+          "target":1.0,
           "increase":0.0,
-          "finished":0.0,
-          "factor":1.0000000000000001e-05,
-          "target":17.0,
-          "value":15.0,
-          "startValue":7.0
-        }
-      },
-      "name":"Posterization 05"
-    },
-    "Posterization 03":{
-      "shader":"shader_posterization",
-      "properties":{
-        "gamma":{
+          "finished":false
+        },
+        "uni_use_border":{
+          "startValue":1.0,
+          "value":1.0,
+          "factor":1.0,
+          "target":1.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "uni_use_RGB_separation":{
+          "startValue":1.0,
+          "value":0.0,
+          "factor":1.0,
+          "target":0.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "uni_use_scanlines":{
+          "startValue":0.0,
+          "value":1.0,
+          "factor":1.0,
+          "target":1.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "uni_use_noise":{
+          "startValue":1.0,
+          "value":1.0,
+          "factor":1.0,
+          "target":1.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "uni_border_corner_size":{
+          "startValue":0.0,
+          "value":0.080000000000000002,
+          "factor":0.00050000000000000001,
+          "target":0.66000000000000003,
           "increase":9.9999999999999995e-07,
-          "finished":0.0,
+          "finished":false
+        },
+        "uni_border_corner_smoothness":{
+          "startValue":80.0,
+          "value":2.0,
+          "factor":0.050000000000000003,
+          "target":200.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "uni_brightness":{
+          "startValue":1.0,
+          "value":1.0,
           "factor":0.001,
           "target":2.0,
-          "value":0.29999999999999999,
-          "startValue":0.29999999999999999
+          "increase":0.0,
+          "finished":false
+        },
+        "uni_noise_strength":{
+          "startValue":0.20000000000000001,
+          "value":0.20000000000000001,
+          "factor":0.00050000000000000001,
+          "target":3.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "uni_timer":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.016,
+          "target":1000.0,
+          "increase":0.0,
+          "finished":false
+        }
+      }
+    },
+    "Posterization 04":{
+      "name":"Posterization 04",
+      "shader":"shader_posterization",
+      "properties":{
+        "gamma":{
+          "startValue":2.5,
+          "value":4.0,
+          "factor":0.02,
+          "target":1.0,
+          "increase":0.00020000000000000001,
+          "finished":0.0
         },
         "colorNumber":{
+          "startValue":30.0,
+          "value":30.0,
+          "factor":0.10000000000000001,
+          "target":4.0,
+          "increase":0.0050000000000000001,
+          "finished":0.0
+        }
+      }
+    },
+    "Posterization 05":{
+      "name":"Posterization 05",
+      "shader":"shader_posterization",
+      "properties":{
+        "gamma":{
+          "startValue":0.29999999999999999,
+          "value":1.0,
+          "factor":0.0050000000000000001,
+          "target":6.0,
           "increase":0.0,
-          "finished":0.0,
+          "finished":0.0
+        },
+        "colorNumber":{
+          "startValue":7.0,
+          "value":15.0,
+          "factor":1.0000000000000001e-05,
+          "target":17.0,
+          "increase":0.0,
+          "finished":0.0
+        }
+      }
+    },
+    "Posterization 03":{
+      "name":"Posterization 03",
+      "shader":"shader_posterization",
+      "properties":{
+        "gamma":{
+          "startValue":0.29999999999999999,
+          "value":0.29999999999999999,
+          "factor":0.001,
+          "target":2.0,
+          "increase":9.9999999999999995e-07,
+          "finished":0.0
+        },
+        "colorNumber":{
+          "startValue":7.0,
+          "value":7.0,
           "factor":1.0000000000000001e-05,
           "target":9.0,
-          "value":7.0,
-          "startValue":7.0
+          "increase":0.0,
+          "finished":0.0
         }
-      },
-      "name":"Posterization 03"
+      }
     },
     "LED 05":{
+      "name":"LED 05",
       "shader":"shader_led",
       "properties":{
-        "resolution":{
-          "x":{
-            "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":1.0,
-            "value":1.0,
-            "startValue":1.0
-          },
-          "finished":0.0,
-          "y":{
-            "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":1.0,
-            "value":1.0,
-            "startValue":1.0
-          },
-          "value":{
-            "x":1.0,
-            "y":1.0
-          },
-          "startValue":{
-            "x":1.0,
-            "y":1.0
-          }
-        },
         "ledSize":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":1024.0,
+          "value":1024.0,
           "factor":0.66000000000000003,
           "target":512.0,
-          "value":1024.0,
-          "startValue":1024.0
+          "increase":0.0,
+          "finished":0.0
         },
         "brightness":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":1.0,
+          "value":1.0,
           "factor":1.0,
           "target":1.0,
-          "value":1.0,
-          "startValue":1.0
+          "increase":0.0,
+          "finished":0.0
+        },
+        "resolution":{
+          "x":{
+            "startValue":1.0,
+            "value":1.0,
+            "factor":1.0,
+            "target":1.0,
+            "increase":0.0,
+            "finished":0.0
+          },
+          "value":{
+            "x":1.0,
+            "y":1.0
+          },
+          "y":{
+            "startValue":1.0,
+            "value":1.0,
+            "factor":1.0,
+            "target":1.0,
+            "increase":0.0,
+            "finished":0.0
+          },
+          "startValue":{
+            "x":1.0,
+            "y":1.0
+          },
+          "finished":0.0
         }
-      },
-      "name":"LED 05"
+      }
     },
     "HUE 01":{
+      "name":"HUE 01",
       "shader":"shader_hue",
       "properties":{
         "colorShift":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.0,
+          "value":0.0,
           "factor":0.016,
           "target":10000.0,
-          "value":0.0,
-          "startValue":0.0
+          "increase":0.0,
+          "finished":0.0
         }
-      },
-      "name":"HUE 01"
+      }
     },
     "HUE 02":{
+      "name":"HUE 02",
       "shader":"shader_hue",
       "properties":{
         "colorShift":{
-          "increase":0.0001,
-          "finished":0.0,
+          "startValue":66.0,
+          "value":66.0,
           "factor":0.016,
           "target":10000.0,
-          "value":66.0,
-          "startValue":66.0
+          "increase":0.0001,
+          "finished":0.0
         }
-      },
-      "name":"HUE 02"
+      }
     },
     "Ripple 01":{
+      "name":"Ripple 01",
       "shader":"shader_ripple",
       "properties":{
-        "position":{
-          "x":{
-            "increase":0.0,
-            "finished":0.0,
-            "factor":0.001,
-            "target":1.0,
-            "value":0.10000000000000001,
-            "startValue":0.0
-          },
-          "finished":0.0,
-          "y":{
-            "increase":0.0,
-            "finished":0.0,
-            "factor":0.001,
-            "target":1.0,
-            "value":0.0,
-            "startValue":1024.0
-          },
-          "value":{
-            "x":0.0,
-            "y":1024.0
-          },
-          "startValue":{
-            "x":0.0,
-            "y":1024.0
-          }
-        },
         "distortion":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":30.0,
+          "value":30.0,
           "factor":0.050000000000000003,
           "target":60.0,
-          "value":30.0,
-          "startValue":30.0
+          "increase":0.0,
+          "finished":0.0
         },
-        "resolution":{
+        "position":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
+            "startValue":0.0,
+            "value":0.10000000000000001,
+            "factor":0.001,
             "target":1.0,
-            "value":1.0,
-            "startValue":1.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":1.0,
-            "value":1.0,
-            "startValue":1080.0
+            "finished":0.0
           },
           "value":{
-            "x":1.0,
-            "y":1080.0
+            "x":0.0,
+            "y":1024.0
+          },
+          "y":{
+            "startValue":1024.0,
+            "value":0.0,
+            "factor":0.001,
+            "target":1.0,
+            "increase":0.0,
+            "finished":0.0
           },
           "startValue":{
-            "x":1.0,
-            "y":1080.0
-          }
-        },
-        "time":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.016,
-          "target":9999.0,
-          "value":0.0,
-          "startValue":0.0
+            "x":0.0,
+            "y":1024.0
+          },
+          "finished":0.0
         },
         "amount":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":64.0,
+          "value":64.0,
           "factor":1.0,
           "target":256.0,
-          "value":64.0,
-          "startValue":64.0
+          "increase":0.0,
+          "finished":0.0
+        },
+        "resolution":{
+          "x":{
+            "startValue":1.0,
+            "value":1.0,
+            "factor":1.0,
+            "target":1.0,
+            "increase":0.0,
+            "finished":0.0
+          },
+          "value":{
+            "x":1.0,
+            "y":1080.0
+          },
+          "y":{
+            "startValue":1080.0,
+            "value":1.0,
+            "factor":1.0,
+            "target":1.0,
+            "increase":0.0,
+            "finished":0.0
+          },
+          "startValue":{
+            "x":1.0,
+            "y":1080.0
+          },
+          "finished":0.0
         },
         "speed":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":10.0,
+          "value":10.0,
           "factor":0.001,
           "target":10.0,
-          "value":10.0,
-          "startValue":10.0
+          "increase":0.0,
+          "finished":0.0
+        },
+        "time":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.016,
+          "target":9999.0,
+          "increase":0.0,
+          "finished":0.0
         }
-      },
-      "name":"Ripple 01"
+      }
     },
     "Ripple 02":{
+      "name":"Ripple 02",
       "shader":"shader_ripple",
       "properties":{
+        "distortion":{
+          "startValue":30.0,
+          "value":30.0,
+          "factor":0.050000000000000003,
+          "target":60.0,
+          "increase":0.0,
+          "finished":0.0
+        },
         "position":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":0.5,
+            "value":0.5,
             "factor":1.0,
             "target":0.5,
-            "value":0.5,
-            "startValue":0.5
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":0.5,
-            "value":0.5,
-            "startValue":0.5
+            "finished":0.0
           },
           "value":{
             "x":0.5,
             "y":0.5
           },
+          "y":{
+            "startValue":0.5,
+            "value":0.5,
+            "factor":1.0,
+            "target":0.5,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":0.5,
             "y":0.5
-          }
+          },
+          "finished":0.0
         },
-        "distortion":{
+        "amount":{
+          "startValue":50.0,
+          "value":50.0,
+          "factor":0.20000000000000001,
+          "target":200.0,
           "increase":0.0,
-          "finished":0.0,
-          "factor":0.050000000000000003,
-          "target":60.0,
-          "value":30.0,
-          "startValue":30.0
+          "finished":0.0
         },
         "resolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1.0,
+            "value":1.0,
             "factor":1.0,
             "target":1.0,
-            "value":1.0,
-            "startValue":1.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":1.0,
-            "value":1.0,
-            "startValue":1.0
+            "finished":0.0
           },
           "value":{
             "x":1.0,
             "y":1.0
           },
+          "y":{
+            "startValue":1.0,
+            "value":1.0,
+            "factor":1.0,
+            "target":1.0,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":1.0,
             "y":1.0
-          }
-        },
-        "time":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.016,
-          "target":1000000.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "amount":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.20000000000000001,
-          "target":200.0,
-          "value":50.0,
-          "startValue":50.0
+          },
+          "finished":0.0
         },
         "speed":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":2.0,
+          "value":2.0,
           "factor":0.001,
           "target":10.0,
-          "value":2.0,
-          "startValue":2.0
+          "increase":0.0,
+          "finished":0.0
+        },
+        "time":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.016,
+          "target":1000000.0,
+          "increase":0.0,
+          "finished":0.0
         }
-      },
-      "name":"Ripple 02"
+      }
     },
     "HUE 03":{
+      "name":"HUE 03",
       "shader":"shader_hue",
       "properties":{
         "colorShift":{
-          "increase":0.00014999999999999999,
-          "finished":0.0,
+          "startValue":0.0,
+          "value":0.0,
           "factor":0.14999999999999999,
           "target":9999.0,
-          "value":0.0,
-          "startValue":0.0
+          "increase":0.00014999999999999999,
+          "finished":0.0
         }
-      },
-      "name":"HUE 03"
+      }
     },
     "HUE 04":{
+      "name":"HUE 04",
       "shader":"shader_hue",
       "properties":{
         "colorShift":{
-          "increase":1.0000000000000001e-05,
-          "finished":0.0,
+          "startValue":0.0,
+          "value":0.0,
           "factor":0.33000000000000002,
           "target":9999.0,
-          "value":0.0,
-          "startValue":0.0
+          "increase":1.0000000000000001e-05,
+          "finished":0.0
         }
-      },
-      "name":"HUE 04"
+      }
     },
     "HUE 05":{
+      "name":"HUE 05",
       "shader":"shader_hue",
       "properties":{
         "colorShift":{
-          "increase":1.0000000000000001e-05,
-          "finished":0.0,
+          "startValue":0.0,
+          "value":0.0,
           "factor":0.66000000000000003,
           "target":10000.0,
-          "value":0.0,
-          "startValue":0.0
+          "increase":1.0000000000000001e-05,
+          "finished":0.0
         }
-      },
-      "name":"HUE 05"
+      }
     },
     "Ripple 04":{
+      "name":"Ripple 04",
       "shader":"shader_ripple",
       "properties":{
+        "distortion":{
+          "startValue":30.0,
+          "value":30.0,
+          "factor":0.050000000000000003,
+          "target":60.0,
+          "increase":0.0,
+          "finished":0.0
+        },
         "position":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":0.5,
+            "value":0.5,
             "factor":1.0,
             "target":0.5,
-            "value":0.5,
-            "startValue":0.5
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":0.5,
-            "value":0.5,
-            "startValue":0.5
+            "finished":0.0
           },
           "value":{
             "x":0.5,
             "y":0.5
           },
+          "y":{
+            "startValue":0.5,
+            "value":0.5,
+            "factor":1.0,
+            "target":0.5,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":0.5,
             "y":0.5
-          }
+          },
+          "finished":0.0
         },
-        "distortion":{
+        "amount":{
+          "startValue":50.0,
+          "value":50.0,
+          "factor":0.20000000000000001,
+          "target":200.0,
           "increase":0.0,
-          "finished":0.0,
-          "factor":0.050000000000000003,
-          "target":60.0,
-          "value":30.0,
-          "startValue":30.0
+          "finished":0.0
         },
         "resolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1.0,
+            "value":1.0,
             "factor":1.0,
             "target":1.0,
-            "value":1.0,
-            "startValue":1.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":1.0,
-            "value":1.0,
-            "startValue":1.0
+            "finished":0.0
           },
           "value":{
             "x":1.0,
             "y":1.0
           },
+          "y":{
+            "startValue":1.0,
+            "value":1.0,
+            "factor":1.0,
+            "target":1.0,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":1.0,
             "y":1.0
-          }
-        },
-        "time":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.016,
-          "target":1000000.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "amount":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.20000000000000001,
-          "target":200.0,
-          "value":50.0,
-          "startValue":50.0
+          },
+          "finished":0.0
         },
         "speed":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":2.0,
+          "value":2.0,
           "factor":0.001,
           "target":10.0,
-          "value":2.0,
-          "startValue":2.0
+          "increase":0.0,
+          "finished":0.0
+        },
+        "time":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.016,
+          "target":1000000.0,
+          "increase":0.0,
+          "finished":0.0
         }
-      },
-      "name":"Ripple 04"
+      }
     },
     "Ripple 05":{
+      "name":"Ripple 05",
       "shader":"shader_ripple",
       "properties":{
+        "distortion":{
+          "startValue":30.0,
+          "value":30.0,
+          "factor":0.050000000000000003,
+          "target":60.0,
+          "increase":0.0,
+          "finished":0.0
+        },
         "position":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":0.5,
+            "value":0.5,
             "factor":1.0,
             "target":0.5,
-            "value":0.5,
-            "startValue":0.5
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":0.5,
-            "value":0.5,
-            "startValue":0.5
+            "finished":0.0
           },
           "value":{
             "x":0.5,
             "y":0.5
           },
+          "y":{
+            "startValue":0.5,
+            "value":0.5,
+            "factor":1.0,
+            "target":0.5,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":0.5,
             "y":0.5
-          }
+          },
+          "finished":0.0
         },
-        "distortion":{
+        "amount":{
+          "startValue":50.0,
+          "value":50.0,
+          "factor":0.20000000000000001,
+          "target":200.0,
           "increase":0.0,
-          "finished":0.0,
-          "factor":0.050000000000000003,
-          "target":60.0,
-          "value":30.0,
-          "startValue":30.0
+          "finished":0.0
         },
         "resolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1.0,
+            "value":1.0,
             "factor":1.0,
             "target":1.0,
-            "value":1.0,
-            "startValue":1.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":1.0,
-            "value":1.0,
-            "startValue":1.0
+            "finished":0.0
           },
           "value":{
             "x":1.0,
             "y":1.0
           },
+          "y":{
+            "startValue":1.0,
+            "value":1.0,
+            "factor":1.0,
+            "target":1.0,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":1.0,
             "y":1.0
-          }
-        },
-        "time":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.016,
-          "target":1000000.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "amount":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.20000000000000001,
-          "target":200.0,
-          "value":50.0,
-          "startValue":50.0
+          },
+          "finished":0.0
         },
         "speed":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":2.0,
+          "value":2.0,
           "factor":0.001,
           "target":10.0,
-          "value":2.0,
-          "startValue":2.0
+          "increase":0.0,
+          "finished":0.0
+        },
+        "time":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.016,
+          "target":1000000.0,
+          "increase":0.0,
+          "finished":0.0
         }
-      },
-      "name":"Ripple 05"
+      }
     },
     "Abberation":{
-      "shader":"shader_abberation",
-      "name":"Abberation"
+      "name":"Abberation",
+      "shader":"shader_abberation"
     },
     "Octagrams 01":{
+      "name":"Octagrams 01",
       "shader":"shader_octagrams",
       "properties":{
         "iTime":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.0,
+          "value":0.0,
           "factor":0.016,
           "target":999.0,
-          "value":0.0,
-          "startValue":0.0
+          "increase":0.0,
+          "finished":0.0
         },
         "iResolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1.0,
+            "value":1.5,
             "factor":0.001,
             "target":1.0,
-            "value":1.5,
-            "startValue":1.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":1.0,
-            "value":1.0,
-            "startValue":1.0
+            "finished":0.0
           },
           "value":{
             "x":1.0,
             "y":1.0
           },
+          "y":{
+            "startValue":1.0,
+            "value":1.0,
+            "factor":1.0,
+            "target":1.0,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":1.0,
             "y":1.0
-          }
+          },
+          "finished":0.0
         },
         "iIterations":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":2.0,
+          "value":2.0,
           "factor":0.0050000000000000001,
           "target":8.0,
-          "value":2.0,
-          "startValue":2.0
+          "increase":0.0,
+          "finished":0.0
         }
-      },
-      "name":"Octagrams 01"
+      }
     },
     "Octagrams 02":{
+      "name":"Octagrams 02",
       "shader":"shader_octagrams",
       "properties":{
         "iTime":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":100.0,
+          "value":0.0,
           "factor":0.002,
           "target":9999.0,
-          "value":0.0,
-          "startValue":100.0
+          "increase":0.0,
+          "finished":0.0
         },
         "iResolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1.0,
+            "value":0.75,
             "factor":0.001,
             "target":1.5,
-            "value":0.75,
-            "startValue":1.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":0.001,
-            "target":1.5,
-            "value":0.75,
-            "startValue":1.0
+            "finished":0.0
           },
           "value":{
             "x":1.0,
             "y":1.0
           },
+          "y":{
+            "startValue":1.0,
+            "value":0.75,
+            "factor":0.001,
+            "target":1.5,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":1.0,
             "y":1.0
-          }
+          },
+          "finished":0.0
         },
         "iIterations":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":13.0,
+          "value":0.69999999999999996,
           "factor":0.01,
           "target":10.0,
-          "value":0.69999999999999996,
-          "startValue":13.0
+          "increase":0.0,
+          "finished":0.0
         }
-      },
-      "name":"Octagrams 02"
+      }
     },
     "Octagrams 03":{
+      "name":"Octagrams 03",
       "shader":"shader_octagrams",
       "properties":{
         "iTint":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1.0,
+            "value":0.0,
             "factor":1.0,
             "target":0.5,
-            "value":0.0,
-            "startValue":1.0
+            "increase":0.0,
+            "finished":0.0
+          },
+          "y":{
+            "startValue":1.0,
+            "value":0.29999999999999999,
+            "factor":1.0,
+            "target":0.29999999999999999,
+            "increase":0.0,
+            "finished":0.0
+          },
+          "startValue":null,
+          "value":{
+            "x":1.0,
+            "y":1.0,
+            "z":1.0
           },
           "finished":0.0,
           "z":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1.0,
+            "value":0.10000000000000001,
             "factor":1.0,
             "target":0.91000000000000003,
-            "value":0.10000000000000001,
-            "startValue":1.0
-          },
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":0.29999999999999999,
-            "value":0.29999999999999999,
-            "startValue":1.0
-          },
-          "value":{
-            "x":1.0,
-            "z":1.0,
-            "y":1.0
-          },
-          "startValue":null
+            "finished":0.0
+          }
         },
         "iTime":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.0,
+          "value":0.0,
           "factor":0.016,
           "target":9999.0,
-          "value":0.0,
-          "startValue":0.0
+          "increase":0.0,
+          "finished":0.0
         },
         "iResolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":0.66000000000000003,
+            "value":0.66000000000000003,
             "factor":0.01,
             "target":2.0,
-            "value":0.66000000000000003,
-            "startValue":0.66000000000000003
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":0.01,
-            "target":2.0,
-            "value":0.66000000000000003,
-            "startValue":0.66000000000000003
+            "finished":0.0
           },
           "value":{
             "x":0.66000000000000003,
             "y":0.66000000000000003
           },
+          "y":{
+            "startValue":0.66000000000000003,
+            "value":0.66000000000000003,
+            "factor":0.01,
+            "target":2.0,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":0.66000000000000003,
             "y":0.66000000000000003
-          }
+          },
+          "finished":0.0
         },
         "iIterations":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":4.0,
+          "value":4.0,
           "factor":0.02,
           "target":4.0,
-          "value":4.0,
-          "startValue":4.0
+          "increase":0.0,
+          "finished":0.0
         }
-      },
-      "name":"Octagrams 03"
+      }
     },
     "Scanlines 01":{
+      "name":"Scanlines 01",
       "shader":"shader_scanlines",
       "properties":{
+        "color":"#FFFFFF",
         "resolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":0.0,
+            "value":0.0,
             "factor":1.0,
             "target":0.0,
-            "value":0.0,
-            "startValue":0.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":0.0,
-            "value":0.0,
-            "startValue":0.0
+            "finished":0.0
           },
           "value":{
             "x":0.0,
             "y":0.0
           },
+          "y":{
+            "startValue":0.0,
+            "value":0.0,
+            "factor":1.0,
+            "target":0.0,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":0.0,
             "y":0.0
-          }
-        },
-        "color":"#FFFFFF"
-      },
-      "name":"Scanlines 01"
+          },
+          "finished":0.0
+        }
+      }
     },
     "Octagrams 04":{
+      "name":"Octagrams 04",
       "shader":"shader_octagrams",
       "properties":{
         "iTime":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.0,
+          "value":5.0,
           "factor":0.0025000000000000001,
           "target":999.89999999999998,
-          "value":5.0,
-          "startValue":0.0
+          "increase":0.0,
+          "finished":0.0
         },
         "iResolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1.0,
+            "value":1.0,
             "factor":0.001,
             "target":0.0,
-            "value":1.0,
-            "startValue":1.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":0.001,
-            "target":0.0,
-            "value":1.0,
-            "startValue":1.0
+            "finished":0.0
           },
           "value":{
             "x":1.0,
             "y":1.0
           },
+          "y":{
+            "startValue":1.0,
+            "value":1.0,
+            "factor":0.001,
+            "target":0.0,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":1.0,
             "y":1.0
-          }
+          },
+          "finished":0.0
         },
         "iIterations":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":4.0,
+          "value":3.0,
           "factor":0.001,
           "target":5.0,
-          "value":3.0,
-          "startValue":4.0
+          "increase":0.0,
+          "finished":0.0
         }
-      },
-      "name":"Octagrams 04"
+      }
     },
     "Scanlines 02":{
+      "name":"Scanlines 02",
       "shader":"shader_scanlines",
       "properties":{
+        "color":"#FFFFFF",
         "resolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":0.0,
+            "value":0.0,
             "factor":1.0,
             "target":0.0,
-            "value":0.0,
-            "startValue":0.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":0.0,
-            "value":0.0,
-            "startValue":0.0
+            "finished":0.0
           },
           "value":{
             "x":0.0,
             "y":0.0
           },
+          "y":{
+            "startValue":0.0,
+            "value":0.0,
+            "factor":1.0,
+            "target":0.0,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":0.0,
             "y":0.0
-          }
-        },
-        "color":"#FFFFFF"
-      },
-      "name":"Scanlines 02"
+          },
+          "finished":0.0
+        }
+      }
     },
     "Octagrams 05":{
+      "name":"Octagrams 05",
       "shader":"shader_octagrams",
       "properties":{
         "iTime":{
-          "increase":0.00020000000000000001,
-          "finished":0.0,
+          "startValue":0.0,
+          "value":80.0,
           "factor":0.0080000000000000002,
           "target":999.89999999999998,
-          "value":80.0,
-          "startValue":0.0
+          "increase":0.00020000000000000001,
+          "finished":0.0
         },
         "iResolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1.0,
+            "value":1.0,
             "factor":1.0,
             "target":1.0,
-            "value":1.0,
-            "startValue":1.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
+            "finished":0.0
+          },
+          "value":{
+            "x":1.0,
+            "y":1.0
+          },
+          "y":{
+            "startValue":1.0,
+            "value":1.0,
             "factor":0.001,
             "target":2.0,
-            "value":1.0,
-            "startValue":1.0
-          },
-          "value":{
-            "x":1.0,
-            "y":1.0
+            "increase":0.0,
+            "finished":0.0
           },
           "startValue":{
             "x":1.0,
             "y":1.0
-          }
+          },
+          "finished":0.0
         },
         "iIterations":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":4.0,
+          "value":4.0,
           "factor":0.10000000000000001,
           "target":4.0,
-          "value":4.0,
-          "startValue":4.0
+          "increase":0.0,
+          "finished":0.0
         }
-      },
-      "name":"Octagrams 05"
+      }
     },
     "Revert":{
-      "shader":"shader_revert",
-      "name":"Revert"
+      "name":"Revert",
+      "shader":"shader_revert"
     },
     "Scanlines 03":{
+      "name":"Scanlines 03",
       "shader":"shader_scanlines",
       "properties":{
+        "color":"#FFFFFF",
         "resolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":0.0,
+            "value":0.0,
             "factor":1.0,
             "target":0.0,
-            "value":0.0,
-            "startValue":0.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":0.0,
-            "value":0.0,
-            "startValue":0.0
+            "finished":0.0
           },
           "value":{
             "x":0.0,
             "y":0.0
           },
+          "y":{
+            "startValue":0.0,
+            "value":0.0,
+            "factor":1.0,
+            "target":0.0,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":0.0,
             "y":0.0
-          }
-        },
-        "color":"#FFFFFF"
-      },
-      "name":"Scanlines 03"
+          },
+          "finished":0.0
+        }
+      }
     },
     "Emboss 01":{
+      "name":"Emboss 01",
       "shader":"shader_emboss",
       "properties":{
         "resolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1280.0,
+            "value":1280.0,
             "factor":1.0,
             "target":1280.0,
-            "value":1280.0,
-            "startValue":1280.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
+            "finished":0.0
+          },
+          "value":{
+            "x":1280.0,
+            "y":720.0
+          },
+          "y":{
+            "startValue":720.0,
+            "value":720.0,
             "factor":1.0,
             "target":720.0,
-            "value":720.0,
-            "startValue":720.0
-          },
-          "value":{
-            "x":1280.0,
-            "y":720.0
+            "increase":0.0,
+            "finished":0.0
           },
           "startValue":{
             "x":1280.0,
             "y":720.0
-          }
+          },
+          "finished":0.0
         }
-      },
-      "name":"Emboss 01"
+      }
     },
     "CRT 02":{
+      "name":"CRT 02",
       "shader":"shader_crt",
       "properties":{
-        "uni_timer":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.016,
-          "target":1000.0,
-          "value":0.0,
-          "startValue":0.0
-        },
         "uni_crt_sizes":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":256.0,
+            "value":256.0,
             "factor":0.10000000000000001,
             "target":256.0,
-            "value":256.0,
-            "startValue":256.0
-          },
-          "finished":0.0,
-          "z":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":0.10000000000000001,
-            "target":1024.0,
-            "value":1024.0,
-            "startValue":1024.0
+            "finished":0.0
           },
           "y":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":256.0,
+            "value":256.0,
             "factor":0.10000000000000001,
             "target":512.0,
-            "value":256.0,
-            "startValue":256.0
-          },
-          "value":{
-            "x":256.0,
-            "z":1024.0,
-            "y":256.0,
-            "a":1024.0
-          },
-          "a":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":0.10000000000000001,
-            "target":1024.0,
-            "value":1024.0,
-            "startValue":1024.0
+            "finished":0.0
           },
           "startValue":{
             "x":256.0,
-            "z":1024.0,
             "y":256.0,
-            "a":1024.0
+            "a":1024.0,
+            "z":1024.0
+          },
+          "a":{
+            "startValue":1024.0,
+            "value":1024.0,
+            "factor":0.10000000000000001,
+            "target":1024.0,
+            "increase":0.0,
+            "finished":0.0
+          },
+          "value":{
+            "x":256.0,
+            "y":256.0,
+            "a":1024.0,
+            "z":1024.0
+          },
+          "finished":0.0,
+          "z":{
+            "startValue":1024.0,
+            "value":1024.0,
+            "factor":0.10000000000000001,
+            "target":1024.0,
+            "increase":0.0,
+            "finished":0.0
           }
         },
         "uni_radial_distortion_amount":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.12,
+          "value":0.080000000000000002,
           "factor":0.0016000000000000001,
           "target":1.5,
-          "value":0.080000000000000002,
-          "startValue":0.12
+          "increase":0.0,
+          "finished":0.0
         },
         "uni_use_radial_distortion":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":1.0,
+          "value":1.0,
           "factor":0.001,
           "target":1.0,
-          "value":1.0,
-          "startValue":1.0
+          "increase":0.0,
+          "finished":0.0
         },
         "uni_use_border":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":1.0,
+          "value":1.0,
           "factor":1.0,
           "target":1.0,
-          "value":1.0,
-          "startValue":1.0
+          "increase":0.0,
+          "finished":0.0
         },
         "uni_use_RGB_separation":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":1.0,
+          "value":1.0,
           "factor":1.0,
           "target":0.0,
-          "value":1.0,
-          "startValue":1.0
+          "increase":0.0,
+          "finished":0.0
         },
         "uni_use_scanlines":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":1.0,
+          "value":0.0,
           "factor":1.0,
           "target":0.0,
-          "value":0.0,
-          "startValue":1.0
+          "increase":0.0,
+          "finished":0.0
         },
         "uni_use_noise":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":1.0,
+          "value":1.0,
           "factor":1.0,
           "target":1.0,
-          "value":1.0,
-          "startValue":1.0
+          "increase":0.0,
+          "finished":0.0
         },
         "uni_border_corner_size":{
-          "increase":9.9999999999999995e-07,
-          "finished":0.0,
+          "startValue":0.029999999999999999,
+          "value":0.0,
           "factor":0.0001,
           "target":0.66000000000000003,
-          "value":0.0,
-          "startValue":0.029999999999999999
+          "increase":9.9999999999999995e-07,
+          "finished":0.0
         },
         "uni_border_corner_smoothness":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":80.0,
+          "value":80.0,
           "factor":0.10000000000000001,
           "target":200.0,
-          "value":80.0,
-          "startValue":80.0
+          "increase":0.0,
+          "finished":0.0
         },
         "uni_brightness":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":1.0,
+          "value":1.0,
           "factor":1.0,
           "target":1.0,
-          "value":1.0,
-          "startValue":1.0
+          "increase":0.0,
+          "finished":0.0
         },
         "uni_noise_strength":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.17499999999999999,
+          "value":0.20000000000000001,
           "factor":0.0001,
           "target":0.10000000000000001,
-          "value":0.20000000000000001,
-          "startValue":0.17499999999999999
+          "increase":0.0,
+          "finished":0.0
+        },
+        "uni_timer":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.016,
+          "target":1000.0,
+          "increase":0.0,
+          "finished":0.0
         }
-      },
-      "name":"CRT 02"
+      }
     },
     "Thermal":{
-      "shader":"shader_thermal",
-      "name":"Thermal"
+      "name":"Thermal",
+      "shader":"shader_thermal"
     },
     "Upscaling-bicubic":{
-      "shader":"shader_upscaling_bicubic",
-      "name":"Upscaling-bicubic"
+      "name":"Upscaling-bicubic",
+      "shader":"shader_upscaling_bicubic"
     },
     "Upscaling-HQ4X":{
-      "shader":"shader_upscaling_hq4x",
-      "name":"Upscaling-HQ4X"
+      "name":"Upscaling-HQ4X",
+      "shader":"shader_upscaling_hq4x"
     },
     "Phantom Star 01":{
+      "name":"Phantom Star 01",
       "shader":"shader_phantom_star",
       "properties":{
-        "iIterations":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.01,
-          "target":1.0,
-          "value":1.0,
-          "startValue":1.0
-        },
         "sizeB":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":16.0,
+          "value":16.0,
           "factor":0.070000000000000007,
           "target":25.0,
-          "value":16.0,
-          "startValue":16.0
+          "increase":0.0,
+          "finished":0.0
+        },
+        "iIterations":{
+          "startValue":1.0,
+          "value":1.0,
+          "factor":0.01,
+          "target":1.0,
+          "increase":0.0,
+          "finished":0.0
         },
         "iTint":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1.0,
+            "value":0.02,
             "factor":0.002,
             "target":0.16,
-            "value":0.02,
-            "startValue":1.0
+            "increase":0.0,
+            "finished":0.0
+          },
+          "y":{
+            "startValue":1.0,
+            "value":0.31,
+            "factor":0.002,
+            "target":0.029999999999999999,
+            "increase":0.0,
+            "finished":0.0
+          },
+          "startValue":null,
+          "value":{
+            "x":1.0,
+            "y":1.0,
+            "z":1.0
           },
           "finished":0.0,
           "z":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1.0,
+            "value":0.050000000000000003,
             "factor":0.002,
             "target":0.25,
-            "value":0.050000000000000003,
-            "startValue":1.0
-          },
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":0.002,
-            "target":0.029999999999999999,
-            "value":0.31,
-            "startValue":1.0
-          },
-          "value":{
-            "x":1.0,
-            "z":1.0,
-            "y":1.0
-          },
-          "startValue":null
+            "finished":0.0
+          }
         },
         "iTime":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.0,
+          "value":0.0,
           "factor":0.016,
           "target":999.89999999999998,
-          "value":0.0,
-          "startValue":0.0
+          "increase":0.0,
+          "finished":0.0
         },
         "iResolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":1.0,
+            "startValue":1.0,
             "value":1.0,
-            "startValue":1.0
-          },
-          "finished":0.0,
-          "y":{
-            "increase":0.0,
-            "finished":0.0,
             "factor":1.0,
             "target":1.0,
-            "value":0.0,
-            "startValue":0.0
+            "increase":0.0,
+            "finished":0.0
           },
           "value":{
             "x":1.0,
             "y":0.0
+          },
+          "y":{
+            "startValue":0.0,
+            "value":0.0,
+            "factor":1.0,
+            "target":1.0,
+            "increase":0.0,
+            "finished":0.0
           },
           "startValue":{
             "x":1.0,
             "y":0.0
-          }
+          },
+          "finished":0.0
         },
         "sizeA":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":16.0,
+          "value":16.0,
           "factor":0.050000000000000003,
           "target":32.0,
-          "value":16.0,
-          "startValue":16.0
+          "increase":0.0,
+          "finished":0.0
         }
-      },
-      "name":"Phantom Star 01"
+      }
     },
     "70s Melt 03":{
+      "name":"70s Melt 03",
       "shader":"shader_70s_melt",
       "properties":{
         "iTime":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":200.0,
+          "value":200.0,
           "factor":0.10000000000000001,
           "target":9999.0,
-          "value":200.0,
-          "startValue":200.0
+          "increase":0.0,
+          "finished":0.0
         },
         "iResolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":32.0,
+            "value":32.0,
             "factor":0.10000000000000001,
             "target":8.0,
-            "value":32.0,
-            "startValue":32.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":0.10000000000000001,
-            "target":8.0,
-            "value":32.0,
-            "startValue":32.0
+            "finished":0.0
           },
           "value":{
             "x":32.0,
             "y":32.0
           },
+          "y":{
+            "startValue":32.0,
+            "value":32.0,
+            "factor":0.10000000000000001,
+            "target":8.0,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":32.0,
             "y":32.0
-          }
+          },
+          "finished":0.0
         }
-      },
-      "name":"70s Melt 03"
+      }
     },
     "70s Melt 04":{
+      "name":"70s Melt 04",
       "shader":"shader_70s_melt",
       "properties":{
         "iTime":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":310.0,
+          "value":304.0,
           "factor":0.089999999999999997,
           "target":9999.0,
-          "value":304.0,
-          "startValue":310.0
+          "increase":0.0,
+          "finished":0.0
         },
         "iResolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":100.0,
+            "value":100.0,
             "factor":0.25,
             "target":1.0,
-            "value":100.0,
-            "startValue":100.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":0.25,
-            "target":1.0,
-            "value":100.0,
-            "startValue":100.0
+            "finished":0.0
           },
           "value":{
             "x":100.0,
             "y":100.0
           },
+          "y":{
+            "startValue":100.0,
+            "value":100.0,
+            "factor":0.25,
+            "target":1.0,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":100.0,
             "y":100.0
-          }
+          },
+          "finished":0.0
         }
-      },
-      "name":"70s Melt 04"
+      }
     },
     "70s Melt 05":{
+      "name":"70s Melt 05",
       "shader":"shader_70s_melt",
       "properties":{
         "iTime":{
-          "increase":0.02,
-          "finished":0.0,
+          "startValue":840.0,
+          "value":840.0,
           "factor":0.0050000000000000001,
           "target":0.0,
-          "value":840.0,
-          "startValue":840.0
+          "increase":0.02,
+          "finished":0.0
         },
         "iResolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":0.80000000000000004,
+            "value":0.80000000000000004,
             "factor":0.002,
             "target":1.0,
-            "value":0.80000000000000004,
-            "startValue":0.80000000000000004
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":0.002,
-            "target":0.80000000000000004,
-            "value":0.59999999999999998,
-            "startValue":0.59999999999999998
+            "finished":0.0
           },
           "value":{
             "x":0.80000000000000004,
             "y":0.59999999999999998
           },
+          "y":{
+            "startValue":0.59999999999999998,
+            "value":0.59999999999999998,
+            "factor":0.002,
+            "target":0.80000000000000004,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":0.80000000000000004,
             "y":0.59999999999999998
-          }
+          },
+          "finished":0.0
         }
-      },
-      "name":"70s Melt 05"
+      }
     },
     "ART 02":{
+      "name":"ART 02",
       "shader":"shader_art",
       "properties":{
         "iTime":{
-          "increase":0.0001,
-          "finished":0.0,
+          "startValue":1200.0,
+          "value":1200.0,
           "factor":0.0016000000000000001,
           "target":9999.0,
-          "value":1200.0,
-          "startValue":1200.0
+          "increase":0.0001,
+          "finished":0.0
         },
         "iResolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1.0,
+            "value":1.0,
             "factor":0.10000000000000001,
             "target":1.0,
-            "value":1.0,
-            "startValue":1.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":0.0001,
-            "target":1.6100000000000001,
-            "value":0.90000000000000002,
-            "startValue":0.90000000000000002
+            "finished":0.0
           },
           "value":{
             "x":1.0,
             "y":0.90000000000000002
           },
+          "y":{
+            "startValue":0.90000000000000002,
+            "value":0.90000000000000002,
+            "factor":0.0001,
+            "target":1.6100000000000001,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":1.0,
             "y":0.90000000000000002
-          }
+          },
+          "finished":0.0
         },
         "iIterations":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":24.0,
+          "value":24.0,
           "factor":0.00050000000000000001,
           "target":50.0,
-          "value":24.0,
-          "startValue":24.0
+          "increase":0.0,
+          "finished":0.0
         }
-      },
-      "name":"ART 02"
+      }
     },
     "CRT 03":{
+      "name":"CRT 03",
       "shader":"shader_crt",
       "properties":{
-        "uni_timer":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.016,
-          "target":1000.0,
-          "value":0.0,
-          "startValue":0.0
-        },
         "uni_crt_sizes":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":256.0,
+            "value":256.0,
             "factor":0.10000000000000001,
             "target":256.0,
-            "value":256.0,
-            "startValue":256.0
-          },
-          "finished":0.0,
-          "z":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":0.10000000000000001,
-            "target":1024.0,
-            "value":1024.0,
-            "startValue":1024.0
+            "finished":0.0
           },
           "y":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":256.0,
+            "value":256.0,
             "factor":0.10000000000000001,
             "target":512.0,
-            "value":256.0,
-            "startValue":256.0
+            "increase":0.0,
+            "finished":0.0
           },
-          "value":{
+          "startValue":{
             "x":256.0,
-            "z":1024.0,
             "y":256.0,
-            "a":1024.0
+            "a":1024.0,
+            "z":1024.0
           },
           "a":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1024.0,
+            "value":1024.0,
             "factor":0.10000000000000001,
             "target":1024.0,
-            "value":1024.0,
-            "startValue":1024.0
+            "increase":0.0,
+            "finished":0.0
           },
-          "startValue":{
+          "value":{
             "x":256.0,
-            "z":1024.0,
             "y":256.0,
-            "a":1024.0
+            "a":1024.0,
+            "z":1024.0
+          },
+          "finished":0.0,
+          "z":{
+            "startValue":1024.0,
+            "value":1024.0,
+            "factor":0.10000000000000001,
+            "target":1024.0,
+            "increase":0.0,
+            "finished":0.0
           }
         },
         "uni_radial_distortion_amount":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.12,
+          "value":0.080000000000000002,
           "factor":0.0016000000000000001,
           "target":1.5,
-          "value":0.080000000000000002,
-          "startValue":0.12
+          "increase":0.0,
+          "finished":0.0
         },
         "uni_use_radial_distortion":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":1.0,
+          "value":1.0,
           "factor":0.001,
           "target":1.0,
-          "value":1.0,
-          "startValue":1.0
+          "increase":0.0,
+          "finished":0.0
         },
         "uni_use_border":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":1.0,
+          "value":1.0,
           "factor":1.0,
           "target":1.0,
-          "value":1.0,
-          "startValue":1.0
+          "increase":0.0,
+          "finished":0.0
         },
         "uni_use_RGB_separation":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":1.0,
+          "value":1.0,
           "factor":1.0,
           "target":0.0,
-          "value":1.0,
-          "startValue":1.0
+          "increase":0.0,
+          "finished":0.0
         },
         "uni_use_scanlines":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":1.0,
+          "value":0.0,
           "factor":1.0,
           "target":0.0,
-          "value":0.0,
-          "startValue":1.0
+          "increase":0.0,
+          "finished":0.0
         },
         "uni_use_noise":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":1.0,
+          "value":1.0,
           "factor":1.0,
           "target":1.0,
-          "value":1.0,
-          "startValue":1.0
+          "increase":0.0,
+          "finished":0.0
         },
         "uni_border_corner_size":{
-          "increase":9.9999999999999995e-07,
-          "finished":0.0,
+          "startValue":0.029999999999999999,
+          "value":0.0,
           "factor":0.0001,
           "target":0.66000000000000003,
-          "value":0.0,
-          "startValue":0.029999999999999999
+          "increase":9.9999999999999995e-07,
+          "finished":0.0
         },
         "uni_border_corner_smoothness":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":80.0,
+          "value":80.0,
           "factor":0.10000000000000001,
           "target":200.0,
-          "value":80.0,
-          "startValue":80.0
+          "increase":0.0,
+          "finished":0.0
         },
         "uni_brightness":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":1.0,
+          "value":1.0,
           "factor":1.0,
           "target":1.0,
-          "value":1.0,
-          "startValue":1.0
+          "increase":0.0,
+          "finished":0.0
         },
         "uni_noise_strength":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.17499999999999999,
+          "value":0.20000000000000001,
           "factor":0.0001,
           "target":0.10000000000000001,
-          "value":0.20000000000000001,
-          "startValue":0.17499999999999999
+          "increase":0.0,
+          "finished":0.0
+        },
+        "uni_timer":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.016,
+          "target":1000.0,
+          "increase":0.0,
+          "finished":0.0
         }
-      },
-      "name":"CRT 03"
+      }
     },
     "ART 03":{
+      "name":"ART 03",
       "shader":"shader_art",
       "properties":{
         "iTime":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":222.0,
+          "value":222.0,
           "factor":0.0025999999999999999,
           "target":9999.0,
-          "value":222.0,
-          "startValue":222.0
+          "increase":0.0,
+          "finished":0.0
         },
         "iResolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":2.0,
+            "value":2.0,
             "factor":0.00020000000000000001,
             "target":1.3300000000000001,
-            "value":2.0,
-            "startValue":2.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
+            "finished":0.0
+          },
+          "value":{
+            "x":2.0,
+            "y":0.90000000000000002
+          },
+          "y":{
+            "startValue":0.90000000000000002,
+            "value":0.90000000000000002,
             "factor":0.0001,
             "target":1.6100000000000001,
-            "value":0.90000000000000002,
-            "startValue":0.90000000000000002
-          },
-          "value":{
-            "x":2.0,
-            "y":0.90000000000000002
+            "increase":0.0,
+            "finished":0.0
           },
           "startValue":{
             "x":2.0,
             "y":0.90000000000000002
-          }
+          },
+          "finished":0.0
         },
         "iIterations":{
-          "increase":0.00020000000000000001,
-          "finished":0.0,
+          "startValue":24.0,
+          "value":24.0,
           "factor":0.00089999999999999998,
           "target":40.0,
-          "value":24.0,
-          "startValue":24.0
+          "increase":0.00020000000000000001,
+          "finished":0.0
         }
-      },
-      "name":"ART 03"
+      }
     },
     "ART 04":{
+      "name":"ART 04",
       "shader":"shader_art",
       "properties":{
         "iTime":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":666.0,
+          "value":1337.0,
           "factor":0.029999999999999999,
           "target":0.0,
-          "value":1337.0,
-          "startValue":666.0
+          "increase":0.0,
+          "finished":0.0
         },
         "iResolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":3.0,
+            "value":6.0,
             "factor":0.00040000000000000002,
             "target":1.3300000000000001,
-            "value":6.0,
-            "startValue":3.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":0.00050000000000000001,
-            "target":1.6100000000000001,
-            "value":8.0,
-            "startValue":4.0
+            "finished":0.0
           },
           "value":{
             "x":3.0,
             "y":4.0
           },
+          "y":{
+            "startValue":4.0,
+            "value":8.0,
+            "factor":0.00050000000000000001,
+            "target":1.6100000000000001,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":3.0,
             "y":4.0
-          }
+          },
+          "finished":0.0
         },
         "iIterations":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":6.0,
+          "value":32.0,
           "factor":0.001,
           "target":10.0,
-          "value":32.0,
-          "startValue":6.0
+          "increase":0.0,
+          "finished":0.0
         }
-      },
-      "name":"ART 04"
+      }
     },
     "ART 05":{
+      "name":"ART 05",
       "shader":"shader_art",
       "properties":{
         "iTime":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":120.0,
+          "value":120.0,
           "factor":0.02,
           "target":9999.0,
-          "value":120.0,
-          "startValue":120.0
+          "increase":0.0,
+          "finished":0.0
         },
         "iResolution":{
           "x":{
-            "increase":0.00020000000000000001,
-            "finished":0.0,
+            "startValue":16.0,
+            "value":16.0,
             "factor":0.0040000000000000001,
             "target":5.0,
-            "value":16.0,
-            "startValue":16.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.00020000000000000001,
-            "finished":0.0,
-            "factor":0.0040000000000000001,
-            "target":16.0,
-            "value":5.0,
-            "startValue":5.0
+            "finished":0.0
           },
           "value":{
             "x":16.0,
             "y":5.0
           },
+          "y":{
+            "startValue":5.0,
+            "value":5.0,
+            "factor":0.0040000000000000001,
+            "target":16.0,
+            "increase":0.00020000000000000001,
+            "finished":0.0
+          },
           "startValue":{
             "x":16.0,
             "y":5.0
-          }
+          },
+          "finished":0.0
         },
         "iIterations":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":30.0,
+          "value":30.0,
           "factor":0.00050000000000000001,
           "target":10.0,
-          "value":30.0,
-          "startValue":30.0
+          "increase":0.0,
+          "finished":0.0
         }
-      },
-      "name":"ART 05"
+      }
     },
     "70s Melt 01":{
+      "name":"70s Melt 01",
       "shader":"shader_70s_melt",
       "properties":{
         "iTime":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":5000.0,
+          "value":3333.0,
           "factor":0.050000000000000003,
           "target":9999.0,
-          "value":3333.0,
-          "startValue":5000.0
+          "increase":0.0,
+          "finished":0.0
         },
         "iResolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
-            "factor":0.002,
-            "target":2.0,
+            "startValue":0.10000000000000001,
             "value":0.10000000000000001,
-            "startValue":0.10000000000000001
-          },
-          "finished":0.0,
-          "y":{
-            "increase":0.0,
-            "finished":0.0,
             "factor":0.002,
             "target":2.0,
-            "value":0.20000000000000001,
-            "startValue":0.20000000000000001
+            "increase":0.0,
+            "finished":0.0
           },
           "value":{
             "x":0.10000000000000001,
             "y":0.20000000000000001
           },
+          "y":{
+            "startValue":0.20000000000000001,
+            "value":0.20000000000000001,
+            "factor":0.002,
+            "target":2.0,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":0.10000000000000001,
             "y":0.20000000000000001
-          }
+          },
+          "finished":0.0
         }
-      },
-      "name":"70s Melt 01"
+      }
     },
     "CRT 01":{
+      "name":"CRT 01",
       "shader":"shader_crt",
       "properties":{
-        "uni_timer":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.016,
-          "target":1000.0,
-          "value":0.0,
-          "startValue":0.0
-        },
         "uni_crt_sizes":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":256.0,
+            "value":256.0,
             "factor":1.0,
             "target":256.0,
-            "value":256.0,
-            "startValue":256.0
-          },
-          "finished":0.0,
-          "z":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":1024.0,
-            "value":1024.0,
-            "startValue":1024.0
+            "finished":0.0
           },
           "y":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":256.0,
+            "value":256.0,
             "factor":1.0,
             "target":256.0,
-            "value":256.0,
-            "startValue":256.0
+            "increase":0.0,
+            "finished":0.0
+          },
+          "startValue":null,
+          "a":{
+            "startValue":1024.0,
+            "value":1024.0,
+            "factor":1.0,
+            "target":1024.0,
+            "increase":0.0,
+            "finished":0.0
           },
           "value":{
             "x":256.0,
-            "z":1024.0,
             "y":256.0,
-            "a":1024.0
+            "a":1024.0,
+            "z":1024.0
           },
-          "a":{
-            "increase":0.0,
-            "finished":0.0,
+          "finished":0.0,
+          "z":{
+            "startValue":1024.0,
+            "value":1024.0,
             "factor":1.0,
             "target":1024.0,
-            "value":1024.0,
-            "startValue":1024.0
-          },
-          "startValue":null
+            "increase":0.0,
+            "finished":0.0
+          }
         },
         "uni_radial_distortion_amount":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.12,
+          "value":0.12,
           "factor":1.0,
           "target":0.12,
-          "value":0.12,
-          "startValue":0.12
+          "increase":0.0,
+          "finished":0.0
         },
         "uni_use_radial_distortion":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":1.0,
+          "value":1.0,
           "factor":1.0,
           "target":1.0,
-          "value":1.0,
-          "startValue":1.0
+          "increase":0.0,
+          "finished":0.0
         },
         "uni_use_border":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":1.0,
+          "value":1.0,
           "factor":1.0,
           "target":1.0,
-          "value":1.0,
-          "startValue":1.0
+          "increase":0.0,
+          "finished":0.0
         },
         "uni_use_RGB_separation":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":1.0,
+          "value":1.0,
           "factor":1.0,
           "target":1.0,
-          "value":1.0,
-          "startValue":1.0
+          "increase":0.0,
+          "finished":0.0
         },
         "uni_use_scanlines":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":1.0,
+          "value":1.0,
           "factor":1.0,
           "target":1.0,
-          "value":1.0,
-          "startValue":1.0
+          "increase":0.0,
+          "finished":0.0
         },
         "uni_use_noise":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":1.0,
+          "value":1.0,
           "factor":1.0,
           "target":1.0,
-          "value":1.0,
-          "startValue":1.0
+          "increase":0.0,
+          "finished":0.0
         },
         "uni_border_corner_size":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.029999999999999999,
+          "value":0.029999999999999999,
           "factor":1.0,
           "target":0.029999999999999999,
-          "value":0.029999999999999999,
-          "startValue":0.029999999999999999
+          "increase":0.0,
+          "finished":0.0
         },
         "uni_border_corner_smoothness":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":80.0,
+          "value":80.0,
           "factor":1.0,
           "target":80.0,
-          "value":80.0,
-          "startValue":80.0
+          "increase":0.0,
+          "finished":0.0
         },
         "uni_brightness":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":1.0,
+          "value":1.0,
           "factor":1.0,
           "target":1.0,
-          "value":1.0,
-          "startValue":1.0
+          "increase":0.0,
+          "finished":0.0
         },
         "uni_noise_strength":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.17499999999999999,
+          "value":0.17499999999999999,
           "factor":1.0,
           "target":0.17499999999999999,
-          "value":0.17499999999999999,
-          "startValue":0.17499999999999999
+          "increase":0.0,
+          "finished":0.0
+        },
+        "uni_timer":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.016,
+          "target":1000.0,
+          "increase":0.0,
+          "finished":0.0
         }
-      },
-      "name":"CRT 01"
+      }
     },
     "ART 01":{
+      "name":"ART 01",
       "shader":"shader_art",
       "properties":{
         "iTime":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.0,
+          "value":0.0,
           "factor":0.01,
           "target":999.89999999999998,
-          "value":0.0,
-          "startValue":0.0
+          "increase":0.0,
+          "finished":0.0
         },
         "iResolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1.0,
+            "value":1.0,
             "factor":0.0,
             "target":1.0,
-            "value":1.0,
-            "startValue":1.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":0.001,
-            "target":0.5,
-            "value":1.0,
-            "startValue":1.0
+            "finished":0.0
           },
           "value":{
             "x":1.0,
             "y":1.0
           },
+          "y":{
+            "startValue":1.0,
+            "value":1.0,
+            "factor":0.001,
+            "target":0.5,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":1.0,
             "y":1.0
-          }
+          },
+          "finished":0.0
         },
         "iIterations":{
-          "increase":0.01,
-          "finished":0.0,
+          "startValue":0.0,
+          "value":0.0,
           "factor":0.050000000000000003,
           "target":16.0,
-          "value":0.0,
-          "startValue":0.0
+          "increase":0.01,
+          "finished":0.0
         }
-      },
-      "name":"ART 01"
+      }
     },
     "70s Melt 02":{
+      "name":"70s Melt 02",
       "shader":"shader_70s_melt",
       "properties":{
         "iTime":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":5000.0,
+          "value":666.0,
           "factor":0.033000000000000002,
           "target":9999.0,
-          "value":666.0,
-          "startValue":5000.0
+          "increase":0.0,
+          "finished":0.0
         },
         "iResolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":0.10000000000000001,
+            "value":0.80000000000000004,
             "factor":0.002,
             "target":1.0,
-            "value":0.80000000000000004,
-            "startValue":0.10000000000000001
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
+            "finished":0.0
+          },
+          "value":{
+            "x":0.10000000000000001,
+            "y":0.20000000000000001
+          },
+          "y":{
+            "startValue":0.20000000000000001,
+            "value":0.59999999999999998,
             "factor":0.002,
             "target":0.80000000000000004,
-            "value":0.59999999999999998,
-            "startValue":0.20000000000000001
-          },
-          "value":{
-            "x":0.10000000000000001,
-            "y":0.20000000000000001
+            "increase":0.0,
+            "finished":0.0
           },
           "startValue":{
             "x":0.10000000000000001,
             "y":0.20000000000000001
-          }
+          },
+          "finished":0.0
         }
-      },
-      "name":"70s Melt 02"
+      }
     },
     "Phantom Star 02":{
+      "name":"Phantom Star 02",
       "shader":"shader_phantom_star",
       "properties":{
-        "iIterations":{
-          "increase":0.00029999999999999997,
-          "finished":0.0,
-          "factor":0.001,
-          "target":2.0,
-          "value":8.0,
-          "startValue":8.0
-        },
         "sizeB":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":20.0,
+          "value":20.0,
           "factor":0.002,
           "target":30.0,
-          "value":20.0,
-          "startValue":20.0
+          "increase":0.0,
+          "finished":0.0
+        },
+        "iIterations":{
+          "startValue":8.0,
+          "value":8.0,
+          "factor":0.001,
+          "target":2.0,
+          "increase":0.00029999999999999997,
+          "finished":0.0
         },
         "iTint":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1.0,
+            "value":0.5,
             "factor":0.0015,
             "target":0.02,
-            "value":0.5,
-            "startValue":1.0
-          },
-          "finished":0.0,
-          "z":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":0.001,
-            "target":0.27000000000000002,
-            "value":0.040000000000000001,
-            "startValue":1.0
+            "finished":0.0
           },
           "y":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1.0,
+            "value":0.13,
             "factor":0.002,
             "target":0.02,
-            "value":0.13,
-            "startValue":1.0
+            "increase":0.0,
+            "finished":0.0
           },
+          "startValue":null,
           "value":{
             "x":1.0,
-            "z":1.0,
-            "y":1.0
+            "y":1.0,
+            "z":1.0
           },
-          "startValue":null
+          "finished":0.0,
+          "z":{
+            "startValue":1.0,
+            "value":0.040000000000000001,
+            "factor":0.001,
+            "target":0.27000000000000002,
+            "increase":0.0,
+            "finished":0.0
+          }
         },
         "iTime":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":64.0,
+          "value":64.0,
           "factor":0.00020000000000000001,
           "target":9999.0,
-          "value":64.0,
-          "startValue":64.0
+          "increase":0.0,
+          "finished":0.0
         },
         "iResolution":{
           "x":{
-            "increase":1.0000000000000001e-05,
-            "finished":0.0,
+            "startValue":1.0,
+            "value":1.0,
             "factor":0.0030000000000000001,
             "target":4.7000000000000002,
-            "value":1.0,
-            "startValue":1.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":1.0000000000000001e-05,
-            "finished":0.0,
+            "finished":0.0
+          },
+          "value":{
+            "x":1.0,
+            "y":0.29999999999999999
+          },
+          "y":{
+            "startValue":0.29999999999999999,
+            "value":0.29999999999999999,
             "factor":0.001,
             "target":3.2999999999999998,
-            "value":0.29999999999999999,
-            "startValue":0.29999999999999999
-          },
-          "value":{
-            "x":1.0,
-            "y":0.29999999999999999
+            "increase":1.0000000000000001e-05,
+            "finished":0.0
           },
           "startValue":{
             "x":1.0,
             "y":0.29999999999999999
-          }
+          },
+          "finished":0.0
         },
         "sizeA":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":20.0,
+          "value":20.0,
           "factor":0.002,
           "target":4.0,
-          "value":20.0,
-          "startValue":20.0
+          "increase":0.0,
+          "finished":0.0
         }
-      },
-      "name":"Phantom Star 02"
+      }
     },
     "Phantom Star 03":{
+      "name":"Phantom Star 03",
       "shader":"shader_phantom_star",
       "properties":{
-        "iIterations":{
-          "increase":3.0000000000000001e-05,
-          "finished":0.0,
-          "factor":0.0016000000000000001,
-          "target":2.5,
-          "value":1.0,
-          "startValue":1.0
-        },
         "sizeB":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":2.0,
+          "value":2.0,
           "factor":0.002,
           "target":4.0,
-          "value":2.0,
-          "startValue":2.0
+          "increase":0.0,
+          "finished":0.0
+        },
+        "iIterations":{
+          "startValue":1.0,
+          "value":1.0,
+          "factor":0.0016000000000000001,
+          "target":2.5,
+          "increase":3.0000000000000001e-05,
+          "finished":0.0
         },
         "iTint":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1.0,
+            "value":0.0,
             "factor":0.001,
             "target":0.44,
-            "value":0.0,
-            "startValue":1.0
+            "increase":0.0,
+            "finished":0.0
+          },
+          "y":{
+            "startValue":1.0,
+            "value":0.089999999999999997,
+            "factor":0.00020000000000000001,
+            "target":0.029999999999999999,
+            "increase":0.0,
+            "finished":0.0
+          },
+          "startValue":null,
+          "value":{
+            "x":1.0,
+            "y":1.0,
+            "z":1.0
           },
           "finished":0.0,
           "z":{
-            "increase":0.0,
-            "finished":0.0,
-            "factor":0.00020000000000000001,
-            "target":0.029999999999999999,
+            "startValue":1.0,
             "value":0.0,
-            "startValue":1.0
-          },
-          "y":{
-            "increase":0.0,
-            "finished":0.0,
             "factor":0.00020000000000000001,
             "target":0.029999999999999999,
-            "value":0.089999999999999997,
-            "startValue":1.0
-          },
-          "value":{
-            "x":1.0,
-            "z":1.0,
-            "y":1.0
-          },
-          "startValue":null
+            "increase":0.0,
+            "finished":0.0
+          }
         },
         "iTime":{
-          "increase":0.0001,
-          "finished":0.0,
+          "startValue":192.0,
+          "value":192.0,
           "factor":0.00020000000000000001,
           "target":0.0,
-          "value":192.0,
-          "startValue":192.0
+          "increase":0.0001,
+          "finished":0.0
         },
         "iResolution":{
           "x":{
-            "increase":1.0000000000000001e-05,
-            "finished":0.0,
+            "startValue":1.0,
+            "value":1.0,
             "factor":0.0030000000000000001,
             "target":1.0,
-            "value":1.0,
-            "startValue":1.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":1.0000000000000001e-05,
-            "finished":0.0,
-            "factor":0.001,
-            "target":1.0,
-            "value":1.0,
-            "startValue":1.0
+            "finished":0.0
           },
           "value":{
             "x":1.0,
             "y":1.0
           },
+          "y":{
+            "startValue":1.0,
+            "value":1.0,
+            "factor":0.001,
+            "target":1.0,
+            "increase":1.0000000000000001e-05,
+            "finished":0.0
+          },
           "startValue":{
             "x":1.0,
             "y":1.0
-          }
+          },
+          "finished":0.0
         },
         "sizeA":{
-          "increase":0.0001,
-          "finished":0.0,
+          "startValue":30.0,
+          "value":30.0,
           "factor":0.002,
           "target":20.0,
-          "value":30.0,
-          "startValue":30.0
+          "increase":0.0001,
+          "finished":0.0
         }
-      },
-      "name":"Phantom Star 03"
+      }
     },
     "Phantom Star 04":{
+      "name":"Phantom Star 04",
       "shader":"shader_phantom_star",
       "properties":{
-        "iIterations":{
-          "increase":3.0000000000000001e-05,
-          "finished":0.0,
-          "factor":0.001,
-          "target":2.5,
-          "value":1.0,
-          "startValue":1.0
-        },
         "sizeB":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":2.0,
+          "value":2.0,
           "factor":0.001,
           "target":8.0,
-          "value":2.0,
-          "startValue":2.0
+          "increase":0.0,
+          "finished":0.0
+        },
+        "iIterations":{
+          "startValue":1.0,
+          "value":1.0,
+          "factor":0.001,
+          "target":2.5,
+          "increase":3.0000000000000001e-05,
+          "finished":0.0
         },
         "iTint":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1.0,
+            "value":0.02,
             "factor":0.00025000000000000001,
             "target":0.28000000000000003,
-            "value":0.02,
-            "startValue":1.0
+            "increase":0.0,
+            "finished":0.0
+          },
+          "y":{
+            "startValue":1.0,
+            "value":0.26000000000000001,
+            "factor":0.00080000000000000004,
+            "target":0.10000000000000001,
+            "increase":0.0,
+            "finished":0.0
+          },
+          "startValue":null,
+          "value":{
+            "x":1.0,
+            "y":1.0,
+            "z":1.0
           },
           "finished":0.0,
           "z":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1.0,
+            "value":0.0,
             "factor":0.0001,
             "target":0.025000000000000001,
-            "value":0.0,
-            "startValue":1.0
-          },
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":0.00080000000000000004,
-            "target":0.10000000000000001,
-            "value":0.26000000000000001,
-            "startValue":1.0
-          },
-          "value":{
-            "x":1.0,
-            "z":1.0,
-            "y":1.0
-          },
-          "startValue":null
+            "finished":0.0
+          }
         },
         "iTime":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":666.0,
+          "value":666.0,
           "factor":0.0016000000000000001,
           "target":9999.0,
-          "value":666.0,
-          "startValue":666.0
+          "increase":0.0,
+          "finished":0.0
         },
         "iResolution":{
           "x":{
-            "increase":1.0000000000000001e-05,
-            "finished":0.0,
+            "startValue":1.0,
+            "value":1.0,
             "factor":0.0030000000000000001,
             "target":1.0,
-            "value":1.0,
-            "startValue":1.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":1.0000000000000001e-05,
-            "finished":0.0,
-            "factor":0.001,
-            "target":1.0,
-            "value":1.0,
-            "startValue":1.0
+            "finished":0.0
           },
           "value":{
             "x":1.0,
             "y":1.0
+          },
+          "y":{
+            "startValue":1.0,
+            "value":1.0,
+            "factor":0.001,
+            "target":1.0,
+            "increase":1.0000000000000001e-05,
+            "finished":0.0
           },
           "startValue":{
             "x":1.0,
             "y":1.0
-          }
+          },
+          "finished":0.0
         },
         "sizeA":{
-          "increase":1.0000000000000001e-05,
-          "finished":0.0,
+          "startValue":30.0,
+          "value":30.0,
           "factor":0.002,
           "target":64.0,
-          "value":30.0,
-          "startValue":30.0
+          "increase":1.0000000000000001e-05,
+          "finished":0.0
         }
-      },
-      "name":"Phantom Star 04"
+      }
     },
     "Phantom Star 05":{
+      "name":"Phantom Star 05",
       "shader":"shader_phantom_star",
       "properties":{
-        "iIterations":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.00069999999999999999,
-          "target":2.1000000000000001,
-          "value":0.89000000000000001,
-          "startValue":0.84999999999999998
-        },
         "sizeB":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":2.0,
+          "value":2.0,
           "factor":0.001,
           "target":5.0,
-          "value":2.0,
-          "startValue":2.0
+          "increase":0.0,
+          "finished":0.0
+        },
+        "iIterations":{
+          "startValue":0.84999999999999998,
+          "value":0.89000000000000001,
+          "factor":0.00069999999999999999,
+          "target":2.1000000000000001,
+          "increase":0.0,
+          "finished":0.0
         },
         "iTint":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":0.050000000000000003,
+            "value":0.029999999999999999,
             "factor":0.00029999999999999997,
             "target":0.089999999999999997,
-            "value":0.029999999999999999,
-            "startValue":0.050000000000000003
-          },
-          "finished":0.0,
-          "z":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":0.0001,
-            "target":0.050000000000000003,
-            "value":0.14999999999999999,
-            "startValue":0.10000000000000001
+            "finished":0.0
           },
           "y":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":0.080000000000000002,
+            "value":0.050000000000000003,
             "factor":0.00020000000000000001,
             "target":0.02,
-            "value":0.050000000000000003,
-            "startValue":0.080000000000000002
+            "increase":0.0,
+            "finished":0.0
+          },
+          "startValue":{
+            "x":1.0,
+            "y":1.0,
+            "z":1.0
           },
           "value":{
             "x":0.050000000000000003,
-            "z":0.10000000000000001,
-            "y":0.080000000000000002
+            "y":0.080000000000000002,
+            "z":0.10000000000000001
           },
-          "startValue":{
-            "x":1.0,
-            "z":1.0,
-            "y":1.0
+          "finished":0.0,
+          "z":{
+            "startValue":0.10000000000000001,
+            "value":0.14999999999999999,
+            "factor":0.0001,
+            "target":0.050000000000000003,
+            "increase":0.0,
+            "finished":0.0
           }
         },
         "iTime":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":2137.0,
+          "value":2137.0,
           "factor":0.001,
           "target":9999.0,
-          "value":2137.0,
-          "startValue":2137.0
+          "increase":0.0,
+          "finished":0.0
         },
         "iResolution":{
           "x":{
-            "increase":1.0000000000000001e-05,
-            "finished":0.0,
+            "startValue":1.0,
+            "value":1.0,
             "factor":0.0001,
             "target":0.5,
-            "value":1.0,
-            "startValue":1.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":1.0000000000000001e-05,
-            "finished":0.0,
-            "factor":0.0001,
-            "target":0.5,
-            "value":1.0,
-            "startValue":1.0
+            "finished":0.0
           },
           "value":{
             "x":1.0,
             "y":1.0
           },
+          "y":{
+            "startValue":1.0,
+            "value":1.0,
+            "factor":0.0001,
+            "target":0.5,
+            "increase":1.0000000000000001e-05,
+            "finished":0.0
+          },
           "startValue":{
             "x":1.0,
             "y":1.0
-          }
+          },
+          "finished":0.0
         },
         "sizeA":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":120.0,
+          "value":120.0,
           "factor":0.0030000000000000001,
           "target":10.0,
-          "value":120.0,
-          "startValue":120.0
+          "increase":0.0,
+          "finished":0.0
         }
-      },
-      "name":"Phantom Star 05"
+      }
     },
     "Warp 01":{
+      "name":"Warp 01",
       "shader":"shader_warp",
       "properties":{
         "iTime":{
-          "increase":0.001,
-          "finished":0.0,
+          "startValue":0.0,
+          "value":0.0,
           "factor":0.10000000000000001,
           "target":99999.0,
-          "value":0.0,
-          "startValue":0.0
+          "increase":0.001,
+          "finished":0.0
         },
         "iResolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1.0,
+            "value":1.0,
             "factor":0.00020000000000000001,
             "target":0.5,
-            "value":1.0,
-            "startValue":1.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":0.00020000000000000001,
-            "target":0.5,
-            "value":1.0,
-            "startValue":1.0
+            "finished":0.0
           },
           "value":{
             "x":1.0,
             "y":1.0
           },
+          "y":{
+            "startValue":1.0,
+            "value":1.0,
+            "factor":0.00020000000000000001,
+            "target":0.5,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":1.0,
             "y":1.0
-          }
+          },
+          "finished":0.0
         }
-      },
-      "name":"Warp 01"
+      }
     },
     "Warp 02":{
+      "name":"Warp 02",
       "shader":"shader_warp",
       "properties":{
         "iTime":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":99999.0,
+          "value":99999.0,
           "factor":0.29999999999999999,
           "target":0.0,
-          "value":99999.0,
-          "startValue":99999.0
+          "increase":0.0,
+          "finished":0.0
         },
         "iResolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":0.5,
+            "value":0.5,
             "factor":0.001,
             "target":1.0,
-            "value":0.5,
-            "startValue":0.5
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":0.001,
-            "target":1.0,
-            "value":0.5,
-            "startValue":0.5
+            "finished":0.0
           },
           "value":{
             "x":0.5,
             "y":0.5
           },
+          "y":{
+            "startValue":0.5,
+            "value":0.5,
+            "factor":0.001,
+            "target":1.0,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":0.5,
             "y":0.5
-          }
+          },
+          "finished":0.0
         }
-      },
-      "name":"Warp 02"
+      }
     },
     "Warp 03":{
+      "name":"Warp 03",
       "shader":"shader_warp",
       "properties":{
         "iTime":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":900.0,
+          "value":900.0,
           "factor":0.29999999999999999,
           "target":99999.0,
-          "value":900.0,
-          "startValue":900.0
+          "increase":0.0,
+          "finished":0.0
         },
         "iResolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1.0,
+            "value":1.0,
             "factor":1.0,
             "target":1.0,
-            "value":1.0,
-            "startValue":1.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":1.0,
-            "value":1.0,
-            "startValue":1.0
+            "finished":0.0
           },
           "value":{
             "x":1.0,
             "y":1.0
           },
+          "y":{
+            "startValue":1.0,
+            "value":1.0,
+            "factor":1.0,
+            "target":1.0,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":1.0,
             "y":1.0
-          }
+          },
+          "finished":0.0
         }
-      },
-      "name":"Warp 03"
+      }
     },
     "Warp 04":{
+      "name":"Warp 04",
       "shader":"shader_warp",
       "properties":{
         "iTime":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":900.0,
+          "value":900.0,
           "factor":0.29999999999999999,
           "target":99999.0,
-          "value":900.0,
-          "startValue":900.0
+          "increase":0.0,
+          "finished":0.0
         },
         "iResolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1.0,
+            "value":1.0,
             "factor":1.0,
             "target":1.0,
-            "value":1.0,
-            "startValue":1.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":1.0,
-            "value":1.0,
-            "startValue":1.0
+            "finished":0.0
           },
           "value":{
             "x":1.0,
             "y":1.0
           },
+          "y":{
+            "startValue":1.0,
+            "value":1.0,
+            "factor":1.0,
+            "target":1.0,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":1.0,
             "y":1.0
-          }
+          },
+          "finished":0.0
         }
-      },
-      "name":"Warp 04"
+      }
     },
     "Warp 05":{
+      "name":"Warp 05",
       "shader":"shader_warp",
       "properties":{
         "iTime":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":900.0,
+          "value":900.0,
           "factor":0.29999999999999999,
           "target":99999.0,
-          "value":900.0,
-          "startValue":900.0
+          "increase":0.0,
+          "finished":0.0
         },
         "iResolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1.0,
+            "value":1.0,
             "factor":1.0,
             "target":1.0,
-            "value":1.0,
-            "startValue":1.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":1.0,
-            "value":1.0,
-            "startValue":1.0
+            "finished":0.0
           },
           "value":{
             "x":1.0,
             "y":1.0
           },
+          "y":{
+            "startValue":1.0,
+            "value":1.0,
+            "factor":1.0,
+            "target":1.0,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":1.0,
             "y":1.0
-          }
+          },
+          "finished":0.0
         }
-      },
-      "name":"Warp 05"
+      }
     },
     "Wave 01":{
+      "name":"Wave 01",
       "shader":"shader_wave",
       "properties":{
+        "distortion":{
+          "startValue":30.0,
+          "value":30.0,
+          "factor":0.01,
+          "target":60.0,
+          "increase":0.0,
+          "finished":0.0
+        },
+        "speed":{
+          "startValue":2.0,
+          "value":2.0,
+          "factor":1.0,
+          "target":2.0,
+          "increase":0.0,
+          "finished":0.0
+        },
+        "time":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.016,
+          "target":1000.0,
+          "increase":0.0,
+          "finished":0.0
+        },
         "amount":{
-          "increase":0.001,
-          "finished":0.0,
+          "startValue":15.0,
+          "value":15.0,
           "factor":0.050000000000000003,
           "target":200.0,
-          "value":15.0,
-          "startValue":15.0
-        },
-        "speed":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":1.0,
-          "target":2.0,
-          "value":2.0,
-          "startValue":2.0
-        },
-        "distortion":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.01,
-          "target":60.0,
-          "value":30.0,
-          "startValue":30.0
-        },
-        "time":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.016,
-          "target":1000.0,
-          "value":0.0,
-          "startValue":0.0
+          "increase":0.001,
+          "finished":0.0
         }
-      },
-      "name":"Wave 01"
+      }
     },
     "Wave 02":{
+      "name":"Wave 02",
       "shader":"shader_wave",
       "properties":{
-        "amount":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.001,
-          "target":96.0,
-          "value":64.0,
-          "startValue":15.0
-        },
-        "speed":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.01,
-          "target":10.0,
-          "value":1.0,
-          "startValue":2.0
-        },
         "distortion":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":30.0,
+          "value":5.0,
           "factor":0.02,
           "target":64.0,
-          "value":5.0,
-          "startValue":30.0
+          "increase":0.0,
+          "finished":0.0
+        },
+        "speed":{
+          "startValue":2.0,
+          "value":1.0,
+          "factor":0.01,
+          "target":10.0,
+          "increase":0.0,
+          "finished":0.0
         },
         "time":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.0,
+          "value":0.0,
           "factor":0.016,
           "target":9999.0,
-          "value":0.0,
-          "startValue":0.0
+          "increase":0.0,
+          "finished":0.0
+        },
+        "amount":{
+          "startValue":15.0,
+          "value":64.0,
+          "factor":0.001,
+          "target":96.0,
+          "increase":0.0,
+          "finished":0.0
         }
-      },
-      "name":"Wave 02"
+      }
     },
     "Wave 03":{
+      "name":"Wave 03",
       "shader":"shader_wave",
       "properties":{
-        "amount":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.02,
-          "target":5.0,
-          "value":30.0,
-          "startValue":15.0
-        },
-        "speed":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.01,
-          "target":2.0,
-          "value":10.0,
-          "startValue":2.0
-        },
         "distortion":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":30.0,
+          "value":20.0,
           "factor":0.01,
           "target":60.0,
-          "value":20.0,
-          "startValue":30.0
+          "increase":0.0,
+          "finished":0.0
+        },
+        "speed":{
+          "startValue":2.0,
+          "value":10.0,
+          "factor":0.01,
+          "target":2.0,
+          "increase":0.0,
+          "finished":0.0
         },
         "time":{
-          "increase":1.0000000000000001e-05,
-          "finished":0.0,
+          "startValue":0.0,
+          "value":1.0,
           "factor":0.0016000000000000001,
           "target":30.0,
-          "value":1.0,
-          "startValue":0.0
+          "increase":1.0000000000000001e-05,
+          "finished":0.0
+        },
+        "amount":{
+          "startValue":15.0,
+          "value":30.0,
+          "factor":0.02,
+          "target":5.0,
+          "increase":0.0,
+          "finished":0.0
         }
-      },
-      "name":"Wave 03"
+      }
     },
     "Wave 04":{
+      "name":"Wave 04",
       "shader":"shader_wave",
       "properties":{
-        "amount":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.040000000000000001,
-          "target":16.0,
-          "value":96.0,
-          "startValue":128.0
-        },
-        "speed":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.01,
-          "target":1.0,
-          "value":30.0,
-          "startValue":30.0
-        },
         "distortion":{
-          "increase":0.001,
-          "finished":0.0,
+          "startValue":100.0,
+          "value":100.0,
           "factor":0.33000000000000002,
           "target":1.0,
-          "value":100.0,
-          "startValue":100.0
-        },
-        "time":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.0080000000000000002,
-          "target":1000.0,
-          "value":0.0,
-          "startValue":0.0
-        }
-      },
-      "name":"Wave 04"
-    },
-    "Wave 05":{
-      "shader":"shader_wave",
-      "properties":{
-        "amount":{
-          "increase":0.0001,
-          "finished":0.0,
-          "factor":0.01,
-          "target":30.0,
-          "value":0.0,
-          "startValue":15.0
+          "increase":0.001,
+          "finished":0.0
         },
         "speed":{
+          "startValue":30.0,
+          "value":30.0,
+          "factor":0.01,
+          "target":1.0,
           "increase":0.0,
-          "finished":0.0,
+          "finished":0.0
+        },
+        "time":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.0080000000000000002,
+          "target":1000.0,
+          "increase":0.0,
+          "finished":0.0
+        },
+        "amount":{
+          "startValue":128.0,
+          "value":96.0,
+          "factor":0.040000000000000001,
+          "target":16.0,
+          "increase":0.0,
+          "finished":0.0
+        }
+      }
+    },
+    "Wave 05":{
+      "name":"Wave 05",
+      "shader":"shader_wave",
+      "properties":{
+        "distortion":{
+          "startValue":30.0,
+          "value":50.0,
+          "factor":0.01,
+          "target":10.0,
+          "increase":0.0,
+          "finished":0.0
+        },
+        "speed":{
+          "startValue":2.0,
+          "value":1.5,
           "factor":0.001,
           "target":99.0,
-          "value":1.5,
-          "startValue":2.0
-        },
-        "distortion":{
           "increase":0.0,
-          "finished":0.0,
-          "factor":0.01,
-          "target":10.0,
-          "value":50.0,
-          "startValue":30.0
+          "finished":0.0
         },
         "time":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.0,
+          "value":96.0,
           "factor":0.01,
           "target":1000.0,
-          "value":96.0,
-          "startValue":0.0
+          "increase":0.0,
+          "finished":0.0
+        },
+        "amount":{
+          "startValue":15.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":30.0,
+          "increase":0.0001,
+          "finished":0.0
         }
-      },
-      "name":"Wave 05"
+      }
     },
     "Magnify 01":{
+      "name":"Magnify 01",
       "shader":"shader_magnify",
       "properties":{
-        "position":{
-          "x":{
-            "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":0.5,
-            "value":0.5,
-            "startValue":0.5
-          },
-          "finished":0.0,
-          "y":{
-            "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":0.5,
-            "value":0.5,
-            "startValue":0.5
-          },
-          "value":{
-            "x":0.5,
-            "y":0.5
-          },
-          "startValue":{
-            "x":0.5,
-            "y":0.5
-          }
-        },
         "radius":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.050000000000000003,
+          "value":0.050000000000000003,
           "factor":0.0050000000000000001,
           "target":0.90000000000000002,
-          "value":0.050000000000000003,
-          "startValue":0.050000000000000003
+          "increase":0.0,
+          "finished":0.0
         },
         "minZoom":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.10000000000000001,
+          "value":0.10000000000000001,
           "factor":0.002,
           "target":0.29999999999999999,
-          "value":0.10000000000000001,
-          "startValue":0.10000000000000001
-        },
-        "resolution":{
-          "x":{
-            "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":1.0,
-            "value":1.0,
-            "startValue":1024.0
-          },
-          "finished":0.0,
-          "y":{
-            "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":1.0,
-            "value":1.0,
-            "startValue":1024.0
-          },
-          "value":{
-            "x":1024.0,
-            "y":1024.0
-          },
-          "startValue":{
-            "x":1024.0,
-            "y":1024.0
-          }
+          "increase":0.0,
+          "finished":0.0
         },
         "maxZoom":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.20999999999999999,
+          "value":0.20999999999999999,
           "factor":0.0011999999999999999,
           "target":0.87,
-          "value":0.20999999999999999,
-          "startValue":0.20999999999999999
+          "increase":0.0,
+          "finished":0.0
+        },
+        "position":{
+          "x":{
+            "startValue":0.5,
+            "value":0.5,
+            "factor":1.0,
+            "target":0.5,
+            "increase":0.0,
+            "finished":0.0
+          },
+          "value":{
+            "x":0.5,
+            "y":0.5
+          },
+          "y":{
+            "startValue":0.5,
+            "value":0.5,
+            "factor":1.0,
+            "target":0.5,
+            "increase":0.0,
+            "finished":0.0
+          },
+          "startValue":{
+            "x":0.5,
+            "y":0.5
+          },
+          "finished":0.0
+        },
+        "resolution":{
+          "x":{
+            "startValue":1024.0,
+            "value":1.0,
+            "factor":1.0,
+            "target":1.0,
+            "increase":0.0,
+            "finished":0.0
+          },
+          "value":{
+            "x":1024.0,
+            "y":1024.0
+          },
+          "y":{
+            "startValue":1024.0,
+            "value":1.0,
+            "factor":1.0,
+            "target":1.0,
+            "increase":0.0,
+            "finished":0.0
+          },
+          "startValue":{
+            "x":1024.0,
+            "y":1024.0
+          },
+          "finished":0.0
         }
-      },
-      "name":"Magnify 01"
+      }
     },
     "Magnify 02":{
+      "name":"Magnify 02",
       "shader":"shader_magnify",
       "properties":{
-        "position":{
-          "x":{
-            "increase":0.0,
-            "finished":0.0,
-            "factor":0.002,
-            "target":1.0,
-            "value":0.0,
-            "startValue":0.5
-          },
-          "finished":0.0,
-          "y":{
-            "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":0.5,
-            "value":0.5,
-            "startValue":0.5
-          },
-          "value":{
-            "x":0.5,
-            "y":0.5
-          },
-          "startValue":{
-            "x":0.5,
-            "y":0.5
-          }
-        },
         "radius":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.050000000000000003,
+          "value":0.69999999999999996,
           "factor":0.0023,
           "target":1.6000000000000001,
-          "value":0.69999999999999996,
-          "startValue":0.050000000000000003
+          "increase":0.0,
+          "finished":0.0
         },
         "minZoom":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.10000000000000001,
+          "value":0.29999999999999999,
           "factor":0.0023,
           "target":0.5,
-          "value":0.29999999999999999,
-          "startValue":0.10000000000000001
+          "increase":0.0,
+          "finished":0.0
         },
         "maxZoom":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.29999999999999999,
+          "value":1.0,
           "factor":0.0030000000000000001,
           "target":2.0,
-          "value":1.0,
-          "startValue":0.29999999999999999
+          "increase":0.0,
+          "finished":0.0
+        },
+        "position":{
+          "x":{
+            "startValue":0.5,
+            "value":0.0,
+            "factor":0.002,
+            "target":1.0,
+            "increase":0.0,
+            "finished":0.0
+          },
+          "value":{
+            "x":0.5,
+            "y":0.5
+          },
+          "y":{
+            "startValue":0.5,
+            "value":0.5,
+            "factor":1.0,
+            "target":0.5,
+            "increase":0.0,
+            "finished":0.0
+          },
+          "startValue":{
+            "x":0.5,
+            "y":0.5
+          },
+          "finished":0.0
         },
         "resolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":0.0,
+            "value":0.0,
             "factor":1.0,
             "target":0.0,
-            "value":0.0,
-            "startValue":0.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":0.0,
-            "value":0.0,
-            "startValue":0.0
+            "finished":0.0
           },
           "value":{
             "x":0.0,
             "y":0.0
           },
+          "y":{
+            "startValue":0.0,
+            "value":0.0,
+            "factor":1.0,
+            "target":0.0,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":0.0,
             "y":0.0
-          }
+          },
+          "finished":0.0
         }
-      },
-      "name":"Magnify 02"
+      }
     },
     "Shock-wave 01":{
+      "name":"Shock-wave 01",
       "shader":"shader_shock_wave",
       "properties":{
         "position":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":0.0,
+            "value":0.0,
             "factor":0.0030000000000000001,
             "target":1.0,
-            "value":0.0,
-            "startValue":0.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":0.5,
-            "value":0.5,
-            "startValue":0.5
+            "finished":0.0
           },
           "value":{
             "x":0.0,
             "y":0.5
           },
+          "y":{
+            "startValue":0.5,
+            "value":0.5,
+            "factor":1.0,
+            "target":0.5,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":0.0,
             "y":0.5
-          }
+          },
+          "finished":0.0
+        },
+        "amplitude":{
+          "startValue":0.20000000000000001,
+          "value":0.20000000000000001,
+          "factor":1.0,
+          "target":0.20000000000000001,
+          "increase":0.0,
+          "finished":0.0
         },
         "resolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":0.0,
+            "value":0.0,
             "factor":1.0,
             "target":0.0,
-            "value":0.0,
-            "startValue":0.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":0.0,
-            "value":0.0,
-            "startValue":0.0
+            "finished":0.0
           },
           "value":{
             "x":0.0,
             "y":0.0
           },
+          "y":{
+            "startValue":0.0,
+            "value":0.0,
+            "factor":1.0,
+            "target":0.0,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":0.0,
             "y":0.0
-          }
-        },
-        "time":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.016,
-          "target":1000000.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "amplitude":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":1.0,
-          "target":0.20000000000000001,
-          "value":0.20000000000000001,
-          "startValue":0.20000000000000001
+          },
+          "finished":0.0
         },
         "refraction":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.29999999999999999,
+          "value":0.29999999999999999,
           "factor":1.0,
           "target":0.29999999999999999,
-          "value":0.29999999999999999,
-          "startValue":0.29999999999999999
+          "increase":0.0,
+          "finished":0.0
         },
         "width":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":32.0,
+          "value":32.0,
           "factor":1.0,
           "target":32.0,
-          "value":32.0,
-          "startValue":32.0
+          "increase":0.0,
+          "finished":0.0
+        },
+        "time":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.016,
+          "target":1000000.0,
+          "increase":0.0,
+          "finished":0.0
         }
-      },
-      "name":"Shock-wave 01"
+      }
     },
     "Magnify 03":{
+      "name":"Magnify 03",
       "shader":"shader_magnify",
       "properties":{
-        "position":{
-          "x":{
-            "increase":0.00014999999999999999,
-            "finished":0.0,
-            "factor":0.001,
-            "target":0.0,
-            "value":1.0,
-            "startValue":0.5
-          },
-          "finished":0.0,
-          "y":{
-            "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":0.5,
-            "value":0.5,
-            "startValue":0.5
-          },
-          "value":{
-            "x":0.5,
-            "y":0.5
-          },
-          "startValue":{
-            "x":0.5,
-            "y":0.5
-          }
-        },
         "radius":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.050000000000000003,
+          "value":0.050000000000000003,
           "factor":0.0035000000000000001,
           "target":0.90000000000000002,
-          "value":0.050000000000000003,
-          "startValue":0.050000000000000003
+          "increase":0.0,
+          "finished":0.0
         },
         "minZoom":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.0,
+          "value":0.0,
           "factor":0.0030000000000000001,
           "target":1.8999999999999999,
-          "value":0.0,
-          "startValue":0.0
+          "increase":0.0,
+          "finished":0.0
         },
         "maxZoom":{
-          "increase":0.0001,
-          "finished":0.0,
+          "startValue":0.80000000000000004,
+          "value":0.40000000000000002,
           "factor":0.001,
           "target":4.0,
-          "value":0.40000000000000002,
-          "startValue":0.80000000000000004
+          "increase":0.0001,
+          "finished":0.0
+        },
+        "position":{
+          "x":{
+            "startValue":0.5,
+            "value":1.0,
+            "factor":0.001,
+            "target":0.0,
+            "increase":0.00014999999999999999,
+            "finished":0.0
+          },
+          "value":{
+            "x":0.5,
+            "y":0.5
+          },
+          "y":{
+            "startValue":0.5,
+            "value":0.5,
+            "factor":1.0,
+            "target":0.5,
+            "increase":0.0,
+            "finished":0.0
+          },
+          "startValue":{
+            "x":0.5,
+            "y":0.5
+          },
+          "finished":0.0
         },
         "resolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1.0,
+            "value":1.0,
             "factor":1.0,
             "target":1.0,
-            "value":1.0,
-            "startValue":1.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":1.0,
-            "value":1.0,
-            "startValue":0.5
+            "finished":0.0
           },
           "value":{
             "x":1.0,
             "y":0.5
           },
+          "y":{
+            "startValue":0.5,
+            "value":1.0,
+            "factor":1.0,
+            "target":1.0,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":1.0,
             "y":0.5
-          }
+          },
+          "finished":0.0
         }
-      },
-      "name":"Magnify 03"
+      }
     },
     "Shock-wave 02":{
+      "name":"Shock-wave 02",
       "shader":"shader_shock_wave",
       "properties":{
         "position":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":0.0,
+            "value":0.0,
             "factor":0.0030000000000000001,
             "target":1.0,
-            "value":0.0,
-            "startValue":0.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":0.5,
-            "value":0.5,
-            "startValue":0.5
+            "finished":0.0
           },
           "value":{
             "x":0.0,
             "y":0.5
           },
+          "y":{
+            "startValue":0.5,
+            "value":0.5,
+            "factor":1.0,
+            "target":0.5,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":0.0,
             "y":0.5
-          }
+          },
+          "finished":0.0
+        },
+        "amplitude":{
+          "startValue":0.20000000000000001,
+          "value":0.20000000000000001,
+          "factor":1.0,
+          "target":0.20000000000000001,
+          "increase":0.0,
+          "finished":0.0
         },
         "resolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":0.0,
+            "value":0.0,
             "factor":1.0,
             "target":0.0,
-            "value":0.0,
-            "startValue":0.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":0.0,
-            "value":0.0,
-            "startValue":0.0
+            "finished":0.0
           },
           "value":{
             "x":0.0,
             "y":0.0
           },
+          "y":{
+            "startValue":0.0,
+            "value":0.0,
+            "factor":1.0,
+            "target":0.0,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":0.0,
             "y":0.0
-          }
-        },
-        "time":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.016,
-          "target":1000000.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "amplitude":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":1.0,
-          "target":0.20000000000000001,
-          "value":0.20000000000000001,
-          "startValue":0.20000000000000001
+          },
+          "finished":0.0
         },
         "refraction":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.29999999999999999,
+          "value":0.29999999999999999,
           "factor":1.0,
           "target":0.29999999999999999,
-          "value":0.29999999999999999,
-          "startValue":0.29999999999999999
+          "increase":0.0,
+          "finished":0.0
         },
         "width":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":32.0,
+          "value":32.0,
           "factor":1.0,
           "target":32.0,
-          "value":32.0,
-          "startValue":32.0
+          "increase":0.0,
+          "finished":0.0
+        },
+        "time":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.016,
+          "target":1000000.0,
+          "increase":0.0,
+          "finished":0.0
         }
-      },
-      "name":"Shock-wave 02"
+      }
     },
     "Magnify 04":{
+      "name":"Magnify 04",
       "shader":"shader_magnify",
       "properties":{
-        "position":{
-          "x":{
-            "increase":0.0,
-            "finished":0.0,
-            "factor":0.001,
-            "target":0.0,
-            "value":1.0,
-            "startValue":1.0
-          },
-          "finished":0.0,
-          "y":{
-            "increase":0.0,
-            "finished":0.0,
-            "factor":0.002,
-            "target":0.5,
-            "value":0.5,
-            "startValue":0.5
-          },
-          "value":{
-            "x":1.0,
-            "y":0.5
-          },
-          "startValue":{
-            "x":1.0,
-            "y":0.5
-          }
-        },
         "radius":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.050000000000000003,
+          "value":0.90000000000000002,
           "factor":0.0035000000000000001,
           "target":0.050000000000000003,
-          "value":0.90000000000000002,
-          "startValue":0.050000000000000003
+          "increase":0.0,
+          "finished":0.0
         },
         "minZoom":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.0,
+          "value":0.0,
           "factor":0.0030000000000000001,
           "target":5.0,
-          "value":0.0,
-          "startValue":0.0
+          "increase":0.0,
+          "finished":0.0
         },
         "maxZoom":{
-          "increase":0.0001,
-          "finished":0.0,
+          "startValue":0.40000000000000002,
+          "value":0.40000000000000002,
           "factor":0.002,
           "target":4.0,
-          "value":0.40000000000000002,
-          "startValue":0.40000000000000002
+          "increase":0.0001,
+          "finished":0.0
+        },
+        "position":{
+          "x":{
+            "startValue":1.0,
+            "value":1.0,
+            "factor":0.001,
+            "target":0.0,
+            "increase":0.0,
+            "finished":0.0
+          },
+          "value":{
+            "x":1.0,
+            "y":0.5
+          },
+          "y":{
+            "startValue":0.5,
+            "value":0.5,
+            "factor":0.002,
+            "target":0.5,
+            "increase":0.0,
+            "finished":0.0
+          },
+          "startValue":{
+            "x":1.0,
+            "y":0.5
+          },
+          "finished":0.0
         },
         "resolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1.0,
+            "value":1.0,
             "factor":1.0,
             "target":1.0,
-            "value":1.0,
-            "startValue":1.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":1.0,
-            "value":1.0,
-            "startValue":1.0
+            "finished":0.0
           },
           "value":{
             "x":1.0,
             "y":1.0
           },
+          "y":{
+            "startValue":1.0,
+            "value":1.0,
+            "factor":1.0,
+            "target":1.0,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":1.0,
             "y":1.0
-          }
+          },
+          "finished":0.0
         }
-      },
-      "name":"Magnify 04"
+      }
     },
     "Shock-wave 03":{
+      "name":"Shock-wave 03",
       "shader":"shader_shock_wave",
       "properties":{
         "position":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":0.0,
+            "value":0.0,
             "factor":0.0030000000000000001,
             "target":1.0,
-            "value":0.0,
-            "startValue":0.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":0.5,
-            "value":0.5,
-            "startValue":0.5
+            "finished":0.0
           },
           "value":{
             "x":0.0,
             "y":0.5
           },
+          "y":{
+            "startValue":0.5,
+            "value":0.5,
+            "factor":1.0,
+            "target":0.5,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":0.0,
             "y":0.5
-          }
+          },
+          "finished":0.0
+        },
+        "amplitude":{
+          "startValue":0.20000000000000001,
+          "value":0.20000000000000001,
+          "factor":1.0,
+          "target":0.20000000000000001,
+          "increase":0.0,
+          "finished":0.0
         },
         "resolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":0.0,
+            "value":0.0,
             "factor":1.0,
             "target":0.0,
-            "value":0.0,
-            "startValue":0.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":0.0,
-            "value":0.0,
-            "startValue":0.0
+            "finished":0.0
           },
           "value":{
             "x":0.0,
             "y":0.0
           },
+          "y":{
+            "startValue":0.0,
+            "value":0.0,
+            "factor":1.0,
+            "target":0.0,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":0.0,
             "y":0.0
-          }
-        },
-        "time":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.016,
-          "target":1000000.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "amplitude":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":1.0,
-          "target":0.20000000000000001,
-          "value":0.20000000000000001,
-          "startValue":0.20000000000000001
+          },
+          "finished":0.0
         },
         "refraction":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.29999999999999999,
+          "value":0.29999999999999999,
           "factor":1.0,
           "target":0.29999999999999999,
-          "value":0.29999999999999999,
-          "startValue":0.29999999999999999
+          "increase":0.0,
+          "finished":0.0
         },
         "width":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":32.0,
+          "value":32.0,
           "factor":1.0,
           "target":32.0,
-          "value":32.0,
-          "startValue":32.0
+          "increase":0.0,
+          "finished":0.0
+        },
+        "time":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.016,
+          "target":1000000.0,
+          "increase":0.0,
+          "finished":0.0
         }
-      },
-      "name":"Shock-wave 03"
+      }
     },
     "Magnify 05":{
+      "name":"Magnify 05",
       "shader":"shader_magnify",
       "properties":{
-        "position":{
-          "x":{
-            "increase":0.0,
-            "finished":0.0,
-            "factor":0.001,
-            "target":0.0,
-            "value":1.0,
-            "startValue":1.0
-          },
-          "finished":0.0,
-          "y":{
-            "increase":0.0,
-            "finished":0.0,
-            "factor":0.001,
-            "target":0.5,
-            "value":0.5,
-            "startValue":0.5
-          },
-          "value":{
-            "x":1.0,
-            "y":0.5
-          },
-          "startValue":{
-            "x":1.0,
-            "y":0.5
-          }
-        },
         "radius":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.20000000000000001,
+          "value":0.20000000000000001,
           "factor":0.00080000000000000004,
           "target":8.0,
-          "value":0.20000000000000001,
-          "startValue":0.20000000000000001
+          "increase":0.0,
+          "finished":0.0
         },
         "minZoom":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.0,
+          "value":0.0,
           "factor":0.0001,
           "target":5.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "resolution":{
-          "x":{
-            "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":1.0,
-            "value":1.0,
-            "startValue":1.0
-          },
-          "finished":0.0,
-          "y":{
-            "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":1.0,
-            "value":1.0,
-            "startValue":1.0
-          },
-          "value":{
-            "x":1.0,
-            "y":1.0
-          },
-          "startValue":{
-            "x":1.0,
-            "y":1.0
-          }
+          "increase":0.0,
+          "finished":0.0
         },
         "maxZoom":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.5,
+          "value":0.5,
           "factor":0.0030000000000000001,
           "target":20.0,
-          "value":0.5,
-          "startValue":0.5
+          "increase":0.0,
+          "finished":0.0
+        },
+        "position":{
+          "x":{
+            "startValue":1.0,
+            "value":1.0,
+            "factor":0.001,
+            "target":0.0,
+            "increase":0.0,
+            "finished":0.0
+          },
+          "value":{
+            "x":1.0,
+            "y":0.5
+          },
+          "y":{
+            "startValue":0.5,
+            "value":0.5,
+            "factor":0.001,
+            "target":0.5,
+            "increase":0.0,
+            "finished":0.0
+          },
+          "startValue":{
+            "x":1.0,
+            "y":0.5
+          },
+          "finished":0.0
+        },
+        "resolution":{
+          "x":{
+            "startValue":1.0,
+            "value":1.0,
+            "factor":1.0,
+            "target":1.0,
+            "increase":0.0,
+            "finished":0.0
+          },
+          "value":{
+            "x":1.0,
+            "y":1.0
+          },
+          "y":{
+            "startValue":1.0,
+            "value":1.0,
+            "factor":1.0,
+            "target":1.0,
+            "increase":0.0,
+            "finished":0.0
+          },
+          "startValue":{
+            "x":1.0,
+            "y":1.0
+          },
+          "finished":0.0
         }
-      },
-      "name":"Magnify 05"
+      }
     },
     "Shock-wave 04":{
+      "name":"Shock-wave 04",
       "shader":"shader_shock_wave",
       "properties":{
         "position":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":0.0,
+            "value":0.0,
             "factor":0.0030000000000000001,
             "target":1.0,
-            "value":0.0,
-            "startValue":0.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":0.5,
-            "value":0.5,
-            "startValue":0.5
+            "finished":0.0
           },
           "value":{
             "x":0.0,
             "y":0.5
           },
+          "y":{
+            "startValue":0.5,
+            "value":0.5,
+            "factor":1.0,
+            "target":0.5,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":0.0,
             "y":0.5
-          }
+          },
+          "finished":0.0
+        },
+        "amplitude":{
+          "startValue":0.20000000000000001,
+          "value":0.20000000000000001,
+          "factor":1.0,
+          "target":0.20000000000000001,
+          "increase":0.0,
+          "finished":0.0
         },
         "resolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":0.0,
+            "value":0.0,
             "factor":1.0,
             "target":0.0,
-            "value":0.0,
-            "startValue":0.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":0.0,
-            "value":0.0,
-            "startValue":0.0
+            "finished":0.0
           },
           "value":{
             "x":0.0,
             "y":0.0
           },
+          "y":{
+            "startValue":0.0,
+            "value":0.0,
+            "factor":1.0,
+            "target":0.0,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":0.0,
             "y":0.0
-          }
-        },
-        "time":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.016,
-          "target":1000000.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "amplitude":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":1.0,
-          "target":0.20000000000000001,
-          "value":0.20000000000000001,
-          "startValue":0.20000000000000001
+          },
+          "finished":0.0
         },
         "refraction":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.29999999999999999,
+          "value":0.29999999999999999,
           "factor":1.0,
           "target":0.29999999999999999,
-          "value":0.29999999999999999,
-          "startValue":0.29999999999999999
+          "increase":0.0,
+          "finished":0.0
         },
         "width":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":32.0,
+          "value":32.0,
           "factor":1.0,
           "target":32.0,
-          "value":32.0,
-          "startValue":32.0
+          "increase":0.0,
+          "finished":0.0
+        },
+        "time":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.016,
+          "target":1000000.0,
+          "increase":0.0,
+          "finished":0.0
         }
-      },
-      "name":"Shock-wave 04"
+      }
     },
     "Shock-wave 05":{
+      "name":"Shock-wave 05",
       "shader":"shader_shock_wave",
       "properties":{
         "position":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":0.0,
+            "value":0.0,
             "factor":0.0030000000000000001,
             "target":1.0,
-            "value":0.0,
-            "startValue":0.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
+            "finished":0.0
+          },
+          "value":{
+            "x":0.0,
+            "y":0.5
+          },
+          "y":{
+            "startValue":0.5,
+            "value":0.5,
             "factor":1.0,
             "target":0.5,
-            "value":0.5,
-            "startValue":0.5
-          },
-          "value":{
-            "x":0.0,
-            "y":0.5
+            "increase":0.0,
+            "finished":0.0
           },
           "startValue":{
             "x":0.0,
             "y":0.5
-          }
-        },
-        "resolution":{
-          "x":{
-            "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":0.0,
-            "value":0.0,
-            "startValue":0.0
           },
-          "finished":0.0,
-          "y":{
-            "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":0.0,
-            "value":0.0,
-            "startValue":0.0
-          },
-          "value":{
-            "x":0.0,
-            "y":0.0
-          },
-          "startValue":{
-            "x":0.0,
-            "y":0.0
-          }
-        },
-        "time":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.016,
-          "target":1000000.0,
-          "value":0.0,
-          "startValue":0.0
+          "finished":0.0
         },
         "amplitude":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.20000000000000001,
+          "value":0.20000000000000001,
           "factor":1.0,
           "target":0.20000000000000001,
-          "value":0.20000000000000001,
-          "startValue":0.20000000000000001
+          "increase":0.0,
+          "finished":0.0
+        },
+        "resolution":{
+          "x":{
+            "startValue":0.0,
+            "value":0.0,
+            "factor":1.0,
+            "target":0.0,
+            "increase":0.0,
+            "finished":0.0
+          },
+          "value":{
+            "x":0.0,
+            "y":0.0
+          },
+          "y":{
+            "startValue":0.0,
+            "value":0.0,
+            "factor":1.0,
+            "target":0.0,
+            "increase":0.0,
+            "finished":0.0
+          },
+          "startValue":{
+            "x":0.0,
+            "y":0.0
+          },
+          "finished":0.0
         },
         "refraction":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.29999999999999999,
+          "value":0.29999999999999999,
           "factor":1.0,
           "target":0.29999999999999999,
-          "value":0.29999999999999999,
-          "startValue":0.29999999999999999
+          "increase":0.0,
+          "finished":0.0
         },
         "width":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":32.0,
+          "value":32.0,
           "factor":1.0,
           "target":32.0,
-          "value":32.0,
-          "startValue":32.0
+          "increase":0.0,
+          "finished":0.0
+        },
+        "time":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.016,
+          "target":1000000.0,
+          "increase":0.0,
+          "finished":0.0
         }
-      },
-      "name":"Shock-wave 05"
+      }
     },
     "Mosaic 01":{
+      "name":"Mosaic 01",
       "shader":"shader_mosaic",
       "properties":{
         "amount":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":96.0,
+          "value":96.0,
           "factor":0.0,
           "target":96.0,
-          "value":96.0,
-          "startValue":96.0
+          "increase":0.0,
+          "finished":0.0
         },
         "resolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1.0,
+            "value":1.0,
             "factor":1.0,
             "target":1.0,
-            "value":1.0,
-            "startValue":1.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":1.0,
-            "value":1.0,
-            "startValue":1.0
+            "finished":0.0
           },
           "value":{
             "x":1.0,
             "y":1.0
           },
+          "y":{
+            "startValue":1.0,
+            "value":1.0,
+            "factor":1.0,
+            "target":1.0,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":1.0,
             "y":1.0
-          }
+          },
+          "finished":0.0
         }
-      },
-      "name":"Mosaic 01"
+      }
     },
     "Mosaic 02":{
+      "name":"Mosaic 02",
       "shader":"shader_mosaic",
       "properties":{
         "amount":{
-          "increase":0.001,
-          "finished":0.0,
+          "startValue":128.0,
+          "value":128.0,
           "factor":0.5,
           "target":1.0,
-          "value":128.0,
-          "startValue":128.0
+          "increase":0.001,
+          "finished":0.0
         },
         "resolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1.0,
+            "value":1.0,
             "factor":1.0,
             "target":1.0,
-            "value":1.0,
-            "startValue":1.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":1.0,
-            "value":1.0,
-            "startValue":1.0
+            "finished":0.0
           },
           "value":{
             "x":1.0,
             "y":1.0
           },
+          "y":{
+            "startValue":1.0,
+            "value":1.0,
+            "factor":1.0,
+            "target":1.0,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":1.0,
             "y":1.0
-          }
+          },
+          "finished":0.0
         }
-      },
-      "name":"Mosaic 02"
+      }
     },
     "Sketch 01":{
+      "name":"Sketch 01",
       "shader":"shader_sketch",
       "properties":{
+        "intensity":{
+          "startValue":10.0,
+          "value":10.0,
+          "factor":1.0,
+          "target":10.0,
+          "increase":0.0,
+          "finished":0.0
+        },
         "resolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1280.0,
+            "value":1280.0,
             "factor":1.0,
             "target":1280.0,
-            "value":1280.0,
-            "startValue":1280.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":720.0,
-            "value":720.0,
-            "startValue":720.0
+            "finished":0.0
           },
           "value":{
             "x":1280.0,
             "y":720.0
           },
+          "y":{
+            "startValue":720.0,
+            "value":720.0,
+            "factor":1.0,
+            "target":720.0,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":1280.0,
             "y":720.0
-          }
-        },
-        "intensity":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":1.0,
-          "target":10.0,
-          "value":10.0,
-          "startValue":10.0
+          },
+          "finished":0.0
         }
-      },
-      "name":"Sketch 01"
+      }
     },
     "Mosaic 03":{
+      "name":"Mosaic 03",
       "shader":"shader_mosaic",
       "properties":{
         "amount":{
-          "increase":0.001,
-          "finished":0.0,
+          "startValue":32.0,
+          "value":32.0,
           "factor":0.050000000000000003,
           "target":128.0,
-          "value":32.0,
-          "startValue":32.0
+          "increase":0.001,
+          "finished":0.0
         },
         "resolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1.0,
+            "value":1.0,
             "factor":1.0,
             "target":1.0,
-            "value":1.0,
-            "startValue":1.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":1.0,
-            "value":1.0,
-            "startValue":1.0
+            "finished":0.0
           },
           "value":{
             "x":1.0,
             "y":1.0
           },
+          "y":{
+            "startValue":1.0,
+            "value":1.0,
+            "factor":1.0,
+            "target":1.0,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":1.0,
             "y":1.0
-          }
+          },
+          "finished":0.0
         }
-      },
-      "name":"Mosaic 03"
+      }
     },
     "Sketch 02":{
+      "name":"Sketch 02",
       "shader":"shader_sketch",
       "properties":{
+        "intensity":{
+          "startValue":10.0,
+          "value":10.0,
+          "factor":1.0,
+          "target":10.0,
+          "increase":0.0,
+          "finished":0.0
+        },
         "resolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1280.0,
+            "value":1280.0,
             "factor":1.0,
             "target":1280.0,
-            "value":1280.0,
-            "startValue":1280.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":720.0,
-            "value":720.0,
-            "startValue":720.0
+            "finished":0.0
           },
           "value":{
             "x":1280.0,
             "y":720.0
           },
+          "y":{
+            "startValue":720.0,
+            "value":720.0,
+            "factor":1.0,
+            "target":720.0,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":1280.0,
             "y":720.0
-          }
-        },
-        "intensity":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":1.0,
-          "target":10.0,
-          "value":10.0,
-          "startValue":10.0
+          },
+          "finished":0.0
         }
-      },
-      "name":"Sketch 02"
+      }
     },
     "Mosaic 04":{
+      "name":"Mosaic 04",
       "shader":"shader_mosaic",
       "properties":{
         "amount":{
-          "increase":0.050000000000000003,
-          "finished":0.0,
+          "startValue":96.0,
+          "value":96.0,
           "factor":0.10000000000000001,
           "target":32.0,
-          "value":96.0,
-          "startValue":96.0
+          "increase":0.050000000000000003,
+          "finished":0.0
         },
         "resolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1.0,
+            "value":1.0,
             "factor":1.0,
             "target":1.0,
-            "value":1.0,
-            "startValue":1.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":1.0,
-            "value":1.0,
-            "startValue":1.0
+            "finished":0.0
           },
           "value":{
             "x":1.0,
             "y":1.0
           },
+          "y":{
+            "startValue":1.0,
+            "value":1.0,
+            "factor":1.0,
+            "target":1.0,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":1.0,
             "y":1.0
-          }
+          },
+          "finished":0.0
         }
-      },
-      "name":"Mosaic 04"
+      }
     },
     "Sketch 03":{
+      "name":"Sketch 03",
       "shader":"shader_sketch",
       "properties":{
+        "intensity":{
+          "startValue":10.0,
+          "value":10.0,
+          "factor":1.0,
+          "target":10.0,
+          "increase":0.0,
+          "finished":0.0
+        },
         "resolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1280.0,
+            "value":1280.0,
             "factor":1.0,
             "target":1280.0,
-            "value":1280.0,
-            "startValue":1280.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":720.0,
-            "value":720.0,
-            "startValue":720.0
+            "finished":0.0
           },
           "value":{
             "x":1280.0,
             "y":720.0
           },
+          "y":{
+            "startValue":720.0,
+            "value":720.0,
+            "factor":1.0,
+            "target":720.0,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":1280.0,
             "y":720.0
-          }
-        },
-        "intensity":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":1.0,
-          "target":10.0,
-          "value":10.0,
-          "startValue":10.0
+          },
+          "finished":0.0
         }
-      },
-      "name":"Sketch 03"
+      }
     },
     "Mosaic 05":{
+      "name":"Mosaic 05",
       "shader":"shader_mosaic",
       "properties":{
         "amount":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":16.0,
+          "value":16.0,
           "factor":0.01,
           "target":32.0,
-          "value":16.0,
-          "startValue":16.0
+          "increase":0.0,
+          "finished":0.0
         },
         "resolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1.0,
+            "value":1.0,
             "factor":1.0,
             "target":1.0,
-            "value":1.0,
-            "startValue":1.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":1.0,
-            "value":1.0,
-            "startValue":1.0
+            "finished":0.0
           },
           "value":{
             "x":1.0,
             "y":1.0
           },
+          "y":{
+            "startValue":1.0,
+            "value":1.0,
+            "factor":1.0,
+            "target":1.0,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":1.0,
             "y":1.0
-          }
+          },
+          "finished":0.0
         }
-      },
-      "name":"Mosaic 05"
+      }
     },
     "Emboss 02":{
+      "name":"Emboss 02",
       "shader":"shader_emboss",
       "properties":{
         "resolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1280.0,
+            "value":1280.0,
             "factor":1.0,
             "target":1280.0,
-            "value":1280.0,
-            "startValue":1280.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":720.0,
-            "value":720.0,
-            "startValue":720.0
+            "finished":0.0
           },
           "value":{
             "x":1280.0,
             "y":720.0
           },
+          "y":{
+            "startValue":720.0,
+            "value":720.0,
+            "factor":1.0,
+            "target":720.0,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":1280.0,
             "y":720.0
-          }
+          },
+          "finished":0.0
         }
-      },
-      "name":"Emboss 02"
+      }
     },
     "Emboss 03":{
+      "name":"Emboss 03",
       "shader":"shader_emboss",
       "properties":{
         "resolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1280.0,
+            "value":1280.0,
             "factor":1.0,
             "target":1280.0,
-            "value":1280.0,
-            "startValue":1280.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
+            "finished":0.0
+          },
+          "value":{
+            "x":1280.0,
+            "y":720.0
+          },
+          "y":{
+            "startValue":720.0,
+            "value":720.0,
             "factor":1.0,
             "target":720.0,
-            "value":720.0,
-            "startValue":720.0
-          },
-          "value":{
-            "x":1280.0,
-            "y":720.0
+            "increase":0.0,
+            "finished":0.0
           },
           "startValue":{
             "x":1280.0,
             "y":720.0
-          }
+          },
+          "finished":0.0
         }
-      },
-      "name":"Emboss 03"
+      }
     },
     "LED 01":{
+      "name":"LED 01",
       "shader":"shader_led",
       "properties":{
-        "resolution":{
-          "x":{
-            "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":1.0,
-            "value":1.0,
-            "startValue":1.0
-          },
-          "finished":0.0,
-          "y":{
-            "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":1.0,
-            "value":1.0,
-            "startValue":1.0
-          },
-          "value":{
-            "x":1.0,
-            "y":1.0
-          },
-          "startValue":{
-            "x":1.0,
-            "y":1.0
-          }
-        },
         "ledSize":{
-          "increase":0.00020000000000000001,
-          "finished":0.0,
+          "startValue":42.0,
+          "value":42.0,
           "factor":0.16,
           "target":1000.0,
-          "value":42.0,
-          "startValue":42.0
+          "increase":0.00020000000000000001,
+          "finished":0.0
         },
         "brightness":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":1.0,
+          "value":1.0,
           "factor":0.001,
           "target":1.3300000000000001,
-          "value":1.0,
-          "startValue":1.0
+          "increase":0.0,
+          "finished":0.0
+        },
+        "resolution":{
+          "x":{
+            "startValue":1.0,
+            "value":1.0,
+            "factor":1.0,
+            "target":1.0,
+            "increase":0.0,
+            "finished":0.0
+          },
+          "value":{
+            "x":1.0,
+            "y":1.0
+          },
+          "y":{
+            "startValue":1.0,
+            "value":1.0,
+            "factor":1.0,
+            "target":1.0,
+            "increase":0.0,
+            "finished":0.0
+          },
+          "startValue":{
+            "x":1.0,
+            "y":1.0
+          },
+          "finished":0.0
         }
-      },
-      "name":"LED 01"
+      }
     },
     "LED 02":{
+      "name":"LED 02",
       "shader":"shader_led",
       "properties":{
-        "resolution":{
-          "x":{
-            "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":1.0,
-            "value":1.0,
-            "startValue":1.0
-          },
-          "finished":0.0,
-          "y":{
-            "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":1.0,
-            "value":1.0,
-            "startValue":1.0
-          },
-          "value":{
-            "x":1.0,
-            "y":1.0
-          },
-          "startValue":{
-            "x":1.0,
-            "y":1.0
-          }
-        },
         "ledSize":{
-          "increase":0.001,
-          "finished":0.0,
+          "startValue":140.0,
+          "value":140.0,
           "factor":0.40000000000000002,
           "target":32.0,
-          "value":140.0,
-          "startValue":140.0
+          "increase":0.001,
+          "finished":0.0
         },
         "brightness":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":1.5,
+          "value":1.5,
           "factor":0.001,
           "target":1.0,
-          "value":1.5,
-          "startValue":1.5
+          "increase":0.0,
+          "finished":0.0
+        },
+        "resolution":{
+          "x":{
+            "startValue":1.0,
+            "value":1.0,
+            "factor":1.0,
+            "target":1.0,
+            "increase":0.0,
+            "finished":0.0
+          },
+          "value":{
+            "x":1.0,
+            "y":1.0
+          },
+          "y":{
+            "startValue":1.0,
+            "value":1.0,
+            "factor":1.0,
+            "target":1.0,
+            "increase":0.0,
+            "finished":0.0
+          },
+          "startValue":{
+            "x":1.0,
+            "y":1.0
+          },
+          "finished":0.0
         }
-      },
-      "name":"LED 02"
+      }
     },
     "Posterization 01":{
+      "name":"Posterization 01",
       "shader":"shader_posterization",
       "properties":{
         "gamma":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.69999999999999996,
+          "value":0.69999999999999996,
           "factor":0.001,
           "target":1.0,
-          "value":0.69999999999999996,
-          "startValue":0.69999999999999996
+          "increase":0.0,
+          "finished":0.0
         },
         "colorNumber":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":1.0,
+          "value":1.0,
           "factor":0.02,
           "target":32.0,
-          "value":1.0,
-          "startValue":1.0
+          "increase":0.0,
+          "finished":0.0
         }
-      },
-      "name":"Posterization 01"
+      }
     },
     "LED 03":{
+      "name":"LED 03",
       "shader":"shader_led",
       "properties":{
+        "ledSize":{
+          "startValue":20.0,
+          "value":20.0,
+          "factor":0.01,
+          "target":80.0,
+          "increase":0.0,
+          "finished":0.0
+        },
+        "brightness":{
+          "startValue":1.0,
+          "value":1.0,
+          "factor":1.0,
+          "target":1.0,
+          "increase":0.0,
+          "finished":0.0
+        },
         "resolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1.0,
+            "value":1.0,
             "factor":1.0,
             "target":1.0,
-            "value":1.0,
-            "startValue":1.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":1.0,
-            "value":1.0,
-            "startValue":1.0
+            "finished":0.0
           },
           "value":{
             "x":1.0,
             "y":1.0
           },
+          "y":{
+            "startValue":1.0,
+            "value":1.0,
+            "factor":1.0,
+            "target":1.0,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":1.0,
             "y":1.0
-          }
-        },
-        "ledSize":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":0.01,
-          "target":80.0,
-          "value":20.0,
-          "startValue":20.0
-        },
-        "brightness":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":1.0,
-          "target":1.0,
-          "value":1.0,
-          "startValue":1.0
+          },
+          "finished":0.0
         }
-      },
-      "name":"LED 03"
+      }
     },
     "Posterization 02":{
+      "name":"Posterization 02",
       "shader":"shader_posterization",
       "properties":{
         "gamma":{
-          "increase":0.0001,
-          "finished":0.0,
+          "startValue":1.0,
+          "value":2.5,
           "factor":0.01,
           "target":1.0,
-          "value":2.5,
-          "startValue":1.0
+          "increase":0.0001,
+          "finished":0.0
         },
         "colorNumber":{
-          "increase":0.0050000000000000001,
-          "finished":0.0,
+          "startValue":30.0,
+          "value":30.0,
           "factor":0.10000000000000001,
           "target":4.0,
-          "value":30.0,
-          "startValue":30.0
+          "increase":0.0050000000000000001,
+          "finished":0.0
         }
-      },
-      "name":"Posterization 02"
+      }
     },
     "LED 04":{
+      "name":"LED 04",
       "shader":"shader_led",
       "properties":{
+        "ledSize":{
+          "startValue":512.0,
+          "value":512.0,
+          "factor":1.0,
+          "target":1024.0,
+          "increase":0.0,
+          "finished":0.0
+        },
+        "brightness":{
+          "startValue":1.0,
+          "value":1.0,
+          "factor":1.0,
+          "target":1.0,
+          "increase":0.0,
+          "finished":0.0
+        },
         "resolution":{
           "x":{
-            "increase":0.0,
-            "finished":0.0,
+            "startValue":1.0,
+            "value":1.0,
             "factor":1.0,
             "target":1.0,
-            "value":1.0,
-            "startValue":1.0
-          },
-          "finished":0.0,
-          "y":{
             "increase":0.0,
-            "finished":0.0,
-            "factor":1.0,
-            "target":1.0,
-            "value":1.0,
-            "startValue":1.0
+            "finished":0.0
           },
           "value":{
             "x":1.0,
             "y":1.0
           },
+          "y":{
+            "startValue":1.0,
+            "value":1.0,
+            "factor":1.0,
+            "target":1.0,
+            "increase":0.0,
+            "finished":0.0
+          },
           "startValue":{
             "x":1.0,
             "y":1.0
-          }
-        },
-        "ledSize":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":1.0,
-          "target":1024.0,
-          "value":512.0,
-          "startValue":512.0
-        },
-        "brightness":{
-          "increase":0.0,
-          "finished":0.0,
-          "factor":1.0,
-          "target":1.0,
-          "value":1.0,
-          "startValue":1.0
+          },
+          "finished":0.0
         }
-      },
-      "name":"LED 04"
+      }
     }
-  }
+  },
+  "model":"Collection<io.alkapivo.core.service.shader.ShaderTemplate>"
 }

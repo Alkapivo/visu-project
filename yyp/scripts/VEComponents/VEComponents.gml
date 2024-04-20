@@ -2082,6 +2082,7 @@ global.__VEComponents = new Map(String, Callable, {
       )
     ).forEach(addItem, items)
 
+    
     factoryTextField(
       $"{name}_target",
       layout.nodes.target,
@@ -2111,6 +2112,7 @@ global.__VEComponents = new Map(String, Callable, {
         false
       )
     ).forEach(addItem, items)
+    
     #endregion
 
     return items

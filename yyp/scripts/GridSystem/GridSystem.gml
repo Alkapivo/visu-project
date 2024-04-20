@@ -36,7 +36,7 @@ function GridSystem(_controller) constructor {
         case "bullet": return this.bullets
         case "enemy": return this.enemies
         case "player": return this.players
-        default: throw Exception("Found not implemented entity type")
+        default: throw new Exception("Found not implemented entity type")
       }
     },
 

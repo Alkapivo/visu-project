@@ -1,147 +1,146 @@
 {
-  "model":"Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>",
   "data":[
     {
-      "type":"brush_grid_config",
+      "texture":"texture_visu_editor_icon_event_grid_config",
+      "name":"enable",
+      "color":"#6EFF22",
       "properties":{
-        "grid-config_use-transform-clear-frame-alpha":0.0,
-        "grid-config_transform-clear-frame-alpha":{
-          "increase":2.0,
-          "finished":0.0,
-          "factor":0.029999999999999999,
-          "target":5.0,
-          "value":0.0,
-          "startValue":0.0
-        },
         "grid-config_use-transform-speed":0.0,
         "grid-config_transform-speed":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":4.166666666666667,
+          "value":4.166666666666667,
           "factor":0.5,
           "target":32.0,
-          "value":4.166666666666667,
-          "startValue":4.166666666666667
+          "increase":0.0,
+          "finished":0.0
         },
         "grid-config_use-clear-frame":0.0,
         "grid-config_clear-frame":1.0,
         "grid-config_use-clear-color":0.0,
         "grid-config_use-render-grid":1.0,
         "grid-config_render-grid":1.0,
-        "grid-config_clear-color":"#FFEFFF"
-      },
-      "name":"enable",
-      "color":"#6EFF22",
-      "texture":"texture_visu_editor_icon_event_grid_config"
-    },
-    {
-      "type":"brush_grid_config",
-      "properties":{
+        "grid-config_clear-color":"#FFEFFF",
         "grid-config_use-transform-clear-frame-alpha":0.0,
         "grid-config_transform-clear-frame-alpha":{
-          "increase":2.0,
-          "finished":0.0,
+          "startValue":0.0,
+          "value":0.0,
           "factor":0.029999999999999999,
           "target":5.0,
-          "value":0.0,
-          "startValue":0.0
-        },
+          "increase":2.0,
+          "finished":0.0
+        }
+      },
+      "type":"brush_grid_config"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_grid_config",
+      "name":"disable",
+      "color":"#FF392C",
+      "properties":{
         "grid-config_use-transform-speed":0.0,
         "grid-config_transform-speed":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":4.166666666666667,
+          "value":4.166666666666667,
           "factor":0.5,
           "target":32.0,
-          "value":4.166666666666667,
-          "startValue":4.166666666666667
+          "increase":0.0,
+          "finished":0.0
         },
         "grid-config_use-clear-frame":0.0,
         "grid-config_clear-frame":1.0,
         "grid-config_use-clear-color":0.0,
         "grid-config_use-render-grid":1.0,
         "grid-config_render-grid":0.0,
-        "grid-config_clear-color":"#FFEFFF"
-      },
-      "name":"disable",
-      "color":"#FF392C",
-      "texture":"texture_visu_editor_icon_event_grid_config"
-    },
-    {
-      "type":"brush_grid_config",
-      "properties":{
+        "grid-config_clear-color":"#FFEFFF",
         "grid-config_use-transform-clear-frame-alpha":0.0,
         "grid-config_transform-clear-frame-alpha":{
-          "increase":2.0,
-          "finished":0.0,
+          "startValue":0.0,
+          "value":0.0,
           "factor":0.029999999999999999,
           "target":5.0,
-          "value":0.0,
-          "startValue":0.0
-        },
+          "increase":2.0,
+          "finished":0.0
+        }
+      },
+      "type":"brush_grid_config"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_grid_config",
+      "name":"clear frame ON",
+      "color":"#38FF61",
+      "properties":{
         "grid-config_use-transform-speed":0.0,
         "grid-config_transform-speed":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":4.166666666666667,
+          "value":4.166666666666667,
           "factor":0.5,
           "target":32.0,
-          "value":4.166666666666667,
-          "startValue":4.166666666666667
+          "increase":0.0,
+          "finished":0.0
         },
         "grid-config_use-clear-frame":1.0,
         "grid-config_clear-frame":1.0,
         "grid-config_use-clear-color":0.0,
         "grid-config_use-render-grid":0.0,
         "grid-config_render-grid":0.0,
-        "grid-config_clear-color":"#FFEFFF"
-      },
-      "name":"clear frame ON",
-      "color":"#38FF61",
-      "texture":"texture_visu_editor_icon_event_grid_config"
-    },
-    {
-      "type":"brush_grid_config",
-      "properties":{
+        "grid-config_clear-color":"#FFEFFF",
         "grid-config_use-transform-clear-frame-alpha":0.0,
         "grid-config_transform-clear-frame-alpha":{
-          "increase":2.0,
-          "finished":0.0,
+          "startValue":0.0,
+          "value":0.0,
           "factor":0.029999999999999999,
           "target":5.0,
-          "value":0.0,
-          "startValue":0.0
-        },
+          "increase":2.0,
+          "finished":0.0
+        }
+      },
+      "type":"brush_grid_config"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_grid_config",
+      "name":"clear frame OFF",
+      "color":"#FC3E1E",
+      "properties":{
         "grid-config_use-transform-speed":0.0,
         "grid-config_transform-speed":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":4.166666666666667,
+          "value":4.166666666666667,
           "factor":0.5,
           "target":32.0,
-          "value":4.166666666666667,
-          "startValue":4.166666666666667
+          "increase":0.0,
+          "finished":0.0
         },
         "grid-config_use-clear-frame":1.0,
         "grid-config_clear-frame":0.0,
         "grid-config_use-clear-color":0.0,
         "grid-config_use-render-grid":0.0,
         "grid-config_render-grid":0.0,
-        "grid-config_clear-color":"#FFEFFF"
+        "grid-config_clear-color":"#FFEFFF",
+        "grid-config_use-transform-clear-frame-alpha":0.0,
+        "grid-config_transform-clear-frame-alpha":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.029999999999999999,
+          "target":5.0,
+          "increase":2.0,
+          "finished":0.0
+        }
       },
-      "name":"clear frame OFF",
-      "color":"#FC3E1E",
-      "texture":"texture_visu_editor_icon_event_grid_config"
+      "type":"brush_grid_config"
     },
     {
-      "type":"brush_grid_config",
+      "texture":"texture_visu_editor_icon_event_grid_config",
+      "name":"speed 2.0",
+      "color":"#26DCFF",
       "properties":{
-        "grid-config_use-render-grid-elements":0.0,
-        "grid-config_render-grid-elements":0.0,
         "grid-config_use-transform-speed":1.0,
         "grid-config_transform-speed":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":4.166666666666667,
+          "value":4.166666666666667,
           "factor":999.0,
           "target":2.0,
-          "value":4.166666666666667,
-          "startValue":4.166666666666667
+          "increase":0.0,
+          "finished":0.0
         },
         "grid-config_use-clear-frame":0.0,
         "grid-config_clear-frame":1.0,
@@ -149,21 +148,178 @@
         "grid-config_clear-color":"#FFFFFF",
         "grid-config_use-transform-clear-frame-alpha":0.0,
         "grid-config_transform-clear-frame-alpha":{
-          "increase":0.0,
-          "finished":0.0,
+          "startValue":0.0,
+          "value":0.0,
           "factor":999.0,
           "target":0.0,
-          "value":0.0,
-          "startValue":0.0
+          "increase":0.0,
+          "finished":0.0
         },
         "grid-config_use-gamemode":0.0,
         "grid-config_gamemode":"IDLE",
         "grid-config_use-render-grid":0.0,
-        "grid-config_render-grid":1.0
+        "grid-config_render-grid":1.0,
+        "grid-config_use-render-grid-elements":0.0,
+        "grid-config_render-grid-elements":0.0
       },
-      "name":"speed 2.0",
-      "color":"#26DCFF",
-      "texture":"texture_visu_editor_icon_event_grid_config"
+      "type":"brush_grid_config"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_grid_config",
+      "name":"border horizontal fade out",
+      "color":"#8B6EFF",
+      "properties":{
+        "grid-config_use-transform-speed":false,
+        "grid-config_transform-speed":{
+          "startValue":4.166666666666667,
+          "value":4.166666666666667,
+          "factor":999.0,
+          "target":2.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-config_use-clear-frame":0.0,
+        "grid-config_clear-frame":1.0,
+        "grid-config_use-clear-color":0.0,
+        "grid-config_clear-color":"#FFFFFF",
+        "grid-config_use-transform-clear-frame-alpha":0.0,
+        "grid-config_transform-clear-frame-alpha":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":999.0,
+          "target":0.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-config_use-gamemode":0.0,
+        "grid-config_gamemode":"IDLE",
+        "grid-config_use-border-bottom-color":false,
+        "grid-config_border-bottom-color":"#FFEFFF",
+        "grid-config_border-bottom-color-speed":0.01,
+        "grid-config_use-transform-border-bottom-alpha":false,
+        "grid-config_transform-border-bottom-alpha":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":1.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-config_use-transform-border-bottom-size":false,
+        "grid-config_transform-border-bottom-size":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":1.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-config_use-border-horizontal-color":false,
+        "grid-config_border-horizontal-color":"#FFEFFF",
+        "grid-config_border-horizontal-color-speed":0.01,
+        "grid-config_use-transform-border-horizontal-alpha":true,
+        "grid-config_transform-border-horizontal-alpha":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":0.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-config_use-transform-border-horizontal-size":false,
+        "grid-config_transform-border-horizontal-size":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":0.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-config_use-render-grid":0.0,
+        "grid-config_render-grid":1.0,
+        "grid-config_use-render-grid-elements":0.0,
+        "grid-config_render-grid-elements":0.0
+      },
+      "type":"brush_grid_config"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_grid_config",
+      "name":"border horizontal fade in",
+      "color":"#8BB2FF",
+      "properties":{
+        "grid-config_use-transform-speed":false,
+        "grid-config_transform-speed":{
+          "startValue":4.166666666666667,
+          "value":4.166666666666667,
+          "factor":999.0,
+          "target":2.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-config_use-clear-frame":0.0,
+        "grid-config_clear-frame":1.0,
+        "grid-config_use-clear-color":0.0,
+        "grid-config_clear-color":"#FFFFFF",
+        "grid-config_use-transform-clear-frame-alpha":0.0,
+        "grid-config_transform-clear-frame-alpha":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":999.0,
+          "target":0.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-config_use-gamemode":0.0,
+        "grid-config_gamemode":"IDLE",
+        "grid-config_use-border-bottom-color":false,
+        "grid-config_border-bottom-color":"#FFEFFF",
+        "grid-config_border-bottom-color-speed":0.01,
+        "grid-config_use-transform-border-bottom-alpha":false,
+        "grid-config_transform-border-bottom-alpha":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":1.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-config_use-transform-border-bottom-size":false,
+        "grid-config_transform-border-bottom-size":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":1.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-config_use-border-horizontal-color":false,
+        "grid-config_border-horizontal-color":"#FFEFFF",
+        "grid-config_border-horizontal-color-speed":0.01,
+        "grid-config_use-transform-border-horizontal-alpha":true,
+        "grid-config_transform-border-horizontal-alpha":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":1.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-config_use-transform-border-horizontal-size":false,
+        "grid-config_transform-border-horizontal-size":{
+          "startValue":0.0,
+          "value":0.0,
+          "factor":0.01,
+          "target":96.0,
+          "increase":0.0,
+          "finished":false
+        },
+        "grid-config_use-render-grid":0.0,
+        "grid-config_render-grid":1.0,
+        "grid-config_use-render-grid-elements":0.0,
+        "grid-config_render-grid-elements":0.0
+      },
+      "type":"brush_grid_config"
     }
-  ]
+  ],
+  "model":"Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>"
 }

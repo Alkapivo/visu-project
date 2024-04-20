@@ -30,6 +30,10 @@ function ShootFeature(json) {
       loop: Struct.contains(json, "bullets") ? json.bullets : Infinity 
     }),
 
+    ///@private
+    ///@type {Number}
+    angle: Assert.isType(Struct.getDefault(json, "angle", 0.0), Number),
+
     ///@override
     ///@param {GridItem} item
     ///@param {VisuController} controller
@@ -41,7 +45,7 @@ function ShootFeature(json) {
       controller.bulletService.send(new Event("spawn-bullet", {
         x: item.x,
         y: item.y,
-        angle: item.angle,
+        angle: item.angle + this.angle,
         speed: this.speed,
         producer: Shroom,
         template: this.bullet,

@@ -1,224 +1,408 @@
 {
-  "model":"Collection<io.alkapivo.visu.service.shroom.ShroomTemplate>",
   "data":{
-    "shroom_lime":{
-      "sprite":{
-        "scaleY":5.0,
-        "frame":0.012280000000000069,
-        "alpha":1.0,
-        "angle":0.0,
-        "speed":30.0,
-        "name":"texture_lolratz_lime",
-        "blend":"#FFFFFF",
-        "animate":1.0,
-        "scaleX":5.0
-      },
-      "name":"shroom_lime",
+    "shroom_spot_right":{
+      "name":"shroom_spot_right",
       "gameModes":{
-        "platformer":{
-          "features":[
-          ]
-        },
-        "bulletHell":{
-          "features":[
-          ]
-        },
         "idle":{
-          "features":[
-          ]
-        }
-      }
-    },
-    "shroom_404":{
-      "sprite":{
-        "scaleY":2.0,
-        "frame":0.0,
-        "alpha":1.0,
-        "angle":0.0,
-        "speed":30.0,
-        "name":"texture_lolratz_404",
-        "blend":"#FFFFFF",
-        "animate":1.0,
-        "scaleX":2.0
-      },
-      "name":"shroom_404",
-      "gameModes":{
-        "platformer":{
           "features":[
           ]
         },
         "bulletHell":{
           "features":[
             {
+              "feature":"LifespawnFeature",
+              "duration":10.0
+            },
+            {
+              "feature":"AngleFeature",
+              "conditions":[
+                {
+                  "data":{
+                    "operator":"greaterOrEqual",
+                    "value":2.0
+                  },
+                  "type":"lifespawn"
+                },
+                {
+                  "data":{
+                    "operator":"lessOrEqual",
+                    "value":3.0
+                  },
+                  "type":"lifespawn"
+                }
+              ],
+              "add":{
+                "factor":0.10000000000000001,
+                "target":1.0,
+                "increase":0.0
+              }
+            },
+            {
               "feature":"ShootFeature",
-              "speed":16.0,
-              "interval":2.0,
-              "bullets":20.0,
-              "bullet":"bullet_shroom_404"
+              "interval":0.29999999999999999,
+              "bullet":"bullet_lolratz_spot",
+              "speed":18.0,
+              "conditions":[
+                {
+                  "data":{
+                    "operator":"greaterOrEqual",
+                    "value":2.0
+                  },
+                  "type":"lifespawn"
+                },
+                {
+                  "data":{
+                    "operator":"lessOrEqual",
+                    "value":4.0
+                  },
+                  "type":"lifespawn"
+                }
+              ],
+              "bullets":8.0
             }
           ]
         },
-        "idle":{
+        "platformer":{
           "features":[
           ]
         }
+      },
+      "sprite":{
+        "alpha":1.0,
+        "scaleX":5.0,
+        "angle":0.0,
+        "animate":1.0,
+        "name":"texture_lolratz_spot",
+        "scaleY":5.0,
+        "speed":30.0,
+        "frame":0.3934599999999997,
+        "blend":"#FFFFFF"
+      }
+    },
+    "shroom_spot_left":{
+      "name":"shroom_spot_left",
+      "gameModes":{
+        "idle":{
+          "features":[
+          ]
+        },
+        "bulletHell":{
+          "features":[
+            {
+              "feature":"LifespawnFeature",
+              "duration":10.0
+            },
+            {
+              "feature":"AngleFeature",
+              "conditions":[
+                {
+                  "data":{
+                    "operator":"greaterOrEqual",
+                    "value":2.0
+                  },
+                  "type":"lifespawn"
+                },
+                {
+                  "data":{
+                    "operator":"lessOrEqual",
+                    "value":3.0
+                  },
+                  "type":"lifespawn"
+                }
+              ],
+              "add":{
+                "factor":-0.10000000000000001,
+                "target":-1.0,
+                "increase":0.0
+              }
+            },
+            {
+              "feature":"ShootFeature",
+              "interval":0.29999999999999999,
+              "bullet":"bullet_lolratz_spot",
+              "speed":18.0,
+              "conditions":[
+                {
+                  "data":{
+                    "operator":"greaterOrEqual",
+                    "value":2.0
+                  },
+                  "type":"lifespawn"
+                },
+                {
+                  "data":{
+                    "operator":"lessOrEqual",
+                    "value":4.0
+                  },
+                  "type":"lifespawn"
+                }
+              ],
+              "bullets":8.0
+            }
+          ]
+        },
+        "platformer":{
+          "features":[
+          ]
+        }
+      },
+      "sprite":{
+        "alpha":1.0,
+        "scaleX":5.0,
+        "angle":0.0,
+        "animate":1.0,
+        "name":"texture_lolratz_spot",
+        "scaleY":5.0,
+        "speed":30.0,
+        "frame":0.56389999999999985,
+        "blend":"#FFFFFF"
       }
     },
     "shroom_muck_8":{
-      "sprite":{
-        "scaleY":5.0,
-        "frame":2.344412333333334,
-        "alpha":1.0,
-        "angle":0.0,
-        "speed":20.0,
-        "name":"texture_lolratz_muck_anim_8",
-        "blend":"#FFFFFF",
-        "animate":1.0,
-        "scaleX":5.0
-      },
       "name":"shroom_muck_8",
       "gameModes":{
-        "platformer":{
+        "idle":{
           "features":[
           ]
         },
         "bulletHell":{
           "features":[
+            {
+              "feature":"LifespawnFeature",
+              "duration":10.0
+            },
+            {
+              "feature":"FollowPlayerFeature",
+              "value":{
+                "factor":1.0,
+                "increase":0.10000000000000001
+              },
+              "interval":1.0,
+              "conditions":[
+                {
+                  "data":{
+                    "operator":"greaterOrEqual",
+                    "value":0.10000000000000001
+                  },
+                  "type":"lifespawn"
+                },
+                {
+                  "data":{
+                    "operator":"lessOrEqual",
+                    "value":2.0
+                  },
+                  "type":"lifespawn"
+                }
+              ]
+            },
+            {
+              "feature":"ShootFeature",
+              "interval":0.60000000000000042,
+              "bullet":"bullet_lolratz_muck",
+              "speed":16.0,
+              "conditions":[
+                {
+                  "data":{
+                    "operator":"greaterOrEqual",
+                    "value":1.0
+                  },
+                  "type":"lifespawn"
+                }
+              ],
+              "bullets":5.0
+            }
           ]
         },
-        "idle":{
+        "platformer":{
           "features":[
           ]
         }
-      }
-    },
-    "shroom_gabii":{
-      "sprite":{
-        "scaleY":5.0,
-        "frame":0.0,
-        "alpha":1.0,
-        "angle":0.0,
-        "speed":0.0,
-        "name":"texture_lolratz_gabii_emoji",
-        "blend":"#FFFFFF",
-        "animate":1.0,
-        "scaleX":5.0
       },
-      "name":"shroom_gabii",
-      "gameModes":{
-        "platformer":{
-          "features":[
-          ]
-        },
-        "bulletHell":{
-          "features":[
-          ]
-        },
-        "idle":{
-          "features":[
-          ]
-        }
-      }
-    },
-    "shroom_spot":{
       "sprite":{
-        "scaleY":5.0,
-        "frame":0.083099999999999952,
         "alpha":1.0,
+        "scaleX":5.0,
         "angle":0.0,
-        "speed":30.0,
-        "name":"texture_lolratz_spot",
-        "blend":"#FFFFFF",
         "animate":1.0,
-        "scaleX":5.0
-      },
-      "name":"shroom_spot",
-      "gameModes":{
-        "platformer":{
-          "features":[
-          ]
-        },
-        "bulletHell":{
-          "features":[
-          ]
-        },
-        "idle":{
-          "features":[
-          ]
-        }
+        "name":"texture_lolratz_muck_anim_8",
+        "scaleY":5.0,
+        "speed":20.0,
+        "frame":3.3026120000000132,
+        "blend":"#FFFFFF"
       }
     },
     "shroom_tomo":{
-      "sprite":{
-        "scaleY":5.0,
-        "frame":0.0,
-        "alpha":1.0,
-        "angle":0.0,
-        "speed":0.0,
-        "name":"texture_lolratz_tomo_emoji",
-        "blend":"#FFFFFF",
-        "animate":1.0,
-        "scaleX":5.0
-      },
       "name":"shroom_tomo",
       "gameModes":{
-        "platformer":{
+        "idle":{
           "features":[
           ]
         },
         "bulletHell":{
           "features":[
+            {
+              "feature":"LifespawnFeature",
+              "duration":10.0
+            },
+            {
+              "feature":"SwingFeature",
+              "size":8.0,
+              "amount":5.0
+            },
+            {
+              "feature":"ShootFeature",
+              "interval":0.20000000000000001,
+              "bullet":"bullet_lolratz_tomo",
+              "speed":13.0,
+              "conditions":[
+                {
+                  "data":{
+                    "operator":"greaterOrEqual",
+                    "value":3.0
+                  },
+                  "type":"lifespawn"
+                }
+              ],
+              "bullets":13.0
+            }
           ]
         },
-        "idle":{
+        "platformer":{
           "features":[
           ]
         }
+      },
+      "sprite":{
+        "alpha":1.0,
+        "scaleX":5.0,
+        "angle":0.0,
+        "animate":1.0,
+        "name":"texture_lolratz_tomo_emoji",
+        "scaleY":5.0,
+        "speed":0.0,
+        "frame":0.0,
+        "blend":"#FFFFFF"
       }
     },
     "shroom_muck_16":{
-      "sprite":{
-        "scaleY":5.0,
-        "frame":9.3396193333333191,
-        "alpha":1.0,
-        "angle":0.0,
-        "speed":20.0,
-        "name":"texture_lolratz_muck_anim_16",
-        "blend":"#FFFFFF",
-        "animate":1.0,
-        "scaleX":5.0
-      },
       "name":"shroom_muck_16",
       "gameModes":{
-        "platformer":{
+        "idle":{
           "features":[
           ]
         },
         "bulletHell":{
           "features":[
+            {
+              "feature":"LifespawnFeature",
+              "duration":10.0
+            },
+            {
+              "feature":"FollowPlayerFeature",
+              "value":{
+                "factor":1.0,
+                "increase":0.10000000000000001
+              },
+              "interval":1.0,
+              "conditions":[
+                {
+                  "data":{
+                    "operator":"greaterOrEqual",
+                    "value":0.10000000000000001
+                  },
+                  "type":"lifespawn"
+                },
+                {
+                  "data":{
+                    "operator":"lessOrEqual",
+                    "value":2.0
+                  },
+                  "type":"lifespawn"
+                }
+              ]
+            },
+            {
+              "feature":"ShootFeature",
+              "interval":0.50000000000000044,
+              "bullet":"bullet_lolratz_muck",
+              "speed":15.0,
+              "conditions":[
+                {
+                  "data":{
+                    "operator":"greaterOrEqual",
+                    "value":1.0
+                  },
+                  "type":"lifespawn"
+                }
+              ],
+              "bullets":5.0
+            }
           ]
         },
-        "idle":{
+        "platformer":{
           "features":[
           ]
         }
+      },
+      "sprite":{
+        "alpha":1.0,
+        "scaleX":5.0,
+        "angle":0.0,
+        "animate":1.0,
+        "name":"texture_lolratz_muck_anim_16",
+        "scaleY":5.0,
+        "speed":20.0,
+        "frame":12.992646999999989,
+        "blend":"#FFFFFF"
+      }
+    },
+    "shroom_spot_swing":{
+      "name":"shroom_spot_swing",
+      "gameModes":{
+        "idle":{
+          "features":[
+          ]
+        },
+        "bulletHell":{
+          "features":[
+            {
+              "feature":"LifespawnFeature",
+              "duration":10.0
+            },
+            {
+              "feature":"SwingFeature",
+              "size":3.0,
+              "amount":5.0
+            },
+            {
+              "feature":"ShootFeature",
+              "bullet":"bullet_lolratz_spot",
+              "speed":22.0,
+              "interval":0.29999999999999999,
+              "bullets":8.0
+            }
+          ]
+        },
+        "platformer":{
+          "features":[
+          ]
+        }
+      },
+      "sprite":{
+        "alpha":1.0,
+        "scaleX":5.0,
+        "angle":0.0,
+        "animate":1.0,
+        "name":"texture_lolratz_spot",
+        "scaleY":5.0,
+        "speed":30.0,
+        "frame":0.55569999999999986,
+        "blend":"#FFFFFF"
       }
     },
     "shroom_kaideca":{
-      "sprite":{
-        "scaleY":5.0,
-        "frame":0.0,
-        "alpha":1.0,
-        "angle":0.0,
-        "speed":0.0,
-        "name":"texture_lolratz_kaideca_emoji",
-        "blend":"#FFFFFF",
-        "animate":1.0,
-        "scaleX":5.0
-      },
       "name":"shroom_kaideca",
       "gameModes":{
-        "platformer":{
+        "idle":{
           "features":[
           ]
         },
@@ -226,39 +410,39 @@
           "features":[
             {
               "feature":"SwingFeature",
-              "amount":7.0,
-              "size":4.0
+              "size":4.0,
+              "amount":7.0
             },
             {
               "feature":"ShootFeature",
+              "bullet":"bullet_lolratz_heart_1",
               "speed":10.0,
               "interval":2.5,
-              "bullets":5.0,
-              "bullet":"bullet_lolratz_heart_1"
+              "bullets":5.0
             }
           ]
         },
-        "idle":{
+        "platformer":{
           "features":[
           ]
         }
+      },
+      "sprite":{
+        "alpha":1.0,
+        "angle":0.0,
+        "scaleX":5.0,
+        "animate":1.0,
+        "name":"texture_lolratz_kaideca_emoji",
+        "scaleY":5.0,
+        "speed":0.0,
+        "frame":0.0,
+        "blend":"#FFFFFF"
       }
     },
     "shroom-01":{
-      "sprite":{
-        "scaleY":2.0,
-        "frame":0.0,
-        "alpha":1.0,
-        "angle":0.0,
-        "speed":0.0,
-        "name":"texture_bazyl",
-        "blend":"#FFFFFF",
-        "animate":1.0,
-        "scaleX":2.0
-      },
       "name":"shroom-01",
       "gameModes":{
-        "platformer":{
+        "idle":{
           "features":[
           ]
         },
@@ -266,11 +450,294 @@
           "features":[
           ]
         },
-        "idle":{
+        "platformer":{
           "features":[
           ]
         }
+      },
+      "sprite":{
+        "alpha":1.0,
+        "angle":0.0,
+        "scaleX":2.0,
+        "animate":1.0,
+        "name":"texture_bazyl",
+        "scaleY":2.0,
+        "speed":0.0,
+        "frame":0.0,
+        "blend":"#FFFFFF"
+      }
+    },
+    "shroom_lime":{
+      "name":"shroom_lime",
+      "gameModes":{
+        "idle":{
+          "features":[
+          ]
+        },
+        "bulletHell":{
+          "features":[
+          ]
+        },
+        "platformer":{
+          "features":[
+          ]
+        }
+      },
+      "sprite":{
+        "alpha":1.0,
+        "angle":0.0,
+        "scaleX":5.0,
+        "animate":1.0,
+        "name":"texture_lolratz_lime",
+        "scaleY":5.0,
+        "speed":30.0,
+        "frame":0.012280000000000069,
+        "blend":"#FFFFFF"
+      }
+    },
+    "shroom_404":{
+      "name":"shroom_404",
+      "gameModes":{
+        "idle":{
+          "features":[
+          ]
+        },
+        "bulletHell":{
+          "features":[
+            {
+              "feature":"ShootFeature",
+              "bullet":"bullet_shroom_404",
+              "speed":16.0,
+              "interval":2.0,
+              "bullets":20.0
+            }
+          ]
+        },
+        "platformer":{
+          "features":[
+          ]
+        }
+      },
+      "sprite":{
+        "alpha":1.0,
+        "angle":0.0,
+        "scaleX":2.0,
+        "animate":1.0,
+        "name":"texture_lolratz_404",
+        "scaleY":2.0,
+        "speed":30.0,
+        "frame":0.0,
+        "blend":"#FFFFFF"
+      }
+    },
+    "shroom_gabii_left":{
+      "name":"shroom_gabii_left",
+      "gameModes":{
+        "idle":{
+          "features":[
+          ]
+        },
+        "bulletHell":{
+          "features":[
+            {
+              "feature":"LifespawnFeature",
+              "duration":10.0
+            },
+            {
+              "feature":"AngleFeature",
+              "conditions":[
+                {
+                  "data":{
+                    "operator":"greaterOrEqual",
+                    "value":0.5
+                  },
+                  "type":"lifespawn"
+                },
+                {
+                  "data":{
+                    "operator":"lessOrEqual",
+                    "value":2.0
+                  },
+                  "type":"lifespawn"
+                }
+              ],
+              "add":{
+                "factor":-0.10000000000000001,
+                "target":-1.0,
+                "increase":0.0
+              }
+            },
+            {
+              "feature":"ShootFeature",
+              "interval":0.40000000000000002,
+              "angle":120.0,
+              "bullet":"bullet_lolratz_spot",
+              "speed":20.0,
+              "conditions":[
+                {
+                  "data":{
+                    "operator":"greaterOrEqual",
+                    "value":2.0
+                  },
+                  "type":"lifespawn"
+                },
+                {
+                  "data":{
+                    "operator":"lessOrEqual",
+                    "value":4.0
+                  },
+                  "type":"lifespawn"
+                }
+              ],
+              "bullets":20.0
+            },
+            {
+              "feature":"AngleFeature",
+              "conditions":[
+                {
+                  "data":{
+                    "operator":"greaterOrEqual",
+                    "value":4.0
+                  },
+                  "type":"lifespawn"
+                },
+                {
+                  "data":{
+                    "operator":"lessOrEqual",
+                    "value":6.0
+                  },
+                  "type":"lifespawn"
+                }
+              ],
+              "add":{
+                "factor":0.10000000000000001,
+                "target":1.0,
+                "increase":0.0
+              }
+            }
+          ]
+        },
+        "platformer":{
+          "features":[
+          ]
+        }
+      },
+      "sprite":{
+        "alpha":1.0,
+        "scaleX":5.0,
+        "angle":0.0,
+        "animate":1.0,
+        "name":"texture_lolratz_gabii_emoji",
+        "scaleY":5.0,
+        "speed":0.0,
+        "frame":0.0,
+        "blend":"#FFFFFF"
+      }
+    },
+    "shroom_gabii_right":{
+      "name":"shroom_gabii_right",
+      "gameModes":{
+        "idle":{
+          "features":[
+          ]
+        },
+        "bulletHell":{
+          "features":[
+            {
+              "feature":"LifespawnFeature",
+              "duration":10.0
+            },
+            {
+              "feature":"AngleFeature",
+              "conditions":[
+                {
+                  "data":{
+                    "operator":"greaterOrEqual",
+                    "value":0.5
+                  },
+                  "type":"lifespawn"
+                },
+                {
+                  "data":{
+                    "operator":"lessOrEqual",
+                    "value":2.0
+                  },
+                  "type":"lifespawn"
+                }
+              ],
+              "add":{
+                "factor":0.10000000000000001,
+                "target":1.0,
+                "increase":0.0
+              }
+            },
+            {
+              "feature":"ShootFeature",
+              "interval":0.40000000000000002,
+              "angle":-120.0,
+              "bullet":"bullet_lolratz_spot",
+              "speed":20.0,
+              "conditions":[
+                {
+                  "data":{
+                    "operator":"greaterOrEqual",
+                    "value":2.0
+                  },
+                  "type":"lifespawn"
+                },
+                {
+                  "data":{
+                    "operator":"lessOrEqual",
+                    "value":4.0
+                  },
+                  "type":"lifespawn"
+                }
+              ],
+              "bullets":20.0
+            },
+            {
+              "feature":"AngleFeature",
+              "conditions":[
+                {
+                  "data":{
+                    "operator":"greaterOrEqual",
+                    "value":4.0
+                  },
+                  "type":"lifespawn"
+                },
+                {
+                  "data":{
+                    "operator":"lessOrEqual",
+                    "value":6.0
+                  },
+                  "type":"lifespawn"
+                }
+              ],
+              "add":{
+                "factor":-0.10000000000000001,
+                "target":-1.0,
+                "increase":0.0
+              }
+            }
+          ]
+        },
+        "platformer":{
+          "features":[
+          ]
+        }
+      },
+      "sprite":{
+        "alpha":1.0,
+        "scaleX":5.0,
+        "angle":0.0,
+        "animate":1.0,
+        "name":"texture_lolratz_gabii_emoji",
+        "scaleY":5.0,
+        "speed":0.0,
+        "frame":0.0,
+        "blend":"#FFFFFF"
       }
     }
-  }
+  },
+  "model":"Collection<io.alkapivo.visu.service.shroom.ShroomTemplate>"
 }

@@ -25,7 +25,7 @@ global.__VISU_GRID_CONDITIONS = {
         case "nand": return !(a && b)
         case "xor": return (a || b) && !(a && b)
         case "xnor": return (a && b) || (!a && !b)
-        default: throw Exception($"Found unsupported operator for 'logic-gate': {this.data.operator}")
+        default: throw new Exception($"Found unsupported operator for 'logic-gate': {this.data.operator}")
       }
     }
   },
@@ -38,7 +38,7 @@ global.__VISU_GRID_CONDITIONS = {
         case "greaterOrEqual": return this.data.value >= value
         case "less": return this.data.value < value
         case "lessOrEqual": return this.data.value <= value
-        default: throw Exception($"Found unsupported operator for 'numeric': {this.data.operator}")
+        default: throw new Exception($"Found unsupported operator for 'numeric': {this.data.operator}")
       }
     }
   },
@@ -57,10 +57,12 @@ global.__VISU_GRID_CONDITIONS = {
     return function(item, controller) {
       var value = this.data.value
       switch (this.data.operator) {
-        case "equal": return value == item.lifespawn
-        case "greater": return value > item.lifespawn
-        case "less": return value < item.lifespawn
-        default: throw Exception($"Found unsupported operator for 'lifespawn': {this.data.operator}")
+        case "equal": return item.lifespawn == value
+        case "greater": return item.lifespawn > value
+        case "less": return item.lifespawn < value
+        case "greaterOrEqual": return item.lifespawn >= value
+        case "lessOrEqual": return item.lifespawn <= value
+        default: throw new Exception($"Found unsupported operator for 'lifespawn': {this.data.operator}")
       }
     }
   },
@@ -77,7 +79,9 @@ global.__VISU_GRID_CONDITIONS = {
         case "equal": return value == length
         case "greater": return value > length
         case "less": return value < length
-        default: throw Exception($"Found unsupported operator for 'player-distance'")
+        case "greaterOrEqual": return value >= length
+        case "lessOrEqual": return value <= length
+        default: throw new Exception($"Found unsupported operator for 'player-distance'")
       }
     }
   },
