@@ -9,14 +9,14 @@ function LifespawnFeature(json = {}) {
     type: LifespawnFeature,
 
     ///@type {Timer}
-    timer: new Timer(json.duration),
+    lifespawnTimer: new Timer(json.duration),
 
     ///@override
     ///@param {GridItem} item
     ///@param {VisuController} controller
     update: function(item, controller) {
-      item.lifespawn = this.timer.update().time
-      if (this.timer.finished) {
+      item.lifespawn = this.lifespawnTimer.update().time
+      if (this.lifespawnTimer.finished) {
         item.signal("kill")
       }
     },

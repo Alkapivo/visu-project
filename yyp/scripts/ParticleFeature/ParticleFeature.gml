@@ -14,7 +14,7 @@ function ParticleFeature(json = {}) {
 
     ///@type {Number}
     duration: Assert.isType(Struct
-      .getDefault(json, "duration", FRAME_MS * 4), Number),
+      .getDefault(json, "duration", FRAME_MS), Number),
 
     ///@type {Number}
     amount: Assert.isType(Struct
@@ -29,10 +29,10 @@ function ParticleFeature(json = {}) {
         var _x = (item.x - view.x) * GRID_SERVICE_PIXEL_WIDTH
         var _y = (item.y - view.y) * GRID_SERVICE_PIXEL_HEIGHT
 
-        if ((_x < 0 || _x > GRID_SERVICE_PIXEL_WIDTH) 
-          || (_y < 0 || _y > GRID_SERVICE_PIXEL_HEIGHT)) {
-          return
-        }
+        //if ((_x < 0 || _x > GRID_SERVICE_PIXEL_WIDTH) 
+        //  || (_y < 0 || _y > GRID_SERVICE_PIXEL_HEIGHT)) {
+        //  return
+        //}
 
         controller.particleService.send(controller.particleService
           .factoryEventSpawnParticleEmitter(

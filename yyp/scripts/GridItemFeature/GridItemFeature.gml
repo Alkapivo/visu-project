@@ -7,6 +7,9 @@ function GridItemFeature(json = {}) constructor {
   ///@type {Callable}
   type = json.type
 
+  ///@type {?Timer}
+  timer = Core.isType(Struct.get(json, "timer"), Number) ? new Timer(json.timer, { loop: Infinity }) : null
+
   ///@type {?Array<GridItemCondition>}
   conditions = Struct.contains(json, "conditions")
     ? new Array(GridItemCondition, GMArray.map(json.conditions, function(condition) {
@@ -28,6 +31,11 @@ function GridItemFeature(json = {}) constructor {
       }
     }
     return true
+  }
+
+  ///@return {Boolean}
+  updateTimer = function() {
+    return this.timer == null ? true : this.timer.update().finished
   }
 
   ///@param {GridItem} gridItem

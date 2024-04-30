@@ -10,7 +10,7 @@ function Queue(_type = any, items = null, config = { validate: false }) construc
   
   ///@private
   ///@type {Array}
-  container = items != null ? new Array(this.type, items, config) : new Array()
+  container = items != null ? new Array(this.type, items, config) : new Array(this.type)
 
   ///@param {any} item
   ///@throws {InvalidClassException}

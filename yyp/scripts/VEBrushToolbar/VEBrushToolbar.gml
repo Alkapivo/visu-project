@@ -721,7 +721,6 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           this.brushToolbar.store.get("template").set(template)
         }
       }
-
     }
   },
   "inspector-bar": function(name, brushToolbar, layout) {
