@@ -96,7 +96,6 @@ function GridItem(config = {}) constructor {
       height: this.sprite.getHeight()
   })
 
-
   ///@type {Number}
   speed = Assert.isType(Struct.getDefault(config, "speed", 0), Number)
 

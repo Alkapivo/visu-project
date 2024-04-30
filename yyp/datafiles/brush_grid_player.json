@@ -1,82 +1,82 @@
 {
+  "model":"Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>",
   "data":[
     {
-      "texture":"texture_visu_editor_icon_event_grid_player",
-      "name":"default player",
+      "type":"brush_grid_player",
       "color":"#49FF29",
+      "texture":"texture_visu_editor_icon_event_grid_player",
       "properties":{
-        "grid-player_use-platformer":1.0,
+        "grid-player_bullet-hell":{
+          "x":{
+            "acceleration":1.6199999999999999,
+            "friction":9.3000000000000007,
+            "speedMax":1.3
+          },
+          "y":{
+            "acceleration":1.6199999999999999,
+            "friction":9.3000000000000007,
+            "speedMax":1.3
+          },
+          "guns":[
+            {
+              "cooldown":25.0,
+              "bullet":"bullet_player",
+              "speed":20.0,
+              "angle":90.0,
+              "offsetX":0.0,
+              "offsetY":64.0
+            }
+          ]
+        },
+        "grid-player_idle":{
+        },
+        "grid-player_mask":{
+          "x":20.0,
+          "y":20.0,
+          "height":106.0,
+          "width":126.0
+        },
         "grid-player_platformer":{
           "x":{
             "acceleration":1.9199999999999999,
-            "speedMax":2.1000000000000001,
-            "friction":9.3000000000000007
+            "friction":9.3000000000000007,
+            "speedMax":2.1000000000000001
           },
           "y":{
             "acceleration":1.9199999999999999,
-            "speedMax":25.0,
-            "friction":0.0
+            "friction":0.0,
+            "speedMax":25.0
           },
           "jump":{
             "size":3.5
           }
         },
-        "grid-player_use-idle":1.0,
-        "grid-player_idle":{
-        },
-        "grid-player_use-transform-player-z":1.0,
-        "grid-player_transform-player-z":{
-          "startValue":0.0,
-          "value":0.0,
-          "factor":9999.0,
-          "target":2100.0,
-          "increase":0.0,
-          "finished":false
-        },
         "grid-player_texture":{
+          "frame":2.9561929999999998,
           "alpha":1.0,
           "scaleX":2.0,
-          "angle":0.0,
-          "animate":1.0,
-          "name":"texture_player",
           "scaleY":2.0,
           "speed":10.0,
-          "frame":2.9561929999999998,
-          "blend":"#FFFFFF"
+          "angle":0.0,
+          "blend":"#FFFFFF",
+          "name":"texture_player",
+          "animate":1.0
         },
-        "grid-player_use-mask":true,
-        "grid-player_mask":{
-          "x":20.0,
-          "width":126.0,
-          "y":20.0,
-          "height":106.0
+        "grid-player_transform-player-z":{
+          "startValue":0.0,
+          "increase":0.0,
+          "target":2100.0,
+          "value":0.0,
+          "finished":false,
+          "factor":9999.0
         },
         "grid-player_use-bullet-hell":1.0,
-        "grid-player_bullet-hell":{
-          "guns":[
-            {
-              "angle":90.0,
-              "bullet":"bullet_player",
-              "speed":20.0,
-              "cooldown":25.0,
-              "offsetX":0.0,
-              "offsetY":64.0
-            }
-          ],
-          "x":{
-            "acceleration":1.6199999999999999,
-            "speedMax":1.3,
-            "friction":9.3000000000000007
-          },
-          "y":{
-            "acceleration":1.6199999999999999,
-            "speedMax":1.3,
-            "friction":9.3000000000000007
-          }
-        }
+        "grid-player_use-idle":1.0,
+        "grid-player_use-mask":true,
+        "grid-player_use-platformer":1.0,
+        "grid-player_use-transform-player-z":1.0
       },
-      "type":"brush_grid_player"
+      "name":"default player"
     }
-  ],
-  "model":"Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>"
+  ]
 }

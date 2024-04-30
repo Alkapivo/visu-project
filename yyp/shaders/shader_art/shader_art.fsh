@@ -38,7 +38,7 @@ void main() {
       finalColor += col * d;
   }
 
-  // Webgl 2.0 for loop
+  // webgl 2.0
   //for (float index = 0.0; index < 100.0; index++) {
   //  if (index >= iIterations) {
   //    break;

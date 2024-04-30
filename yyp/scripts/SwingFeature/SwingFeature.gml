@@ -10,7 +10,7 @@ function SwingFeature(json = {}) {
     type: SwingFeature,
 
     ///@type {Struct}
-    timer: new Timer(pi * 2, { loop: Infinity, amount: Struct.getDefault(json, "amount", 1) * FRAME_MS }),
+    swingTimer: new Timer(pi * 2, { loop: Infinity, amount: Struct.getDefault(json, "amount", 1) * FRAME_MS }),
 
     ///@type {Number}
     size: Struct.getDefault(json, "size", 1),
@@ -19,7 +19,7 @@ function SwingFeature(json = {}) {
     ///@param {GridItem} item
     ///@param {VisuController} controller
     update: function(item, controller) {
-      item.angle = item.angle + (cos(this.timer.update().time) * this.size)
+      item.angle = item.angle + (cos(this.swingTimer.update().time) * this.size)
     },
   }))
 }

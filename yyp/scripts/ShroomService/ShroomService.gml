@@ -1,5 +1,6 @@
 ///@package io.alkapivo.visu.service.shroom
 
+
 ///@param {VisuController} _controller
 ///@param {Struct} [config]
 function ShroomService(_controller, config = {}): Service() constructor {
@@ -9,6 +10,9 @@ function ShroomService(_controller, config = {}): Service() constructor {
 
   ///@type {Array<Shroom>} 
   shrooms = new Array(Shroom)
+
+  ///@type {Map<String, Ref<Shroom>>}
+  //shroomByTextures = new Map(String, )
 
   ///@type {Map<String, ShroomTemplate>}
   templates = new Map(String, ShroomTemplate)

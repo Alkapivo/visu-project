@@ -11,10 +11,6 @@ function FollowPlayerFeature(json = {}) {
     ///@type {NumberTransformer}
     value: new NumberTransformer(json.value),
 
-    ///@type {?Timer}
-    timer: Optional.is(Struct.get(json, "interval"))
-      ? new Timer(json.interval, { shuffle: true })
-      : null,
 
     ///@type {NumberTransformer}
     transformer: new NumberTransformer(),
@@ -24,9 +20,7 @@ function FollowPlayerFeature(json = {}) {
     ///@param {VisuController} controller
     update: function(item, controller) {
       var player = controller.playerService.player
-      if (!Optional.is(player) 
-        || (Optional.is(this.timer) 
-        && !this.timer.update().finished)) {
+      if (!Optional.is(player)) {
         return
       }
 

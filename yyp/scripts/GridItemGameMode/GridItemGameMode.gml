@@ -20,7 +20,7 @@ function GridItemGameMode(json = {}) constructor {
     var size = features.size()
     for (var index = 0; index < size; index++) {
       var feature = features.get(index)
-      if (feature.checkConditions(item, controller)) {
+      if (feature.updateTimer() && feature.checkConditions(item, controller)) {
         feature.update(item, controller)
       }
     }
@@ -31,10 +31,10 @@ function GridItemGameMode(json = {}) constructor {
   ///@param {VisuController} controller
   ///@return {GridItemGameMode}
   update = function(item, controller) {
-    this.updateFeatures(item, controller)
     if (Optional.is(this._update)) {
       this._update(item, controller)
     }
+    this.updateFeatures(item, controller)
     return this
   }
 

@@ -1,29 +1,29 @@
 {
+  "model":"Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>",
   "data":[
     {
-      "texture":"texture_visu_editor_icon_event_shader_clear",
-      "name":"clear all",
+      "type":"brush_shader_clear",
       "color":"#FF0000",
+      "texture":"texture_visu_editor_icon_event_shader_clear",
       "properties":{
-        "shader-clear_use-clear-amount":0.0,
         "shader-clear_clear-amount":1.0,
         "shader-clear_pipeline":"Grid",
-        "shader-clear_use-clear-all-shaders":1.0
+        "shader-clear_use-clear-all-shaders":1.0,
+        "shader-clear_use-clear-amount":0.0
       },
-      "type":"brush_shader_clear"
+      "name":"clear all"
     },
     {
-      "texture":"texture_visu_editor_icon_event_shader_clear",
-      "name":"clear 1",
+      "type":"brush_shader_clear",
       "color":"#FFFF2E",
+      "texture":"texture_visu_editor_icon_event_shader_clear",
       "properties":{
-        "shader-clear_use-clear-amount":1.0,
         "shader-clear_clear-amount":1.0,
         "shader-clear_pipeline":"Grid",
-        "shader-clear_use-clear-all-shaders":0.0
+        "shader-clear_use-clear-all-shaders":0.0,
+        "shader-clear_use-clear-amount":1.0
       },
-      "type":"brush_shader_clear"
+      "name":"clear 1"
     }
-  ],
-  "model":"Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>"
+  ]
 }

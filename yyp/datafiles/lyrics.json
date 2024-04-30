@@ -1,18 +1,6 @@
 {
+  "model":"Collection<io.alkapivo.visu.service.lyrics.LyricsTemplate>",
   "data":{
-    "lyrics_lolratz_kaideca_error":{
-      "lines":[
-        "ERROR ",
-        "ERROR  ",
-        "ERROR   ",
-        "ERROR    ",
-        "ERROR     ",
-        "ERROR      ",
-        "ERROR       ",
-        "ERROR        ",
-        "ERROR         "
-      ]
-    },
     "lyrics_lolratz_kaideca_scanning":{
       "lines":[
         "SCANNING        ",
@@ -61,7 +49,19 @@
         "to spread",
         "violence "
       ]
+    },
+    "lyrics_lolratz_kaideca_error":{
+      "lines":[
+        "ERROR ",
+        "ERROR  ",
+        "ERROR   ",
+        "ERROR    ",
+        "ERROR     ",
+        "ERROR      ",
+        "ERROR       ",
+        "ERROR        ",
+        "ERROR         "
+      ]
     }
-  },
-  "model":"Collection<io.alkapivo.visu.service.lyrics.LyricsTemplate>"
+  }
 }
