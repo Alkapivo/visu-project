@@ -13,7 +13,8 @@ function _Visu() constructor {
     initGPU()
     initBeans()
     Assert.isType(layerName, String)
-    Core.loadProperties()
+    Core.loadProperties(FileUtil.get($"{working_directory}core-properties.json"))
+    Core.loadProperties(FileUtil.get($"{working_directory}visu-properties.json"))
 
     window_set_caption($"{game_display_name}")
 

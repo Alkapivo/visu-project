@@ -190,7 +190,7 @@ function _Core() constructor {
 
   ///@param {String} [_path]
   ///@return {Core}
-  static loadProperties = function(_path = $"{working_directory}properties.json") {
+  static loadProperties = function(_path = $"{working_directory}core-properties.json") {
     if (!Core.isType(this.properties, Map)) {
       this.properties = new Map(String, any)
     }

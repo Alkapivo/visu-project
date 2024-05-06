@@ -19,6 +19,14 @@ function VideoService(_controller, config = {}): Service() constructor {
   }
 
   ///@private
+  ///@type {Number}
+  cooldown = Assert.isType(Core.getProperty("core.video-service.cooldown", 0.25), Number)
+
+  ///@private
+  ///@type {Number}
+  timeout = Assert.isType(Core.getProperty("core.video-service.timeout", 3), Number)
+
+  ///@private
   ///@return {Callable}
   factoryTaskUpdate = function() {
     return function(executor) {
@@ -114,9 +122,13 @@ function VideoService(_controller, config = {}): Service() constructor {
           stage: "prepare",
           video: video,
           before: 0,
-          timer: new Timer(0.1),
+          timer: new Timer(this.cooldown),
           stages: {
             prepare: function(task) {
+              if (!task.state.get("timer").update().finished) {
+                return 
+              }
+
               var video = task.state.get("video")
               var status = video.getStatus()
               if (status != VideoStatus.PLAYING && status != VideoStatus.PAUSED) {
@@ -129,7 +141,7 @@ function VideoService(_controller, config = {}): Service() constructor {
               }
 
               task.state.set("before", video.getPosition()).set("stage", "seek")
-              
+              task.state.get("timer").reset()
             },
             seek: function(task) {
               if (task.state.get("timer").update().finished) {
@@ -173,9 +185,9 @@ function VideoService(_controller, config = {}): Service() constructor {
 
       var task = new Task("resume-video")
         .setState(new Map(String, any, {
-          timer: new Timer(0.05),
+          timer: new Timer(this.cooldown),
         }))
-        .setTimeout(2.0)
+        .setTimeout(this.timeout)
         .setPromise(event.promise) // pass promise to TaskExecutor
         .whenUpdate(function(executor) {
           var video = executor.context.getVideo()

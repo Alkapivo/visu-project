@@ -171,6 +171,7 @@ function Track(json, config = null) constructor {
     .getDefault(config, "serialize", function() {
       return JSON.stringify({
         "model": "io.alkapivo.core.service.track.Track",
+        "version": "1",
         "data": {
           "name": this.name,
           "audio": this.audio.name,

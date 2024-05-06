@@ -138,7 +138,7 @@ function VisuTrackLoader(_controller): Service() constructor {
                         })
 
                         var textureIntent = Assert.isType(new prototype(json), TextureIntent)
-                        textureIntent.file = FileUtil.get($"{acc.path}{FileUtil.getFilenameFromPath(textureIntent.file)}")
+                        textureIntent.file = FileUtil.get($"{acc.path}{textureIntent.file}")
                         var promise = new Promise()
                         acc.service.send(new Event("load-texture")
                           .setData(textureIntent)

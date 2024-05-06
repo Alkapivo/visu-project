@@ -112,7 +112,11 @@ function VisuEditor(_controller) constructor {
     },
     "render-trackControl": {
       type: Boolean,
-      value: false,
+      value: Assert.isType(Core.getProperty("visu.editor.render-track-control", false), Boolean)
+    },
+    "_render-trackControl": {
+      type: Boolean,
+      value: Assert.isType(Core.getProperty("visu.editor.render-track-control", false), Boolean)
     },
     "new-channel-name": {
       type: String,
@@ -253,7 +257,7 @@ function VisuEditor(_controller) constructor {
       this.store.get("render-event").set(this.store.getValue("_render-event"))
       this.store.get("render-timeline").set(this.store.getValue("_render-timeline"))
       this.store.get("render-brush").set(this.store.getValue("_render-brush"))
-      this.store.get("render-trackControl").set(true)
+      this.store.get("render-trackControl").set(this.store.getValue("_render-trackControl"))
       return {
         "titleBar": this.titleBar.send(new Event("open")
           .setData({ layout: Struct.get(this.layout.nodes, "title-bar") })),
@@ -278,6 +282,7 @@ function VisuEditor(_controller) constructor {
       this.store.get("render-timeline").set(false)
       this.store.get("_render-brush").set(this.store.getValue("render-brush"))
       this.store.get("render-brush").set(false)
+      this.store.get("_render-trackControl").set(this.store.getValue("render-trackControl"))
       this.store.get("render-trackControl").set(false)
       this.store.get("selected-event").set(null)
 

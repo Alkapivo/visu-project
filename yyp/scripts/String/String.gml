@@ -121,6 +121,10 @@ function _String() constructor {
 		return string_starts_with(text, pattern)
 	}
 
+	///@param {...String} value
+	///@return {String}
+	concat = string_concat
+
 	///@param {String} template
 	///@param {...String} parameter
 	///@return {String}

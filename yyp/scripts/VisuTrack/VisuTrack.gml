@@ -54,6 +54,7 @@ function VisuTrack(_path, json) constructor {
     var path = Assert.isType(FileUtil.getDirectoryFromPath(manifestPath), String)
     var manifest = {
       "model": "io.alkapivo.visu.controller.VisuTrack",
+      "version": "1",
       "data": {  
         "bpm": this.bpm,
         "bpm-sub": this.bpmSub,
@@ -69,17 +70,22 @@ function VisuTrack(_path, json) constructor {
         "editor": controller.editor.brushService.templates
           .keys()
           .map(function(filename) {
-            return $"{filename}.json"
+            return $"brush/{filename}.json"
           })
           .getContainer(),
       }
     }
+
+    FileUtil.createDirectory($"{path}brush")
+    FileUtil.createDirectory($"{path}template")
+    FileUtil.createDirectory($"{path}texture")
 
     #region Serialize
     var track = controller.trackService.track.serialize()
 
     var sound = {
       "model": "Collection<io.alkapivo.core.service.sound.SoundIntent>",
+      "version": "1",
       "data": {}
     }
     Beans.get(BeanSoundService).intents
@@ -89,6 +95,7 @@ function VisuTrack(_path, json) constructor {
 
     var bullet = {
       "model": "Collection<io.alkapivo.visu.service.bullet.BulletTemplate>",
+      "version": "1",
       "data": {},
     }
     controller.bulletService.templates
@@ -98,6 +105,7 @@ function VisuTrack(_path, json) constructor {
 
     var lyrics = {
       "model": "Collection<io.alkapivo.visu.service.lyrics.LyricsTemplate>",
+      "version": "1",
       "data": {},
     }
     controller.lyricsService.templates
@@ -107,6 +115,7 @@ function VisuTrack(_path, json) constructor {
 
     var particle = {
       "model": "Collection<io.alkapivo.core.service.particle.ParticleTemplate>",
+      "version": "1",
       "data": {},
     }
     controller.particleService.templates
@@ -116,6 +125,7 @@ function VisuTrack(_path, json) constructor {
     
     var shader = {
       "model": "Collection<io.alkapivo.core.service.shader.ShaderTemplate>",
+      "version": "1",
       "data": {},
     }
     controller.shaderPipeline.templates
@@ -125,6 +135,7 @@ function VisuTrack(_path, json) constructor {
 
     var shroom = {
       "model": "Collection<io.alkapivo.visu.service.shroom.ShroomTemplate>",
+      "version": "1",
       "data": {},
     }
     controller.shroomService.templates
@@ -135,6 +146,7 @@ function VisuTrack(_path, json) constructor {
     var textureAcc = {
       texture: {
         "model": "Collection<io.alkapivo.core.service.texture.TextureIntent>",
+        "version": "1",
         "data": {},
       },
       files: new Map(String, Struct),
@@ -143,6 +155,7 @@ function VisuTrack(_path, json) constructor {
       .forEach(function(template, name, acc) {
         var path = template.file
         var json = template.serialize()
+        json.file = $"texture/{json.file}"
         acc.files.set(path, json)
         Struct.set(acc.texture.data, template.name, json)
       }, textureAcc)
@@ -152,6 +165,7 @@ function VisuTrack(_path, json) constructor {
       .forEach(function(templates, type, editor) {
         Struct.set(editor, type, {
           "model": "Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>",
+          "version": "1",
           "data": templates.getContainer(),
         })
       }, editor)
@@ -210,7 +224,7 @@ function VisuTrack(_path, json) constructor {
     fileService.send(new Event("save-file-sync")
       .setData(new File({
         path: $"{path}{this.texture}",
-        data: JSON.stringify(textureAcc.texture, { pretty: true }),
+        data: String.replaceAll(JSON.stringify(textureAcc.texture, { pretty: true }), "\\", ""),
     })))
     textureAcc.files.forEach(function(template, sourcePath, targetDirectory) {
       FileUtil.copyFile(sourcePath, $"{targetDirectory}{template.file}")
@@ -235,7 +249,7 @@ function VisuTrack(_path, json) constructor {
     Struct.forEach(editor, function(data, filename, acc) {
       acc.fileService.send(new Event("save-file-sync")
         .setData(new File({
-          path: $"{acc.path}{filename}.json",
+          path: $"{acc.path}brush/{filename}.json",
           data: JSON.stringify(data, { pretty: true }),
       })))
     }, { path: path, fileService: fileService })

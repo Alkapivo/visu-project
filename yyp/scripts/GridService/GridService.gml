@@ -46,7 +46,7 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
   })
   ///@description (set camera on middle bottom)
   this.view.x = (this.width - this.view.width) / 2.0
-	this.view.y = this.height - this.view.height
+	this.view.y = this.height - (this.view.height * 2.0)
 
   ///@type {Struct}
   targetLocked = {

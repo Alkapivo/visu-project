@@ -20,16 +20,15 @@ global.__ParticleEmitterDistribution = new _ParticleEmitterDistribution()
 #macro ParticleEmitterDistribution global.__ParticleEmitterDistribution
 
 
-///@param {String} layerName
-function ParticleSystem(layerName) constructor {
+///@param {String} _layerName
+function ParticleSystem(_layerName) constructor {
 
-  ///@type {GMLayer}
-  layerRef = layer_get_id(layerName)
+  ///@type {String}
+  layerName = Assert.isType(_layerName, String)
 
   ///@type {GMParticleSystem}
-  asset = part_system_create()
+  asset = part_system_create_layer(this.layerName, false)
   part_system_automatic_draw(this.asset, false)
-  part_system_layer(this.asset, this.layerRef)
 
   ///@type {GMEmitter}
   emitter = part_emitter_create(this.asset)
@@ -41,9 +40,8 @@ function ParticleSystem(layerName) constructor {
   ///@return {ParticleSystem}
   update = method(this, function() {
     if (!part_system_exists(this.asset)) {
-      this.asset = part_system_create()
+      this.asset = part_system_create_layer(this.layerName, false)
       part_system_automatic_draw(this.asset, false)
-      part_system_layer(this.asset, this.layerRef)
     }
 
     if (!part_emitter_exists(this.asset, this.emitter)) {

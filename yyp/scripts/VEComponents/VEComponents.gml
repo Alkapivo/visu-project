@@ -1523,14 +1523,16 @@ global.__VEComponents = new Map(String, Callable, {
             field: {
               store: {
                 callback: function(value, data) { 
-                  data.textField.setText(value.toHex())
+                  data.textField.setText(value.toHex(value.alpha < 1.0))
                 },
                 set: function(value) {
                   var item = this.get()
                   if (item == null) {
                     return 
                   }
-                  item.set(ColorUtil.fromHex(value, item.get().toHex()))
+
+                  var color = item.get()
+                  item.set(ColorUtil.fromHex(value, color.toHex(color.alpha < 1.0)))
                 },
               },
             },

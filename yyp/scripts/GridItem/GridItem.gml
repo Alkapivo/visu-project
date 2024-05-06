@@ -83,8 +83,7 @@ function GridItem(config = {}) constructor {
   z = Assert.isType(Struct.getDefault(config, "z", 0), Number)
 
   ///@type {Sprite}
-  sprite = Assert.isType(SpriteUtil.parse(Struct
-    .getDefault(config, "sprite", { name: "texture_test" })), Sprite)
+  sprite = Assert.isType(SpriteUtil.parse(Struct.get(config, "sprite"), { name: "texture_missing" }), Sprite)
 
   ///@type {Rectangle}
   mask = Core.isType(Struct.get(config, "mask"), Rectangle)

@@ -24,11 +24,11 @@ function template_particle(json = null) {
       },
       "particle-color-halfway": {
         type: Color,
-        value: ColorUtil.fromHex(Struct.get(Struct.get(json, "color"), "start"), "#ffffff"),
+        value: ColorUtil.fromHex(Struct.get(Struct.get(json, "color"), "halfway"), "#ffffff"),
       },
       "particle-color-finish": {
         type: Color,
-        value: ColorUtil.fromHex(Struct.get(Struct.get(json, "color"), "start"), "#ffffff"),
+        value: ColorUtil.fromHex(Struct.get(Struct.get(json, "color"), "finish"), "#ffffff"),
       },
       "particle-use-sprite": {
         type: Boolean,

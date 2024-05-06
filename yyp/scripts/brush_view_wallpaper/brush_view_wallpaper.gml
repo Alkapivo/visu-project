@@ -43,7 +43,7 @@ function brush_view_wallpaper(json = null) {
       },
       "view-wallpaper_color": {
         type: Color,
-        value: ColorUtil.fromHex(Struct.get(json, "view-wallpaper_color"), "#ffffff"),
+        value: ColorUtil.fromHex(Struct.get(json, "view-wallpaper_color"), "#ffffffff"),
       },
       "view-wallpaper_clear-color": {
         type: Boolean,
@@ -308,6 +308,7 @@ function brush_view_wallpaper(json = null) {
                 return
               }
 
+              Core.print("begin", irandom(99))
               var gmColor = store.getValue("view-wallpaper_use-texture-blend")
                 ? store.getValue("view-wallpaper_texture-blend").toGMColor()
                 : c_white
@@ -322,6 +323,8 @@ function brush_view_wallpaper(json = null) {
               } else {
                 this.image.setAnimate(false)
               }
+
+              Core.print("end", irandom(99))
             },
           },
         },

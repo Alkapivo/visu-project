@@ -53,11 +53,10 @@ function VEEventInspector(_editor) constructor {
           }),
           "updateTrackEvent": false,
         }),
-        updateTimer: new Timer(FRAME_MS * 60, { loop: Infinity, shuffle: true }),
+        updateTimer: new Timer(FRAME_MS * 30, { loop: Infinity, shuffle: true }),
         eventInspector: eventInspector,
         layout: layout,
-        updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
-        updateCustom: function() {
+        _updateTrackEvent: new BindIntent(function() {
           if (!this.state.get("updateTrackEvent")) {
             return
           }
@@ -90,10 +89,12 @@ function VEEventInspector(_editor) constructor {
             selectedEvent.data, 
             selectedEvent.name
           ).name
-        },
+        }),
+        updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
         renderItem: Callable.run(UIUtil.renderTemplates.get("renderItemDefaultScrollable")),
         renderDefaultScrollable: new BindIntent(Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable"))),
         render: function() {
+          this._updateTrackEvent()
           this.renderDefaultScrollable()
           if (!Optional.is(this.state.get("selectedEvent"))) {
             this.state.get("empty-label").render(

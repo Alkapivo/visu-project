@@ -1,0 +1,5 @@
+{
+  "core.video-service.cooldown": 0.25,
+  "core.video-service.timeout": 3.0,
+  "end-property": null
+}

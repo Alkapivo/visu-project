@@ -49,11 +49,11 @@ function brush_shroom_spawn(json = null) {
       },
       "shroom-spawn_use-snap-h": {
         type: Boolean,
-        value: Struct.getDefault(json, "shroom-spawn_use-snap-x", true),
+        value: Struct.getDefault(json, "shroom-spawn_use-snap-h", true),
       },
       "shroom-spawn_use-snap-v": {
         type: Boolean,
-        value: Struct.getDefault(json, "shroom-spawn_use-snap-x", true),
+        value: Struct.getDefault(json, "shroom-spawn_use-snap-v", true),
       },
       "shroom-spawn_use-angle": {
         type: Boolean,

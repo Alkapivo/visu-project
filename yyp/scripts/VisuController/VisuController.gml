@@ -19,13 +19,13 @@ function VisuController(layerName) constructor {
   fsmConfig = {
     initialState: { 
       name: "idle",
-      data: Core.getProperty("visu.manifest.autoload", false) 
+      data: Core.getProperty("visu.manifest.load-on-start", false) 
         ? new Event("load", {
-            manifest: FileUtil.get(Core
-              .getProperty("visu.manifest.path", 
-                $"{working_directory}manifest.visu")),
+            manifest: FileUtil.get(String.concat(
+              working_directory, 
+              Core.getProperty("visu.manifest.path"))),
             autoplay: Assert.isType(Core
-              .getProperty("visu.autoplay", false), Boolean),
+              .getProperty("visu.manifest.play-on-start", false), Boolean),
           })
         : null,
     },
@@ -194,7 +194,7 @@ function VisuController(layerName) constructor {
                 }
               } catch (exception) {
                 var message = $"Rewind exception: {exception.message}"
-                Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
+                //Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
                 Logger.warn("VisuController", message)
                 if (!promises.contains("rewind-video")) {
                   return
@@ -525,7 +525,7 @@ function VisuController(layerName) constructor {
 
   ///@private
   ///@type {Boolean}
-  autosaveEnabled = false
+  autosaveEnabled = Core.getProperty("visu.autosave", false)
 
   ///@private
   ///@return {VisuController}

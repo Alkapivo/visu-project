@@ -22,21 +22,13 @@ function VisuNewProjectForm(json = null) constructor {
       type: Optional.of(String),
       value: Struct.getDefault(json, "file-video", ""),
     },
-    "use-bullet": {
+    "use-shader": {
       type: Boolean,
-      value: Struct.getDefault(json, "use-bullet", false),
+      value: Struct.getDefault(json, "use-shader", false),
     },
-    "bullet": {
+    "shader": {
       type: Optional.of(String),
-      value: Struct.getDefault(json, "bullet", ""),
-    },
-    "use-particle": {
-      type: Boolean,
-      value: Struct.getDefault(json, "use-particle", false),
-    },
-    "particle": {
-      type: Optional.of(String),
-      value: Struct.getDefault(json, "particle", ""),
+      value: Struct.getDefault(json, "shader", ""),
     },
     "use-shroom": {
       type: Boolean,
@@ -45,6 +37,30 @@ function VisuNewProjectForm(json = null) constructor {
     "shroom": {
       type: Optional.of(String),
       value: Struct.getDefault(json, "shroom", ""),
+    },
+    "use-bullet": {
+      type: Boolean,
+      value: Struct.getDefault(json, "use-bullet", false),
+    },
+    "bullet": {
+      type: Optional.of(String),
+      value: Struct.getDefault(json, "bullet", ""),
+    },
+    "use-lyrics": {
+      type: Boolean,
+      value: Struct.getDefault(json, "use-lyrics", false),
+    },
+    "lyrics": {
+      type: Optional.of(String),
+      value: Struct.getDefault(json, "lyrics", ""),
+    },
+    "use-particle": {
+      type: Boolean,
+      value: Struct.getDefault(json, "use-particle", false),
+    },
+    "particle": {
+      type: Optional.of(String),
+      value: Struct.getDefault(json, "particle", ""),
     },
     "include-brushes": {
       type: Boolean,
@@ -176,36 +192,36 @@ function VisuNewProjectForm(json = null) constructor {
       },
     },
     {
-      name: "bullet",  
+      name: "shader",  
       template: VEComponents.get("text-field-button-checkbox"),
       layout: VELayouts.get("text-field-button-checkbox"),
       config: { 
         layout: { type: UILayoutType.VERTICAL },
         checkbox: { 
-          store: { key: "use-bullet" },
+          store: { key: "use-shader" },
           spriteOn: { name: "visu_texture_checkbox_switch_on" },
           spriteOff: { name: "visu_texture_checkbox_switch_off" },
           
         },
         label: { 
-          text: "Bullets",
-          enable: { key: "use-bullet" },
+          text: "Shaders",
+          enable: { key: "use-shader" },
         },
         field: { 
           read_only: true,
           updateCustom: function() {
-            var text = this.context.state.get("store").getValue("bullet")
+            var text = this.context.state.get("store").getValue("shader")
             if (Core.isType(text, String)) {
               this.textField.setText(FileUtil.getFilenameFromPath(text))
             } else {
               this.textField.setText("")
             }
           },
-          enable: { key: "use-bullet"},
+          enable: { key: "use-shader"},
         },
         button: { 
           label: { text: "Open" },
-          enable: { key: "use-bullet"},
+          enable: { key: "use-shader"},
           callback: function() {
             var path = FileUtil.getPathToOpenWithDialog({
               description: "JSON file",
@@ -216,65 +232,7 @@ function VisuNewProjectForm(json = null) constructor {
             }
 
             this.context.state.get("store")
-              .get("bullet")
-              .set(path)
-          },
-          colorHoverOver: VETheme.color.accent,
-          colorHoverOut: VETheme.color.accentShadow,
-          onMouseHoverOver: function(event) {
-            if (!this.enable.value) {
-              return 
-            }
-            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
-          },
-          onMouseHoverOut: function(event) {
-            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
-          },
-        },
-      },
-    },
-    {
-      name: "particle",  
-      template: VEComponents.get("text-field-button-checkbox"),
-      layout: VELayouts.get("text-field-button-checkbox"),
-      config: { 
-        layout: { type: UILayoutType.VERTICAL },
-        checkbox: { 
-          store: { key: "use-particle" },
-          spriteOn: { name: "visu_texture_checkbox_switch_on" },
-          spriteOff: { name: "visu_texture_checkbox_switch_off" },
-          
-        },
-        label: { 
-          text: "Particles",
-          enable: { key: "use-particle" },
-        },
-        field: { 
-          read_only: true,
-          updateCustom: function() {
-            var text = this.context.state.get("store").getValue("particle")
-            if (Core.isType(text, String)) {
-              this.textField.setText(FileUtil.getFilenameFromPath(text))
-            } else {
-              this.textField.setText("")
-            }
-          },
-          enable: { key: "use-particle"},
-        },
-        button: { 
-          label: { text: "Open" },
-          enable: { key: "use-particle"},
-          callback: function() {
-            var path = FileUtil.getPathToOpenWithDialog({
-              description: "JSON file",
-              extension: "json",
-            })
-            if (!FileUtil.fileExists(path)) {
-              return
-            }
-
-            this.context.state.get("store")
-              .get("particle")
+              .get("shader")
               .set(path)
           },
           colorHoverOver: VETheme.color.accent,
@@ -333,6 +291,180 @@ function VisuNewProjectForm(json = null) constructor {
 
             this.context.state.get("store")
               .get("shroom")
+              .set(path)
+          },
+          colorHoverOver: VETheme.color.accent,
+          colorHoverOut: VETheme.color.accentShadow,
+          onMouseHoverOver: function(event) {
+            if (!this.enable.value) {
+              return 
+            }
+            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+          },
+          onMouseHoverOut: function(event) {
+            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+          },
+        },
+      },
+    },
+    {
+      name: "bullet",  
+      template: VEComponents.get("text-field-button-checkbox"),
+      layout: VELayouts.get("text-field-button-checkbox"),
+      config: { 
+        layout: { type: UILayoutType.VERTICAL },
+        checkbox: { 
+          store: { key: "use-bullet" },
+          spriteOn: { name: "visu_texture_checkbox_switch_on" },
+          spriteOff: { name: "visu_texture_checkbox_switch_off" },
+          
+        },
+        label: { 
+          text: "Bullets",
+          enable: { key: "use-bullet" },
+        },
+        field: { 
+          read_only: true,
+          updateCustom: function() {
+            var text = this.context.state.get("store").getValue("bullet")
+            if (Core.isType(text, String)) {
+              this.textField.setText(FileUtil.getFilenameFromPath(text))
+            } else {
+              this.textField.setText("")
+            }
+          },
+          enable: { key: "use-bullet"},
+        },
+        button: { 
+          label: { text: "Open" },
+          enable: { key: "use-bullet"},
+          callback: function() {
+            var path = FileUtil.getPathToOpenWithDialog({
+              description: "JSON file",
+              extension: "json",
+            })
+            if (!FileUtil.fileExists(path)) {
+              return
+            }
+
+            this.context.state.get("store")
+              .get("bullet")
+              .set(path)
+          },
+          colorHoverOver: VETheme.color.accent,
+          colorHoverOut: VETheme.color.accentShadow,
+          onMouseHoverOver: function(event) {
+            if (!this.enable.value) {
+              return 
+            }
+            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+          },
+          onMouseHoverOut: function(event) {
+            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+          },
+        },
+      },
+    },
+    {
+      name: "lyrics",  
+      template: VEComponents.get("text-field-button-checkbox"),
+      layout: VELayouts.get("text-field-button-checkbox"),
+      config: { 
+        layout: { type: UILayoutType.VERTICAL },
+        checkbox: { 
+          store: { key: "use-lyrics" },
+          spriteOn: { name: "visu_texture_checkbox_switch_on" },
+          spriteOff: { name: "visu_texture_checkbox_switch_off" },
+          
+        },
+        label: { 
+          text: "Lyrics",
+          enable: { key: "use-lyrics" },
+        },
+        field: { 
+          read_only: true,
+          updateCustom: function() {
+            var text = this.context.state.get("store").getValue("lyrics")
+            if (Core.isType(text, String)) {
+              this.textField.setText(FileUtil.getFilenameFromPath(text))
+            } else {
+              this.textField.setText("")
+            }
+          },
+          enable: { key: "use-lyrics"},
+        },
+        button: { 
+          label: { text: "Open" },
+          enable: { key: "use-lyrics"},
+          callback: function() {
+            var path = FileUtil.getPathToOpenWithDialog({
+              description: "JSON file",
+              extension: "json",
+            })
+            if (!FileUtil.fileExists(path)) {
+              return
+            }
+
+            this.context.state.get("store")
+              .get("lyrics")
+              .set(path)
+          },
+          colorHoverOver: VETheme.color.accent,
+          colorHoverOut: VETheme.color.accentShadow,
+          onMouseHoverOver: function(event) {
+            if (!this.enable.value) {
+              return 
+            }
+            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+          },
+          onMouseHoverOut: function(event) {
+            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+          },
+        },
+      },
+    },
+    {
+      name: "particle",  
+      template: VEComponents.get("text-field-button-checkbox"),
+      layout: VELayouts.get("text-field-button-checkbox"),
+      config: { 
+        layout: { type: UILayoutType.VERTICAL },
+        checkbox: { 
+          store: { key: "use-particle" },
+          spriteOn: { name: "visu_texture_checkbox_switch_on" },
+          spriteOff: { name: "visu_texture_checkbox_switch_off" },
+          
+        },
+        label: { 
+          text: "Particles",
+          enable: { key: "use-particle" },
+        },
+        field: { 
+          read_only: true,
+          updateCustom: function() {
+            var text = this.context.state.get("store").getValue("particle")
+            if (Core.isType(text, String)) {
+              this.textField.setText(FileUtil.getFilenameFromPath(text))
+            } else {
+              this.textField.setText("")
+            }
+          },
+          enable: { key: "use-particle"},
+        },
+        button: { 
+          label: { text: "Open" },
+          enable: { key: "use-particle"},
+          callback: function() {
+            var path = FileUtil.getPathToOpenWithDialog({
+              description: "JSON file",
+              extension: "json",
+            })
+            if (!FileUtil.fileExists(path)) {
+              return
+            }
+
+            this.context.state.get("store")
+              .get("particle")
               .set(path)
           },
           colorHoverOver: VETheme.color.accent,
@@ -480,19 +612,29 @@ function VisuNewProjectForm(json = null) constructor {
       Struct.set(json, "video", this.store.getValue("file-video"))
     }
 
-    if (this.store.getValue("use-bullet")
-      && Core.isType(this.store.getValue("bullet"), String)) {
-      Struct.set(json, "bullet", this.store.getValue("bullet"))
-    }
-
-    if (this.store.getValue("use-particle")
-      && Core.isType(this.store.getValue("particle"), String)) {
-      Struct.set(json, "particle", this.store.getValue("particle"))
+    if (this.store.getValue("use-shader")
+      && Core.isType(this.store.getValue("shader"), String)) {
+      Struct.set(json, "shader", this.store.getValue("shader"))
     }
 
     if (this.store.getValue("use-shroom")
       && Core.isType(this.store.getValue("shroom"), String)) {
       Struct.set(json, "shroom", this.store.getValue("shroom"))
+    }
+
+    if (this.store.getValue("use-bullet")
+      && Core.isType(this.store.getValue("bullet"), String)) {
+      Struct.set(json, "bullet", this.store.getValue("bullet"))
+    }
+
+    if (this.store.getValue("use-lyrics")
+      && Core.isType(this.store.getValue("lyrics"), String)) {
+      Struct.set(json, "lyrics", this.store.getValue("lyrics"))
+    }
+
+    if (this.store.getValue("use-particle")
+      && Core.isType(this.store.getValue("particle"), String)) {
+      Struct.set(json, "particle", this.store.getValue("particle"))
     }
 
     return json
@@ -505,21 +647,21 @@ function VisuNewProjectForm(json = null) constructor {
     var controller = Beans.get(BeanVisuController)
     var fileService = controller.fileService
 
-    var filename = Assert.isType(FileUtil.getFilenameFromPath(manifestPath), String)
     var path = Assert.isType(FileUtil.getDirectoryFromPath(manifestPath), String)
     var manifest = {
       "model": "io.alkapivo.visu.controller.VisuTrack",
+      "version": "1",
       "data": {  
         "bpm": controller.editor.store.getValue("bpm"),
         "bpm-sub": controller.editor.store.getValue("bpm-sub"),
-        "bullet": "bullet.json",
+        "bullet": "template/bullet.json",
         "editor": [],
-        "lyrics": "lyrics.json",
-        "particle": "particle.json",
-        "shader": "shader.json",
-        "shroom": "shroom.json",
+        "lyrics": "template/lyrics.json",
+        "particle": "template/particle.json",
+        "shader": "template/shader.json",
+        "shroom": "template/shroom.json",
         "sound": "sound.json",
-        "texture": "texture.json",
+        "texture": "texture/texture.json",
         "track": "track.json"
       }
     }
@@ -527,26 +669,32 @@ function VisuNewProjectForm(json = null) constructor {
     var templates = new Map(String, any, {
       "bullet": {
         "model": "Collection<io.alkapivo.visu.service.bullet.BulletTemplate>",
+        "version": "1",
         "data": {},
       },
       "lyrics": {
         "model": "Collection<io.alkapivo.visu.service.lyrics.LyricsTemplate>",
+        "version": "1",
         "data": {},
       },
       "particle": {
         "model": "Collection<io.alkapivo.core.service.particle.ParticleTemplate>",
+        "version": "1",
         "data": {},
       },
       "shader": {
         "model": "Collection<io.alkapivo.core.service.shader.ShaderTemplate>",
+        "version": "1",
         "data": {},
       },
       "shroom": {
         "model": "Collection<io.alkapivo.visu.service.shroom.ShroomTemplate>",
+        "version": "1",
         "data": {},
       },
       "sound": {
         "model": "Collection<io.alkapivo.core.service.sound.SoundIntent>",
+        "version": "1",
         "data": {
           "sound_external": {
             "file": FileUtil.getFilenameFromPath(json.audio)
@@ -555,10 +703,12 @@ function VisuNewProjectForm(json = null) constructor {
       },
       "texture": {
         "model": "Collection<io.alkapivo.core.service.texture.TextureIntent>",
+        "version": "1",
         "data": {},
       },
       "track": {
         "model":"io.alkapivo.core.service.track.Track",
+        "version": "1",
         "data":{
           "name": json.name,
           "audio": "sound_external",
@@ -572,25 +722,40 @@ function VisuNewProjectForm(json = null) constructor {
       }
     })
 
-    if (Struct.contains(json, "bullet")) {
-      templates.remove("bullet")
-      FileUtil.copyFile(json.bullet, $"{path}{manifest.data.bullet}")
-    }
-    if (Struct.contains(json, "particle")) {
-      templates.remove("particle")
-      FileUtil.copyFile(json.particle, $"{path}{manifest.data.particle}")
+    FileUtil.createDirectory($"{path}brush")
+    FileUtil.createDirectory($"{path}template")
+    FileUtil.createDirectory($"{path}texture")
+
+    if (Struct.contains(json, "shader")) {
+      templates.remove("shader")
+      FileUtil.copyFile(json.shader, $"{path}{manifest.data.shader}")
     }
     if (Struct.contains(json, "shroom")) {
       templates.remove("shroom")
       FileUtil.copyFile(json.shroom, $"{path}{manifest.data.shroom}")
     }
+    if (Struct.contains(json, "bullet")) {
+      templates.remove("bullet")
+      FileUtil.copyFile(json.bullet, $"{path}{manifest.data.bullet}")
+    }
+    if (Struct.contains(json, "lyrics")) {
+      templates.remove("lyrics")
+      FileUtil.copyFile(json.lyrics, $"{path}{manifest.data.lyrics}")
+    }
+    if (Struct.contains(json, "particle")) {
+      templates.remove("particle")
+      FileUtil.copyFile(json.particle, $"{path}{manifest.data.particle}")
+    }
+    
 
     var visuTrack = global.__VisuTrack
     if (json.includeBrushes && Core.isType(visuTrack, VisuTrack)) {
       visuTrack.editor.forEach(function(brush, index, acc) {
+        acc.manifest.data.editor = GMArray.add(acc.manifest.data.editor, brush)
         FileUtil.copyFile($"{acc.visuTrack.path}{brush}", $"{acc.path}{brush}")
       }, {
         visuTrack: visuTrack,
+        manifest: manifest,
         path: path,
       })
     }
@@ -660,7 +825,7 @@ function VisuNewProjectModal(_controller, _config = null) constructor {
         x: function() { return (this.context.width() - this.width()) / 2 },
         y: function() { return (this.context.height() - this.height()) / 2 },
         width: function() { return 500 },
-        height: function() { return 412 },
+        height: function() { return 492 },
       },
       parent
     )
