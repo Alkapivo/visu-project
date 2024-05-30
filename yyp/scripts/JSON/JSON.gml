@@ -187,13 +187,13 @@ function JSONModelParser(json) constructor {
   ///@param {Callable} callback(item, idx, acc)
   ///@param {any} [acc]
   ///@return {JSONModelParser}
-  parse = method(this, function(callback, acc = null) {
+  parse = function(callback, acc = null) {
     if (this.parsed) {
       return this
     }
     this.next(callback, acc)
     return this
-  })
+  }
 }
 
 function _JSON() constructor {

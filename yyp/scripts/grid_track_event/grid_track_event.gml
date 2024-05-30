@@ -302,9 +302,9 @@ global.__grid_track_event = {
       Struct.set(json, "mask", Struct.get(data, "grid-player_mask"))
     }
 
-    if (Struct.get(data, "grid-player_use-idle")) {
-      Struct.set(json, "idle", Struct
-        .get(data, "grid-player_idle"))
+    if (Struct.get(data, "grid-player_use-racing")) {
+      Struct.set(json, "racing", Struct
+        .get(data, "grid-player_racing"))
     }
 
     if (Struct.get(data, "grid-player_use-bullet-hell")) {
@@ -333,6 +333,17 @@ global.__grid_track_event = {
           increase: transformer.increase,
         })
       }))
+    }
+
+    if (Struct.get(data, "grid-player_use-margin")) {
+      controller.gridService.targetLocked.margin.top = Struct
+        .get(data, "grid-player_margin-top")
+      controller.gridService.targetLocked.margin.right = Struct
+        .get(data, "grid-player_margin-right")
+      controller.gridService.targetLocked.margin.bottom = Struct
+        .get(data, "grid-player_margin-bottom")
+      controller.gridService.targetLocked.margin.left = Struct
+        .get(data, "grid-player_margin-left")
     }
   },
   "brush_grid_separator": function(data) {

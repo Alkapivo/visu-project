@@ -60,8 +60,8 @@ function Shroom(template): GridItem(template) constructor {
   }
 
   this.gameModes
-    .set(GameMode.IDLE, ShroomIdleGameMode(Struct
-      .getDefault(Struct.get(template, "gameModes"), "idle", {})))
+    .set(GameMode.RACING, ShroomRacingGameMode(Struct
+      .getDefault(Struct.get(template, "gameModes"), "racing", {})))
     .set(GameMode.BULLETHELL, ShroomBulletHellGameMode(Struct
       .getDefault(Struct.get(template, "gameModes"), "bulletHell", {})))
     .set(GameMode.PLATFORMER, ShroomPlatformerGameMode(Struct

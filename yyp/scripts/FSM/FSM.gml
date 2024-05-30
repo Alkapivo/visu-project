@@ -83,7 +83,7 @@ function FSM(_context, config) constructor {
   }))
 
   ///@return {FSM}
-  update = method(this, function() {
+  update = function() {
     if (!Core.isType(this.currentState, FSMState)) {
       this.dispatcher.send(new Event("transition", {
         name: this.initialState.name,
@@ -95,7 +95,7 @@ function FSM(_context, config) constructor {
 
     this.dispatcher.update()
     return this
-  })
+  }
 
   ///@private
   ///@param {String} name

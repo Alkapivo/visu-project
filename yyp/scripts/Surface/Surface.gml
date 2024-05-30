@@ -43,30 +43,37 @@ function Surface(config = null) constructor {
     ? Assert.isType(Struct.get(config, "asset"), GMSurface)
     : null
 
+  ///@type {Boolean}
+  updated = false
+
   ///@param {?Number} [width]
   ///@param {?Number} [height]
   ///@return {Surface}
   static update = function(width = null, height = null) {
+    this.updated = false
     if (Core.isType(width, Number) && width > 2) {
-      this.width = width
+      this.width = round(width)
     }
 
     if (Core.isType(height, Number) && height > 2) {
-      this.height = height
+      this.height = round(height)
     }
 
     if (!Core.isType(this.asset, GMSurface)) {
       this.asset = surface_create(this.width, this.height, this.format)
+      this.updated = true
     }
 
     if (surface_get_format(this.asset) != this.format) {
       this.asset = surface_create(this.width, this.height, this.format)
+      this.updated = true
     }
 
     if (surface_get_width(this.asset) != this.width
       || surface_get_height(this.asset) != this.height) {
 
       surface_resize(this.asset, this.width, this.height);
+      this.updated = true
     }
     return this
   }

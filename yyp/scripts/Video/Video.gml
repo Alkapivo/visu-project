@@ -49,7 +49,7 @@ function VideoSurface(config = null): Surface(config) constructor {
 
     var data = video_draw()
     Struct.set(this, "videoData", data)
-    if (!Core.isType(data, GMArray) || data[0] != 0) {
+    if (!Core.isType(data, GMArray) || data[0] == -1) {
       return this
     }
 

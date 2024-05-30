@@ -60,6 +60,8 @@ function UISliderHorizontal(name, json = null) {
     ///@param {Number} mouseX
     updatePosition: new BindIntent(Assert.isType(Struct.getDefault(json, "updatePosition", function(mouseX) { }), Callable)),
 
+    updateEnable: Assert.isType(Callable.run(UIItemUtils.templates.get("updateEnable")), Callable),
+
     ///@override
     ///@param {Boolean} [_updateArea]
     ///@return {UIItem}

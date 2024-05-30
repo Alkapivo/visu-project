@@ -72,7 +72,7 @@ function Keyboard(json) constructor {
   })
 
   ///@return {Keyboard}
-  update = method(this, function() {
+  update = function() {
     static keysUpdate = function(key) {
       key.on = keyboard_check(key.gmKey)
       key.pressed = keyboard_check_pressed(key.gmKey)
@@ -81,5 +81,5 @@ function Keyboard(json) constructor {
     
     Struct.forEach(this.keys, keysUpdate)
     return this
-  })
+  }
 }

@@ -79,10 +79,10 @@ function BKTGlitchService() constructor {
   height = GuiHeight()
 
   ///@type {Boolean}
-  trigger = false
+  rng = false
 
   ///@type {Number}
-  factor = 0.001
+  factor = 0.1
 
   ///@type {Map<String, Struct>}
   configs = new Map(String, Struct, {
@@ -126,7 +126,7 @@ function BKTGlitchService() constructor {
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "spawn": function(event) {
       this.factor = Assert.isType(Struct.getDefault(event.data, "factor", this.factor), Number)
-      this.trigger = true
+      this.rng = Struct.getDefault(event.data, "rng", this.rng)
     },
     "load-config": function(event) {
       var keys = Struct.keys(event.data)
@@ -153,8 +153,8 @@ function BKTGlitchService() constructor {
     this.dispatcher.update()
     this.width = width
     this.height = height
-    __bktgtlich_ui_step(this.trigger, this.factor)
-    this.trigger = false
+    __bktgtlich_ui_step(this.rng, this.factor)
+    this.rng = false
 
     //if (keyboard_check_pressed(vk_enter)) {
     //  this.send(new Event("spawn").setData({ factor: 0.001 }))

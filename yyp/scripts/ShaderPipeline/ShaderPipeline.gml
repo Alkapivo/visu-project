@@ -114,6 +114,12 @@ function ShaderPipeline(config = {}): Service() constructor {
     return new ShaderPipelineTaskTemplate(_name, json)
   }
 
+  ///@type {Number}
+  width = 0
+
+  ///@type {Number}
+  height = 0
+
   ///@type {Map<String, ShaderTemplate>}
   templates = Struct.contains(config, "templates")
      ? Assert.isType(config.templates, Map)
@@ -195,12 +201,32 @@ function ShaderPipeline(config = {}): Service() constructor {
     return this
   }
 
+  ///@param {Number} _width
+  ///@return {ShaderPipeline}
+  setWidth = function(_width) {
+    this.width = _width
+    return this
+  }
+
+  ///@param {Number} _height
+  ///@return {ShaderPipeline}
+  setHeight = function(_height) {
+    this.height = _height
+    return this
+  }
+
   ///@param {Callable} handler
   ///@param {any} data
   ///@return {ShaderPipeline}
   render = function(handler, data) {
-    static setShaderProperty = function (property) {
+    static setShaderProperty = function(property, key, context) {
       var value = property.transformer.get()
+      if (property.transformer.overrideValue) {
+        if (Core.isType(property.transformer, ResolutionTransformer)) {
+          value.x = context.width
+          value.y = context.height
+        }
+      }
       property.uniform.set(value)
     }
 
@@ -214,7 +240,7 @@ function ShaderPipeline(config = {}): Service() constructor {
       var shader = task.state.get("shader")
       var properties = task.state.get("properties")
       GPU.set.shader(shader)
-      properties.forEach(setShaderProperty)
+      properties.forEach(setShaderProperty, this)
       handler(task, index, data)
       GPU.reset.shader()
     }

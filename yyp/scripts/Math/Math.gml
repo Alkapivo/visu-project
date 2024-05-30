@@ -122,62 +122,62 @@ function Rectangle(json = {}): Vector4() constructor {
   a = Assert.isType(Struct.getDefault(json, "height", 0), Number)
 
   ///@return {Number}
-  getX = method(this, function() {
+  getX = function() {
     return this.x
-  })
+  }
 
   ///@return {Number}
-  getY = method(this, function() {
+  getY = function() {
     return this.y
-  })
+  }
 
   ///@return {Number}
-  getWidth = method(this, function() {
+  getWidth = function() {
     return this.z
-  })
+  }
 
   ///@return {Number}
-  getHeight = method(this, function() {
+  getHeight = function() {
     return this.a
-  })
+  }
 
   ///@param {Number} x
   ///@return {Area}
-  setX = method(this, function(x) {
+  setX = function(x) {
     this.x = x
     return this
-  })
+  }
 
   ///@param {Number} y
   ///@return {Area}
-  setY = method(this, function(y) {
+  setY = function(y) {
     this.y = y
     return this
-  })
+  }
 
   ///@param {Number} width
   ///@return {Area}
-  setWidth = method(this, function(width) {
+  setWidth = function(width) {
     this.z = width
     return this
-  })
+  }
 
   ///@param {Number} height
   ///@return {Area}
-  setHeight = method(this, function(height) {
+  setHeight = function(height) {
     this.a = height
     return this
-  })
+  }
 
   ///@param {Number} x
   ///@param {Number} y
   ///@return {Boolean}
-  collide = method(this, function(x, y) {
+  collide = function(x, y) {
     return x >= this.getX() 
       && x <= this.getX() + this.getWidth() 
       && y >= this.getY() 
       && y <= this.getY() + this.getHeight()
-  })
+  }
 
   ///@override
   ///@return {Struct}

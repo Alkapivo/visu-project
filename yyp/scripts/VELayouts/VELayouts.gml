@@ -20,6 +20,11 @@ global.__VELayouts = new Map(String, Callable, {
             - this.margin.bottom },
           margin: { top: 5, bottom: 5 },
         },
+        resolution: {
+          name: "imate.resolution",
+          y: function() { return this.context.nodes.image.bottom() + this.margin.top },
+          height: function() { return 32 },
+        },
       },
     }
   },

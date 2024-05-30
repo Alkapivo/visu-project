@@ -57,11 +57,11 @@ function GridItemGameMode(json = {}) constructor {
 
 ///@param {Struct} json
 ///@return {GridItemGameMode}
-function GridItemIdleGameMode(json) {
+function GridItemRacingGameMode(json) {
   new GridItemGameMode(Struct.append(json, {
 
     ///@param {Callable}
-    type: GameMode.IDLE,
+    type: GameMode.RACING,
   }))
 }
 

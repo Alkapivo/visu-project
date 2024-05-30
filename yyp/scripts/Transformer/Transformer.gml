@@ -13,6 +13,10 @@ function Transformer(json = null) constructor {
   ///@type {Boolean}
   finished = false
 
+  ///@override
+  ///@type {Boolean}
+  overrideValue = Struct.get(json, "overrideValue") == true
+
   ///@return {any}
   get = function() {
     return this.value
@@ -81,7 +85,7 @@ function NumberTransformer(json = null): Transformer(json) constructor {
   value = Assert.isType(Struct.getDefault(json, "value", 0), Number)
 
   ///@override
-  ///@type {Color}
+  ///@type {Number}
   startValue = this.value
 
   ///@type {Number}
@@ -100,8 +104,7 @@ function NumberTransformer(json = null): Transformer(json) constructor {
       return this
     }
 
-    this.factor = (this.value < this.target ? 1 : -1) 
-      * this.factor + DeltaTime.apply(this.increase)
+    this.factor = this.factor + DeltaTime.apply(this.increase)
     this.value = Math.transformNumber(this.value, this.target, this.factor)
     if (this.value == this.target) {
       this.finished = true
@@ -134,16 +137,14 @@ function Vector2Transformer(json = {}): Transformer(json) constructor {
     if (this.finished) {
       return this
     }
-
-    this.x.factor = (this.value.x < this.x.target ? 1 : -1) 
-      * this.x.factor + DeltaTime.apply(this.x.increase)
+    
+    this.x.value = this.value.x
+    this.y.value = this.value.y
     this.value.x = this.x.update().get()
-
-    this.y.factor = (this.value.y < this.y.target ? 1 : -1) 
-      * this.y.factor + DeltaTime.apply(this.y.increase)
     this.value.y = this.y.update().get()
 
-    if (this.value.x == this.x.target && this.value.y == this.y.target) {
+    if (this.value.x == this.x.target 
+      && this.value.y == this.y.target) {
       this.finished = true
     }
     return this
@@ -183,16 +184,11 @@ function Vector3Transformer(json = {}): Transformer(json) constructor {
       return this
     }
 
-    this.x.factor = (this.value.x < this.x.target ? 1 : -1) 
-      * this.x.factor + DeltaTime.apply(this.x.increase)
+    this.x.value = this.value.x
+    this.y.value = this.value.y
+    this.z.value = this.value.z
     this.value.x = this.x.update().get()
-
-    this.y.factor = (this.value.y < this.y.target ? 1 : -1) 
-      * this.y.factor + DeltaTime.apply(this.y.increase)
     this.value.y = this.y.update().get()
-
-    this.z.factor = (this.value.z < this.z.target ? 1 : -1) 
-      * this.z.factor + DeltaTime.apply(this.z.increase)
     this.value.z = this.z.update().get()
 
     if (this.value.x == this.x.target 
@@ -242,20 +238,13 @@ function Vector4Transformer(json = {}): Transformer(json) constructor {
       return this
     }
 
-    this.x.factor = (this.value.x < this.x.target ? 1 : -1) 
-      * this.x.factor + DeltaTime.apply(this.x.increase)
+    this.x.value = this.value.x
+    this.y.value = this.value.y
+    this.z.value = this.value.z
+    this.a.value = this.value.a
     this.value.x = this.x.update().get()
-
-    this.y.factor = (this.value.y < this.y.target ? 1 : -1) 
-      * this.y.factor + DeltaTime.apply(this.y.increase)
     this.value.y = this.y.update().get()
-
-    this.z.factor = (this.value.z < this.z.target ? 1 : -1) 
-      * this.z.factor + DeltaTime.apply(this.z.increase)
     this.value.z = this.z.update().get()
-
-    this.a.factor = (this.value.a < this.a.target ? 1 : -1) 
-      * this.a.factor + DeltaTime.apply(this.a.increase)
     this.value.a = this.a.update().get()
 
     if (this.value.x == this.x.target 
@@ -284,22 +273,23 @@ function Vector4Transformer(json = {}): Transformer(json) constructor {
 ///@param {Struct} [json]
 function ResolutionTransformer(json = {}): Transformer(json) constructor {
 
-  ///@type {NumberTransformer}
-  scale = new NumberTransformer(Struct.getDefault(json, "scale", { value: 1 }))
-
   ///@override
   ///@type {Vector2}
-  value = new Vector2(GuiWidth() / this.scale.value, GuiHeight() / this.scale.value)
+  value = new Vector2(GuiWidth(), GuiHeight())
 
   ///@override
   ///@return {Vector2}
   update = function() {
-    this.scale.factor = (this.scale.value < this.scale.target ? 1 : -1) 
-      * this.scale.factor + DeltaTime.apply(this.scale.increase)
-    this.scale.value = this.scale.update().get()
-
-    this.value.x = GuiWidth() / this.scale.value
-    this.value.y = GuiHeight() / this.scale.value
+    if (this.overrideValue) {
+      return this
+    }
+    
+    this.value.x = GuiWidth()
+    this.value.y = GuiHeight() 
     return this
   }
+
+  ///@override
+  ///@type {Boolean}
+  overrideValue = Struct.getDefault(json, "overrideValue", true)
 }

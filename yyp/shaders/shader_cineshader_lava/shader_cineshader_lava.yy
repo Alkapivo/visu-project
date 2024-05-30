@@ -1,0 +1,12 @@
+{
+  "$GMShader":"",
+  "%Name":"shader_cineshader_lava",
+  "name":"shader_cineshader_lava",
+  "parent":{
+    "name":"shadertoy",
+    "path":"folders/core-gml/resource/shader/shadertoy.yy",
+  },
+  "resourceType":"GMShader",
+  "resourceVersion":"2.0",
+  "type":1,
+}

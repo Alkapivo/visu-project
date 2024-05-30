@@ -105,7 +105,7 @@ function TimerTest(): Test() constructor {
             name: "Timer.getProgress",
             config: {
                 duration: 1.0,
-                timeout: 2.0,
+                timeout: 5.0,
                 expected: 5
             },
             test: function(config) {
@@ -136,7 +136,7 @@ function TimerTest(): Test() constructor {
             name: "Timer.reset",
             config: {
                 duration: 1.0,
-                timeout: 2.0,
+                timeout: 5.0,
             },
             test: function(config) {
                 var timer = new Timer(config.duration)

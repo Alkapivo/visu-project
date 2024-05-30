@@ -9,7 +9,7 @@ function _ShaderUniformType(): Enum() constructor {
   VECTOR2 = ShaderUniformVector2
   VECTOR3 = ShaderUniformVector3
   VECTOR4 = ShaderUniformVector4
-  RESOLUTION = ShaderUniformVector2
+  RESOLUTION = ShaderUniformResolution
 }
 global.__ShaderUniformType = new _ShaderUniformType()
 #macro ShaderUniformType global.__ShaderUniformType
@@ -96,5 +96,18 @@ function ShaderUniformVector4(_asset, _name, _type = ShaderUniformType.VECTOR4):
   ///@param {Vector4} vec4
   static set = function(vec4) {
     shader_set_uniform_f(this.asset, vec4.x, vec4.y, vec4.z, vec4.a)
+  }
+}
+
+
+///@param {GMShader} _asset
+///@param {String} _name
+///@param {ShaderUniformType} _type
+function ShaderUniformResolution(_asset, _name, _type = ShaderUniformType.RESOLUTION): ShaderUniform(_asset, _name, _type) constructor {
+
+  ///@override
+  ///@param {Vector2} vec2
+  static set = function(vec2) {
+    shader_set_uniform_f(this.asset, vec2.x, vec2.y)
   }
 }

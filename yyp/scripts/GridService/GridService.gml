@@ -60,6 +60,12 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
       this.y = y
       return this
     },
+    margin: {
+      top: 0.2,
+      right: 0.5,
+      bottom: 0.2, 
+      left: 0.5,
+    },
   }
 
   ///@type {Struct}
@@ -87,6 +93,12 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
         setY: function(y) {
           this.y = y
           return this
+        },
+        margin: {
+          top: 0.2,
+          right: 0.5,
+          bottom: 0.2, 
+          left: 0.5,
         },
       }
 
@@ -185,6 +197,13 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
     return this.dispatcher.send(event)
   }
 
+  ///@type {Struct}
+  movement = {
+    enable: false,
+    angle: 90,
+    speed: new NumberTransformer({ value: 0.0, target: 1.0, factor: 0.01, increase: 0.0 }),
+  }
+
   ///@override
   ///@return {GridService}
   update = function() {
@@ -193,11 +212,7 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
     this.dispatcher.update()
     this.executor.update()
 
-    var player = this.controller.playerService.player
-    if (Core.isType(player, Player)) {
-      this.targetLocked.setX(player.x)
-      this.targetLocked.setY(player.y)
-    }
+
 
     if (this.controller.editor.store.getValue("target-locked-x")) {
       this.targetLocked.setX((this.view.width * floor(this.view.x / this.view.width)) 
@@ -207,6 +222,33 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
     if (this.controller.editor.store.getValue("target-locked-y")) {
       this.targetLocked.setY((this.view.height * floor(this.view.y / this.view.height)) 
         + (this.view.height / 2))
+    }
+
+    var player = this.controller.playerService.player
+    if (this.movement.enable) {
+      this.movement.speed.update()
+      this.targetLocked.setX(this.targetLocked.x + Math
+        .fetchCircleX(this.movement.speed
+        .get() / 500.0, this.movement.angle))
+      this.targetLocked.setY(this.targetLocked.y + Math
+        .fetchCircleY(this.movement.speed
+        .get() / 500.0, this.movement.angle))
+    } else if (Core.isType(player, Player)) {
+      this.targetLocked.setX(player.x)
+      this.targetLocked.setY(player.y)
+    }
+
+    if (Core.isType(player, Player)) {
+      player.x = clamp(
+        player.x, 
+        this.view.x - this.targetLocked.margin.left, 
+        this.view.x + this.view.width + this.targetLocked.margin.right
+      )
+      player.y = clamp(
+        player.y, 
+        this.view.y - this.targetLocked.margin.top, 
+        this.view.y + this.view.height + this.targetLocked.margin.bottom
+      )
     }
 
     this.view

@@ -51,6 +51,7 @@ function VEEventInspector(_editor) constructor {
             color: VETheme.color.textShadow,
             align: { v: VAlign.CENTER, h: HAlign.CENTER },
           }),
+          "inspectorType": VEEventInspector,
           "updateTrackEvent": false,
         }),
         updateTimer: new Timer(FRAME_MS * 30, { loop: Infinity, shuffle: true }),

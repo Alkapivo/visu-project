@@ -84,7 +84,21 @@ function template_texture(json = null) {
         name: "texture-preview",
         template: VEComponents.get("image"),
         layout: VELayouts.get("image"),
-        config: { image: { name: json.name } },
+        config: { 
+          image: { name: json.name },
+          resolution: { 
+            store: { 
+              key: "texture-template",
+              callback: function(value, data) { 
+                if (!Core.isType(value, TextureTemplate)) {
+                  return
+                }
+                
+                data.label.text = $"width: {sprite_get_width(value.asset)} height: {sprite_get_height(value.asset)}"
+              },
+            },
+          },
+        },
       },
     ]),
   }

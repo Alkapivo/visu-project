@@ -96,6 +96,26 @@ function brush_grid_particle(json = null) {
             text: "Emitter preview",
             enable: { key: "grid-particle_use-preview" },
             backgroundColor: VETheme.color.accentShadow,
+            updateCustom: function() {
+              this.preRender()
+              if (Core.isType(this.context.updateTimer, Timer)) {
+                var inspectorType = this.context.state.get("inspectorType")
+                switch (inspectorType) {
+                  case VEEventInspector:
+                    var shroomService = Beans.get(BeanVisuController).shroomService
+                    if (shroomService.particleAreaEvent != null) {
+                      shroomService.particleAreaEvent.timeout = ceil(this.context.updateTimer.duration * 60)
+                    }
+                    break
+                  case VEBrushToolbar:
+                    var shroomService = Beans.get(BeanVisuController).shroomService
+                    if (shroomService.particleArea != null) {
+                      shroomService.particleArea.timeout = ceil(this.context.updateTimer.duration * 60)
+                    }
+                    break
+                }
+              }
+            },
             preRender: function() {
               var store = null
               if (Core.isType(this.context.state.get("brush"), VEBrush)) {
@@ -109,26 +129,61 @@ function brush_grid_particle(json = null) {
               if (!Optional.is(store) || !store.getValue("grid-particle_use-preview")) {
                 return
               }
-              
-              var shroomService = Beans.get(BeanVisuController).shroomService
-              shroomService.particleArea = {
-                topLeft: shroomService.factorySpawner({ 
-                  x: store.getValue("grid-particle_beginX"), 
-                  y: store.getValue("grid-particle_beginY"),
-                }),
-                topRight: shroomService.factorySpawner({ 
-                  x: store.getValue("grid-particle_endX"), 
-                  y: store.getValue("grid-particle_beginY"),
-                }),
-                bottomLeft: shroomService.factorySpawner({ 
-                  x: store.getValue("grid-particle_beginX"), 
-                  y: store.getValue("grid-particle_endY"),
-                }),
-                bottomRight: shroomService.factorySpawner({ 
-                  x: store.getValue("grid-particle_endX"), 
-                  y: store.getValue("grid-particle_endY"),
-                }),
-                timeout: 2,
+
+              var inspectorType = this.context.state.get("inspectorType")
+              switch (inspectorType) {
+                case VEEventInspector:
+                  var shroomService = Beans.get(BeanVisuController).shroomService
+                  shroomService.particleAreaEvent = {
+                    topLeft: shroomService.factorySpawner({ 
+                      x: store.getValue("grid-particle_beginX"), 
+                      y: store.getValue("grid-particle_beginY"),
+                      sprite: SpriteUtil.parse({ name: "texture_bazyl" }),
+                    }),
+                    topRight: shroomService.factorySpawner({ 
+                      x: store.getValue("grid-particle_endX"), 
+                      y: store.getValue("grid-particle_beginY"),
+                      sprite: SpriteUtil.parse({ name: "texture_bazyl" }),
+                    }),
+                    bottomLeft: shroomService.factorySpawner({ 
+                      x: store.getValue("grid-particle_beginX"), 
+                      y: store.getValue("grid-particle_endY"),
+                      sprite: SpriteUtil.parse({ name: "texture_bazyl" }),
+                    }),
+                    bottomRight: shroomService.factorySpawner({ 
+                      x: store.getValue("grid-particle_endX"), 
+                      y: store.getValue("grid-particle_endY"),
+                      sprite: SpriteUtil.parse({ name: "texture_bazyl" }),
+                    }),
+                    timeout: 5.0,
+                  }
+                  break
+                case VEBrushToolbar:
+                  var shroomService = Beans.get(BeanVisuController).shroomService
+                  shroomService.particleArea = {
+                    topLeft: shroomService.factorySpawner({ 
+                      x: store.getValue("grid-particle_beginX"), 
+                      y: store.getValue("grid-particle_beginY"),
+                      sprite: SpriteUtil.parse({ name: "texture_baron" }),
+                    }),
+                    topRight: shroomService.factorySpawner({ 
+                      x: store.getValue("grid-particle_endX"), 
+                      y: store.getValue("grid-particle_beginY"),
+                      sprite: SpriteUtil.parse({ name: "texture_baron" }),
+                    }),
+                    bottomLeft: shroomService.factorySpawner({ 
+                      x: store.getValue("grid-particle_beginX"), 
+                      y: store.getValue("grid-particle_endY"),
+                      sprite: SpriteUtil.parse({ name: "texture_baron" }),
+                    }),
+                    bottomRight: shroomService.factorySpawner({ 
+                      x: store.getValue("grid-particle_endX"), 
+                      y: store.getValue("grid-particle_endY"),
+                      sprite: SpriteUtil.parse({ name: "texture_baron" }),
+                    }),
+                    timeout: 5.0,
+                  }
+                  break
               }
             },
           },

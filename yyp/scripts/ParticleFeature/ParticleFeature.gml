@@ -1,8 +1,9 @@
 ///@package io.alkapivo.visu.service.grid.feature
 
-///@param {Struct} [json]
+///@param {Struct} json
 ///@return {GridItemFeature}
-function ParticleFeature(json = {}) {
+function ParticleFeature(json) {
+  var data = Struct.get(json, "data")
   return new GridItemFeature(Struct.append(json, {
 
     ///@param {Callable}
@@ -10,15 +11,15 @@ function ParticleFeature(json = {}) {
 
     ///@type {String}
     particle: Assert.isType(Struct
-      .getDefault(json, "particle", "particle_default"), String),
+      .getDefault(data, "particle", "particle_default"), String),
 
     ///@type {Number}
     duration: Assert.isType(Struct
-      .getDefault(json, "duration", FRAME_MS), Number),
+      .getDefault(data, "duration", FRAME_MS), Number),
 
     ///@type {Number}
     amount: Assert.isType(Struct
-      .getDefault(json, "amount", 100), Number),
+      .getDefault(data, "amount", 100), Number),
 
     ///@override
     ///@param {GridItem} item

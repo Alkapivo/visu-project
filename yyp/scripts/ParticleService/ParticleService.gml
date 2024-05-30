@@ -38,7 +38,7 @@ function ParticleSystem(_layerName) constructor {
   executor = new TaskExecutor(this)
 
   ///@return {ParticleSystem}
-  update = method(this, function() {
+  update = function() {
     if (!part_system_exists(this.asset)) {
       this.asset = part_system_create_layer(this.layerName, false)
       part_system_automatic_draw(this.asset, false)
@@ -50,17 +50,17 @@ function ParticleSystem(_layerName) constructor {
 
     this.executor.update()
     return this
-  })
+  }
 
-  render = method(this, function() {
+  render = function() {
     part_system_drawit(this.asset);
-  })
+  }
     
-  free = method(this, function() {
+  free = function() {
     if (part_system_exists(this.asset)) {
       part_system_destroy(this.asset)
     }
-  })
+  }
 }
 
 
@@ -120,10 +120,10 @@ function ParticleService(_controller, config = {}): Service() constructor {
 
   ///@param {String} name
   ///@return {?Particle}
-  factoryParticle = method(this, function(name) {
+  factoryParticle = function(name) {
     var template = this.templates.get(name)
     return template != null ? new Particle(template) : null
-  })
+  }
 
   ///@param {Struct} [config]
   ///@return {Event}
@@ -147,17 +147,17 @@ function ParticleService(_controller, config = {}): Service() constructor {
 
   ///@param {Event} event
   ///@return {?Promise}
-  send = method(this, function(event) {
+  send = function(event) {
     return this.dispatcher.send(event)
-  })
+  }
 
   ///@override
   ///@return {ParticleService}
-  update = method(this, function() {
+  update = function() {
     this.dispatcher.update()
     this.systems.forEach(function(system) {
       system.update()
     })
     return this
-  })
+  }
 }

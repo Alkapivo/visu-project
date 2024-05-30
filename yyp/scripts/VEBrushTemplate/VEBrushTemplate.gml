@@ -10,19 +10,19 @@ function VEBrushTemplate(json) constructor {
   type = Assert.isEnum(json.type, VEBrushType)
   
   ///@type {String}
-  color = Struct.contains(json, "color")
+  color = Core.isType(Struct.get(json, "color"), String)
     ? ColorUtil.fromHex(json.color, ColorUtil.WHITE).toHex()
     : "#ffffff"
   
   ///@type {String}
-  texture = Struct.contains(json, "texture")
-    ? Assert.isType(json.texture, String)
+  texture = Core.isType(Struct.get(json, "texture"), String)
+    ? json.texture
     : BRUSH_TEXTURES[0]
   Assert.isTrue(GMArray.contains(BRUSH_TEXTURES, this.texture))
-  
+
   ///@type {?Struct}
-  properties = Struct.contains(json, "properties")
-    ? Assert.isType(json.properties, Struct)
+  properties = Core.isType(Struct.get(json, "properties"), Struct) 
+    ? json.properties
     : null
 
   ///@return {Struct}

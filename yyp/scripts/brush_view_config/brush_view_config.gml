@@ -33,33 +33,6 @@ function brush_view_config(json = null) {
         type: Boolean,
         value: Struct.getDefault(json, "view-config_render-video", false),
       },
-      "view-config_bkt-trigger": {
-        type: Boolean,
-        value: Struct.getDefault(json, "view-config_bkt-trigger", false),
-      },
-      "view-config_bkt-use-config": {
-        type: Boolean,
-        value: Struct.getDefault(json, "view-config_bkt-use-config", false),
-      },
-      "view-config_bkt-config": {
-        type: String,
-        value: Struct.getDefault(json, "view-config_bkt-config", "easy"),
-        validate: function(value) {
-          Assert.isTrue(this.data.contains(value))
-        },
-        data: Beans.get(BeanVisuController).gridRenderer.bktGlitchService.configs.keys(),
-      },
-      "view-config_bkt-use-factor": {
-        type: Boolean,
-        value: Struct.getDefault(json, "view-config_bkt-use-factor", false),
-      },
-      "view-config_bkt-factor": {
-        type: Number,
-        value: Struct.getDefault(json, "view-config_bkt-factor", 0.001),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, 0.001), 0.000001, 999.9)
-        }
-      },
     }),
     components: new Array(Struct, [
       {
@@ -155,97 +128,6 @@ function brush_view_config(json = null) {
             store: { key: "view-config_render-video" },
             enable: { key: "view-config_use-render-video" },
           }
-        },
-      },
-      {
-        name: "view-config_bkt-trigger",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Trigger BTKGlitch",
-            enable: { key: "view-config_bkt-trigger" },
-          },
-          checkbox: { 
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "view-config_bkt-trigger" },
-          },
-        },
-      },
-      {
-        name: "view-config_bkt-use-factor",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Set BKTGlitch factor",
-            enable: { key: "view-config_bkt-use-factor" },
-          },  
-          checkbox: { 
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "view-config_bkt-use-factor" },
-          },
-        },
-      },
-      {
-        name: "view-config_bkt-factor",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Factor",
-            enable: { key: "view-config_bkt-use-factor" },
-          },  
-          field: { 
-            store: { key: "view-config_bkt-factor" },
-            enable: { key: "view-config_bkt-use-factor" },
-          },
-        },
-      },
-      {
-        name: "view-config_bkt-use-config",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Load BKTGlitch config",
-            enable: { key: "view-config_bkt-use-config" },
-          },  
-          checkbox: { 
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "view-config_bkt-use-config" },
-          },
-        },
-      },
-      {
-        name: "view-config_bkt-config",
-        template: VEComponents.get("spin-select"),
-        layout: VELayouts.get("spin-select"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Type",
-            enable: { key: "view-config_bkt-use-config" },
-          },
-          previous: { 
-            store: { key: "view-config_bkt-config" },
-            enable: { key: "view-config_bkt-use-config" },
-          },
-          preview: Struct.appendRecursive({ 
-            store: { key: "view-config_bkt-config" },
-            enable: { key: "view-config_bkt-use-config" },
-          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
-          next: { 
-            store: { key: "view-config_bkt-config" },
-            enable: { key: "view-config_bkt-use-config" },
-          },
         },
       },
     ]),

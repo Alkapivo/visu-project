@@ -36,6 +36,13 @@ function brush_shroom_spawn(json = null) {
           return clamp(NumberUtil.parse(value, this.value), -1.5, 2.5) 
         },
       },
+      "shroom-spawn_channels-spawn-x": {
+        type: Number,
+        value: Struct.getDefault(json, "shroom-spawn_channels-spawn-x", 0),
+        passthrough: function(value) {
+          return round(clamp(NumberUtil.parse(value, this.value), 0, 20))
+        },
+      },
       "shroom-spawn_use-spawn-y": {
         type: Boolean,
         value: Struct.getDefault(json, "shroom-spawn_use-spawn-y", true),
@@ -45,6 +52,13 @@ function brush_shroom_spawn(json = null) {
         value: Struct.getDefault(json, "shroom-spawn_spawn-y", 0.0),
         passthrough: function(value) {
           return clamp(NumberUtil.parse(value, this.value), -2.5, 1.5) 
+        },
+      },
+      "shroom-spawn_channels-spawn-y": {
+        type: Number,
+        value: Struct.getDefault(json, "shroom-spawn_channels-spawn-y", 0),
+        passthrough: function(value) {
+          return round(clamp(NumberUtil.parse(value, this.value), 0, 20))
         },
       },
       "shroom-spawn_use-snap-h": {
@@ -78,6 +92,26 @@ function brush_shroom_spawn(json = null) {
             text: "Spawner preview",
             enable: { key: "shroom-spawn_use-preview" },
             backgroundColor: VETheme.color.accentShadow,
+            updateCustom: function() {
+              this.preRender()
+              if (Core.isType(this.context.updateTimer, Timer)) {
+                var inspectorType = this.context.state.get("inspectorType")
+                switch (inspectorType) {
+                  case VEEventInspector:
+                    var shroomService = Beans.get(BeanVisuController).shroomService
+                    if (shroomService.spawnerEvent != null) {
+                      shroomService.spawnerEvent.timeout = ceil(this.context.updateTimer.duration * 60)
+                    }
+                    break
+                  case VEBrushToolbar:
+                    var shroomService = Beans.get(BeanVisuController).shroomService
+                    if (shroomService.spawner != null) {
+                      shroomService.spawner.timeout = ceil(this.context.updateTimer.duration * 60)
+                    }
+                    break
+                }
+              }
+            },
             preRender: function() {
               var store = null
               if (Core.isType(this.context.state.get("brush"), VEBrush)) {
@@ -120,8 +154,25 @@ function brush_shroom_spawn(json = null) {
                 _y = _y - (view.y - floor(view.y / view.height) * view.height)
               }
 
-              var shroomService = Beans.get(BeanVisuController).shroomService
-              shroomService.spawner = shroomService.factorySpawner({ x: _x, y: _y })
+              var inspectorType = this.context.state.get("inspectorType")
+              switch (inspectorType) {
+                case VEEventInspector:
+                  var shroomService = Beans.get(BeanVisuController).shroomService
+                  shroomService.spawnerEvent = shroomService.factorySpawner({ 
+                    x: _x, 
+                    y: _y, 
+                    sprite: SpriteUtil.parse({ name: "texture_bazyl" })
+                  })
+                  break
+                case VEBrushToolbar:
+                  var shroomService = Beans.get(BeanVisuController).shroomService
+                  shroomService.spawner = shroomService.factorySpawner({ 
+                    x: _x, 
+                    y: _y, 
+                    sprite: SpriteUtil.parse({ name: "texture_baron" })
+                  })
+                  break
+              }
             },
           },
           checkbox: { 
@@ -191,6 +242,44 @@ function brush_shroom_spawn(json = null) {
             maxValue: 2.5,
             store: { key: "shroom-spawn_spawn-x" },
             enable: { key: "shroom-spawn_use-spawn-x" },
+            customKey: "shroom-spawn_channels-spawn-x",
+            updateValue: function(mouseX) {
+              var position = clamp((this.context.area.getX() + mouseX - this.context.area.getX() - this.area.getX()) / this.area.getWidth(), 0.0, 1.0)
+              var snap = this.store.getStore().get(this.customKey).get()
+              if (snap > 0) {
+                var snapWidth = 1.0 / snap
+                position = (floor(position / snapWidth) * snapWidth) + (snapWidth / 2)
+              }
+              var length = abs(this.minValue - this.maxValue) * position
+              this.value = clamp(this.minValue + length, this.minValue, this.maxValue)
+              if (Core.isType(this.store, UIStore)) {
+                this.store.set(this.value)
+              }
+        
+              this.updatePosition(mouseX)
+            },
+          },
+        },
+      },
+      {
+        name: "shroom-spawn_channels-spawn-x",  
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Channels",
+            enable: { key: "shroom-spawn_use-spawn-x" },
+          },
+          field: { 
+            store: { key: "shroom-spawn_channels-spawn-x" },
+            enable: { key: "shroom-spawn_use-spawn-x" },
+          },
+          slider:{
+            minValue: 0,
+            maxValue: 20,
+            store: { key: "shroom-spawn_channels-spawn-x" },
+            enable: { key: "shroom-spawn_use-spawn-x" },
           },
         },
       },
@@ -229,6 +318,44 @@ function brush_shroom_spawn(json = null) {
             minValue: -2.5,
             maxValue: 1.5,
             store: { key: "shroom-spawn_spawn-y" },
+            enable: { key: "shroom-spawn_use-spawn-y" },
+            customKey: "shroom-spawn_channels-spawn-y",
+            updateValue: function(mouseX) {
+              var position = clamp((this.context.area.getX() + mouseX - this.context.area.getX() - this.area.getX()) / this.area.getWidth(), 0.0, 1.0)
+              var snap = this.store.getStore().get(this.customKey).get()
+              if (snap > 0) {
+                var snapWidth = 1.0 / snap
+                position = (floor(position / snapWidth) * snapWidth) + (snapWidth / 2)
+              }
+              var length = abs(this.minValue - this.maxValue) * position
+              this.value = clamp(this.minValue + length, this.minValue, this.maxValue)
+              if (Core.isType(this.store, UIStore)) {
+                this.store.set(this.value)
+              }
+        
+              this.updatePosition(mouseX)
+            },
+          },
+        },
+      },
+      {
+        name: "shroom-spawn_channels-spawn-y",  
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Channels",
+            enable: { key: "shroom-spawn_use-spawn-y" },
+          },
+          field: { 
+            store: { key: "shroom-spawn_channels-spawn-y" },
+            enable: { key: "shroom-spawn_use-spawn-y" },
+          },
+          slider:{
+            minValue: 0,
+            maxValue: 20,
+            store: { key: "shroom-spawn_channels-spawn-y" },
             enable: { key: "shroom-spawn_use-spawn-y" },
           },
         },

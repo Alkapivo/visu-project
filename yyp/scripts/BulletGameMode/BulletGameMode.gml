@@ -2,11 +2,11 @@
 
 ///@param {Struct} json
 ///@return {GridItemGameMode}
-function BulletIdleGameMode(json) {
+function BulletRacingGameMode(json) {
   return new GridItemGameMode(Struct.append(json, {
 
     ///@param {Callable}
-    type: BulletIdleGameMode,
+    type: BulletRacingGameMode,
 
     ///@override
     ///@param {Bullet} bullet
@@ -76,7 +76,7 @@ function BulletPlatformerGameMode(json) {
 ///@static
 ///@type {Struct}
 global.__BULLET_GAME_MODES = {
-  "idle": BulletIdleGameMode,
+  "racing": BulletRacingGameMode,
   "bulletHell": BulletBulletHellGameMode,
   "platformer": BulletPlatformerGameMode,
 }

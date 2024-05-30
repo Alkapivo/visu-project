@@ -308,7 +308,6 @@ function brush_view_wallpaper(json = null) {
                 return
               }
 
-              Core.print("begin", irandom(99))
               var gmColor = store.getValue("view-wallpaper_use-texture-blend")
                 ? store.getValue("view-wallpaper_texture-blend").toGMColor()
                 : c_white
@@ -323,8 +322,6 @@ function brush_view_wallpaper(json = null) {
               } else {
                 this.image.setAnimate(false)
               }
-
-              Core.print("end", irandom(99))
             },
           },
         },

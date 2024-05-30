@@ -35,6 +35,9 @@ function UILabel(json) constructor {
   ///@type {any}
   value = null
 
+  ///@type {Boolean}
+  enableColorWrite = Core.getProperty("core.ui-service.use-surface-optimalization", false)
+
   ///@param {Number} x
   ///@param {Number} y
   ///@return {UILabel}
@@ -44,7 +47,9 @@ function UILabel(json) constructor {
     var config = gpu_get_colorwriteenable()
     var enableBlend = gpu_get_blendenable()
     gpu_set_blendenable(true)
-    //gpu_set_colorwriteenable(true, true, true, false)
+    if (this.enableColorWrite) {
+      gpu_set_colorwriteenable(true, true, true, false)
+    }
 
     if (this.font.asset != draw_get_font()) {
       draw_set_font(this.font.asset)

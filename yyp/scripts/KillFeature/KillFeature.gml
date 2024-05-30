@@ -1,8 +1,8 @@
 ///@package io.alkapivo.visu.service.grid.feature
 
-///@param {Struct} [json]
+///@param {Struct} json
 ///@return {GridItemFeature}
-function KillFeature(json = {}) {
+function KillFeature(json) {
   return new GridItemFeature(Struct.append(json, {
 
     ///@param {Callable}

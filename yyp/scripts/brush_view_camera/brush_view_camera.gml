@@ -22,6 +22,31 @@ function brush_view_camera(json = null) {
         type: Boolean,
         value: Struct.getDefault(json, "view-config_lock-target-y", false),
       },
+      "view-config_use-follow-properties": {
+        type: Boolean,
+        value: Struct.getDefault(json, "view-config_use-follow-properties", false),
+      },
+      "view-config_follow-margin-x": {
+        type: Number,
+        value: Struct.getDefault(json, "view-config_follow-margin-x", 0.35),
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), 0.0, 1.0)
+        },
+      },
+      "view-config_follow-margin-y": {
+        type: Number,
+        value: Struct.getDefault(json, "view-config_follow-margin-y", 0.40),
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), 0.0, 1.0)
+        },
+      },
+      "view-config_follow-smooth": {
+        type: Number,
+        value: Struct.getDefault(json, "view-config_follow-smooth", 32),
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), 1.0, 256.0)
+        },
+      },
       "view-config_use-transform-x": {
         type: Boolean,
         value: Struct.getDefault(json, "view-config_use-transform-x", false),
@@ -88,8 +113,160 @@ function brush_view_camera(json = null) {
           { value: 0, target: 1, factor: 0.01, increase: 0 }
         )),
       },
+      "view-config_use-movement": {
+        type: Boolean,
+        value: Struct.getDefault(json, "view-config_use-movement", false),
+      },
+      "view-config_movement-enable": {
+        type: Boolean,
+        value: Struct.getDefault(json, "view-config_movement-enable", false),
+      },
+      "view-config_movement-angle": {
+        type: Number,
+        value: Struct.getDefault(json, "view-config_movement-angle", 90.0),
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), 0.0, 360.0) 
+        },
+      },
+      "view-config_movement-speed": {
+        type: NumberTransformer,
+        value: new NumberTransformer(Struct.getDefault(json, 
+          "view-config_movement-speed",
+          { value: 0, target: 1, factor: 0.01, increase: 0 }
+        )),
+      },
     }),
     components: new Array(Struct, [
+      {
+        name: "view-config_use-movement",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Move camera",
+            enable: { key: "view-config_use-movement" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "view-config_use-movement" },
+          },
+          input: { 
+            spriteOn: { name: "visu_texture_checkbox_switch_on" },
+            spriteOff: { name: "visu_texture_checkbox_switch_off" },
+            store: { key: "view-config_movement-enable" },
+            enable: { key: "view-config_use-movement" },
+          },
+        },
+      },
+      {
+        name: "view-config_movement-angle",  
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Angle",
+            enable: { key: "view-config_use-movement" },
+          },
+          field: { 
+            store: { key: "view-config_movement-angle" },
+            enable: { key: "view-config_use-movement" },
+          },
+          slider: { 
+            minValue: 0.0,
+            maxValue: 360.0,
+            store: { key: "view-config_movement-angle" },
+            enable: { key: "view-config_use-movement" },
+          },
+        },
+      },
+      {
+        name: "view-config_movement-speed",
+        template: VEComponents.get("transform-numeric-property"),
+        layout: VELayouts.get("transform-numeric-property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          title: {
+            label: { 
+              text: "Speed",
+              enable: { key: "view-config_use-movement" },
+            },
+            input: {
+              store: { 
+                key: "view-config_movement-angle",
+                callback: function(value, data) { 
+                  var sprite = Struct.get(data, "sprite")
+                  if (!Core.isType(sprite, Sprite)) {
+                    sprite = SpriteUtil.parse({ name: "visu_texture_ui_spawn_arrow" })
+                    Struct.set(data, "sprite", sprite)
+                  }
+                  sprite.setAngle(value)
+                },
+                set: function(value) { return },
+              },
+              enable: { key: "view-config_use-movement" },
+              render: function() {
+                if (this.backgroundColor != null) {
+                  var _x = this.context.area.getX() + this.area.getX()
+                  var _y = this.context.area.getY() + this.area.getY()
+                  var color = this.backgroundColor
+                  draw_rectangle_color(
+                    _x, _y, 
+                    _x + this.area.getWidth(), _y + this.area.getHeight(),
+                    color, color, color, color,
+                    false
+                  )
+                }
+  
+                var sprite = Struct.get(this, "sprite")
+                if (!Core.isType(sprite, Sprite)) {
+                  sprite = SpriteUtil.parse({ name: "visu_texture_ui_spawn_arrow" })
+                  Struct.set(this, "sprite", sprite)
+                }
+                sprite.scaleToFit(this.area.getWidth(), this.area.getHeight())
+                  .render(
+                    this.context.area.getX() + this.area.getX() + sprite.texture.offsetX * sprite.getScaleX(),
+                    this.context.area.getY() + this.area.getY() + sprite.texture.offsetY * sprite.getScaleY()
+                  )
+                
+                return this
+              },
+            },
+          },
+          target: {
+            label: {
+              text: "Target",
+              enable: { key: "view-config_use-movement" },
+            },
+            field: {
+              store: { key: "view-config_movement-speed" },
+              enable: { key: "view-config_use-movement" },
+            },
+          },
+          factor: {
+            label: {
+              text: "Factor",
+              enable: { key: "view-config_use-movement" },
+            },
+            field: {
+              store: { key: "view-config_movement-speed" },
+              enable: { key: "view-config_use-movement" },
+            },
+          },
+          increment: {
+            label: {
+              text: "Increment",
+              enable: { key: "view-config_use-movement" },
+            },
+            field: {
+              store: { key: "view-config_movement-speed" },
+              enable: { key: "view-config_use-movement" },
+            },
+          },
+        },
+      },
       {
         name: "view-config_use-lock-target-x",
         template: VEComponents.get("property"),
@@ -135,6 +312,80 @@ function brush_view_camera(json = null) {
             enable: { key: "view-config_use-lock-target-y" },
           },
         },
+      },
+      {
+        name: "view-config_use-follow-properties",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Follow properties",
+            enable: { key: "view-config_use-follow-properties" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "view-config_use-follow-properties" },
+          },
+        },
+      },
+      {
+        name: "view-config_follow-margin-x",
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
+        config: {
+          layout: { type: UILayoutType.VERTICAL},
+          label: { 
+            text: "X margin",
+            enable: { key: "view-config_use-follow-properties" },
+          },
+          field: { store: { key: "view-config_follow-margin-x" }},
+          slider: {
+            minValue: 0.0,
+            maxValue: 1.0,
+            store: { key: "view-config_follow-margin-x" },
+            enable: { key: "view-config_use-follow-properties" },
+          },
+        }
+      },
+      {
+        name: "view-config_follow-margin-y",
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
+        config: {
+          layout: { type: UILayoutType.VERTICAL},
+          label: { 
+            text: "Y margin",
+            enable: { key: "view-config_use-follow-properties" },
+          },
+          field: { store: { key: "view-config_follow-margin-y" }},
+          slider: {
+            minValue: 0.0,
+            maxValue: 1.0,
+            store: { key: "view-config_follow-margin-y" },
+            enable: { key: "view-config_use-follow-properties" },
+          },
+        }
+      },
+      {
+        name: "view-config_follow-smooth",
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
+        config: {
+          layout: { type: UILayoutType.VERTICAL},
+          label: { 
+            text: "Smooth",
+            enable: { key: "view-config_use-follow-properties" },
+          },
+          field: { store: { key: "view-config_follow-smooth" }},
+          slider: {
+            minValue: 1.0,
+            maxValue: 256.0,
+            store: { key: "view-config_follow-smooth" },
+            enable: { key: "view-config_use-follow-properties" },
+          },
+        }
       },
       {
         name: "view-config_transform-x",

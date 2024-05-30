@@ -338,9 +338,15 @@ function VEStatusBar(_editor) constructor {
           }),
           "text_ve-status-bar_fpsValue": factoryValue({
             layout: layout.nodes.fpsValue,
-            updateCustom: function() {
-              this.label.text = string(clamp(ceil(fps_real + 1), 0, 60))
-            },
+            updateCustom: Core.getProperty("visu.editor.status-bar.render-average-fps", true)
+              ? function() {
+                this.label.text = string(fps);//string(clamp(ceil(fps_real + 1), 0, 60))
+              }
+              :
+              function() {
+                this.label.text = string(clamp(ceil(fps_real + 1), 0, 60))
+              }
+              ,
           }),
           "text_ve-status-bar_timestampLabel": factoryLabel({
             text: "Timestamp:",
@@ -350,8 +356,7 @@ function VEStatusBar(_editor) constructor {
             layout: layout.nodes.timestampValue,
             updateCustom: function() {
               try {
-                this.label.text = String.formatTimestamp(Beans
-                  .get(BeanVisuController).trackService.time)
+                this.label.text = String.formatTimestamp(Beans.get(BeanVisuController).trackService.time)
               } catch (exception) {
                 this.label.text = "N/A"
               }
@@ -391,13 +396,13 @@ function VEStatusBar(_editor) constructor {
             layout: layout.nodes.gameModeLabel,
             onMouseReleasedLeft: function() {
               var controller = Beans.get(BeanVisuController)
-              var gameMode = GameMode.IDLE
+              var gameMode = GameMode.RACING
               switch (controller.gameMode) {
-                case GameMode.IDLE: gameMode = GameMode.BULLETHELL
+                case GameMode.RACING: gameMode = GameMode.BULLETHELL
                   break
                 case GameMode.BULLETHELL: gameMode = GameMode.PLATFORMER
                   break
-                case GameMode.PLATFORMER: gameMode = GameMode.IDLE
+                case GameMode.PLATFORMER: gameMode = GameMode.RACING
                   break
                 default:
                   throw new Exception($"Found unsupported gameMode: {controller.gameMode}")
@@ -414,13 +419,13 @@ function VEStatusBar(_editor) constructor {
             backgroundColor: VETheme.color.accentShadow,
             onMouseReleasedLeft: function() {
               var controller = Beans.get(BeanVisuController)
-              var gameMode = GameMode.IDLE
+              var gameMode = GameMode.RACING
               switch (controller.gameMode) {
-                case GameMode.IDLE: gameMode = GameMode.BULLETHELL
+                case GameMode.RACING: gameMode = GameMode.BULLETHELL
                   break
                 case GameMode.BULLETHELL: gameMode = GameMode.PLATFORMER
                   break
-                case GameMode.PLATFORMER: gameMode = GameMode.IDLE
+                case GameMode.PLATFORMER: gameMode = GameMode.RACING
                   break
                 default:
                   throw new Exception($"Found unsupported gameMode: {controller.gameMode}")

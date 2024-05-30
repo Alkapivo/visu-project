@@ -56,6 +56,23 @@ global.__view_track_event = {
   },
   "brush_view_camera": function(data) {
     var controller = Beans.get(BeanVisuController)
+
+    if (Struct.get(data, "view-config_use-movement")) {
+      controller.gridService.movement.enable = Struct
+        .get(data, "view-config_movement-enable")
+      controller.gridService.movement.angle = Struct
+        .get(data, "view-config_movement-angle")
+
+      var movementSpeed = Struct.get(data, "view-config_movement-speed")
+      controller.gridService.movement.speed = new NumberTransformer({
+        value: controller.gridService.movement.speed.get(),
+        target: movementSpeed.target,
+        factor: movementSpeed.factor,
+        increase: movementSpeed.increase,
+      })
+    }
+    
+
     if (Struct.get(data, "view-config_use-lock-target-x")) {
       controller.editor.store
         .get("target-locked-x")
@@ -68,7 +85,14 @@ global.__view_track_event = {
         .set(Struct.get(data, "view-config_lock-target-y"))
     }
 
-    if (Struct.get(data, "view-config_use-transform-x") == true) {
+    if (Struct.get(data, "view-config_use-follow-properties")) {
+      var follow = controller.gridService.view.follow
+      follow.xMargin = Struct.get(data, "view-config_follow-margin-x")
+      follow.yMargin = Struct.get(data, "view-config_follow-margin-y")
+      follow.smooth = Struct.get(data, "view-config_follow-smooth")
+    }
+
+    if (Struct.get(data, "view-config_use-transform-x")) {
       var transformer = Struct.get(data, "view-config_transform-x")
       controller.gridService.send(new Event("transform-property", {
         key: "x",
@@ -83,7 +107,7 @@ global.__view_track_event = {
       }))
     }
     
-    if (Struct.get(data, "view-config_use-transform-y") == true) {
+    if (Struct.get(data, "view-config_use-transform-y")) {
       var transformer = Struct.get(data, "view-config_transform-y")
       controller.gridService.send(new Event("transform-property", {
         key: "y",
@@ -98,7 +122,7 @@ global.__view_track_event = {
       }))
     }
     
-    if (Struct.get(data, "view-config_use-transform-z") == true) {
+    if (Struct.get(data, "view-config_use-transform-z")) {
       var transformer = Struct.get(data, "view-config_transform-z")
       controller.gridService.send(new Event("transform-property", {
         key: "z",
@@ -113,7 +137,7 @@ global.__view_track_event = {
       }))
     }
     
-    if (Struct.get(data, "view-config_use-transform-zoom") == true) {
+    if (Struct.get(data, "view-config_use-transform-zoom")) {
       var transformer = Struct.get(data, "view-config_transform-zoom")
       controller.gridService.send(new Event("transform-property", {
         key: "zoom",
@@ -128,7 +152,7 @@ global.__view_track_event = {
       }))
     }
     
-    if (Struct.get(data, "view-config_use-transform-angle") == true) {
+    if (Struct.get(data, "view-config_use-transform-angle")) {
       var transformer = Struct.get(data, "view-config_transform-angle")
       controller.gridService.send(new Event("transform-property", {
         key: "angle",
@@ -144,7 +168,7 @@ global.__view_track_event = {
     }
 
     
-    if (Struct.get(data, "view-config_use-transform-pitch") == true) {
+    if (Struct.get(data, "view-config_use-transform-pitch")) {
       var transformer = Struct.get(data, "view-config_transform-pitch")
       controller.gridService.send(new Event("transform-property", {
         key: "pitch",
@@ -210,22 +234,124 @@ global.__view_track_event = {
         fadeOut: Struct.get(data, "view-lyrics_fade-out"),
       }))
   },
-  "brush_view_config": function(data) {
-    var controller = Beans.get(BeanVisuController)
-    var bktGlitchService = controller.gridRenderer.bktGlitchService
-    if (Struct.get(data, "view-config_bkt-trigger") == true) {
-      var event = new Event("spawn")
-      if (Struct.get(data, "view-config_bkt-use-factor") == true) {
-        event.setData({ factor: Struct.get(data, "view-config_bkt-factor")})
-      }
-      bktGlitchService.send(event)
+  "brush_view_glitch": function(data) {
+    var bktGlitchService = Beans.get(BeanVisuController).gridRenderer.bktGlitchService
+
+    var config = {
+      lineSpeed: {
+        defValue: Struct.getDefault(data, "view-glitch_line-speed", 0.0),
+        minValue: 0.0,
+        maxValue: 0.5,
+      },
+      lineShift: {
+        defValue: Struct.getDefault(data, "view-glitch_line-shift", 0.0),
+        minValue: 0.0,
+        maxValue: 0.05,
+      },
+      lineResolution: {
+        defValue: Struct.getDefault(data, "view-glitch_line-resolution", 0.0),
+        minValue: 0.0,
+        maxValue: 3.0,
+      },
+      lineVertShift: {
+        defValue: Struct.getDefault(data, "view-glitch_line-vertical-shift", 0.0),
+        minValue: 0.0,
+        maxValue: 1.0,
+      },
+      lineDrift: {
+        defValue: Struct.getDefault(data, "view-glitch_line-drift", 0.0),
+        minValue: 0.0,
+        maxValue: 1.0,
+      },
+      jumbleSpeed: {
+        defValue: Struct.getDefault(data, "view-glitch_jumble-speed", 0.0),
+        minValue: 0.0,
+        maxValue: 25.0,
+      },
+      jumbleShift: {
+        defValue: Struct.getDefault(data, "view-glitch_jumble-shift", 0.0),
+        minValue: 0.0,
+        maxValue: 1.0,
+      },
+      jumbleResolution: {
+        defValue: Struct.getDefault(data, "view-glitch_jumble-resolution", 0.0),
+        minValue: 0.0,
+        maxValue: 1.0,
+      },
+      jumbleness: {
+        defValue: Struct.getDefault(data, "view-glitch_jumble-jumbleness", 0.0),
+        minValue: 0.0,
+        maxValue: 1.0,
+      },
+      dispersion: {
+        defValue: Struct.getDefault(data, "view-glitch_shader-dispersion", 0.0),
+        minValue: 0.0,
+        maxValue: 0.5,
+      },
+      channelShift: {
+        defValue: Struct.getDefault(data, "view-glitch_shader-channel-shift", 0.0),
+        minValue: 0.0,
+        maxValue: 0.05,
+      },
+      noiseLevel: {
+        defValue: Struct.getDefault(data, "view-glitch_shader-noise-level", 0.0),
+        minValue: 0.0,
+        maxValue: 1.0,
+      },
+      shakiness: {
+        defValue: Struct.getDefault(data, "view-glitch_shader-shakiness", 0.0),
+        minValue: 0.0,
+        maxValue: 10.0,
+      },
+      rngSeed: {
+        defValue: Struct.getDefault(data, "view-glitch_shader-rng-seed", 0.0),
+        minValue: 0.0,
+        maxValue: 1.0,
+      },
+      intensity: {
+        defValue: Struct.getDefault(data, "view-glitch_shader-intensity", 0.0),
+        minValue: 0.0,
+        maxValue: 5.0,
+      },
+    }
+    var useConfig = Struct.get(data, "view-glitch_use-config")
+    if (useConfig) {
+      bktGlitchService.dispatcher.execute(new Event("load-config", config))
     }
 
-    if (Struct.get(data, "view-config_bkt-use-config") == true) {
-      var config = bktGlitchService.configs.get(Struct.get(data, "view-config_bkt-config"))
-      if (Optional.is(config)) {
-        bktGlitchService.send(new Event("load-config").setData(config))
-      }
+    bktGlitchService.dispatcher.execute(new Event("spawn", { 
+      factor: (Struct.get(data, "view-glitch_use-factor") 
+        ? Struct.get(data, "view-glitch_factor") / 100.0 
+        : 0.0),
+      rng: !useConfig,
+    }))
+  },
+  "brush_view_config": function(data) {
+    var gridService = Beans.get(BeanVisuController).gridService
+
+    if (Struct.get(data, "view-config_use-render-particles")) {
+      gridService.properties.renderParticles = Struct
+        .get(data, "view-config_render-particles")
+    }
+    
+    if (Struct.get(data, "view-config_use-transform-particles-z")) {
+      var transformer = Struct.get(data, "view-config_transform-particles-z")
+      gridService.send(new Event("transform-property", {
+        key: "particleZ",
+        container: gridService.properties.depths,
+        executor: gridService.executor,
+        transformer: new NumberTransformer({
+          value: gridService.properties.depths.particleZ,
+          target: transformer.target,
+          factor: transformer.factor,
+          increase: transformer.increase,
+        })
+      }))
+    }
+    
+    if (Struct.get(data, "view-config_use-render-video")) {
+      gridService.properties.renderVideo = Struct
+        .get(data, "view-config_render-video")
     }
   },
 }

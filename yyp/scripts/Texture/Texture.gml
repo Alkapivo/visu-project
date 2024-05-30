@@ -34,12 +34,10 @@ function Texture(_asset, config = null) constructor {
     sprite_get_speed(this.asset)), Number)
 
   ///@type {Number}
-  offsetX = Assert.isType(Struct.getDefault(config, "offsetX",
-    sprite_get_xoffset(this.asset)), Number)
+  offsetX = sprite_get_xoffset(this.asset)
 
   ///@type {Number}
-  offsetY = Assert.isType(Struct.getDefault(config, "offsetY",
-    sprite_get_yoffset(this.asset)), Number)
+  offsetY = sprite_get_yoffset(this.asset)
 
   ///@param {Number} x
   ///@param {Number} y
@@ -50,7 +48,7 @@ function Texture(_asset, config = null) constructor {
   ///@param {Number} [angle]
   ///@param {Color} [blend]
   ///@return {Texture}
-  static render = method(this, function(x, y, frame = 0, scaleX = 1, scaleY = 1, alpha = 1, angle = 0, blend = c_white) {
+  static render = function(x, y, frame = 0, scaleX = 1, scaleY = 1, alpha = 1, angle = 0, blend = c_white) {
     draw_sprite_ext(
       this.asset, frame, 
       x, y, 
@@ -58,7 +56,7 @@ function Texture(_asset, config = null) constructor {
       angle, blend, alpha
     )
     return this
-  })
+  }
 }
 
 
@@ -79,10 +77,10 @@ function TextureTemplate(_name, json) constructor {
   frames = Assert.isType(Struct.getDefault(json, "frames", 1), Number)
 
   ///@type {Number}
-  originX = Assert.isType(Struct.getDefault(json, "originX", 0), Number)
+  originX = Assert.isType(Struct.getDefault(json, "originX", sprite_get_xoffset(this.asset)), Number)
 
   ///@type {Number}
-  originY = Assert.isType(Struct.getDefault(json, "originY", 0), Number)
+  originY = Assert.isType(Struct.getDefault(json, "originY", sprite_get_yoffset(this.asset)), Number)
 
   ///@type {Boolean}
   prefetch = Assert.isType(Struct.getDefault(json, "prefetch", true), Boolean)

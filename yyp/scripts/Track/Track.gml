@@ -4,7 +4,7 @@
 ///@type {Map<String, Callable>}
 global.__DEFAULT_TRACK_EVENT_HANDLERS = new Map(String, Callable, {
   "dummy": function(data) {
-    Core.print("dummy track event, data:", data)
+    Core.print("Dummy track event, data:", data)
   },
 })
 #macro DEFAULT_TRACK_EVENT_HANDLERS global.__DEFAULT_TRACK_EVENT_HANDLERS

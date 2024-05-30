@@ -50,7 +50,7 @@ function _Core() constructor {
       switch (type) {
         case any: return true
         case Boolean: return result == "bool" || result == "number"
-        case Callable: return result == "method" || result == "ref" 
+        case Callable: return (result == "method" || result == "ref" || result == "number") 
           && is_callable(object)
         case Collection: return result == "struct" && (is_instanceof(object, Collection) 
           || is_instanceof(object, Array) 
@@ -191,8 +191,9 @@ function _Core() constructor {
   ///@param {String} [_path]
   ///@return {Core}
   static loadProperties = function(_path = $"{working_directory}core-properties.json") {
-    if (!Core.isType(this.properties, Map)) {
-      this.properties = new Map(String, any)
+    if (!Core.isType(Core.properties, Map)) {
+      Logger.debug("Core", "Create properties")
+      Core.properties = new Map(String, any)
     }
     
     try {
@@ -201,7 +202,6 @@ function _Core() constructor {
 
       var file = FileUtil.readFileSync(path)
       var properties = Assert.isType(JSON.parse(file.getData()), Struct)
-      Core.properties = new Map(String, any)
       Struct.forEach(properties, function(property, key) {
         Logger.debug("Core", $"Load property '{key}'")
         if (Core.isType(property, GMArray)) {

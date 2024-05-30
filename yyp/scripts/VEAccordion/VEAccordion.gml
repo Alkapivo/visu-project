@@ -161,7 +161,7 @@ function VEAccordion(_editor, config = null) constructor {
                     return
                   }
                   
-                  container.renderSurfaceTick = false
+                  container.surfaceTick.skip()
                   container.updateTimer.time = container.updateTimer.duration
                 })
 

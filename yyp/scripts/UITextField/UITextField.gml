@@ -28,7 +28,11 @@ function UITextField(name, json = null) {
   ///@description append default store callback
   if (Struct.contains(json, "store")) {
     Struct.set(json, "store", Struct.append({
-      callback: function(value, data) { data.textField.setText(value) },
+      callback: function(value, data) {
+        if (global.GMTF_DATA.active != data.textField) {
+          data.textField.setText(value)
+        }
+      },
     }, Struct.getDefault(json, "store", {})))
   }
 
@@ -47,6 +51,9 @@ function UITextField(name, json = null) {
     enable: Struct.contains(json, "enable")
       ? Assert.isType(json.enable, Struct)
       : null,
+
+    ///@type {Boolean}
+    enableColorWrite: Core.getProperty("core.ui-service.use-surface-optimalization", false),
 
     ///@param {any} value
     updateValue: new BindIntent(Assert.isType(Struct.getDefault(json, "updateValue", function(value) {
@@ -139,11 +146,18 @@ function UITextField(name, json = null) {
       if (Optional.is(this.preRender)) {
         this.preRender()
       }
-      
+
+      var config = gpu_get_colorwriteenable()
+      if (this.enableColorWrite) {
+        gpu_set_colorwriteenable(true, true, true, false)
+      }
+
       this.textField.draw(
         this.context.area.getX() + this.area.getX(),
         this.context.area.getY() + this.area.getY() 
       )
+      
+      gpu_set_colorwriteenable(config[0], config[1], config[2], config[3])
       return this
     }),
   }, false))

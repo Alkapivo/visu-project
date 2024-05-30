@@ -745,7 +745,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                   event.promise
                     .setState({
                       callback: function(prototype, json, key, acc) {
-                        Logger.debug("VisuTrackLoader", $"load shader '{key}'")
+                        Logger.debug("VisuTrackLoader", $"Load shader '{key}'")
                         acc.set(key, new prototype(key, json))
                       },
                       acc: controller.shaderPipeline.templates,
@@ -768,7 +768,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                   event.promise
                     .setState({
                       callback: function(prototype, json, key, acc) {
-                        Logger.debug("VisuTrackLoader", $"load shroom template '{key}'")
+                        Logger.debug("VisuTrackLoader", $"Load shroom template '{key}'")
                         acc.set(key, new prototype(key, json))
                       },
                       acc: controller.shroomService.templates,
@@ -814,7 +814,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                   event.promise
                     .setState({
                       callback: function(prototype, json, key, acc) {
-                        Logger.debug("VisuTrackLoader", $"load lyrics template '{key}'")
+                        Logger.debug("VisuTrackLoader", $"Load lyrics template '{key}'")
                         acc.set(key, new prototype(key, json))
                       },
                       acc: controller.lyricsService.templates,
@@ -837,7 +837,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                   event.promise
                     .setState({
                       callback: function(prototype, json, key, acc) {
-                        Logger.debug("VisuTrackLoader", $"load particle template '{key}'")
+                        Logger.debug("VisuTrackLoader", $"Load particle template '{key}'")
                         acc.set(key, new prototype(key, json))
                       },
                       acc: controller.particleService.templates,
@@ -1386,7 +1386,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                     return
                   }
                   
-                  container.renderSurfaceTick = false
+                  container.surfaceTick.skip()
                   container.updateTimer.time = container.updateTimer.duration
                 })
 
@@ -1460,6 +1460,16 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
       templateToolbar: templateToolbar,
       layout: layout,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
+      updateCustom: function() {
+        var previousOffset = this.state.get("previousOffset");
+        if (previousOffset != null) {
+          this.offset.x = previousOffset.x
+          this.offset.y = previousOffset.y
+          this.offsetMax.x = previousOffset.xMax
+          this.offsetMax.y = previousOffset.yMax
+          this.state.remove("previousOffset")
+        }
+      },
       renderItem: Callable.run(UIUtil.renderTemplates.get("renderItemDefaultScrollable")),
       render: Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable")),
       scrollbarY: { align: HAlign.LEFT },
@@ -1501,6 +1511,13 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                 width: function() { return this.area.getWidth() },
               })
             )
+
+            data.state.set("previousOffset", {
+              x: data.offset.x,
+              y: data.offset.y,
+              xMax: data.offsetMax.x,
+              yMax: data.offsetMax.y,
+            })
           },
           data: container
         })

@@ -1,0 +1,48 @@
+{
+  "model":"Collection<io.alkapivo.visu.service.lyrics.LyricsTemplate>",
+  "version":"1",
+  "data":{
+    "lyrics_platformer":{
+      "lines":[
+        "Initialize platformer...",
+        "                           ",
+        "[ System initialized ]",
+        "",
+        "Press [Z] ",
+        "or [ARROW_UP]",
+        "to jump ",
+        "or double jump",
+        "                     ",
+        "Press [ARROW_DOWN]",
+        "to get off",
+        "the shroom"
+      ]
+    },
+    "lyrics_midbooze_mare_intro":{
+      "lines":[
+        "Initialize visual engine...                               ",
+        "Initialize gameplay engine...                        ",
+        "",
+        "[ System initialized ]"
+      ]
+    },
+    "lyrics_bullethell":{
+      "lines":[
+        "Initialize bullet-hell...",
+        "                           ",
+        "[ System initialized ]",
+        "",
+        "Press [Z]",
+        "to spread",
+        "violence "
+      ]
+    },
+    "lyrics_alkapivo":{
+      "lines":[
+        "Alkapivo",
+        "2024",
+        ""
+      ]
+    }
+  }
+}

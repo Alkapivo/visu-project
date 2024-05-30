@@ -130,7 +130,7 @@ function VisuTrackLoader(_controller): Service() constructor {
                   .setPromise(new Promise()
                     .setState({ 
                       callback: function(prototype, json, iterator, acc) {
-                        Logger.debug("VisuTrackLoader", $"load texture '{json.name}'")
+                        Logger.debug("VisuTrackLoader", $"Load texture '{json.name}'")
                         acc.promises.forEach(function(promise, key) {
                           if (promise.status == PromiseStatus.REJECTED) {
                             throw new Exception($"Found rejected load-texture promise for key '{key}'")
@@ -162,7 +162,7 @@ function VisuTrackLoader(_controller): Service() constructor {
                   .setPromise(new Promise()
                     .setState({ 
                       callback: function(prototype, json, key, acc) {
-                        Logger.debug("VisuTrackLoader", $"load sound intent '{key}'")
+                        Logger.debug("VisuTrackLoader", $"Load sound intent '{key}'")
                         var soundIntent = new prototype(json)
                         var soundService = acc.soundService
                         if (Core.getRuntimeType() == RuntimeType.GXGAMES) {
@@ -192,11 +192,11 @@ function VisuTrackLoader(_controller): Service() constructor {
                   .setPromise(new Promise()
                     .setState({ 
                       callback: function(prototype, json, key, acc) {
-                        Logger.debug("VisuTrackLoader", $"load shader '{key}'")
+                        Logger.debug("VisuTrackLoader", $"Load shader template '{key}'")
                         acc.set(key, new prototype(key, json))
                       },
                       acc: controller.shaderPipeline.templates,
-                      steps: MAGIC_NUMBER_TASK * 10,
+                      steps: MAGIC_NUMBER_TASK,
                     })
                     .whenSuccess(function(result) {
                       return Assert.isType(JSON.parserTask(result.data, this.state), Task)
@@ -209,7 +209,7 @@ function VisuTrackLoader(_controller): Service() constructor {
                     .setState({ 
                       callback: function(prototype, json, key, acc) {
                         var name = Struct.get(json, "name")
-                        Logger.debug("VisuTrackLoader", $"load track '{name}'")
+                        Logger.debug("VisuTrackLoader", $"Load track '{name}'")
                         acc.openTrack(new prototype(json, { handlers: acc.handlers }))
                       },
                       acc: controller.trackService
@@ -224,11 +224,11 @@ function VisuTrackLoader(_controller): Service() constructor {
                   .setPromise(new Promise()
                     .setState({ 
                       callback: function(prototype, json, key, acc) {
-                        Logger.debug("VisuTrackLoader", $"load bullet template '{key}'")
+                        Logger.debug("VisuTrackLoader", $"Load bullet template '{key}'")
                         acc.set(key, new prototype(key, json))
                       },
                       acc: controller.bulletService.templates,
-                      steps: MAGIC_NUMBER_TASK * 10,
+                      steps: MAGIC_NUMBER_TASK,
                     })
                     .whenSuccess(function(result) {
                       return Assert.isType(JSON.parserTask(result.data, this.state), Task)
@@ -240,11 +240,11 @@ function VisuTrackLoader(_controller): Service() constructor {
                   .setPromise(new Promise()
                     .setState({ 
                       callback: function(prototype, json, key, acc) {
-                        Logger.debug("VisuTrackLoader", $"load lyrics template '{key}'")
+                        Logger.debug("VisuTrackLoader", $"Load lyrics template '{key}'")
                         acc.set(key, new prototype(key, json))
                       },
                       acc: controller.lyricsService.templates,
-                      steps: MAGIC_NUMBER_TASK * 10,
+                      steps: MAGIC_NUMBER_TASK,
                     })
                     .whenSuccess(function(result) {
                       return Assert.isType(JSON.parserTask(result.data, this.state), Task)
@@ -256,11 +256,11 @@ function VisuTrackLoader(_controller): Service() constructor {
                   .setPromise(new Promise()
                     .setState({ 
                       callback: function(prototype, json, key, acc) {
-                        Logger.debug("VisuTrackLoader", $"load shroom template '{key}'")
+                        Logger.debug("VisuTrackLoader", $"Load shroom template '{key}'")
                         acc.set(key, new prototype(key, json))
                       },
                       acc: controller.shroomService.templates,
-                      steps: MAGIC_NUMBER_TASK * 10,
+                      steps: MAGIC_NUMBER_TASK,
                     })
                     .whenSuccess(function(result) {
                       return Assert.isType(JSON.parserTask(result.data, this.state), Task)
@@ -272,11 +272,11 @@ function VisuTrackLoader(_controller): Service() constructor {
                   .setPromise(new Promise()
                     .setState({ 
                       callback: function(prototype, json, key, acc) {
-                        Logger.debug("VisuTrackLoader", $"load particle template '{key}'")
+                        Logger.debug("VisuTrackLoader", $"Load particle template '{key}'")
                         acc.set(key, new prototype(key, json))
                       },
                       acc: controller.particleService.templates,
-                      steps: MAGIC_NUMBER_TASK * 10,
+                      steps: MAGIC_NUMBER_TASK,
                     })
                     .whenSuccess(function(result) {
                       return Assert.isType(JSON.parserTask(result.data, this.state), Task)
@@ -319,14 +319,14 @@ function VisuTrackLoader(_controller): Service() constructor {
                   .setPromise(new Promise()
                     .setState({ 
                       callback: function(prototype, json, index, acc) {
-                        Logger.debug("VisuTrackLoader", $"load editor '{acc.file}' brush no. {index}")
+                        Logger.debug("VisuTrackLoader", $"Load brush '{json.name}'")
                         acc.saveTemplate(new prototype(json))
                       },
                       acc: {
                         saveTemplate: acc.controller.editor.brushService.saveTemplate,
                         file: file,
                       },
-                      steps: MAGIC_NUMBER_TASK * 10,
+                      steps: MAGIC_NUMBER_TASK,
                     })
                     .whenSuccess(function(result) {
                       return Assert.isType(JSON.parserTask(result.data, this.state), Task)
@@ -476,7 +476,7 @@ function VisuTrackLoader(_controller): Service() constructor {
   executor = new TaskExecutor(this, { catchException: false })
 
   ///@return {FSM}
-  update = method(this, function() {
+  update = function() {
     try {
       this.fsm.update()
     } catch (exception) {
@@ -495,5 +495,5 @@ function VisuTrackLoader(_controller): Service() constructor {
       this.fsm.dispatcher.send(new Event("transition", { name: "idle" }))
     }
     return this
-  })
+  }
 }

@@ -285,8 +285,8 @@ function __bktgtlich_ui_init() {
 		gpu_set_blendmode(bm_normal);
 	}
 
-	function __bktgtlich_ui_step(trigger, factor) {
-		if (trigger) {
+	function __bktgtlich_ui_step(rng, factor) {
+		if (rng) {
 		  for (var i = 0; i < array_length(attr); i++) {
         if (i == prop.intensity) {
           continue 
@@ -294,21 +294,14 @@ function __bktgtlich_ui_init() {
 		    valTo[i]  = random_range(limit[i, 0], limit[i, 1]);
         attr[i] = valTo[i] 
 		  }
+		} else {
+			for (var i = 0; i < array_length(attr); i++){
+				if (i == prop.intensity) {
+						continue 
+					}
+					attr[i] = clamp(attr[i] - factor, 0, 1000.0)
+			}
 		}
-    
-    for (var i = 0; i < array_length(attr); i++){
-      if (i == prop.intensity) {
-          continue 
-        }
-		    attr[i] = clamp(attr[i] - factor, 0, 1000.0)
-		} 
-
-    /*
-		for (var i = 0; i < array_length(attr); i++){
-		    attr[i] += (valTo[i] - attr[i]) * factor;
-		}  
-    */
-		
 	}
 
 	function __bktgtlich_ui_alarm() {

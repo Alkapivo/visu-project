@@ -69,8 +69,8 @@ function EventPump(_context, _dispatchers, config = {}) constructor {
     return event.promise
   }
 
-  ///@private
   ///@param {Event|Number} entry
+  ///@return {EventPump}
   execute = function(entry) {
     static resolveEvent = function(context, event) {
       if (context.enableLogger) {
@@ -90,22 +90,29 @@ function EventPump(_context, _dispatchers, config = {}) constructor {
 
     var event = Core.isType(entry, Number) ? this.container.pop() : entry
     if (this.catchException) {
+      var isException = false
+      var exceptionMessage = ""
       try {
         resolveEvent(this, event)
       } catch (exception) {
         Logger.error("EventPump", $"'execute-dispatcher' fatal error: {exception.message}")
         Core.printStackTrace()
-        if (Core.isType(Struct.get(event, "promise"), Promise)) {
-          try {
-            event.promise.reject(exception.message)
-          } catch (ex) {
-            Logger.error("EventPump", $"'dispatcher-promise-reject' fatal error: {ex.message}")
-          }
+        isException = true
+        exceptionMessage = exception.message
+      }
+
+      if (isException && Core.isType(Struct.get(event, "promise"), Promise)) {
+        try {
+          event.promise.reject(exceptionMessage)
+        } catch (ex) {
+          Logger.error("EventPump", $"'dispatcher-promise-reject' fatal error: {ex.message}")
         }
       }
     } else {
       resolveEvent(this, event)
     }
+
+    return this
   }
 
   ///@return {EventPump}
