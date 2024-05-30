@@ -12,8 +12,8 @@
   ],
   "name":"scene_main",
   "parent":{
-    "name":"visu-project",
-    "path":"visu-project.yyp",
+    "name":"scene",
+    "path":"folders/visu-gml/resource/scene.yy",
   },
   "parentRoom":null,
   "physicsSettings":{

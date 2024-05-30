@@ -58,7 +58,7 @@ function Mouse(json) constructor {
   })
 
   ///@return {Mouse}
-  update = method(this, function() {
+  update = function() {
     static buttonUpdate = function(button) {
       if (button.type == MouseButtonType.WHEEL_UP 
         || button.type == MouseButtonType.WHEEL_DOWN) {
@@ -145,7 +145,7 @@ function Mouse(json) constructor {
 
     Struct.forEach(this.buttons, buttonUpdate)
     return this
-  })
+  }
 }
 
 
@@ -160,33 +160,33 @@ function _MouseUtil() constructor {
 
   ///@param {any} item
   ///@return {MouseUtil}
-  setClipboard = method(this, function(item) {
+  setClipboard = function(item) {
     this.clipboard = item
     var mouseSprite = Struct.get(item, "sprite")
     if (Core.isType(mouseSprite, Sprite)) {
       this.sprite = new Sprite(mouseSprite.texture, mouseSprite)
     }
     return this
-  })
+  }
 
   ///@return {any}
-  getClipboard = method(this, function() {
+  getClipboard = function() {
     return this.clipboard
-  })
+  }
 
   ///@return {MouseUtil}
-  clearClipboard = method(this, function() {
+  clearClipboard = function() {
     this.clipboard = null
     this.sprite = null
     return this
-  })
+  }
 
-  renderSprite = method(this, function() {
+  renderSprite = function() {
     if (Core.isType(this.sprite, Sprite)) {
       this.sprite.alpha = clamp(this.sprite.alpha - 0.04, 0.5, 1.0)
       this.sprite.render(MouseUtil.getMouseX(), MouseUtil.getMouseY())
     }
-  })
+  }
 
   ///@return {Number}
   getMouseX = function() {

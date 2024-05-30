@@ -84,13 +84,13 @@ function brush_grid_player(json = null) {
           Assert.isType(JSON.parse(value), Struct)
         },
       },
-      "grid-player_use-idle": {
+      "grid-player_use-racing": {
         type: Boolean,
-        value: Struct.getDefault(json, "grid-player_use-idle", true),
+        value: Struct.getDefault(json, "grid-player_use-racing", true),
       },
-      "grid-player_idle": {
+      "grid-player_racing": {
         type: String,
-        value: JSON.stringify(Struct.getDefault(json, "grid-player_idle", {}), { pretty: true }),
+        value: JSON.stringify(Struct.getDefault(json, "grid-player_racing", {}), { pretty: true }),
         serialize: function() {
           return JSON.parse(this.get())
         },
@@ -109,8 +109,235 @@ function brush_grid_player(json = null) {
           { value: 0, target: 2100, factor: 50.0, increase: 0 }
         )),
       },
+      "grid-player_use-margin": {
+        type: Boolean,
+        value: Struct.getDefault(json, "grid-player_use-margin", false),
+      },
+      "grid-player_margin-top": {
+        type: Number,
+        value: Struct.getDefault(json, "grid-player_margin-top", 0.2),
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), 0.0, 3.0) 
+        },
+      },
+      "grid-player_margin-right": {
+        type: Number,
+        value: Struct.getDefault(json, "grid-player_margin-right", 0.5),
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), 0.0, 3.0) 
+        },
+      },
+      "grid-player_margin-bottom": {
+        type: Number,
+        value: Struct.getDefault(json, "grid-player_margin-bottom", 0.2),
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), 0.0, 3.0) 
+        },
+      },
+      "grid-player_margin-left": {
+        type: Number,
+        value: Struct.getDefault(json, "grid-player_margin-left", 0.5),
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), 0.0, 3.0) 
+        },
+      },
     }),
     components: new Array(Struct, [
+      {
+        name: "grid-player_use-margin",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Margins",
+            enable: { key: "grid-player_use-margin" },
+            updateCustom: function() {
+              this.preRender()
+              if (Core.isType(this.context.updateTimer, Timer)) {
+                var inspectorType = this.context.state.get("inspectorType")
+                switch (inspectorType) {
+                  case VEEventInspector:
+                    var shroomService = Beans.get(BeanVisuController).shroomService
+                    if (shroomService.playerBorderEvent != null) {
+                      shroomService.playerBorderEvent.timeout = ceil(this.context.updateTimer.duration * 60)
+                    }
+                    break
+                  case VEBrushToolbar:
+                    var shroomService = Beans.get(BeanVisuController).shroomService
+                    if (shroomService.playerBorder != null) {
+                      shroomService.playerBorder.timeout = ceil(this.context.updateTimer.duration * 60)
+                    }
+                    break
+                }
+              }
+            },
+            preRender: function() {
+              var store = null
+              if (Core.isType(this.context.state.get("brush"), VEBrush)) {
+                store = this.context.state.get("brush").store
+              }
+              
+              if (Core.isType(this.context.state.get("event"), VEEvent)) {
+                store = this.context.state.get("event").store
+              }
+
+              if (!Optional.is(store) || !store.getValue("grid-player_use-margin")) {
+                return
+              }
+
+              var inspectorType = this.context.state.get("inspectorType")
+              switch (inspectorType) {
+                case VEEventInspector:
+                  var shroomService = Beans.get(BeanVisuController).shroomService
+                  shroomService.playerBorderEvent = {
+                    topLeft: shroomService.factorySpawner({ 
+                      x: 0.0 - store.getValue("grid-player_margin-left"),
+                      y: 0.0 - store.getValue("grid-player_margin-top"),
+                      sprite: SpriteUtil.parse({ name: "texture_bazyl" }),
+                    }),
+                    topRight: shroomService.factorySpawner({ 
+                      x: 1.0 + store.getValue("grid-player_margin-right"),
+                      y: 0.0 - store.getValue("grid-player_margin-top"),
+                      sprite: SpriteUtil.parse({ name: "texture_bazyl" }),
+                    }),
+                    bottomLeft: shroomService.factorySpawner({ 
+                      x: 0.0 - store.getValue("grid-player_margin-left"), 
+                      y: 1.0 + store.getValue("grid-player_margin-bottom"),
+                      sprite: SpriteUtil.parse({ name: "texture_bazyl" }),
+                    }),
+                    bottomRight: shroomService.factorySpawner({ 
+                      x: 1.0 + store.getValue("grid-player_margin-right"), 
+                      y: 1.0 + store.getValue("grid-player_margin-bottom"),
+                      sprite: SpriteUtil.parse({ name: "texture_bazyl" }),
+                    }),
+                    timeout: 5.0,
+                  }
+                  break
+                case VEBrushToolbar:
+                  var shroomService = Beans.get(BeanVisuController).shroomService
+                  shroomService.playerBorder = {
+                    topLeft: shroomService.factorySpawner({ 
+                      x: 0.0 - store.getValue("grid-player_margin-left"),
+                      y: 0.0 - store.getValue("grid-player_margin-top"),
+                      sprite: SpriteUtil.parse({ name: "texture_baron" }),
+                    }),
+                    topRight: shroomService.factorySpawner({ 
+                      x: 1.0 + store.getValue("grid-player_margin-right"),
+                      y: 0.0 - store.getValue("grid-player_margin-top"),
+                      sprite: SpriteUtil.parse({ name: "texture_baron" }),
+                    }),
+                    bottomLeft: shroomService.factorySpawner({ 
+                      x: 0.0 - store.getValue("grid-player_margin-left"), 
+                      y: 1.0 + store.getValue("grid-player_margin-bottom"),
+                      sprite: SpriteUtil.parse({ name: "texture_baron" }),
+                    }),
+                    bottomRight: shroomService.factorySpawner({ 
+                      x: 1.0 + store.getValue("grid-player_margin-right"), 
+                      y: 1.0 + store.getValue("grid-player_margin-bottom"),
+                      sprite: SpriteUtil.parse({ name: "texture_baron" }),
+                    }),
+                    timeout: 5.0,
+                  }
+                  break
+              }
+            },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "grid-player_use-margin" },
+          },
+        },
+      },
+      {
+        name: "grid-player_margin-top",  
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Top",
+            enable: { key: "grid-player_use-margin" },
+          },
+          field: { 
+            store: { key: "grid-player_margin-top" },
+            enable: { key: "grid-player_use-margin" },
+          },
+          slider: { 
+            minValue: 0.0,
+            maxValue: 3.0,
+            store: { key: "grid-player_margin-top" },
+            enable: { key: "grid-player_use-margin" },
+          },
+        },
+      },
+      {
+        name: "grid-player_margin-right",  
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Right",
+            enable: { key: "grid-player_use-margin" },
+          },
+          field: { 
+            store: { key: "grid-player_margin-right" },
+            enable: { key: "grid-player_use-margin" },
+          },
+          slider: { 
+            minValue: 0.0,
+            maxValue: 3.0,
+            store: { key: "grid-player_margin-right" },
+            enable: { key: "grid-player_use-margin" },
+          },
+        },
+      },
+      {
+        name: "grid-player_margin-bottom",  
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Bottom",
+            enable: { key: "grid-player_use-margin" },
+          },
+          field: { 
+            store: { key: "grid-player_margin-bottom" },
+            enable: { key: "grid-player_use-margin" },
+          },
+          slider: { 
+            minValue: 0.0,
+            maxValue: 3.0,
+            store: { key: "grid-player_margin-bottom" },
+            enable: { key: "grid-player_use-margin" },
+          },
+        },
+      },
+      {
+        name: "grid-player_margin-left",  
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Bottom",
+            enable: { key: "grid-player_use-margin" },
+          },
+          field: { 
+            store: { key: "grid-player_margin-left" },
+            enable: { key: "grid-player_use-margin" },
+          },
+          slider: { 
+            minValue: 0.0,
+            maxValue: 3.0,
+            store: { key: "grid-player_margin-left" },
+            enable: { key: "grid-player_use-margin" },
+          },
+        },
+      },
       {
         name: "grid-player_texture",
         template: VEComponents.get("texture-field-ext"),
@@ -288,24 +515,24 @@ function brush_grid_player(json = null) {
         },
       },
       {
-        name: "grid-player_idle",
+        name: "grid-player_racing",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Idle",
-            enable: { key: "grid-player_use-idle" },
+            text: "Racing",
+            enable: { key: "grid-player_use-racing" },
           },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "grid-player_use-idle" },
+            store: { key: "grid-player_use-racing" },
           },
         },
       },
       {
-        name: "grid-player_idle",
+        name: "grid-player_racing",
         template: VEComponents.get("text-area"),
         layout: VELayouts.get("text-area"),
         config: { 
@@ -313,8 +540,8 @@ function brush_grid_player(json = null) {
           field: { 
             v_grow: true,
             w_min: 570,
-            store: { key: "grid-player_idle" },
-            enable: { key: "grid-player_use-idle" },
+            store: { key: "grid-player_racing" },
+            enable: { key: "grid-player_use-racing" },
           },
         },
       },

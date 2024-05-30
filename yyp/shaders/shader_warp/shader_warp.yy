@@ -3,8 +3,8 @@
   "%Name":"shader_warp",
   "name":"shader_warp",
   "parent":{
-    "name":"shader",
-    "path":"folders/core-gml/resource/shader.yy",
+    "name":"shadertoy",
+    "path":"folders/core-gml/resource/shader/shadertoy.yy",
   },
   "resourceType":"GMShader",
   "resourceVersion":"2.0",

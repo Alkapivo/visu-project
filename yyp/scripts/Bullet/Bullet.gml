@@ -77,8 +77,8 @@ function Bullet(template): GridItem(template) constructor {
   }
 
   this.gameModes
-    .set(GameMode.IDLE, BulletIdleGameMode(Struct
-      .getDefault(Struct.get(template, "gameModes"), "idle", {})))
+    .set(GameMode.RACING, BulletRacingGameMode(Struct
+      .getDefault(Struct.get(template, "gameModes"), "racing", {})))
     .set(GameMode.BULLETHELL, BulletBulletHellGameMode(Struct
       .getDefault(Struct.get(template, "gameModes"), "bulletHell", {})))
     .set(GameMode.PLATFORMER, BulletPlatformerGameMode(Struct

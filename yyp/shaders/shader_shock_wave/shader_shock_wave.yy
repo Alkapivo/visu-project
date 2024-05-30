@@ -3,8 +3,8 @@
   "%Name":"shader_shock_wave",
   "name":"shader_shock_wave",
   "parent":{
-    "name":"shader",
-    "path":"folders/core-gml/resource/shader.yy",
+    "name":"xygthop3",
+    "path":"folders/core-gml/resource/shader/xygthop3.yy",
   },
   "resourceType":"GMShader",
   "resourceVersion":"2.0",

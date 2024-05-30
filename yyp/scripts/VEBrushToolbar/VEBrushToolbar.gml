@@ -87,7 +87,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                   return
                 }
 
-                container.renderSurfaceTick = false
+                container.surfaceTick.skip()
                 container.updateTimer.time = container.updateTimer.duration
               })
 
@@ -98,7 +98,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                   return
                 }
 
-                container.renderSurfaceTick = false
+                container.surfaceTick.skip()
                 container.updateTimer.time = container.updateTimer.duration
               })
 
@@ -357,6 +357,11 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             brushType: VEBrushType.VIEW_LYRICS,
           },
           {
+            name: "button_category-view_type-glitch",
+            text: "Glitch",
+            brushType: VEBrushType.VIEW_GLITCH,
+          },
+          {
             name: "button_category-view_type-config",
             text: "Config",
             brushType: VEBrushType.VIEW_CONFIG,
@@ -469,7 +474,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                       acc: {
                         saveTemplate: saveTemplate,
                       },
-                      steps: MAGIC_NUMBER_TASK * 10,
+                      steps: MAGIC_NUMBER_TASK,
                     })
                     .whenSuccess(function(result) {
                       var task = JSON.parserTask(result.data, this.state)
@@ -554,7 +559,12 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       renderItem: Callable.run(UIUtil.renderTemplates.get("renderItemDefaultScrollable")),
       renderDefaultScrollable: new BindIntent(Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable"))),
       updateVerticalSelectedIndex: new BindIntent(Callable.run(UIUtil.templates.get("updateVerticalSelectedIndex"))),
+      executor: null,
       render: function() {
+        if (this.executor != null) {
+          this.executor.update()
+        }
+
         this.updateVerticalSelectedIndex(32)
 
         this.renderDefaultScrollable()
@@ -625,12 +635,27 @@ global.__VisuBrushContainers = new Map(String, Callable, {
           if (Optional.is(component)) {
             var type = this.brushToolbar.store.getValue("type")
             var templates = brushToolbar.editor.brushService.fetchTemplates(type)
-            templates.move(dragItem.index, component.index)  
-            this.brushToolbar.store.get("type").set(type)
+            templates.move(dragItem.index, component.index) 
+
+            var tempIndex = dragItem.index
+            dragItem.index = component.index
+            component.index = tempIndex
+
+            component.items.forEach(function(item) {
+              if (!Struct.contains(item, "colorHoverOut")) {
+                return
+              }
+              item.backgroundColor = ColorUtil.fromHex(item.colorHoverOut).toGMColor()
+            })
           }
         }
       },
       onInit: function() {
+        this.executor = new TaskExecutor(this, {
+          enableLogger: true,
+          catchException: false,
+        })
+
         var container = this
         this.collection = new UICollection(this, { layout: this.layout })
 
@@ -645,59 +670,32 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             data.collection.components.clear() ///@todo replace with remove lambda
             data.state.set("type", type)
 
-            Assert.isType(data.brushToolbar.editor.brushService.templates
-              .get(type), Array)
-              .map(function(template) {
-                return {
-                  name: template.name,
-                  template: VEComponents.get("brush-entry"),
-                  layout: VELayouts.get("brush-entry"),
-                  config: {
-                    image: {
-                      image: {
-                        name: template.texture,
-                        blend: template.color,
-                      },
-                    },
-                    label: { 
-                      text: template.name,
-                      colorHoverOver: VETheme.color.accentShadow,
-                      colorHoverOut: VETheme.color.primaryShadow,
-                      onMouseReleasedLeft: function() {
-                        var template = this.context.brushToolbar.store.get("template")
-                        if (!Core.isType(template.get(), VEBrushTemplate)
-                          || template.get().name != this.brushTemplate.name) {
-                          template.set(this.brushTemplate)
+            var brushService = data.brushToolbar.editor.brushService
+            var task = new Task("load-brushes")
+              .setState({
+                collection: data.collection,
+                templates: Assert.isType(brushService.templates.get(type), Array),
+                pointer: 0,
+                parse: data.brushToolbar.parseBrushTemplate,
+              })
+              .whenUpdate(function(executor) {
+                if (this.state.templates.size() == 0) {
+                  this.fullfill()
+                }
 
-                          var inspector = this.context.brushToolbar.containers
-                            .get("ve-brush-toolbar_inspector-view")
+                var template = this.state.templates.get(this.state.pointer)
+                if (Core.isType(template, Struct)) {
+                  this.state.collection.add(this.state.parse(template))
+                }
 
-                          if (Core.isType(inspector, UI) 
-                            && Optional.is(inspector.updateTimer)) {
-                            inspector.updateTimer.time = inspector.updateTimer.duration
-                          }
-                        }
-                      },
-                      brushTemplate: template,
-                    },
-                    button: { 
-                      sprite: {
-                        name: "texture_ve_icon_trash",
-                        blend: VETheme.color.textShadow,
-                      },
-                      callback: function() {
-                        var brushToolbar = this.context.brushToolbar
-                        brushToolbar.editor.brushService.removeTemplate(this.brushTemplate)
-                        brushToolbar.store.get("type").set(brushToolbar.store.getValue("type"))
-                      },
-                      brushTemplate: template,
-                    },
-                  },
+                this.state.pointer = this.state.pointer + 1
+                if (this.state.pointer >= this.state.templates.size()) {
+                  this.fullfill()
                 }
               })
-              .forEach(function(component, index, collection) {
-                collection.add(new UIComponent(component))
-              }, data.collection)
+
+            data.executor.tasks.clear()
+            data.executor.add(task)
           },
           data: container
         })
@@ -758,7 +756,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                     return
                   }
 
-                  container.renderSurfaceTick = false
+                  container.surfaceTick.skip()
                   container.updateTimer.time = container.updateTimer.duration
                 })
 
@@ -807,6 +805,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       name: name,
       state: new Map(String, any, {
         "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
+        "inspectorType": VEBrushToolbar,
       }),
       updateTimer: new Timer(FRAME_MS * 60, { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,
@@ -942,16 +941,28 @@ global.__VisuBrushContainers = new Map(String, Callable, {
                   inspector.updateCustom()
                 }
 
-                var template = brushToolbar.containers
+                var brush = brushToolbar.containers
                   .get("ve-brush-toolbar_inspector-view").state
                   .get("brush")
-                  .toTemplate()
 
+                if (brush == null) {
+                  return
+                }
+
+                var template = brush.toTemplate()
+
+                var sizeBefore = brushToolbar.editor.brushService
+                  .fetchTemplates(template.type).size()
                 brushToolbar.editor.brushService
                   .saveTemplate(template)
-                brushToolbar.store
-                  .get("type")
-                  .set(template.type)
+                var sizeAfter = brushToolbar.editor.brushService
+                  .fetchTemplates(template.type).size()
+
+                if (sizeBefore != sizeAfter) {
+                  this.context.brushToolbar.containers
+                    .get("ve-brush-toolbar_brush-view").collection
+                    .add(this.context.brushToolbar.parseBrushTemplate(template))
+                }
               },
               onMouseHoverOver: function(event) {
                 this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
@@ -1039,7 +1050,9 @@ function VEBrushToolbar(_editor) constructor {
     ]),
     "view": new Array(String, [ 
       VEBrushType.VIEW_WALLPAPER, 
-      VEBrushType.VIEW_CAMERA, 
+      VEBrushType.VIEW_CAMERA,
+      VEBrushType.VIEW_LYRICS,
+      VEBrushType.VIEW_GLITCH,
       VEBrushType.VIEW_CONFIG 
     ]),
   })
@@ -1064,7 +1077,7 @@ function VEBrushToolbar(_editor) constructor {
           },
           "category": {
             name: "brush-toolbar.category",
-            x: function() { return this.context.x() - this.width() - 1 },
+            x: function() { return this.context.x() - this.width() },
             width: function() { return 24 },
             height: function() { return 420 },
           },
@@ -1165,6 +1178,56 @@ function VEBrushToolbar(_editor) constructor {
     return containers
   }
 
+  ///@param {VEBrushTemplate}
+  ///@return {UIComponent}
+  parseBrushTemplate = function(template) {
+    return new UIComponent({
+      name: template.name,
+      template: VEComponents.get("brush-entry"),
+      layout: VELayouts.get("brush-entry"),
+      config: {
+        image: {
+          image: {
+            name: template.texture,
+            blend: template.color,
+          },
+        },
+        label: { 
+          text: template.name,
+          colorHoverOver: VETheme.color.accentShadow,
+          colorHoverOut: VETheme.color.primaryShadow,
+          onMouseReleasedLeft: function() {
+            var template = this.context.brushToolbar.store.get("template")
+            if (!Core.isType(template.get(), VEBrushTemplate)
+              || template.get().name != this.brushTemplate.name) {
+              template.set(this.brushTemplate)
+
+              var inspector = this.context.brushToolbar.containers
+                .get("ve-brush-toolbar_inspector-view")
+
+              if (Core.isType(inspector, UI) 
+                && Optional.is(inspector.updateTimer)) {
+                inspector.updateTimer.time = inspector.updateTimer.duration
+              }
+            }
+          },
+          brushTemplate: template,
+        },
+        button: { 
+          sprite: {
+            name: "texture_ve_icon_trash",
+            blend: VETheme.color.textShadow,
+          },
+          callback: function() {
+            this.context.brushToolbar.editor.brushService.removeTemplate(this.brushTemplate)
+            this.context.collection.remove(this.component.index)
+          },
+          brushTemplate: template,
+        },
+      },
+    })
+  }
+
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "open": function(event) {
@@ -1194,6 +1257,19 @@ function VEBrushToolbar(_editor) constructor {
       this.store.get("template").set(null)
       this.store.get("brush").set(null)
     },
+    "save-brush": function(event) {
+      var control = this.containers.get("ve-brush-toolbar_control")
+      if (control == null) {
+        return
+      }
+
+      var button = control.items.get("button_control-save_category-button")
+      if (button == null) {
+        return
+      }
+
+      button.callback()
+    }
   }), { 
     enableLogger: false, 
     catchException: false,

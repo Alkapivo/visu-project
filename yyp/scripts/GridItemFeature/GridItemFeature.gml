@@ -2,13 +2,15 @@
 
 ///@interface
 ///@param {Struct} json
-function GridItemFeature(json = {}) constructor {
+function GridItemFeature(json) constructor {
 
   ///@type {Callable}
-  type = json.type
+  type = Assert.isType(json.type, Callable)
 
   ///@type {?Timer}
-  timer = Core.isType(Struct.get(json, "timer"), Number) ? new Timer(json.timer, { loop: Infinity }) : null
+  timer = Core.isType(Struct.get(json, "timer"), Number) 
+    ? new Timer(json.timer, { loop: Infinity }) 
+    : null
 
   ///@type {?Array<GridItemCondition>}
   conditions = Struct.contains(json, "conditions")
@@ -19,14 +21,13 @@ function GridItemFeature(json = {}) constructor {
 
   ///@return {Boolean}
   checkConditions = function(gridItem, controller) {
-    if (!Optional.is(this.conditions)) {
+    if (this.conditions == null) {
       return true
     }
 
     var size = this.conditions.size()
-    for (var index = 0; index < size; index++) {
-      var condition = this.conditions.get(index)
-      if (!condition.check(gridItem, controller)) {
+    for (var index = 0; index < size; index++) { 
+      if (!this.conditions.get(index).check(gridItem, controller)) {
         return false
       }
     }
@@ -40,8 +41,9 @@ function GridItemFeature(json = {}) constructor {
 
   ///@param {GridItem} gridItem
   ///@param {VisuController} controller
-  update = method(this, Assert.isType(Struct
-    .getDefault(json, "update", function() { }), Callable))
+  update = method(this, Core.isType(Struct.get(json, "update"), Callable) 
+    ? json.update
+    : function() {})
 
   Struct.appendUnique(this, json)
 }

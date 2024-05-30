@@ -45,6 +45,9 @@ function Player(template): GridItem(template) constructor {
   ///@type {Keyboard}
   keyboard = Assert.isType(template.keyboard, Keyboard)
 
+  ///@type {Number}
+  angle = 90
+
   ///@private
   ///@param {VisuController} controller
   ///@return {GridItem}
@@ -71,8 +74,8 @@ function Player(template): GridItem(template) constructor {
   }
 
   this.gameModes
-    .set(GameMode.IDLE, PlayerIdleGameMode(Struct
-      .getDefault(Struct.get(template, "gameModes"), "idle", {})))
+    .set(GameMode.RACING, PlayerRacingGameMode(Struct
+      .getDefault(Struct.get(template, "gameModes"), "racing", {})))
     .set(GameMode.BULLETHELL, PlayerBulletHellGameMode(Struct
       .getDefault(Struct.get(template, "gameModes"), "bulletHell", {})))
     .set(GameMode.PLATFORMER, PlayerPlatformerGameMode(Struct

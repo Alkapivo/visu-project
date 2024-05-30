@@ -85,6 +85,16 @@ global.__VISU_GRID_CONDITIONS = {
       }
     }
   },
+  "player-collision": function() {
+    return function(shroom, controller) {
+      return shroom.signals.playerCollision
+    }
+  },
+  "bullet-collision": function() {
+    return function(shroom, controller) {
+      return shroom.signals.bulletCollision
+    }
+  },
 }
 #macro VISU_GRID_CONDITIONS global.__VISU_GRID_CONDITIONS
 

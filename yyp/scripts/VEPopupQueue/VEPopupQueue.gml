@@ -132,11 +132,14 @@ function VEPopupQueue(_editor) constructor {
 
         var areaX = this.area.x
         var areaY = this.area.y
+        var delta = DeltaTime.deltaTime
+        DeltaTime.deltaTime += this.surfaceTick.delta
         this.area.x = this.offset.x
         this.area.y = this.offset.y
         this.items.forEach(this.renderItem, this.area)
         this.area.x = areaX
         this.area.y = areaY
+        DeltaTime.deltaTime = delta
       },
       render: Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollableBlend")),
       onMouseHoverOver: function() {

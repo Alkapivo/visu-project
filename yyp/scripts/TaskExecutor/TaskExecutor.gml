@@ -66,11 +66,16 @@ function TaskExecutor(_context, config = {}) constructor {
     }
 
     if (this.catchException) {
+      var isException = false
       try {
         resovleTaskStatus(this, task, index)
       } catch (exception) {
         Logger.error("TaskExecutor", $"'executor-task' fatal error: {exception.message}")
         this.gc.push(index)
+        isException = true
+      }
+
+      if (isException) {
         try {
           task.reject(exception.message)
         } catch (ex) {
@@ -84,13 +89,13 @@ function TaskExecutor(_context, config = {}) constructor {
 
   ///@param {Task} task
   ///@return {TaskExecutor}
-  add = method(this, function(task) {
+  add = function(task) {
     this.tasks.add(task)
     return this
-  })
+  }
 
   ///@return {TaskExecutor}
-  update = method(this, function() {
+  update = function() {
     static dispatchTask = function(task, index, executor) {
       executor.updateTask(task, index)  
     }
@@ -102,5 +107,5 @@ function TaskExecutor(_context, config = {}) constructor {
     this.tasks.forEach(dispatchTask, this)
     this.gc.forEach(gcTask, this)
     return this
-  })
+  }
 }

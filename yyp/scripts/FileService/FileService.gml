@@ -52,15 +52,15 @@ function FileService(_controller, config = {}): Service() constructor {
 
   ///@param {Event} event
   ///@return {?Promise}
-  send = method(this, function(event) {
+  send = function(event) {
     Struct.set(event.data, "fileService", this)
     return this.dispatcher.send(event)
-  })
+  }
 
   ///@return {FileService}
-  update = method(this, function() {
+  update = function() {
     this.dispatcher.update()
     this.executor.update()
     return this
-  })
+  }
 }

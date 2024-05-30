@@ -1,31 +1,32 @@
 ///@package io.alkapivo.visu.service.grid.feature
 
-///@param {Struct} [json]
+///@param {Struct} json
 ///@return {GridItemFeature}
-function SpeedFeature(json = {}) {
+function SpeedFeature(json) {
+  var data = Struct.get(json, "data")
   return new GridItemFeature(Struct.append(json, {
 
     ///@param {Callable}
     type: SpeedFeature,
 
     ///@type {?NumberTransformer}
-    transform: Struct.contains(json, "transform")
-      ? new NumberTransformer(json.transform)
+    transform: Struct.contains(data, "transform")
+      ? new NumberTransformer(data.transform)
       : null,
 
-    add: Struct.contains(json, "add")
-      ? new NumberTransformer(json.add)
+    add: Struct.contains(data, "add")
+      ? new NumberTransformer(data.add)
       : null,
 
     ///@override
     ///@param {GridItem} item
     ///@param {VisuController} controller
     update: function(item, controller) {
-      if (Optional.is(this.transform)) {
+      if (this.transform != null) {
         item.setSpeed(this.transform.update().value)
       }
 
-      if (Optional.is(this.add)) {
+      if (this.add != null) {
         item.setSpeed(item.speed + this.add.update().value)
       }
     },

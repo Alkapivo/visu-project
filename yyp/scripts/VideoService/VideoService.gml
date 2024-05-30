@@ -46,8 +46,8 @@ function VideoService(_controller, config = {}): Service() constructor {
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "open-video": function(event) {
       if (this.executor.tasks.size() > 0) {
-        event.promise.reject("There are unfinished tasks in videoService")
-        return
+        //event.promise.reject("There are unfinished tasks in videoService")
+        //return
       }
 
       var video = new Video(event.data.video)
@@ -97,17 +97,18 @@ function VideoService(_controller, config = {}): Service() constructor {
             }
           }
         }))
-        .setTimeout(2.0)
+        .setTimeout(3.0)
         .whenUpdate(this.factoryTaskUpdate())
       
+      this.executor.tasks.forEach(this.rejectExistingTask)
       this.executor.add(task)
       this.setVideo(null)
       event.setPromise() // disable promise in EventPump, the promise will be resolved within TaskExecutor
     },
     "rewind-video": function(event) {
       if (this.executor.tasks.size() > 0) {
-        event.promise.reject("There are unfinished tasks in videoService")
-        return
+        //event.promise.reject("There are unfinished tasks in videoService")
+        //return
       }
 
       var video = Assert.isType(this.getVideo(), Video)
@@ -169,18 +170,18 @@ function VideoService(_controller, config = {}): Service() constructor {
             }
           }
         }))
-        .setTimeout(2.0)
+        .setTimeout(3.0)
         .whenUpdate(this.factoryTaskUpdate())
       
-      //this.executor.tasks.forEach(this.rejectExistingTask)
+      this.executor.tasks.forEach(this.rejectExistingTask)
       this.executor.add(task)
       video.setTimestamp(event.data.timestamp)
       event.setPromise() // disable promise in EventPump, the promise will be resolved within TaskExecutor
     },
     "resume-video": function(event) {
       if (this.executor.tasks.size() > 0) {
-        event.promise.reject("There are unfinished tasks in videoService")
-        return
+        //event.promise.reject("There are unfinished tasks in videoService")
+        //return
       }
 
       var task = new Task("resume-video")
@@ -209,18 +210,19 @@ function VideoService(_controller, config = {}): Service() constructor {
               }
               video.resume()
               timer.reset()
+              this.fullfill("success")
               break
           }
         })
       
-      //this.executor.tasks.forEach(this.rejectExistingTask)
+      this.executor.tasks.forEach(this.rejectExistingTask)
       this.executor.add(task)
       event.setPromise() // disable promise in EventPump, the promise will be resolved within TaskExecutor
     },
     "pause-video": function(event) {
       if (this.executor.tasks.size() > 0) {
-        event.promise.reject("There are unfinished tasks in videoService")
-        return
+        //event.promise.reject("There are unfinished tasks in videoService")
+        //return
       }
 
       var task = new Task("pause-video")
@@ -243,6 +245,7 @@ function VideoService(_controller, config = {}): Service() constructor {
               }
               video.pause()
               timer.reset()
+              this.fullfill("success")
               break
             case VideoStatus.PAUSED:
               if (!timer.finished) {
@@ -253,7 +256,7 @@ function VideoService(_controller, config = {}): Service() constructor {
           }
         })
       
-      //this.executor.tasks.forEach(this.rejectExistingTask)
+      this.executor.tasks.forEach(this.rejectExistingTask)
       this.executor.add(task)
       event.setPromise() // disable promise in EventPump, the promise will be resolved within TaskExecutor
     },

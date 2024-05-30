@@ -156,14 +156,14 @@ function _SoundUtil() constructor {
 
   ///@param {?String} name
   ///@return {Boolean}
-  exists = method(this, function(name) {
+  exists = function(name) {
     return Core.isType(name, String) && asset_get_index(name) != -1
-  })
+  }
 
   ///@param {String} name
   ///@param {?Struct} [config]
   ///@return {?Sound}
-  fetch = method(this, function(name, _config = null) {
+  fetch = function(name, _config = null) {
     var config = Struct.set(Core.isType(_config, Struct) ? _config : { name: name }, "name", name)
     var soundService = Beans.get(BeanSoundService)
     if (Optional.is(soundService)) {
@@ -180,7 +180,7 @@ function _SoundUtil() constructor {
       return null
     }
     return new Sound(asset, config)
-  })
+  }
 }
 global.__SoundUtil = new _SoundUtil()
 #macro SoundUtil global.__SoundUtil

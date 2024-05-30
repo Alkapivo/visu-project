@@ -7,7 +7,7 @@ function Exception(_message) constructor {
   message = _message
 
   ///@private
-  print = method(this, function() {
+  print = function() {
     Core.print(this.message)
     var stackTrace = debug_get_callstack();
     for (var index = 0; index < GMArray.size(stackTrace); index++) {
@@ -17,7 +17,7 @@ function Exception(_message) constructor {
         Core.print(line)
       }
     }
-  })
+  }
   this.print()
 }
 

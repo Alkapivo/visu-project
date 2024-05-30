@@ -42,8 +42,8 @@ function VETemplate(json) constructor {
     }
 
     switch (type) {
-      case VETemplateType.SHADER: return Struct
-        .append(storeConfig, {
+      case VETemplateType.SHADER: 
+        return Struct.append(storeConfig, {
           "template-shader": {
             type: String,
             value: json.shader,   
@@ -53,36 +53,36 @@ function VETemplate(json) constructor {
             value: Struct.getDefault(json, "inherit", null),
           },
         })
-      case VETemplateType.SHROOM: return Struct
-        .append(storeConfig, {
+      case VETemplateType.SHROOM: 
+        return Struct.append(storeConfig, {
           "template-shroom": {
             type: String,
             value: json.name,   
           },
         })
-      case VETemplateType.BULLET: return Struct
-        .append(storeConfig, {
+      case VETemplateType.BULLET: 
+        return Struct.append(storeConfig, {
           "template-bullet": {
             type: String,
             value: json.name,   
           },
         })
-      case VETemplateType.LYRICS: return Struct
-        .append(storeConfig, {
+      case VETemplateType.LYRICS: 
+        return Struct.append(storeConfig, {
           "template-lyrics": {
             type: String,
             value: json.name,   
           },
         })
-      case VETemplateType.PARTICLE: return Struct
-        .append(storeConfig, {
+      case VETemplateType.PARTICLE: 
+        return Struct.append(storeConfig, {
           "template-particle": {
             type: String,
             value: json.name,   
           },
         })
-      case VETemplateType.TEXTURE: return Struct
-        .append(storeConfig, {
+      case VETemplateType.TEXTURE: 
+        return Struct.append(storeConfig, {
           "template-texture": {
             type: String,
             value: json.name,   
@@ -128,9 +128,9 @@ function VETemplate(json) constructor {
   ///@return {ShaderTemplate}
   toShaderTemplate = function() {
     var json = {
-      name: Assert.isType(this.store.getValue("template-name"), String),
-      shader: Assert.isType(this.store.getValue("template-shader"), String),
-      type: Assert.isEnum(this.type, VETemplateType),
+      name: Assert.isType(this.store.getValue("template-name"), String, "Store item 'template-name' must be type of String"),
+      shader: Assert.isType(this.store.getValue("template-shader"), String, "Store item 'template-shader' must be type of String"),
+      type: Assert.isEnum(this.type, VETemplateType, "JSON template 'type' must be type of VETemplateType"),
     }
 
     var inherit = this.store.getValue("template-inherit")
@@ -168,8 +168,8 @@ function VETemplate(json) constructor {
         platformer: {
           features: JSON.parse(this.store.getValue("shroom_game-mode_platformer_features")).getContainer()
         },
-        idle: {
-          features: JSON.parse(this.store.getValue("shroom_game-mode_idle_features")).getContainer()
+        racing: {
+          features: JSON.parse(this.store.getValue("shroom_game-mode_racing_features")).getContainer()
         },
       }
     }
@@ -194,8 +194,8 @@ function VETemplate(json) constructor {
         platformer: {
           features: JSON.parse(this.store.getValue("bullet_game-mode_platformer_features")).getContainer()
         },
-        idle: {
-          features: JSON.parse(this.store.getValue("bullet_game-mode_idle_features")).getContainer()
+        racing: {
+          features: JSON.parse(this.store.getValue("bullet_game-mode_racing_features")).getContainer()
         },
       }
     }

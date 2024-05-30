@@ -279,9 +279,10 @@ function GridRenderer(_controller, config = {}) constructor {
       shader_set_uniform_f(shader_get_uniform(shader_gml_use_blend_as_z, "size"), 1024.0)
       player.sprite.blend = (sin(this.playerZTimer.update().time) * 0.5 + 0.5) * 255     
       player.sprite.render(
-        (player.x - (player.sprite.texture.width / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
-        (player.y - (player.sprite.texture.height / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
+        (player.x - (player.sprite.texture.width / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) + ((player.sprite.texture.offsetX * player.sprite.scaleX) / GRID_SERVICE_PIXEL_WIDTH)  - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
+        (player.y - (player.sprite.texture.height / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) + ((player.sprite.texture.offsetY * player.sprite.scaleY) / GRID_SERVICE_PIXEL_HEIGHT)  - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
       )
+      
       /*
       GPU.render.rectangle(
         (player.x - ((player.mask.getWidth() * player.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
@@ -292,11 +293,12 @@ function GridRenderer(_controller, config = {}) constructor {
         c_lime
       )
       */
+      
       shader_reset()
     } else {
       player.sprite.render(
-        (player.x - ((player.sprite.texture.width * player.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
-        (player.y - ((player.sprite.texture.height * player.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
+        (player.x - ((player.sprite.texture.width * player.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) + ((player.sprite.texture.offsetX * player.sprite.scaleX) / GRID_SERVICE_PIXEL_WIDTH) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
+        (player.y - ((player.sprite.texture.height * player.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) + ((player.sprite.texture.offsetY * player.sprite.scaleY) / GRID_SERVICE_PIXEL_HEIGHT) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
       )
 
       /*
@@ -309,6 +311,7 @@ function GridRenderer(_controller, config = {}) constructor {
         c_lime
       )
       */
+      
     }
     
     return this
@@ -318,11 +321,15 @@ function GridRenderer(_controller, config = {}) constructor {
   ///@return {GridRenderer}
   renderShrooms = function() {
     static renderShroom = function(shroom, index, gridService) {
-      shroom.sprite.render(
-        (shroom.x - ((shroom.sprite.texture.width * shroom.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
-        (shroom.y - ((shroom.sprite.texture.height * shroom.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
-      )
-
+      var alpha = shroom.sprite.getAlpha()
+      shroom.sprite
+        .setAlpha(alpha * shroom.fadeIn)
+        .render(
+          (shroom.x - ((shroom.sprite.texture.width * shroom.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) + ((shroom.sprite.texture.offsetX * shroom.sprite.scaleX) / GRID_SERVICE_PIXEL_WIDTH)  - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
+          (shroom.y - ((shroom.sprite.texture.height * shroom.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) + ((shroom.sprite.texture.offsetY * shroom.sprite.scaleY) / GRID_SERVICE_PIXEL_HEIGHT) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
+        )
+        .setAlpha(alpha)
+      
       /*
       GPU.render.rectangle(
         (shroom.x - ((shroom.mask.getWidth() * shroom.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
@@ -357,6 +364,19 @@ function GridRenderer(_controller, config = {}) constructor {
       }
     }
 
+    var spawnerEvent = this.controller.shroomService.spawnerEvent
+    if (Core.isType(spawnerEvent, Struct)) {
+      spawnerEvent.sprite.render(
+        (spawnerEvent.x * GRID_SERVICE_PIXEL_WIDTH) - ((spawnerEvent.sprite.getWidth() * spawnerEvent.sprite.getScaleX()) / 2.0), 
+        (spawnerEvent.y * GRID_SERVICE_PIXEL_HEIGHT) - ((spawnerEvent.sprite.getHeight() * spawnerEvent.sprite.getScaleY()) / 2.0)
+      )
+
+      this.controller.shroomService.spawnerEvent.timeout--
+      if (this.controller.shroomService.spawnerEvent.timeout <= 0) {
+        this.controller.shroomService.spawnerEvent = null
+      }
+    }
+
     // Render particleArea
     var particleArea = this.controller.shroomService.particleArea
     if (Core.isType(particleArea, Struct)) {
@@ -383,6 +403,82 @@ function GridRenderer(_controller, config = {}) constructor {
       }
     }
 
+    var particleAreaEvent = this.controller.shroomService.particleAreaEvent
+    if (Core.isType(particleAreaEvent, Struct)) {
+      particleAreaEvent.topLeft.sprite.render(
+        particleAreaEvent.topLeft.x * GRID_SERVICE_PIXEL_WIDTH,
+        particleAreaEvent.topLeft.y * GRID_SERVICE_PIXEL_HEIGHT,
+      )
+      particleAreaEvent.topRight.sprite.render(
+        particleAreaEvent.topRight.x * GRID_SERVICE_PIXEL_WIDTH,
+        particleAreaEvent.topRight.y * GRID_SERVICE_PIXEL_HEIGHT,
+      )
+      particleAreaEvent.bottomLeft.sprite.render(
+        particleAreaEvent.bottomLeft.x * GRID_SERVICE_PIXEL_WIDTH,
+        particleAreaEvent.bottomLeft.y * GRID_SERVICE_PIXEL_HEIGHT,
+      )
+      particleAreaEvent.bottomRight.sprite.render(
+        particleAreaEvent.bottomRight.x * GRID_SERVICE_PIXEL_WIDTH,
+        particleAreaEvent.bottomRight.y * GRID_SERVICE_PIXEL_HEIGHT,
+      )
+
+      this.controller.shroomService.particleAreaEvent.timeout--
+      if (this.controller.shroomService.particleAreaEvent.timeout <= 0) {
+        this.controller.shroomService.particleAreaEvent = null
+      }
+    }
+
+    // Render playerBorder
+    var playerBorder = this.controller.shroomService.playerBorder
+    if (Core.isType(playerBorder, Struct)) {
+      playerBorder.topLeft.sprite.render(
+        playerBorder.topLeft.x * GRID_SERVICE_PIXEL_WIDTH,
+        playerBorder.topLeft.y * GRID_SERVICE_PIXEL_HEIGHT,
+      )
+      playerBorder.topRight.sprite.render(
+        playerBorder.topRight.x * GRID_SERVICE_PIXEL_WIDTH,
+        playerBorder.topRight.y * GRID_SERVICE_PIXEL_HEIGHT,
+      )
+      playerBorder.bottomLeft.sprite.render(
+        playerBorder.bottomLeft.x * GRID_SERVICE_PIXEL_WIDTH,
+        playerBorder.bottomLeft.y * GRID_SERVICE_PIXEL_HEIGHT,
+      )
+      playerBorder.bottomRight.sprite.render(
+        playerBorder.bottomRight.x * GRID_SERVICE_PIXEL_WIDTH,
+        playerBorder.bottomRight.y * GRID_SERVICE_PIXEL_HEIGHT,
+      )
+
+      this.controller.shroomService.playerBorder.timeout--
+      if (this.controller.shroomService.playerBorder.timeout <= 0) {
+        this.controller.shroomService.playerBorder = null
+      }
+    }
+
+    var playerBorderEvent = this.controller.shroomService.playerBorderEvent
+    if (Core.isType(playerBorderEvent, Struct)) {
+      playerBorderEvent.topLeft.sprite.render(
+        playerBorderEvent.topLeft.x * GRID_SERVICE_PIXEL_WIDTH,
+        playerBorderEvent.topLeft.y * GRID_SERVICE_PIXEL_HEIGHT,
+      )
+      playerBorderEvent.topRight.sprite.render(
+        playerBorderEvent.topRight.x * GRID_SERVICE_PIXEL_WIDTH,
+        playerBorderEvent.topRight.y * GRID_SERVICE_PIXEL_HEIGHT,
+      )
+      playerBorderEvent.bottomLeft.sprite.render(
+        playerBorderEvent.bottomLeft.x * GRID_SERVICE_PIXEL_WIDTH,
+        playerBorderEvent.bottomLeft.y * GRID_SERVICE_PIXEL_HEIGHT,
+      )
+      playerBorderEvent.bottomRight.sprite.render(
+        playerBorderEvent.bottomRight.x * GRID_SERVICE_PIXEL_WIDTH,
+        playerBorderEvent.bottomRight.y * GRID_SERVICE_PIXEL_HEIGHT,
+      )
+
+      this.controller.shroomService.playerBorderEvent.timeout--
+      if (this.controller.shroomService.playerBorderEvent.timeout <= 0) {
+        this.controller.shroomService.playerBorderEvent = null
+      }
+    }
+
     return this
   }
 
@@ -393,8 +489,8 @@ function GridRenderer(_controller, config = {}) constructor {
       bullet.sprite
         .setAngle(bullet.angle)
         .render(
-          (bullet.x + ((bullet.sprite.texture.offsetX * bullet.sprite.scaleX) / GRID_SERVICE_PIXEL_WIDTH) - (bullet.sprite.texture.width / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
-          (bullet.y + ((bullet.sprite.texture.offsetY * bullet.sprite.scaleY) / GRID_SERVICE_PIXEL_HEIGHT) - (bullet.sprite.texture.height / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
+          (bullet.x - ((bullet.sprite.texture.width * bullet.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) + ((bullet.sprite.texture.offsetX * bullet.sprite.scaleX) / GRID_SERVICE_PIXEL_WIDTH) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
+          (bullet.y - ((bullet.sprite.texture.height * bullet.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) + ((bullet.sprite.texture.offsetY * bullet.sprite.scaleY) / GRID_SERVICE_PIXEL_HEIGHT) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
         )
 
       /*
@@ -441,8 +537,10 @@ function GridRenderer(_controller, config = {}) constructor {
     var shaderPipeline = this.controller.shaderBackgroundPipeline
     if (this.controller.gridService.properties.renderBackgroundShaders 
       && shaderPipeline.executor.tasks.size() > 0) {
-
-      shaderPipeline.render(function(task, index, renderer) {
+      shaderPipeline
+        .setWidth(this.backgroundSurface.width)
+        .setHeight(this.backgroundSurface.height)
+        .render(function(task, index, renderer) {
         var properties = renderer.controller.gridService.properties
         var alpha = task.state.getDefault("alpha", 1.0)
         renderer.backgroundSurface.render(0, 0, alpha)
@@ -565,9 +663,9 @@ function GridRenderer(_controller, config = {}) constructor {
       GPU.render.clear(properties.shaderClearColor)
     }
 
-    
-
     var size = renderer.controller.shaderPipeline
+      .setWidth(renderer.gridSurface.width)
+      .setHeight(renderer.gridSurface.height)
       .render(function(task, index, renderer) {
         renderer.gridSurface.render(0, 0, task.state
           .getDefault("alpha", 1.0))

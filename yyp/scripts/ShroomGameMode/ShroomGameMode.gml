@@ -2,11 +2,11 @@
 
 ///@param {Struct} json
 ///@return {GridItemGameMode}
-function ShroomIdleGameMode(json) {
+function ShroomRacingGameMode(json) {
   return new GridItemGameMode(Struct.append(json, {
 
     ///@param {Callable}
-    type: ShroomIdleGameMode,
+    type: ShroomRacingGameMode,
   }))
 }
 
@@ -24,11 +24,11 @@ function ShroomBulletHellGameMode(json) {
     ///@param {VisuController} controller
     update: function(shroom, controller) {
       if (Optional.is(shroom.signals.bulletCollision)) {
-        shroom.signal("kill")
+        //shroom.signal("kill")
       }
   
       if (Optional.is(shroom.signals.playerCollision)) {
-        shroom.signal("kill")
+        //shroom.signal("kill")
       }
     },
   }))
@@ -48,7 +48,7 @@ function ShroomPlatformerGameMode(json) {
     ///@param {VisuController} controller
     update: function(shroom, controller) {
       if (Optional.is(shroom.signals.bulletCollision)) {
-        shroom.signal("kill")
+        //shroom.signal("kill")
       }
     },
   }))
@@ -58,7 +58,7 @@ function ShroomPlatformerGameMode(json) {
 ///@static
 ///@type {Struct}
 global.__SHROOM_GAME_MODES = {
-  "idle": ShroomIdleGameMode,
+  "racing": ShroomRacingGameMode,
   "bulletHell": ShroomBulletHellGameMode,
   "platformer": ShroomPlatformerGameMode,
 }

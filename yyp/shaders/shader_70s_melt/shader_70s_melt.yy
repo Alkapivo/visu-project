@@ -3,8 +3,8 @@
   "%Name":"shader_70s_melt",
   "name":"shader_70s_melt",
   "parent":{
-    "name":"shader",
-    "path":"folders/core-gml/resource/shader.yy",
+    "name":"shadertoy",
+    "path":"folders/core-gml/resource/shader/shadertoy.yy",
   },
   "resourceType":"GMShader",
   "resourceVersion":"2.0",

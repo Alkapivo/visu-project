@@ -305,6 +305,17 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
       }
     }
   })
+  .set(ShaderUniformType.findKey(ShaderUniformType.RESOLUTION), function(uniform, json) {
+    return {
+      store: {
+        key: uniform.name,
+        item: {
+          type: ResolutionTransformer,
+          value: new ResolutionTransformer(),
+        },
+      },
+    }
+  })
 #macro ShaderUniformTemplates global.__ShaderUniformTemplates
 
 
@@ -330,11 +341,17 @@ function template_shader(json = null) {
     var properties = Struct.getDefault(template.json, "properties", {})
     var property = Callable.run(ShaderUniformTemplates.get(type), uniform, properties)
     if (!Optional.is(property)) {
+      Logger.warn("template_shader.gml", $"Found unsupported property '{key}' in template '{json.name}' of shader '{shader.name}")
       return
     }
 
-    template.store.add(property.store.item, property.store.key)
-    template.components.add(property.component)
+    if (Optional.is(Struct.get(property, "store"))) {
+      template.store.add(property.store.item, property.store.key)
+    }
+    
+    if (Optional.is(Struct.get(property, "component"))) {
+      template.components.add(property.component)
+    }
   }, template)
 
   Struct.remove(template, "json")

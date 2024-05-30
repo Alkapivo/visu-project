@@ -2,12 +2,67 @@
 
 ///@param {Struct} json
 ///@return {GridItemGameMode}
-function PlayerIdleGameMode(json) {
+function PlayerRacingGameMode(json) {
   return new GridItemGameMode(Struct.append(json, {
 
     ///@param {Callable}
-    type: PlayerIdleGameMode,
+    type: PlayerRacingGameMode,
 
+    ///@type {GridItemMovement}
+    throttle: new GridItemMovement(Struct.getDefault(json, "throttle", {
+      acceleration: 0.5,
+      speedMax: 2,
+      friction: 0.5,
+    }), true),
+
+    ///@type {GridItemMovement}
+    nitro: new GridItemMovement(Struct.getDefault(json, "nitro", {
+      acceleration: 0.5,
+      speedMax: 1,
+      friction: 1,
+    }), true),
+
+    ///@type {GridItemMovement}
+    wheel: new GridItemMovement(Struct.getDefault(json, "wheel", {
+      acceleration: 0.1,
+      speedMax: 3.5,
+      friction: 0.1,
+    }), false),
+ 
+    ///@override
+    ///@param {Player} player
+    ///@param {VisuController} controller
+    update: function(player, controller) {
+      static calcSpeed = function(movement, keyA, keyB) {
+        movement.speed = keyA || keyB
+          ? (movement.speed + (keyA ? -1 : 1) 
+            * DeltaTime.apply(movement.acceleration))
+          : (abs(movement.speed) - movement.friction >= 0
+            ? movement.speed - sign(movement.speed) 
+              * DeltaTime.apply(movement.friction) : 0)
+        movement.speed = sign(movement.speed) * clamp(abs(movement.speed), 0, movement.speedMax)
+        return movement.speed
+      }
+
+      var keys = player.keyboard.keys
+      if (Optional.is(global.GMTF_DATA.active)) {
+        keys.left.on = false
+        keys.right.on = false
+        keys.up.on = false
+        keys.down.on = false
+        keys.action.on = false
+      }
+
+      var speedMax = this.throttle.speedMax
+      this.throttle.speedMax = speedMax + calcSpeed(this.nitro, false, keys.action.on)
+      player.speed = calcSpeed(this.throttle, keys.down.on, keys.up.on)
+      this.throttle.speedMax = speedMax
+
+      player.angle += calcSpeed(this.wheel, keys.right.on, keys.left.on)
+      player.sprite.setAngle(player.angle - 90)
+
+      player.y = clamp(player.y, 0.0, controller.gridService.height)
+    },
   }))
 }
 
@@ -21,10 +76,10 @@ function PlayerBulletHellGameMode(json) {
     type: PlayerBulletHellGameMode,
 
     ///@type {GridItemMovement}
-    x: new GridItemMovement(Struct.getDefault(json, "x", { })),
+    x: new GridItemMovement(Struct.getDefault(json, "x", { }), true),
     
     ///@type {GridItemMovement}
-    y: new GridItemMovement(Struct.getDefault(json, "y", { })),
+    y: new GridItemMovement(Struct.getDefault(json, "y", { }), true),
 
     ///@type {Array<Struct>}
     guns: new Array(Struct, Core.isType(Struct.get(json, "guns"), GMArray)
@@ -81,7 +136,11 @@ function PlayerBulletHellGameMode(json) {
       }
 
       player.x = player.x + calcSpeed(this.x, player, keys.left.on, keys.right.on)
-      player.y = player.y + calcSpeed(this.y, player, keys.up.on, keys.down.on)
+      player.y = clamp(
+        player.y + calcSpeed(this.y, player, keys.up.on, keys.down.on), 
+        0.0, 
+        controller.gridService.height
+      )
 
       if (keys.action.on) {
         this.guns.forEach(function(gun, index, acc) {
@@ -124,10 +183,10 @@ function PlayerPlatformerGameMode(json) {
     type: PlayerPlatformerGameMode,
 
     ///@param {GridItemMovement}
-    x: new GridItemMovement(Struct.getDefault(json, "x", { })),
+    x: new GridItemMovement(Struct.getDefault(json, "x", { }), true),
 
     ///@param {GridItemMovement}
-    y: new GridItemMovement(Struct.getDefault(json, "y", { speedMax: 25.0 })),
+    y: new GridItemMovement(Struct.getDefault(json, "y", { speedMax: 25.0 }), true),
 
     ///@type {Struct}
     jump: {
@@ -240,7 +299,7 @@ function PlayerPlatformerGameMode(json) {
 ///@static
 ///@type {Struct}
 global.__PLAYER_GAME_MODES = {
-  "idle": PlayerIdleGameMode,
+  "racing": PlayerRacingGameMode,
   "bulletHell": PlayerBulletHellGameMode,
   "platformer": PlayerPlatformerGameMode,
 }

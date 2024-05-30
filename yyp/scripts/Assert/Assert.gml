@@ -46,13 +46,13 @@ function _Assert() constructor {
   ///@param {?String} [message]
   ///@throws {InvalidAssertException}
   ///@return {any}
-  isType = method(this, function(object, type, message = null) {
+  isType = function(object, type, message = null) {
     if (!Core.isType(object, type)) {
       Logger.error("Assert.isType", message == null ? "Assert exception." : message)
       throw new InvalidAssertException()
     }
     return object
-  })
+  }
 
   ///@param {any} object
   ///@param {Enum} enumerable

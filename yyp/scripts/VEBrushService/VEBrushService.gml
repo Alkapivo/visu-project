@@ -31,7 +31,7 @@ function VEBrushService(_editor) constructor {
 
     var templates = this.templates.get(template.type)
     if (!Core.isType(templates, Array)) {
-      Logger.warn("VEBrushService::saveTemplate", $"Unable to find template for type '{template.type}'")
+      Logger.warn("VEBrushService", $"Unable to find template for type '{template.type}'")
       return this
     }
 
@@ -40,10 +40,10 @@ function VEBrushService(_editor) constructor {
     }, template.name)
 
     if (Optional.is(index)) {
-      Logger.info("VEBrushService::saveTemplate", $"Template of type '{template.type}' updated: '{template.name}'")
+      //Logger.info("VEBrushService", $"Template of type '{template.type}' updated: '{template.name}'")
       templates.set(index, template)
     } else {
-      Logger.info("VEBrushService::saveTemplate", $"Template of type '{template.type}' added: '{template.name}'")
+      //Logger.info("VEBrushService", $"Template of type '{template.type}' added: '{template.name}'")
       templates.add(template)
     }
 

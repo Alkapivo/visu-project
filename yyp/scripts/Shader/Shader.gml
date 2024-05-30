@@ -155,12 +155,6 @@ global.__shaders = {
   "shader_thermal": {
     "type": "GLSL_ES"
   },
-  "shader_upscaling_bicubic": {
-    "type": "GLSL_ES"
-  },
-  "shader_upscaling_hq4x": {
-    "type": "GLSL_ES"
-  },
   "shader_wave": {
     "type": "GLSL_ES",
     "uniforms": {
@@ -168,6 +162,58 @@ global.__shaders = {
       "distortion": "FLOAT",
       "speed": "FLOAT",
       "time": "FLOAT"
+    }
+  },
+  "shader_cineshader_lava": {
+    "type": "GLSL_ES",
+    "uniforms": {
+      "iResolution": "VECTOR3",
+      "iTime": "FLOAT"
+    }
+  },
+  "shader_broken_time_portal": {
+    "type": "GLSL_ES",
+    "uniforms": {
+      "iResolution": "VECTOR3",
+      "iTime": "FLOAT",
+      "iTreshold": "FLOAT",
+      "iSize": "FLOAT",
+      "iTint": "VECTOR3"
+    }
+  },
+  "shader_base_warp_fbm": {
+    "type": "GLSL_ES",
+    "uniforms": {
+      "iResolution": "VECTOR3",
+      "iTime": "FLOAT",
+      "iSize": "FLOAT"
+    }
+  },
+  "shader_dive_to_cloud": {
+    "type": "GLSL_ES",
+    "uniforms": {
+      "iResolution": "VECTOR2",
+      "iTime": "FLOAT"
+    }
+  },
+  "shader_cubular": {
+    "type": "GLSL_ES",
+    "uniforms": {
+      "iResolution": "VECTOR3",
+      "iTime": "FLOAT",
+      "iTint": "VECTOR3",
+      "size": "FLOAT",
+      "amount": "FLOAT"
+    }
+  },
+  "shader_sincos_3d": {
+    "type": "GLSL_ES",
+    "uniforms": {
+      "iResolution": "VECTOR3",
+      "iTime": "FLOAT",
+      "iMouse": "VECTOR4",
+      "lineThickness": "FLOAT",
+      "pointRadius": "FLOAT"
     }
   }
 }

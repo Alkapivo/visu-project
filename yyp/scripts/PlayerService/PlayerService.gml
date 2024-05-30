@@ -39,7 +39,7 @@ function PlayerService(_controller, config = {}): Service() constructor {
           action: "Z",
         },
         gameModes: {
-          idle: JSON.clone(Struct.getDefault(event.data, "idle", {})),
+          racing: JSON.clone(Struct.getDefault(event.data, "racing", {})),
           bulletHell: JSON.clone(Struct.getDefault(event.data, "bulletHell", {})),
           platformer: JSON.clone(Struct.getDefault(event.data, "platformer", {})),
         },
@@ -88,6 +88,9 @@ function PlayerService(_controller, config = {}): Service() constructor {
     if (Core.isType(this.player, Player)) {
       if (this.controller.gameMode != this.gameMode) {
         this.gameMode = this.controller.gameMode
+        this.player.speed = 0
+        this.player.angle = 90
+        this.player.sprite.setAngle(0.0)
         this.player.updateGameMode(this.gameMode)
       }
       

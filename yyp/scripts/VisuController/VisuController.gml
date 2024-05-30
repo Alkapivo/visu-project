@@ -2,7 +2,7 @@
 
 ///@enum
 function _GameMode(): Enum() constructor {
-  IDLE = "idle"
+  RACING = "racing"
   BULLETHELL = "bulletHell"
   PLATFORMER = "platformer"
 }
@@ -22,7 +22,7 @@ function VisuController(layerName) constructor {
       data: Core.getProperty("visu.manifest.load-on-start", false) 
         ? new Event("load", {
             manifest: FileUtil.get(String.concat(
-              working_directory, 
+              (Core.getProperty("visu.manifest.path.absolute", false) ? "" : working_directory), 
               Core.getProperty("visu.manifest.path"))),
             autoplay: Assert.isType(Core
               .getProperty("visu.manifest.play-on-start", false), Boolean),
@@ -319,6 +319,8 @@ function VisuController(layerName) constructor {
       newProject: "N",
       openProject: "O",
       saveProject: "S",
+      saveTemplate: "T",
+      saveBrush: "U",
       selectTool: "S",
       eraseTool: "E",
       brushTool: "B",
@@ -441,7 +443,11 @@ function VisuController(layerName) constructor {
         data: {
           resume: this.fsm.getStateName() == "play",
           timestamp: Assert.isType(event.data.timestamp, Number),
-          videoServiceAttempts: Struct.getDefault(event.data, "videoServiceAttempts", 5),
+          videoServiceAttempts: Struct.getDefault(
+            event.data, 
+            "videoServiceAttempts", 
+            Core.getProperty("core.video-service.attempts", 3)
+          ),
         }
       })
       
@@ -694,6 +700,21 @@ function VisuController(layerName) constructor {
       }
     }
 
+    if (!isGMTFFocus 
+      && this.keyboard.keys.saveTemplate.pressed 
+      && this.editor.store.getValue("render-event")) {
+      
+      this.editor.accordion.templateToolbar.send(new Event("save-template"))
+    }
+
+    if (!isGMTFFocus 
+      && this.keyboard.keys.saveBrush.pressed 
+      && this.editor.store.getValue("render-brush")) {
+      
+      this.editor.brushToolbar.send(new Event("save-brush"))
+    }
+
+
     if (!isGMTFFocus && this.keyboard.keys.selectTool.pressed) {
       this.editor.store.get("tool").set("tool_select")
     }
@@ -855,7 +876,7 @@ function VisuController(layerName) constructor {
               return
             }
 
-            container.renderSurfaceTick = false
+            container.surfaceTick.skip()
             container.updateTimer.time = container.updateTimer.duration
           })
         }
@@ -863,9 +884,9 @@ function VisuController(layerName) constructor {
         this.uiService.update()
       } catch (exception) {
         var message = $"'update' set fatal error: {exception.message}"
+        Logger.error("UIService", message)
         Core.printStackTrace()
         this.send(new Event("spawn-popup", { message: message }))
-        Logger.error("UIService", message)
       }
     }
 
@@ -913,7 +934,7 @@ function VisuController(layerName) constructor {
       this.lyricsRenderer.renderGUI()
       if (this.renderUI) {
         this.uiService.render()
-        var loaderState = Beans.get(BeanVisuController).loader.fsm.getStateName()
+        var loaderState = this.loader.fsm.getStateName()
         if (loaderState != "idle" && loaderState != "loaded") {
           var color = c_black
           this.spinnerFactor = lerp(this.spinnerFactor, 100.0, 0.1)

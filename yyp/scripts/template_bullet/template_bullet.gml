@@ -26,9 +26,9 @@ function template_bullet(json = null) {
         type: String,
         value: JSON.stringify(Struct.getDefault(json.gameModes.platformer, "features", []), { pretty: true })
       },
-      "bullet_game-mode_idle_features": {
+      "bullet_game-mode_racing_features": {
         type: String,
-        value: JSON.stringify(Struct.getDefault(json.gameModes.idle, "features", []), { pretty: true })
+        value: JSON.stringify(Struct.getDefault(json.gameModes.racing, "features", []), { pretty: true })
       },
     }),
     components: new Array(Struct, [
@@ -191,16 +191,16 @@ function template_bullet(json = null) {
         },
       },
       {
-        name: "bullet_game-mode_idle",
+        name: "bullet_game-mode_racing",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Idle" },
+          label: { text: "Racing" },
         },
       },
       {
-        name: "bullet_game-mode_idle_features",
+        name: "bullet_game-mode_racing_features",
         template: VEComponents.get("text-area"),
         layout: VELayouts.get("text-area"),
         config: { 
@@ -208,7 +208,7 @@ function template_bullet(json = null) {
           field: { 
             v_grow: true,
             w_min: 570,
-            store: { key: "bullet_game-mode_idle_features" },
+            store: { key: "bullet_game-mode_racing_features" },
           },
         },
       },

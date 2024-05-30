@@ -29,7 +29,7 @@ global.__VEComponents = new Map(String, Callable, {
   },
 
   "image": function(name, layout, config = null) {
-    return new Array(UIItem, [
+    var items = new Array(UIItem, [
       UIImage(
         $"{name}_image",
         Struct.appendRecursive(
@@ -42,6 +42,41 @@ global.__VEComponents = new Map(String, Callable, {
         )
       )
     ])
+
+    if (Struct.contains(config, "resolution")) {
+      items.add(UIText(
+        name,
+        Struct.appendRecursive(
+          {
+            layout: layout.nodes.resolution,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          },
+          Struct.appendRecursive(
+            Struct.appendRecursive(
+              { 
+                store: { 
+                  callback: function(value, data) {
+                    if (!Core.isType(value, Sprite)) {
+                      return
+                    }
+  
+                    data.label.text = $"width: {value.getWidth()} height: {value.getHeight()}"
+                  },
+                  set: function(value) { },
+                }
+              },
+              VEStyles.get("texture-field-ext").resolution,
+              false
+            ),
+            Struct.get(config, "resolution"),
+            false
+          ),
+          false
+        )
+      ))
+    }
+
+    return items
   },
 
   ///@param {String} name
@@ -1347,7 +1382,7 @@ global.__VEComponents = new Map(String, Callable, {
                     return
                   }
 
-                  data.label.text = $"x: {value.getWidth()} y: {value.getHeight()}"
+                  data.label.text = $"width: {value.getWidth()} height: {value.getHeight()}"
                 },
                 set: function(value) { },
               }
@@ -1922,9 +1957,11 @@ global.__VEComponents = new Map(String, Callable, {
                   var key = Struct.get(data, "transformNumericProperty")
                   var transformer = item.get()
                   if (!Core.isType(transformer, NumberTransformer) 
-                    || !Struct.contains(transformer, key)) {
+                    || !Struct.contains(transformer, key)
+                    || global.GMTF_DATA.active == data.textField) {
                     return 
                   }
+
                   data.textField.setText(Struct.get(transformer, key))
                 },
                 set: function(value) {
@@ -2033,7 +2070,8 @@ global.__VEComponents = new Map(String, Callable, {
                   var key = Struct.get(data, "transformNumericProperty")
                   var transformer = item.get()
                   if (!Core.isType(transformer, NumberTransformer) 
-                    || !Struct.contains(transformer, key)) {
+                    || !Struct.contains(transformer, key)
+                    || global.GMTF_DATA.active == data.textField) {
                     return 
                   }
                   data.textField.setText(Struct.get(transformer, key))
@@ -2165,7 +2203,8 @@ global.__VEComponents = new Map(String, Callable, {
                   var key = Struct.get(data, "transformNumericProperty")
                   var transformer = Struct.get(vec2Transformer, vec2)
                   if (!Core.isType(transformer, NumberTransformer) 
-                    || !Struct.contains(transformer, key)) {
+                    || !Struct.contains(transformer, key)
+                    || global.GMTF_DATA.active == data.textField) {
                     return 
                   }
 
@@ -2387,7 +2426,8 @@ global.__VEComponents = new Map(String, Callable, {
                   var key = Struct.get(data, "transformNumericProperty")
                   var transformer = Struct.get(vec3Transformer, vec3)
                   if (!Core.isType(transformer, NumberTransformer) 
-                    || !Struct.contains(transformer, key)) {
+                    || !Struct.contains(transformer, key)
+                    || global.GMTF_DATA.active == data.textField) {
                     return 
                   }
 
@@ -2671,7 +2711,8 @@ global.__VEComponents = new Map(String, Callable, {
                   var key = Struct.get(data, "transformNumericProperty")
                   var transformer = Struct.get(vec4Transformer, vec4)
                   if (!Core.isType(transformer, NumberTransformer) 
-                    || !Struct.contains(transformer, key)) {
+                    || !Struct.contains(transformer, key)
+                    || global.GMTF_DATA.active == data.textField) {
                     return 
                   }
 
@@ -3002,7 +3043,8 @@ global.__VEComponents = new Map(String, Callable, {
               updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayoutTextField")),
               store: {
                 callback: function(value, data) { 
-                  if (!Core.isType(value, Vector2)) {
+                  if (!Core.isType(value, Vector2)
+                    || global.GMTF_DATA.active == data.textField) {
                     return 
                   }
                   data.textField.setText(value.x)
@@ -3038,7 +3080,8 @@ global.__VEComponents = new Map(String, Callable, {
               updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayoutTextField")),
               store: {
                 callback: function(value, data) { 
-                  if (!Core.isType(value, Vector2)) {
+                  if (!Core.isType(value, Vector2)
+                    || global.GMTF_DATA.active == data.textField) {
                     return 
                   }
                   data.textField.setText(value.y)
@@ -3105,7 +3148,9 @@ global.__VEComponents = new Map(String, Callable, {
 
                   var key = Struct.get(data, "vec4Property")
                   var vec4 = item.get()
-                  if (!Core.isType(vec4, Vector4) || !Struct.contains(vec4, key)) {
+                  if (!Core.isType(vec4, Vector4) 
+                    || !Struct.contains(vec4, key)
+                    || global.GMTF_DATA.active == data.textField) {
                     return 
                   }
                   data.textField.setText(Struct.get(vec4, key))

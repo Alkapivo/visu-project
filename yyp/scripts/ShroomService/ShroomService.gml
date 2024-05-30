@@ -24,7 +24,19 @@ function ShroomService(_controller, config = {}): Service() constructor {
   spawner = null
 
   ///@type {?Struct}
+  spawnerEvent = null
+
+  ///@type {?Struct}
   particleArea = null
+
+  ///@type {?Struct}
+  particleAreaEvent = null
+
+  ///@type {?Struct}
+  playerBorder = null
+
+  ///@type {?Struct}
+  playerBorderEvent = null
 
   ///@type {?GameMode}
   gameMode = null
@@ -38,7 +50,7 @@ function ShroomService(_controller, config = {}): Service() constructor {
         sprite: SpriteUtil.parse({ name: "texture_baron" }),
         x: 0.5,
         y: 0,
-        timeout: 2,
+        timeout: 5.0,
       }
     )
   }
