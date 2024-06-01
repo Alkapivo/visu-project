@@ -2,8 +2,6 @@
 
 ![visu-project_thumbnail](https://github.com/Alkapivo/visu-project/assets/22237843/6d626287-f403-4bc3-b898-49dc9eb39368)
 
-Certainly! Here is the revised README entry for your GitHub repository:
-
 ---
 
 # visu-project
