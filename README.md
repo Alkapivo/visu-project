@@ -2,10 +2,6 @@
 
 ![visu-project_thumbnail](https://github.com/Alkapivo/visu-project/assets/22237843/6d626287-f403-4bc3-b898-49dc9eb39368)
 
----
-
-# visu-project
-
 `visu-project` is a visualizer with simple gameplay modes, a built-in timeline, and an assets editor. Made with GameMaker 2.3, it is a hobbyist project where I collaborate with my breakcore music producer friends to create visuals for my [YouTube Channel](https://www.youtube.com/Alkapivo).
 
 ---
