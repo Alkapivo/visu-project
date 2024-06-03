@@ -6,13 +6,15 @@
 
 ---
 
-This revision corrects grammatical errors and improves the overall clarity of the description.
 This repository only keeps gamemaker yyp project, the actual development & code is keep in:
 - [core-gml](https://github.com/Alkapivo/core-gml)
 - [visu-gml](https://github.com/Alkapivo/visu-gml)
 
 And synced with this repository using [gm-cli](https://github.com/Alkapivo/gm-cli). As a result I dont have to use GameMaker IDE or GMEdit, I can just use visual studio code :) 
 
+# Documentation
+
+Work on the [documentation](https://github.com/Alkapivo/visu-project/wiki/1.-UI-overview) is ongoing, but some of the articles are already pushed to github wiki.
 
 # Releases
 
