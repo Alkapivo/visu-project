@@ -569,15 +569,16 @@ function VisuController(layerName) constructor {
   updateIO = function() {
     this.keyboard.update()
     this.mouse.update()  
+    GMTFContext.update()
 
-    global.GMTF_DATA.update()
-
-    var isGMTFFocus = Optional.is(global.GMTF_DATA.active)
-    
-    if (!isGMTFFocus && this.keyboard.keys.controlTrack.pressed) {
+    if (!GMTFContext.isFocused() && this.keyboard.keys.controlTrack.pressed) {
       switch (this.fsm.getStateName()) {
-        case "play": this.send(new Event("pause")) break
-        case "pause": this.send(new Event("play")) break
+        case "play": 
+          this.send(new Event("pause")) 
+          break
+        case "pause": 
+          this.send(new Event("play"))
+          break
       }
     }
 
@@ -592,7 +593,7 @@ function VisuController(layerName) constructor {
       this.renderUI = !this.renderUI
     }
 
-    if (!isGMTFFocus &&  this.keyboard.keys.exitModal.pressed) {
+    if (!GMTFContext.isFocused() && this.keyboard.keys.exitModal.pressed) {
 
       if (Core.isType(this.uiService.find("visu-new-project-modal"), UI)) {
         this.newProjectModal.send(new Event("close"))
@@ -637,7 +638,7 @@ function VisuController(layerName) constructor {
       this.gridRenderer.camera.enableMouseLook = !this.gridRenderer.camera.enableMouseLook
     }
 
-    if (!isGMTFFocus && this.keyboard.keys.controlLeft.on && this.keyboard.keys.newProject.pressed) {
+    if (!GMTFContext.isFocused() && this.keyboard.keys.controlLeft.on && this.keyboard.keys.newProject.pressed) {
       Beans.get(BeanVisuController).newProjectModal
       .send(new Event("open").setData({
         layout: new UILayout({
@@ -652,7 +653,7 @@ function VisuController(layerName) constructor {
 
     if (this.keyboard.keys.controlLeft.on 
       && this.keyboard.keys.openProject.pressed
-      && !Optional.is(global.GMTF_DATA.active)) {
+      && !GMTFContext.isFocused()) {
       try {
         var manifest = FileUtil.getPathToOpenWithDialog({ 
           description: "Visu track file",
@@ -676,7 +677,7 @@ function VisuController(layerName) constructor {
 
     if (this.keyboard.keys.controlLeft.on 
       && this.keyboard.keys.saveProject.pressed
-      && !Optional.is(global.GMTF_DATA.active)) {
+      && !GMTFContext.isFocused()) {
       try {
         var path = FileUtil.getPathToSaveWithDialog({ 
           description: "Visu track file",
@@ -700,14 +701,14 @@ function VisuController(layerName) constructor {
       }
     }
 
-    if (!isGMTFFocus 
+    if (!GMTFContext.isFocused() 
       && this.keyboard.keys.saveTemplate.pressed 
       && this.editor.store.getValue("render-event")) {
       
       this.editor.accordion.templateToolbar.send(new Event("save-template"))
     }
 
-    if (!isGMTFFocus 
+    if (!GMTFContext.isFocused() 
       && this.keyboard.keys.saveBrush.pressed 
       && this.editor.store.getValue("render-brush")) {
       
@@ -715,23 +716,23 @@ function VisuController(layerName) constructor {
     }
 
 
-    if (!isGMTFFocus && this.keyboard.keys.selectTool.pressed) {
+    if (!GMTFContext.isFocused() && this.keyboard.keys.selectTool.pressed) {
       this.editor.store.get("tool").set("tool_select")
     }
 
-    if (!isGMTFFocus && this.keyboard.keys.eraseTool.pressed) {
+    if (!GMTFContext.isFocused() && this.keyboard.keys.eraseTool.pressed) {
       this.editor.store.get("tool").set("tool_erase")
     }
 
-    if (!isGMTFFocus && this.keyboard.keys.brushTool.pressed) {
+    if (!GMTFContext.isFocused() && this.keyboard.keys.brushTool.pressed) {
       this.editor.store.get("tool").set("tool_brush")
     }
 
-    if (!isGMTFFocus && this.keyboard.keys.cloneTool.pressed) {
+    if (!GMTFContext.isFocused() && this.keyboard.keys.cloneTool.pressed) {
       this.editor.store.get("tool").set("tool_clone")
     }
 
-    if (!isGMTFFocus && !this.keyboard.keys.controlLeft.on && this.keyboard.keys.previewBrush.pressed) {
+    if (!GMTFContext.isFocused() && !this.keyboard.keys.controlLeft.on && this.keyboard.keys.previewBrush.pressed) {
       var brush = this.editor.brushToolbar.store.getValue("brush")
       if (Core.isType(brush, VEBrush)) {
         var handler = this.trackService.handlers.get(brush.type)
@@ -739,7 +740,7 @@ function VisuController(layerName) constructor {
       }
     }
 
-    if (!isGMTFFocus && this.keyboard.keys.previewEvent.pressed) {
+    if (!GMTFContext.isFocused() && this.keyboard.keys.previewEvent.pressed) {
       var event = this.editor.accordion.eventInspector.store.getValue("event")
       if (Core.isType(event, VEEvent)) {
         var handler = this.trackService.handlers.get(event.type)
@@ -754,21 +755,21 @@ function VisuController(layerName) constructor {
     
     
 
-    if (!isGMTFFocus && (this.keyboard.keys.zoomIn.pressed 
+    if (!GMTFContext.isFocused() && (this.keyboard.keys.zoomIn.pressed 
       || this.keyboard.keys.numZoomIn.pressed)) {
 
       var item = this.editor.store.get("timeline-zoom")
       item.set(clamp(item.get() - 1, 5, 20))
     }
 
-    if (!isGMTFFocus && (this.keyboard.keys.zoomOut.pressed 
+    if (!GMTFContext.isFocused() && (this.keyboard.keys.zoomOut.pressed 
       || this.keyboard.keys.numZoomOut.pressed)) {
 
       var item = this.editor.store.get("timeline-zoom")
       item.set(clamp(item.get() + 1, 5, 20))
     }
 
-    if (!isGMTFFocus && this.keyboard.keys.snapToGrid.pressed) {
+    if (!GMTFContext.isFocused() && this.keyboard.keys.snapToGrid.pressed) {
       var item = this.editor.store.get("snap")
       item.set(!item.get())
     }

@@ -603,11 +603,23 @@ function VisuNewProjectForm(json = null) constructor {
           this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
         },
         onMouseReleasedLeft: function(event) {
-          if (Core.isType(global.GMTF_DATA.active, gmtf)) {
-            if (Core.isType(global.GMTF_DATA.active.uiItem, UIItem)) {
-              global.GMTF_DATA.active.uiItem.update()
+          if (Core.isType(GMTFContext.get(), GMTF)) {
+            if (Core.isType(GMTFContext.get().uiItem, UIItem)) {
+              GMTFContext.get().uiItem.update()
             }
-            global.GMTF_DATA.active.unfocus()
+            GMTFContext.get().unfocus()
+          }
+
+          if (String.isEmpty(this.context.state.get("form").store.getValue("project-name"))) {
+            Beans.get(BeanVisuController).send(new Event("spawn-popup", 
+              { message: "Name cannot be empty" }))
+            return
+          }
+      
+          if (!FileUtil.fileExists(this.context.state.get("form").store.getValue("file-audio"))) {
+            Beans.get(BeanVisuController).send(new Event("spawn-popup", 
+              { message: "Audio must be selected" }))
+            return
           }
           
           var path = FileUtil.getPathToSaveWithDialog({ 
@@ -716,7 +728,6 @@ function VisuNewProjectForm(json = null) constructor {
   save = function(manifestPath) {
     var json = this.serialize()
     var controller = Beans.get(BeanVisuController)
-    var fileService = controller.fileService
 
     var path = Assert.isType(FileUtil.getDirectoryFromPath(manifestPath), String)
     var manifest = {
@@ -1064,7 +1075,7 @@ function VisuNewProjectForm(json = null) constructor {
                   "callable":"brush_grid_config",
                   "timestamp":0.0,
                   "data":{
-                    "grid-config_transform-speed":{
+                    "grid-config_speed":{
                       "value":4.166666666666667,
                       "factor":0.5,
                       "overrideValue":false,
@@ -1077,8 +1088,8 @@ function VisuNewProjectForm(json = null) constructor {
                     "grid-config_clear-frame":1.0,
                     "grid-config_use-clear-color":true,
                     "grid-config_clear-color":"#FFFFFF",
-                    "grid-config_use-transform-clear-frame-alpha":true,
-                    "grid-config_transform-clear-frame-alpha":{
+                    "grid-config_use-clear-frame-alpha":true,
+                    "grid-config_clear-frame-alpha":{
                       "value":0.0,
                       "factor":999.0,
                       "overrideValue":false,
@@ -1092,8 +1103,8 @@ function VisuNewProjectForm(json = null) constructor {
                     "grid-config_use-border-bottom-color":true,
                     "grid-config_border-bottom-color":"#FF0000ED",
                     "grid-config_border-bottom-color-speed":1.0,
-                    "grid-config_use-transform-border-bottom-alpha":true,
-                    "grid-config_transform-border-bottom-alpha":{
+                    "grid-config_use-border-bottom-alpha":true,
+                    "grid-config_border-bottom-alpha":{
                       "value":0.0,
                       "factor":999.0,
                       "overrideValue":false,
@@ -1106,8 +1117,8 @@ function VisuNewProjectForm(json = null) constructor {
                       "name":"texture_visu_editor_icon_event_grid_config",
                       "blend":"#FFFF00"
                     },
-                    "grid-config_use-transform-border-bottom-size":true,
-                    "grid-config_transform-border-bottom-size":{
+                    "grid-config_use-border-bottom-size":true,
+                    "grid-config_border-bottom-size":{
                       "value":0.0,
                       "factor":999.0,
                       "overrideValue":false,
@@ -1119,8 +1130,8 @@ function VisuNewProjectForm(json = null) constructor {
                     "grid-config_use-border-horizontal-color":true,
                     "grid-config_border-horizontal-color":"#FF0000ED",
                     "grid-config_border-horizontal-color-speed":1.0,
-                    "grid-config_use-transform-border-horizontal-alpha":true,
-                    "grid-config_transform-border-horizontal-alpha":{
+                    "grid-config_use-border-horizontal-alpha":true,
+                    "grid-config_border-horizontal-alpha":{
                       "value":0.0,
                       "factor":999.0,
                       "overrideValue":false,
@@ -1129,8 +1140,8 @@ function VisuNewProjectForm(json = null) constructor {
                       "startValue":0.0,
                       "finished":false
                     },
-                    "grid-config_use-transform-border-horizontal-size":true,
-                    "grid-config_transform-border-horizontal-size":{
+                    "grid-config_use-border-horizontal-size":true,
+                    "grid-config_border-horizontal-size":{
                       "value":0.0,
                       "factor":999.0,
                       "overrideValue":false,
@@ -1143,7 +1154,7 @@ function VisuNewProjectForm(json = null) constructor {
                     "grid-config_render-grid":1.0,
                     "grid-config_use-render-grid-elements":true,
                     "grid-config_render-grid-elements":true,
-                    "grid-config_use-transform-speed":true
+                    "grid-config_use-speed":true
                   }
                 }
               ]

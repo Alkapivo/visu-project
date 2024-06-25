@@ -532,7 +532,7 @@ function _UIUtil() constructor {
         }
 
         if (this.textField.style.w != _w || this.textField.style.h != _h) {
-          this.textField.update_style()
+          this.textField.updateStyle()
         }
       }
     },

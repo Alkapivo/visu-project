@@ -29,7 +29,7 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
 
   ///@type {Number}
   height = Assert.isType(Struct
-    .getDefault(this.config, "height", 100.0), Number)
+    .getDefault(this.config, "height", 1000000.0), Number)
 
   ///@type {Number}
   pixelWidth = Assert.isType(Struct
@@ -200,7 +200,7 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
   ///@type {Struct}
   movement = {
     enable: false,
-    angle: 90,
+    angle: new NumberTransformer({ value: 90.0, target: 1.0, factor: 0.01, increase: 0.0 }),
     speed: new NumberTransformer({ value: 0.0, target: 1.0, factor: 0.01, increase: 0.0 }),
   }
 
@@ -212,43 +212,32 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
     this.dispatcher.update()
     this.executor.update()
 
-
-
-    if (this.controller.editor.store.getValue("target-locked-x")) {
-      this.targetLocked.setX((this.view.width * floor(this.view.x / this.view.width)) 
-        + (this.view.width / 2))
-    }
-
-    if (this.controller.editor.store.getValue("target-locked-y")) {
-      this.targetLocked.setY((this.view.height * floor(this.view.y / this.view.height)) 
-        + (this.view.height / 2))
-    }
-
     var player = this.controller.playerService.player
     if (this.movement.enable) {
+      this.movement.angle.update()
       this.movement.speed.update()
       this.targetLocked.setX(this.targetLocked.x + Math
-        .fetchCircleX(this.movement.speed
-        .get() / 500.0, this.movement.angle))
+        .fetchCircleX(this.movement.speed.get() / 500.0, this.movement.angle.get()))
       this.targetLocked.setY(this.targetLocked.y + Math
-        .fetchCircleY(this.movement.speed
-        .get() / 500.0, this.movement.angle))
-    } else if (Core.isType(player, Player)) {
-      this.targetLocked.setX(player.x)
-      this.targetLocked.setY(player.y)
+        .fetchCircleY(this.movement.speed.get() / 500.0, this.movement.angle.get()))
+    } else {
+      if (Core.isType(player, Player)) {
+        this.targetLocked.setX(player.x)
+        this.targetLocked.setY(player.y)
+      }
+
+      if (this.controller.editor.store.getValue("target-locked-x")) {
+        this.targetLocked.setX((this.view.width * floor(this.view.x / this.view.width)) + (this.view.width / 2))
+      }
+  
+      if (this.controller.editor.store.getValue("target-locked-y")) {
+        this.targetLocked.setY((this.view.height * floor(this.view.y / this.view.height)) + (this.view.height / 2))
+      }
     }
 
     if (Core.isType(player, Player)) {
-      player.x = clamp(
-        player.x, 
-        this.view.x - this.targetLocked.margin.left, 
-        this.view.x + this.view.width + this.targetLocked.margin.right
-      )
-      player.y = clamp(
-        player.y, 
-        this.view.y - this.targetLocked.margin.top, 
-        this.view.y + this.view.height + this.targetLocked.margin.bottom
-      )
+      player.x = clamp(player.x, 0.0, this.width)
+      player.y = clamp(player.y, 0.0, this.height)
     }
 
     this.view

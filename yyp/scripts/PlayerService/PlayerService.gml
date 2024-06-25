@@ -90,7 +90,7 @@ function PlayerService(_controller, config = {}): Service() constructor {
         this.gameMode = this.controller.gameMode
         this.player.speed = 0
         this.player.angle = 90
-        this.player.sprite.setAngle(0.0)
+        this.player.sprite.setAngle(this.player.angle)
         this.player.updateGameMode(this.gameMode)
       }
       

@@ -45,9 +45,6 @@ function Player(template): GridItem(template) constructor {
   ///@type {Keyboard}
   keyboard = Assert.isType(template.keyboard, Keyboard)
 
-  ///@type {Number}
-  angle = 90
-
   ///@private
   ///@param {VisuController} controller
   ///@return {GridItem}
@@ -61,15 +58,37 @@ function Player(template): GridItem(template) constructor {
 
     var view = controller.gridService.view
     if (controller.editor.store.getValue("target-locked-x")) {
-      var offsetX = (this.mask.getWidth() / GRID_SERVICE_PIXEL_WIDTH)
-      var anchorX = (view.width * floor(view.x / view.width))
-      this.x = clamp(this.x, anchorX - view.width - 0.5 + offsetX, anchorX + (2 * view.width) + 0.5 + offsetX)
+      var width = controller.gridService.properties.borderHorizontalLength
+      var offsetX = (this.sprite.getWidth()) / GRID_SERVICE_PIXEL_WIDTH
+      var anchorX = view.x //(view.width * floor(view.x / view.width)) 
+      this.x = clamp(
+        this.x,
+        clamp(anchorX - width + offsetX + (view.width / 2.0), 0.0, view.worldWidth),
+        clamp(anchorX + width - offsetX + (view.width / 2.0), 0.0, view.worldWidth)
+      )
+      //Core.print("x", this.x, "anchorX", anchorX, "follow.x", view.follow.target.x, "view.x", view.x)
     }
 
     if (controller.editor.store.getValue("target-locked-y")) {
-      var anchorY = (view.height * floor(view.y / view.height))
-      this.y = clamp(this.y, anchorY - (2 * view.height), anchorY + (2 * view.height))
+      var height = controller.gridService.properties.borderVerticalLength
+      var anchorY = view.y //(view.height * floor(view.y / view.height))
+      var platformerY = this.y
+      this.y = clamp(
+        this.y, 
+        clamp(anchorY - height + (view.height / 2.0), 0.0, view.worldHeight),
+        clamp(anchorY + height + (view.height / 2.0), 0.0, view.worldHeight)
+      )
+      if (this.gameMode != null 
+        && this.gameMode.type == PlayerPlatformerGameMode
+        && controller.gridRenderer.player2DCoords.y > controller.gridRenderer.gridSurface.height) {
+
+        this.y = clamp(platformerY, 0.0, view.worldHeight + view.height)
+        controller.editor.store.get("target-locked-y").set(false)
+      }
     }
+
+    this.x = clamp(this.x, 0.0, view.worldWidth)
+    this.y = clamp(this.y, 0.0, view.worldHeight)
     return this
   }
 

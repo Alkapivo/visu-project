@@ -13,7 +13,8 @@ function LyricsService(config = null): Service() constructor {
 
       var lines = new Array(String)
       var template = Assert.isType(this.templates.get(event.data.template), LyricsTemplate)
-      GPU.set.font(event.data.font)
+
+      GPU.set.font(event.data.font.asset)
       template.lines.forEach(function(line, index, acc) {
         var text = String.wrapText(line, acc.width, "%NEW_LINE%")
         if (String.contains(text, "%NEW_LINE%")) {

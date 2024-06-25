@@ -122,11 +122,11 @@ function brush_view_camera(json = null) {
         value: Struct.getDefault(json, "view-config_movement-enable", false),
       },
       "view-config_movement-angle": {
-        type: Number,
-        value: Struct.getDefault(json, "view-config_movement-angle", 90.0),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0.0, 360.0) 
-        },
+        type: NumberTransformer,
+        value: new NumberTransformer(Struct.getDefault(json, 
+          "view-config_movement-angle",
+          { value: 90, target: 1, factor: 0.01, increase: 0 }
+        )),
       },
       "view-config_movement-speed": {
         type: NumberTransformer,
@@ -161,36 +161,14 @@ function brush_view_camera(json = null) {
         },
       },
       {
-        name: "view-config_movement-angle",  
-        template: VEComponents.get("numeric-slider-field"),
-        layout: VELayouts.get("numeric-slider-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Angle",
-            enable: { key: "view-config_use-movement" },
-          },
-          field: { 
-            store: { key: "view-config_movement-angle" },
-            enable: { key: "view-config_use-movement" },
-          },
-          slider: { 
-            minValue: 0.0,
-            maxValue: 360.0,
-            store: { key: "view-config_movement-angle" },
-            enable: { key: "view-config_use-movement" },
-          },
-        },
-      },
-      {
-        name: "view-config_movement-speed",
+        name: "view-config_movement-angle",
         template: VEComponents.get("transform-numeric-property"),
         layout: VELayouts.get("transform-numeric-property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           title: {
             label: { 
-              text: "Speed",
+              text: "Angle",
               enable: { key: "view-config_use-movement" },
             },
             input: {
@@ -202,7 +180,7 @@ function brush_view_camera(json = null) {
                     sprite = SpriteUtil.parse({ name: "visu_texture_ui_spawn_arrow" })
                     Struct.set(data, "sprite", sprite)
                   }
-                  sprite.setAngle(value)
+                  sprite.setAngle(value.target)
                 },
                 set: function(value) { return },
               },
@@ -233,6 +211,50 @@ function brush_view_camera(json = null) {
                 
                 return this
               },
+            },
+          },
+          target: {
+            label: {
+              text: "Target",
+              enable: { key: "view-config_use-movement" },
+            },
+            field: {
+              store: { key: "view-config_movement-angle" },
+              enable: { key: "view-config_use-movement" },
+            },
+          },
+          factor: {
+            label: {
+              text: "Factor",
+              enable: { key: "view-config_use-movement" },
+            },
+            field: {
+              store: { key: "view-config_movement-angle" },
+              enable: { key: "view-config_use-movement" },
+            },
+          },
+          increment: {
+            label: {
+              text: "Increment",
+              enable: { key: "view-config_use-movement" },
+            },
+            field: {
+              store: { key: "view-config_movement-angle" },
+              enable: { key: "view-config_use-movement" },
+            },
+          },
+        },
+      },
+      {
+        name: "view-config_movement-speed",
+        template: VEComponents.get("transform-numeric-property"),
+        layout: VELayouts.get("transform-numeric-property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          title: {
+            label: { 
+              text: "Speed",
+              enable: { key: "view-config_use-movement" },
             },
           },
           target: {

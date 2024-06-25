@@ -30,8 +30,24 @@ function PlayerRacingGameMode(json) {
     }), false),
  
     ///@override
-    ///@param {Player} player
+    ///@param {GridItem} player
     ///@param {VisuController} controller
+    ///@return {GridItemGameMode}
+    onStart: function(player, controller) {
+      this.throttle.speed = 0
+      this.nitro.speed = 0
+      this.wheel.speed = 0
+      player.speed = 0
+      player.angle = 90
+      player.sprite.setAngle(player.angle)
+
+      return this
+    },
+
+    ///@override
+    ///@param {GridItem} player
+    ///@param {VisuController} controller
+    ///@return {GridItemGameMode}
     update: function(player, controller) {
       static calcSpeed = function(movement, keyA, keyB) {
         movement.speed = keyA || keyB
@@ -45,7 +61,7 @@ function PlayerRacingGameMode(json) {
       }
 
       var keys = player.keyboard.keys
-      if (Optional.is(global.GMTF_DATA.active)) {
+      if (GMTFContext.isFocused()) {
         keys.left.on = false
         keys.right.on = false
         keys.up.on = false
@@ -59,9 +75,23 @@ function PlayerRacingGameMode(json) {
       this.throttle.speedMax = speedMax
 
       player.angle += calcSpeed(this.wheel, keys.right.on, keys.left.on)
-      player.sprite.setAngle(player.angle - 90)
-
+      player.sprite.setAngle(player.angle)
       player.y = clamp(player.y, 0.0, controller.gridService.height)
+      /*
+      var gridService = controller.gridService
+      player.x = clamp(
+        player.x, 
+        gridService.view.x - gridService.targetLocked.margin.left, 
+        gridService.view.x + gridService.view.width + gridService.targetLocked.margin.right
+      )
+      player.y = clamp(
+        player.y, 
+        gridService.view.y - gridService.targetLocked.margin.top, 
+        gridService.view.y + gridService.view.height + gridService.targetLocked.margin.bottom
+      )
+      */
+
+      return this
     },
   }))
 }
@@ -112,8 +142,26 @@ function PlayerBulletHellGameMode(json) {
     ),
 
     ///@override
-    ///@param {Player} player
+    ///@param {GridItem} player
     ///@param {VisuController} controller
+    ///@return {GridItemGameMode}
+    onStart: function(player, controller) {
+      this.x.speed = 0
+      this.y.speed = 0
+      this.guns.forEach(function(gun) {
+        gun.cooldown.reset()
+      })
+      player.speed = 0
+      player.angle = 90
+      player.sprite.setAngle(player.angle)
+
+      return this
+    },
+
+    ///@override
+    ///@param {GridItem} player
+    ///@param {VisuController} controller
+    ///@return {GridItemGameMode}
     update: function(player, controller) {
       static calcSpeed = function(config, player, keyA, keyB) {
         config.speed = keyA || keyB
@@ -127,20 +175,13 @@ function PlayerBulletHellGameMode(json) {
       }
       
       var keys = player.keyboard.keys
-      if (Optional.is(global.GMTF_DATA.active)) {
+      if (GMTFContext.isFocused()) {
         keys.left.on = false
         keys.right.on = false
         keys.up.on = false
         keys.down.on = false
         keys.action.on = false
       }
-
-      player.x = player.x + calcSpeed(this.x, player, keys.left.on, keys.right.on)
-      player.y = clamp(
-        player.y + calcSpeed(this.y, player, keys.up.on, keys.down.on), 
-        0.0, 
-        controller.gridService.height
-      )
 
       if (keys.action.on) {
         this.guns.forEach(function(gun, index, acc) {
@@ -168,6 +209,15 @@ function PlayerBulletHellGameMode(json) {
           }
         })
       }
+
+      player.x = player.x + calcSpeed(this.x, player, keys.left.on, keys.right.on)
+      player.y = clamp(
+        player.y + calcSpeed(this.y, player, keys.up.on, keys.down.on), 
+        0.0, 
+        controller.gridService.height
+      )
+
+      return this
     },
   }))
 }
@@ -201,8 +251,25 @@ function PlayerPlatformerGameMode(json) {
     doubleJumped: false,
 
     ///@override
-    ///@param {Player} player
+    ///@param {GridItem} player
     ///@param {VisuController} controller
+    ///@return {GridItemGameMode}
+    onStart: function(player, controller) {
+      this.x.speed = 0
+      this.y.speed = 0
+      this.shroomLanded = null
+      this.doubleJumped = false
+      player.speed = 0
+      player.angle = 90
+      player.sprite.setAngle(player.angle)
+      
+      return this
+    },
+
+    ///@override
+    ///@param {GridItem} player
+    ///@param {VisuController} controller
+    ///@return {GridItemGameMode}
     update: function(player, controller) {
       static calcSpeed = function(config, player, keyA, keyB) {
         config.speed = keyA || keyB
@@ -217,7 +284,14 @@ function PlayerPlatformerGameMode(json) {
 
       var gridService = controller.gridService
       var view = gridService.view
-      var keys = player.keyboard.keys    
+      var keys = player.keyboard.keys
+      if (GMTFContext.isFocused()) {
+        keys.left.on = false
+        keys.right.on = false
+        keys.up.on = false
+        keys.down.on = false
+        keys.action.on = false
+      }
       player.x = player.x + calcSpeed(this.x, player, keys.left.on, keys.right.on)
 
       var shroomCollision = player.signals.shroomCollision
@@ -291,6 +365,8 @@ function PlayerPlatformerGameMode(json) {
           this.doubleJumped = false
         }
       }
+
+      return this
     },
   }))
 }

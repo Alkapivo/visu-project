@@ -12,7 +12,7 @@ function LyricsRenderer(_controller, config = {}) constructor {
     var service = this.controller.lyricsService
     service.executor.tasks.forEach(function(task, iterator, renderer) {
       var lyrics = task.state.lyrics
-      GPU.set.font(lyrics.font).align.h(lyrics.align).align.v(lyrics.align)
+      GPU.set.font(lyrics.font.asset).align.h(lyrics.align).align.v(lyrics.align)
 
       var enable = renderer.controller.renderUI
       var preview = renderer.controller.editor.layout.nodes.preview
@@ -74,7 +74,7 @@ function LyricsRenderer(_controller, config = {}) constructor {
         
         _x = guiX + (_x * guiWidth)
         _y = guiY + (_y * guiHeight)
-        GPU.render.text(_x, _y, text, color, outline, alpha)
+        GPU.render.text(_x, _y, text, color, outline, alpha, lyrics.font, lyrics.align.h, lyrics.align.v)
       }
     }, this)
 

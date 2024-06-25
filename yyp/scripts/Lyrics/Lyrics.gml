@@ -30,10 +30,10 @@ function Lyrics(json) constructor {
   ///@type {Array<String>}
   lines = Assert.isType(json.lines, Array)
 
-  ///@type {String}
-  font = Optional.is(Struct.get(json, "font"))
-    ? Assert.isType(json.font, GMFont)
-    : font_basic
+  ///@type {Font}
+  font = Core.isType(Struct.get(json, "font"), Font)
+    ? json.font
+    : Assert.isType(FontUtil.parse({ name: "font_basic" }), Font)
 
   ///@type {String}
   fontHeight = Optional.is(Struct.get(json, "fontHeight"))

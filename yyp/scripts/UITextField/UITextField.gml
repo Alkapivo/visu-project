@@ -17,7 +17,7 @@ global.__GMTF_COLOR_DICTIONARY = new Map(String, String, {
 ///@return {UIItem}
 function UITextField(name, json = null) {
 
-  ///@description parse colors parameters to match gmtf format
+  ///@description parse colors parameters to match GMTF format
   GMTF_COLOR_DICTIONARY.forEach(function(gmtfKey, key, json) {
     if (Struct.contains(json, key)) {
       var color = ColorUtil.fromHex(Struct.get(json, key))
@@ -29,7 +29,7 @@ function UITextField(name, json = null) {
   if (Struct.contains(json, "store")) {
     Struct.set(json, "store", Struct.append({
       callback: function(value, data) {
-        if (global.GMTF_DATA.active != data.textField) {
+        if (GMTFContext.current != data.textField) {
           data.textField.setText(value)
         }
       },
@@ -44,8 +44,8 @@ function UITextField(name, json = null) {
     ///@type {any}
     value: Struct.getDefault(json, "value", ""),
 
-    ///@type {gmtf}
-    textField: Core.isType(json, Struct) ? new gmtf(json) : new gmtf(),
+    ///@type {GMTF}
+    textField: Core.isType(json, Struct) ? new GMTF(json) : new GMTF(),
 
     ///@type {?Struct}
     enable: Struct.contains(json, "enable")
@@ -119,7 +119,7 @@ function UITextField(name, json = null) {
       }
 
       if (this.textField.style.w != _w || this.textField.style.h != _h) {
-        this.textField.update_style()
+        this.textField.updateStyle()
       }
       
       if (Optional.is(this.context.surface)) {

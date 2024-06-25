@@ -165,6 +165,7 @@ function GridItem(config = {}) constructor {
   ? method(this, Assert.isType(config.updateGameMode, Callable))
   : function(mode) {
     this.gameMode = this.gameModes.get(mode)
+    this.gameMode.onStart(this, Beans.get(BeanVisuController))
     return this
   }
 

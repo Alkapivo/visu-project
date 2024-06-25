@@ -274,11 +274,11 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               backgroundColor: VETheme.color.acceptShadow,
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
               callback: function(event) {
-                if (Core.isType(global.GMTF_DATA.active, gmtf)) {
-                  if (Core.isType(global.GMTF_DATA.active.uiItem, UIItem)) {
-                    global.GMTF_DATA.active.uiItem.update()
+                if (Core.isType(GMTFContext.get(), GMTF)) {
+                  if (Core.isType(GMTFContext.get().uiItem, UIItem)) {
+                    GMTFContext.get().uiItem.update()
                   }
-                  global.GMTF_DATA.active.unfocus()
+                  GMTFContext.get().unfocus()
                 }
 
                 this.context.templateToolbar.send(new Event("add-template"))
@@ -319,11 +319,11 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               backgroundColor: VETheme.color.acceptShadow,
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
               callback: function(event) {
-                if (Core.isType(global.GMTF_DATA.active, gmtf)) {
-                  if (Core.isType(global.GMTF_DATA.active.uiItem, UIItem)) {
-                    global.GMTF_DATA.active.uiItem.update()
+                if (Core.isType(GMTFContext.get(), GMTF)) {
+                  if (Core.isType(GMTFContext.get().uiItem, UIItem)) {
+                    GMTFContext.get().uiItem.update()
                   }
-                  global.GMTF_DATA.active.unfocus()
+                  GMTFContext.get().unfocus()
                 }
 
                 this.context.templateToolbar.send(new Event("add-template"))
@@ -364,11 +364,11 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               backgroundColor: VETheme.color.acceptShadow,
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
               callback: function(event) {
-                if (Core.isType(global.GMTF_DATA.active, gmtf)) {
-                  if (Core.isType(global.GMTF_DATA.active.uiItem, UIItem)) {
-                    global.GMTF_DATA.active.uiItem.update()
+                if (Core.isType(GMTFContext.get(), GMTF)) {
+                  if (Core.isType(GMTFContext.get().uiItem, UIItem)) {
+                    GMTFContext.get().uiItem.update()
                   }
-                  global.GMTF_DATA.active.unfocus()
+                  GMTFContext.get().unfocus()
                 }
 
                 this.context.templateToolbar.send(new Event("add-template"))
@@ -409,11 +409,11 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               backgroundColor: VETheme.color.acceptShadow,
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
               callback: function(event) {
-                if (Core.isType(global.GMTF_DATA.active, gmtf)) {
-                  if (Core.isType(global.GMTF_DATA.active.uiItem, UIItem)) {
-                    global.GMTF_DATA.active.uiItem.update()
+                if (Core.isType(GMTFContext.get(), GMTF)) {
+                  if (Core.isType(GMTFContext.get().uiItem, UIItem)) {
+                    GMTFContext.get().uiItem.update()
                   }
-                  global.GMTF_DATA.active.unfocus()
+                  GMTFContext.get().unfocus()
                 }
 
                 this.context.templateToolbar.send(new Event("add-template"))
@@ -454,11 +454,11 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               backgroundColor: VETheme.color.acceptShadow,
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
               callback: function(event) {
-                if (Core.isType(global.GMTF_DATA.active, gmtf)) {
-                  if (Core.isType(global.GMTF_DATA.active.uiItem, UIItem)) {
-                    global.GMTF_DATA.active.uiItem.update()
+                if (Core.isType(GMTFContext.get(), GMTF)) {
+                  if (Core.isType(GMTFContext.get().uiItem, UIItem)) {
+                    GMTFContext.get().uiItem.update()
                   }
-                  global.GMTF_DATA.active.unfocus()
+                  GMTFContext.get().unfocus()
                 }
 
                 this.context.templateToolbar.send(new Event("add-template"))
@@ -577,11 +577,11 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               backgroundColor: VETheme.color.acceptShadow,
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
               callback: function(event) {
-                if (Core.isType(global.GMTF_DATA.active, gmtf)) {
-                  if (Core.isType(global.GMTF_DATA.active.uiItem, UIItem)) {
-                    global.GMTF_DATA.active.uiItem.update()
+                if (Core.isType(GMTFContext.get(), GMTF)) {
+                  if (Core.isType(GMTFContext.get().uiItem, UIItem)) {
+                    GMTFContext.get().uiItem.update()
                   }
-                  global.GMTF_DATA.active.unfocus()
+                  GMTFContext.get().unfocus()
                 }
 
                 this.context.templateToolbar.send(new Event("add-template"))
@@ -1545,11 +1545,11 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
               backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
               label: { text: "Save template" },
               callback: function() { 
-                if (Core.isType(global.GMTF_DATA.active, gmtf)) {
-                  if (Core.isType(global.GMTF_DATA.active.uiItem, UIItem)) {
-                    global.GMTF_DATA.active.uiItem.update()
+                if (Core.isType(GMTFContext.get(), GMTF)) {
+                  if (Core.isType(GMTFContext.get().uiItem, UIItem)) {
+                    GMTFContext.get().uiItem.update()
                   }
-                  global.GMTF_DATA.active.unfocus()
+                  GMTFContext.get().unfocus()
                 }
 
                 this.context.templateToolbar.send(new Event("save-template"))

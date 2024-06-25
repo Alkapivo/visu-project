@@ -1,5 +1,40 @@
 ///@package com.alkapivo.visu.service.grid.GridRenderer
 
+///@param {Number} x
+///@param {Number} y
+///@param {Number} z
+///@param {Matrix} view
+///@param {Matrix} projection
+///@param {Number} width
+///@param {Number} height
+///@return {Struct}
+function project3DCoordsOn2D(x, y, z, view, projection, width, height) {
+  var _x = 0
+  var _y = 0
+  if (projection[15] == 0) {
+    // perspective projection
+    var _width = view[2] * x + view[6] * y + view[10] * z + view[14];
+    if (_width == 0) {
+      return { 
+        x: null, 
+        y: null
+      }
+    }
+
+    _x = projection[8] + projection[0] * (view[0] * x + view[4] * y + view[8] * z + view[12]) / _width
+    _y = projection[9] + projection[5] * (view[1] * x + view[5] * y + view[9] * z + view[13]) / _width
+  } else {
+    /// ortho projection
+    _x = projection[12] + projection[0] * (view[0] * x + view[4] * y + view[8]  * z + view[12])
+    _y = projection[13] + projection[5] * (view[1] * x + view[5] * y + view[9]  * z + view[13])
+  }
+
+  return { 
+    x: (0.5 + 0.5 * _x) * width,
+    y: (0.5 + 0.5 * _y) * height,
+  }
+}
+
 
 ///@param {Controller} _controller
 ///@param {Struct} [config]
@@ -49,6 +84,18 @@ function GridRenderer(_controller, config = {}) constructor {
   ///@type {Timer}
   ///@description Z demo
   playerZTimer = new Timer(pi * 2, { loop: Infinity }) 
+
+  ///@private
+  ///@type {Struct}
+  player2DCoords = { x: 0, y: 0 }
+
+  ///@private
+  ///@type {Sprite}
+  playerHintPointer = Assert.isType(SpriteUtil.parse({ name: "texture_bullet" }), Sprite)
+
+  ///@private
+  ///@type {Font}
+  playerHintFont = Assert.isType(FontUtil.parse({ name: "font_inter_24_regular" }), Font)
 
   ///@private
   ///@return {GridRenderer}
@@ -202,30 +249,50 @@ function GridRenderer(_controller, config = {}) constructor {
 
   ///@private
   renderBorders = function() {
-    static renderBottom = function(controller) {
-      var gridService = this.controller.gridService
-      var view = gridService.view
-      var beginX = -5.0 * GRID_SERVICE_PIXEL_WIDTH
-      var beginY = (gridService.height - view.y) * GRID_SERVICE_PIXEL_HEIGHT
-      var endX = (5.0 + view.width) * GRID_SERVICE_PIXEL_WIDTH
-      var endY = beginY
-
-      GPU.render.texturedLine(
-        beginX, beginY, endX, endY, 
-        gridService.properties.borderBottomThickness, 
-        gridService.properties.borderBottomAlpha,
-        gridService.properties.borderBottomColor.toGMColor()
-      )
-    }
-
-    static renderRight = function(controller) {
-      if (!controller.editor.store.getValue("target-locked-x")) {
+    static renderTop = function(controller) {
+      if (!controller.editor.store.getValue("target-locked-y")) {
         return
       }
 
       var gridService = this.controller.gridService
       var view = gridService.view
-      var beginX = 2.5 * GRID_SERVICE_PIXEL_WIDTH
+      var height = gridService.properties.borderVerticalLength
+      var beginX = -5.0 * GRID_SERVICE_PIXEL_WIDTH
+      var anchorY = view.y//(view.height * floor(view.y / view.height))
+      var beginY = GRID_SERVICE_PIXEL_HEIGHT * (clamp(anchorY - height + (view.height / 2.0), 0.0, view.worldHeight) - view.y)
+      var endX = (5.0 + view.width) * GRID_SERVICE_PIXEL_WIDTH
+      var endY = beginY
+      GPU.render.texturedLine(
+        beginX, beginY, endX, endY, 
+        gridService.properties.borderVerticalThickness, 
+        gridService.properties.borderVerticalAlpha,
+        gridService.properties.borderVerticalColor.toGMColor()
+      )
+    }
+
+    static renderBottom = function(controller) {
+      var gridService = this.controller.gridService
+      var view = gridService.view
+      var height = gridService.properties.borderVerticalLength
+      var anchorY = view.y//view.height * floor(view.y / view.height)
+      var beginX = GRID_SERVICE_PIXEL_WIDTH * -5.0
+      var beginY = GRID_SERVICE_PIXEL_HEIGHT * (controller.editor.store.getValue("target-locked-y")
+        ? clamp(anchorY + height + (view.height / 2.0), 0.0, view.worldHeight) - view.y
+        : clamp(view.worldHeight - view.y, 0.0, view.worldHeight))
+      var endX = GRID_SERVICE_PIXEL_WIDTH * (view.width + 5.0)
+      var endY = beginY
+      GPU.render.texturedLine(
+        beginX, beginY, endX, endY, 
+        gridService.properties.borderVerticalThickness, 
+        gridService.properties.borderVerticalAlpha,
+        gridService.properties.borderVerticalColor.toGMColor()
+      )
+    }
+
+    static renderRight = function(controller) {
+      var gridService = this.controller.gridService
+      var view = gridService.view
+      var beginX = (0.5 + gridService.properties.borderHorizontalLength) * GRID_SERVICE_PIXEL_WIDTH
       var beginY = -5 * GRID_SERVICE_PIXEL_HEIGHT
       var endX = beginX
       var endY = (5 + view.height) * GRID_SERVICE_PIXEL_HEIGHT
@@ -239,13 +306,9 @@ function GridRenderer(_controller, config = {}) constructor {
     }
 
     static renderLeft = function(controller) {
-      if (!controller.editor.store.getValue("target-locked-x")) {
-        return
-      }
-
       var gridService = this.controller.gridService
       var view = gridService.view
-      var beginX = -1.5 * GRID_SERVICE_PIXEL_WIDTH
+      var beginX = (0.5 - gridService.properties.borderHorizontalLength) * GRID_SERVICE_PIXEL_WIDTH
       var beginY = -5 * GRID_SERVICE_PIXEL_HEIGHT
       var endX = beginX
       var endY = (5 + view.height) * GRID_SERVICE_PIXEL_HEIGHT
@@ -258,17 +321,22 @@ function GridRenderer(_controller, config = {}) constructor {
       )
     }
 
+    renderTop(this.controller)
     renderBottom(this.controller)
     renderLeft(this.controller)
     renderRight(this.controller)
   }
 
   ///@private
+  ///@param {Number} baseX
+  ///@param {Number} baseY
   ///@return {GridRenderer}
-  renderPlayer = function() { 
+  renderPlayer = function(baseX, baseY) { 
     var player = this.controller.playerService.player
     if (!this.controller.gridService.properties.renderElements
       || !Core.isType(player, Player)) {
+      this.player2DCoords.x = null
+      this.player2DCoords.y = null
       return this
     }
 
@@ -296,11 +364,10 @@ function GridRenderer(_controller, config = {}) constructor {
       
       shader_reset()
     } else {
-      player.sprite.render(
-        (player.x - ((player.sprite.texture.width * player.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) + ((player.sprite.texture.offsetX * player.sprite.scaleX) / GRID_SERVICE_PIXEL_WIDTH) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
-        (player.y - ((player.sprite.texture.height * player.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) + ((player.sprite.texture.offsetY * player.sprite.scaleY) / GRID_SERVICE_PIXEL_HEIGHT) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
-      )
-
+      var _x = (player.x - ((player.sprite.texture.width * player.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) + ((player.sprite.texture.offsetX * player.sprite.scaleX) / GRID_SERVICE_PIXEL_WIDTH) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
+      var _y = (player.y - ((player.sprite.texture.height * player.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) + ((player.sprite.texture.offsetY * player.sprite.scaleY) / GRID_SERVICE_PIXEL_HEIGHT) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
+      player.sprite.render(_x, _y)
+      this.player2DCoords = project3DCoordsOn2D(_x + baseX, _y + baseY,this.controller.gridService.properties.depths.playerZ, this.camera.viewMatrix, this.camera.projectionMatrix, this.gridSurface.width, this.gridSurface.height)
       /*
       GPU.render.rectangle(
         (player.x - ((player.mask.getWidth() * player.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
@@ -311,7 +378,6 @@ function GridRenderer(_controller, config = {}) constructor {
         c_lime
       )
       */
-      
     }
     
     return this
@@ -594,14 +660,13 @@ function GridRenderer(_controller, config = {}) constructor {
     var xfrom = xto + cameraDistance * dcos(renderer.camera.angle) * dcos(renderer.camera.pitch)
     var yfrom = yto - cameraDistance * dsin(renderer.camera.angle) * dcos(renderer.camera.pitch)
     var zfrom = zto - cameraDistance * dsin(renderer.camera.pitch)
-    renderer.camera.viewMatrix = matrix_build_lookat(xfrom, yfrom, zfrom, xto, yto, zto, 0, 0, 1)
-    camera_set_view_mat(renderer.camera.gmCamera, renderer.camera.viewMatrix)
-    renderer.camera.projectionMatrix = matrix_build_projection_perspective_fov(-60, -1 * renderer.gridSurface.width / renderer.gridSurface.height, 1, 32000) ///@todo extract parameters
-    camera_set_proj_mat(renderer.camera.gmCamera, renderer.camera.projectionMatrix)
-    camera_apply(renderer.camera.gmCamera)
-
     var baseX = GRID_SERVICE_PIXEL_WIDTH + GRID_SERVICE_PIXEL_WIDTH * 0.5
     var baseY = GRID_SERVICE_PIXEL_HEIGHT + GRID_SERVICE_PIXEL_HEIGHT * 0.5
+    renderer.camera.viewMatrix = matrix_build_lookat(xfrom, yfrom, zfrom, xto, yto, zto, 0, 0, 1)
+    renderer.camera.projectionMatrix = matrix_build_projection_perspective_fov(-60, -1 * renderer.gridSurface.width / renderer.gridSurface.height, 1, 32000) ///@todo extract parameters
+    camera_set_view_mat(renderer.camera.gmCamera, renderer.camera.viewMatrix)
+    camera_set_proj_mat(renderer.camera.gmCamera, renderer.camera.projectionMatrix)
+    camera_apply(renderer.camera.gmCamera)
 
     matrix_set(matrix_world, matrix_build(
       baseX, baseY, depths.channelZ, 
@@ -646,7 +711,7 @@ function GridRenderer(_controller, config = {}) constructor {
       1, 1, 1
     ))
     renderer.renderBorders()
-    renderer.renderPlayer()
+    renderer.renderPlayer(baseX, baseY)
 
     matrix_set(matrix_world, matrix_build_identity())
   }
@@ -703,6 +768,52 @@ function GridRenderer(_controller, config = {}) constructor {
     return this
   }
 
+  ///@private
+  ///@return {GrindRenderer}
+  renderPlayerHint = function(config) {
+    if ((this.player2DCoords.x != null && this.player2DCoords.y != null) 
+      && (this.player2DCoords.x < 0 
+        || this.player2DCoords.x > this.gridSurface.width 
+        || this.player2DCoords.y < 0 
+        || this.player2DCoords.y > this.gridSurface.height)) {
+
+      var configX = Core.isType(Struct.get(config, "x"), Number) ? config.x : 0.0
+      var configY = Core.isType(Struct.get(config, "y"), Number) ? config.y : 0.0
+      var player = this.controller.playerService.player
+      var _x = clamp(this.player2DCoords.x, player.sprite.getWidth() - player.sprite.texture.offsetX, this.gridSurface.width - player.sprite.getWidth() + player.sprite.texture.offsetX)
+      var _y = clamp(this.player2DCoords.y, player.sprite.getHeight() - player.sprite.texture.offsetY, this.gridSurface.height - player.sprite.getHeight() + player.sprite.texture.offsetY)
+      var alpha = player.sprite.getAlpha()
+      player.sprite
+        .setAlpha(alpha * 0.5)
+        .render(configX + _x, configY + _y)
+        .setAlpha(alpha)
+
+      var angle = Math.fetchAngle(_x, _y, this.player2DCoords.x, this.player2DCoords.y)
+      this.playerHintPointer
+        .setAngle(angle)
+        .setAlpha(0.8)
+        .render(
+          configX + _x + Math.fetchCircleX(player.sprite.getWidth() / 3, angle),
+          configY + _y + Math.fetchCircleY(player.sprite.getHeight() / 3, angle)
+        )
+      
+      var length = round(Math.fetchLength(_x, _y, this.player2DCoords.x, this.player2DCoords.y))
+      GPU.render.text(
+        configX + _x,
+        configY + _y,
+        string(length),
+        c_white,
+        c_black,
+        1.0,
+        this.playerHintFont, 
+        HAlign.CENTER,
+        VAlign.CENTER
+      )
+    }
+
+    return this
+  }
+
   ///@return {GridRenderer}
   clear = function() {
     this.camera = new GridCamera()
@@ -733,6 +844,7 @@ function GridRenderer(_controller, config = {}) constructor {
     this.gameSurface
       .update(width, height)
       .renderOn(this.renderGameSurface, this)
+
     return this
   }
 
@@ -740,6 +852,7 @@ function GridRenderer(_controller, config = {}) constructor {
   ///@return {GridRenderer}
   renderGUI = function(config = null) {
     this.bktGlitchService.renderOn(this.renderBKTGlitch, config)
+    this.renderPlayerHint(config)
     return this
   }
 

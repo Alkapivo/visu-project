@@ -12,6 +12,7 @@ function _Visu() constructor {
 
     initGPU()
     initBeans()
+    GMTFContext = new _GMTFContext()
     Assert.isType(layerName, String)
     Core.loadProperties(FileUtil.get($"{working_directory}core-properties.json"))
     Core.loadProperties(FileUtil.get($"{working_directory}visu-properties.json"))

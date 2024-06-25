@@ -22,14 +22,14 @@ function brush_grid_config(json = null) {
         type: Boolean,
         value: Struct.getDefault(json, "grid-config_render-grid-elements", false),
       },
-      "grid-config_use-transform-speed": {
+      "grid-config_use-speed": {
         type: Boolean,
-        value: Struct.getDefault(json, "grid-config_use-transform-speed", false),
+        value: Struct.getDefault(json, "grid-config_use-speed", false),
       },
-      "grid-config_transform-speed": {
+      "grid-config_speed": {
         type: NumberTransformer,
         value: new NumberTransformer(Struct.getDefault(json, 
-          "grid-config_transform-speed", 
+          "grid-config_speed", 
           { value: (FRAME_MS / 4) * 1000, target: 1, factor: 0.01, increase: 0 }
         )),
       },
@@ -49,14 +49,14 @@ function brush_grid_config(json = null) {
         type: Color,
         value: ColorUtil.fromHex(Struct.get(json, "grid-config_clear-color"), "#000000"),
       },
-      "grid-config_use-transform-clear-frame-alpha": {
+      "grid-config_use-clear-frame-alpha": {
         type: Boolean,
-        value: Struct.getDefault(json, "grid-config_use-transform-clear-frame-alpha", false),
+        value: Struct.getDefault(json, "grid-config_use-clear-frame-alpha", false),
       },
-      "grid-config_transform-clear-frame-alpha": {
+      "grid-config_clear-frame-alpha": {
         type: NumberTransformer,
         value: new NumberTransformer(Struct.getDefault(json, 
-          "grid-config_transform-clear-frame-alpha", 
+          "grid-config_clear-frame-alpha", 
           { value: 0, target: 5, factor: 0.03, increase: 2 }
         )),
       },
@@ -87,25 +87,25 @@ function brush_grid_config(json = null) {
           return clamp(NumberUtil.parse(value, this.value), 0.000001, 1.0) 
         },
       },
-      "grid-config_use-transform-border-bottom-alpha": {
+      "grid-config_use-border-bottom-alpha": {
         type: Boolean,
-        value: Struct.getDefault(json, "grid-config_use-transform-border-bottom-alpha", false),
+        value: Struct.getDefault(json, "grid-config_use-border-bottom-alpha", false),
       },
-      "grid-config_transform-border-bottom-alpha": {
+      "grid-config_border-bottom-alpha": {
         type: NumberTransformer,
         value: new NumberTransformer(Struct.getDefault(json, 
-          "grid-config_transform-border-bottom-alpha",
+          "grid-config_border-bottom-alpha",
           { value: 0, target: 1, factor: 0.01, increase: 0 }
         )),
       },
-      "grid-config_use-transform-border-bottom-size": {
+      "grid-config_use-border-bottom-size": {
         type: Boolean,
-        value: Struct.getDefault(json, "grid-config_use-transform-border-bottom-size", false),
+        value: Struct.getDefault(json, "grid-config_use-border-bottom-size", false),
       },
-      "grid-config_transform-border-bottom-size": {
+      "grid-config_border-bottom-size": {
         type: NumberTransformer,
         value: new NumberTransformer(Struct.getDefault(json, 
-          "grid-config_transform-border-bottom-size",
+          "grid-config_border-bottom-size",
           { value: 0, target: 1, factor: 0.01, increase: 0 }
         )),
       },
@@ -124,26 +124,48 @@ function brush_grid_config(json = null) {
           return clamp(NumberUtil.parse(value, this.value), 0.000001, 1.0) 
         },
       },
-      "grid-config_use-transform-border-horizontal-alpha": {
+      "grid-config_use-border-horizontal-alpha": {
         type: Boolean,
-        value: Struct.getDefault(json, "grid-config_use-transform-border-horizontal-alpha", false),
+        value: Struct.getDefault(json, "grid-config_use-border-horizontal-alpha", false),
       },
-      "grid-config_transform-border-horizontal-alpha": {
+      "grid-config_border-horizontal-alpha": {
         type: NumberTransformer,
         value: new NumberTransformer(Struct.getDefault(json, 
-          "grid-config_transform-border-horizontal-alpha",
+          "grid-config_border-horizontal-alpha",
           { value: 0, target: 1, factor: 0.01, increase: 0 }
         )),
       },
-      "grid-config_use-transform-border-horizontal-size": {
+      "grid-config_use-border-horizontal-size": {
         type: Boolean,
-        value: Struct.getDefault(json, "grid-config_use-transform-border-horizontal-size", false),
+        value: Struct.getDefault(json, "grid-config_use-border-horizontal-size", false),
       },
-      "grid-config_transform-border-horizontal-size": {
+      "grid-config_border-horizontal-size": {
         type: NumberTransformer,
         value: new NumberTransformer(Struct.getDefault(json, 
-          "grid-config_transform-border-horizontal-size",
+          "grid-config_border-horizontal-size",
           { value: 0, target: 1, factor: 0.01, increase: 0 }
+        )),
+      },
+      "grid-config_use-border-horizontal-width": {
+        type: Boolean,
+        value: Struct.getDefault(json, "grid-config_use-border-horizontal-width", false),
+      },
+      "grid-config_border-horizontal-width": {
+        type: NumberTransformer,
+        value: new NumberTransformer(Struct.getDefault(json, 
+          "grid-config_border-horizontal-width",
+          { value: 0, target: 2, factor: 0.01, increase: 0 }
+        )),
+      },
+      "grid-config_use-border-horizontal-height": {
+        type: Boolean,
+        value: Struct.getDefault(json, "grid-config_use-border-horizontal-height", false),
+      },
+      "grid-config_border-horizontal-height": {
+        type: NumberTransformer,
+        value: new NumberTransformer(Struct.getDefault(json, 
+          "grid-config_border-horizontal-height",
+          { value: 0, target: 2, factor: 0.01, increase: 0 }
         )),
       },
     }),
@@ -195,7 +217,7 @@ function brush_grid_config(json = null) {
         },
       },
       {
-        name: "grid-config_transform-speed",
+        name: "grid-config_speed",
         template: VEComponents.get("transform-numeric-property"),
         layout: VELayouts.get("transform-numeric-property"),
         config: { 
@@ -203,42 +225,42 @@ function brush_grid_config(json = null) {
           title: {
             label: {
               text: "Transform speed",
-              enable: { key: "grid-config_use-transform-speed" },
+              enable: { key: "grid-config_use-speed" },
             },  
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
               spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "grid-config_use-transform-speed" },
+              store: { key: "grid-config_use-speed" },
             },
           },
           target: {
             label: { 
               text: "Target",
-              enable: { key: "grid-config_use-transform-speed" },
+              enable: { key: "grid-config_use-speed" },
             },
             field: { 
-              store: { key: "grid-config_transform-speed" },
-              enable: { key: "grid-config_use-transform-speed" },
+              store: { key: "grid-config_speed" },
+              enable: { key: "grid-config_use-speed" },
             },
           },
           factor: {
             label: {
               text: "Factor",
-              enable: { key: "grid-config_use-transform-speed" },
+              enable: { key: "grid-config_use-speed" },
             },
             field: { 
-              store: { key: "grid-config_transform-speed" },
-              enable: { key: "grid-config_use-transform-speed" },
+              store: { key: "grid-config_speed" },
+              enable: { key: "grid-config_use-speed" },
             },
           },
           increment: {
             label: {
               text: "Increment",
-              enable: { key: "grid-config_use-transform-speed" },
+              enable: { key: "grid-config_use-speed" },
             },
             field: { 
-              store: { key: "grid-config_transform-speed" },
-              enable: { key: "grid-config_use-transform-speed" },
+              store: { key: "grid-config_speed" },
+              enable: { key: "grid-config_use-speed" },
             },
           },
         },
@@ -342,7 +364,7 @@ function brush_grid_config(json = null) {
         },
       },
       {
-        name: "grid-config_transform-clear-frame-alpha",
+        name: "grid-config_clear-frame-alpha",
         template: VEComponents.get("transform-numeric-property"),
         layout: VELayouts.get("transform-numeric-property"),
         config: { 
@@ -350,42 +372,42 @@ function brush_grid_config(json = null) {
           title: {
             label: { 
               text: "Transform clear frame alpha",
-              enable: { key: "grid-config_use-transform-clear-frame-alpha" },
+              enable: { key: "grid-config_use-clear-frame-alpha" },
             },  
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
               spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "grid-config_use-transform-clear-frame-alpha"}
+              store: { key: "grid-config_use-clear-frame-alpha"}
             },
           },
           target: {
             label: {
               text: "Target",
-              enable: { key: "grid-config_use-transform-clear-frame-alpha" },
+              enable: { key: "grid-config_use-clear-frame-alpha" },
             },
             field: {
-              store: { key: "grid-config_transform-clear-frame-alpha" },
-              enable: { key: "grid-config_use-transform-clear-frame-alpha" },
+              store: { key: "grid-config_clear-frame-alpha" },
+              enable: { key: "grid-config_use-clear-frame-alpha" },
             },
           },
           factor: {
             label: {
               text: "Factor",
-              enable: { key: "grid-config_use-transform-clear-frame-alpha" },
+              enable: { key: "grid-config_use-clear-frame-alpha" },
             },
             field: {
-              store: { key: "grid-config_transform-clear-frame-alpha" },
-              enable: { key: "grid-config_use-transform-clear-frame-alpha" },
+              store: { key: "grid-config_clear-frame-alpha" },
+              enable: { key: "grid-config_use-clear-frame-alpha" },
             },
           },
           increment: {
             label: { 
               text: "Increment",
-              enable: { key: "grid-config_use-transform-clear-frame-alpha" },
+              enable: { key: "grid-config_use-clear-frame-alpha" },
             },
             field: { 
-              store: { key: "grid-config_transform-clear-frame-alpha" },
-              enable: { key: "grid-config_use-transform-clear-frame-alpha" },
+              store: { key: "grid-config_clear-frame-alpha" },
+              enable: { key: "grid-config_use-clear-frame-alpha" },
             },
           },
         },
@@ -398,7 +420,7 @@ function brush_grid_config(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           label: {
             text: "Set gamemode",
-            enable: { key: "grid-config_use-render-grid" },
+            enable: { key: "grid-config_use-gamemode" },
           },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
@@ -432,6 +454,55 @@ function brush_grid_config(json = null) {
         },
       },
       {
+        name: "grid-config_border-horizontal-width",
+        template: VEComponents.get("transform-numeric-property"),
+        layout: VELayouts.get("transform-numeric-property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          title: {
+            label: {
+              text: "Vertical border length",
+              enable: { key: "grid-config_use-border-horizontal-width" },
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "grid-config_use-border-horizontal-width" },
+            },
+          },
+          target: {
+            label: {
+              text: "Target",
+              enable: { key: "grid-config_use-border-horizontal-width" },
+            },
+            field: {
+              store: { key: "grid-config_border-horizontal-width" },
+              enable: { key: "grid-config_use-border-horizontal-width" },
+            },
+          },
+          factor: {
+            label: {
+              text: "Factor",
+              enable: { key: "grid-config_use-border-horizontal-width" },
+            },
+            field: {
+              store: { key: "grid-config_border-horizontal-width" },
+              enable: { key: "grid-config_use-border-horizontal-width" },
+            },
+          },
+          increment: {
+            label: {
+              text: "Increment",
+              enable: { key: "grid-config_use-border-horizontal-width" },
+            },
+            field: {
+              store: { key: "grid-config_border-horizontal-width" },
+              enable: { key: "grid-config_use-border-horizontal-width" },
+            },
+          },
+        },
+      },
+      {
         name: "grid-config_border-bottom-color",
         template: VEComponents.get("color-picker"),
         layout: VELayouts.get("color-picker"),
@@ -439,7 +510,7 @@ function brush_grid_config(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           title: { 
             label: {
-              text: "Border bottom color",
+              text: "Vertical border color",
               enable: { key: "grid-config_use-border-bottom-color" },
             },
             checkbox: { 
@@ -513,7 +584,7 @@ function brush_grid_config(json = null) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Speed",
+            text: "Color speed",
             enable: { key: "grid-config_use-border-bottom-color" },
           },
           field: { 
@@ -523,99 +594,148 @@ function brush_grid_config(json = null) {
         },
       },
       {
-        name: "grid-config_transform-border-bottom-alpha",
+        name: "grid-config_border-bottom-alpha",
         template: VEComponents.get("transform-numeric-property"),
         layout: VELayouts.get("transform-numeric-property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           title: {
             label: {
-              text: "Transform b. bottom alpha",
-              enable: { key: "grid-config_use-transform-border-bottom-alpha" },
+              text: "Vertical border alpha",
+              enable: { key: "grid-config_use-border-bottom-alpha" },
             },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
               spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "grid-config_use-transform-border-bottom-alpha" },
+              store: { key: "grid-config_use-border-bottom-alpha" },
             },
           },
           target: {
             label: {
               text: "Target",
-              enable: { key: "grid-config_use-transform-border-bottom-alpha" },
+              enable: { key: "grid-config_use-border-bottom-alpha" },
             },
             field: {
-              store: { key: "grid-config_transform-border-bottom-alpha" },
-              enable: { key: "grid-config_use-transform-border-bottom-alpha" },
+              store: { key: "grid-config_border-bottom-alpha" },
+              enable: { key: "grid-config_use-border-bottom-alpha" },
             },
           },
           factor: {
             label: {
               text: "Factor",
-              enable: { key: "grid-config_use-transform-border-bottom-alpha" },
+              enable: { key: "grid-config_use-border-bottom-alpha" },
             },
             field: {
-              store: { key: "grid-config_transform-border-bottom-alpha" },
-              enable: { key: "grid-config_use-transform-border-bottom-alpha" },
+              store: { key: "grid-config_border-bottom-alpha" },
+              enable: { key: "grid-config_use-border-bottom-alpha" },
             },
           },
           increment: {
             label: {
               text: "Increment",
-              enable: { key: "grid-config_use-transform-border-bottom-alpha" },
+              enable: { key: "grid-config_use-border-bottom-alpha" },
             },
             field: {
-              store: { key: "grid-config_transform-border-bottom-alpha" },
-              enable: { key: "grid-config_use-transform-border-bottom-alpha" },
+              store: { key: "grid-config_border-bottom-alpha" },
+              enable: { key: "grid-config_use-border-bottom-alpha" },
             },
           },
         },
       },
       {
-        name: "grid-config_transform-border-bottom-size",
+        name: "grid-config_border-bottom-size",
         template: VEComponents.get("transform-numeric-property"),
         layout: VELayouts.get("transform-numeric-property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           title: {
             label: {
-              text: "Transform b. bottom size",
-              enable: { key: "grid-config_use-transform-border-bottom-size" },
+              text: "Vertical border size",
+              enable: { key: "grid-config_use-border-bottom-size" },
             },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
               spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "grid-config_use-transform-border-bottom-size" },
+              store: { key: "grid-config_use-border-bottom-size" },
             },
           },
           target: {
             label: {
               text: "Target",
-              enable: { key: "grid-config_use-transform-border-bottom-size" },
+              enable: { key: "grid-config_use-border-bottom-size" },
             },
             field: {
-              store: { key: "grid-config_transform-border-bottom-size" },
-              enable: { key: "grid-config_use-transform-border-bottom-size" },
+              store: { key: "grid-config_border-bottom-size" },
+              enable: { key: "grid-config_use-border-bottom-size" },
             },
           },
           factor: {
             label: {
               text: "Factor",
-              enable: { key: "grid-config_use-transform-border-bottom-size" },
+              enable: { key: "grid-config_use-border-bottom-size" },
             },
             field: {
-              store: { key: "grid-config_transform-border-bottom-size" },
-              enable: { key: "grid-config_use-transform-border-bottom-size" },
+              store: { key: "grid-config_border-bottom-size" },
+              enable: { key: "grid-config_use-border-bottom-size" },
             },
           },
           increment: {
             label: {
               text: "Increment",
-              enable: { key: "grid-config_use-transform-border-bottom-size" },
+              enable: { key: "grid-config_use-border-bottom-size" },
             },
             field: {
-              store: { key: "grid-config_transform-border-bottom-size" },
-              enable: { key: "grid-config_use-transform-border-bottom-size" },
+              store: { key: "grid-config_border-bottom-size" },
+              enable: { key: "grid-config_use-border-bottom-size" },
+            },
+          },
+        },
+      },
+      {
+        name: "grid-config_border-horizontal-height",
+        template: VEComponents.get("transform-numeric-property"),
+        layout: VELayouts.get("transform-numeric-property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          title: {
+            label: {
+              text: "Horizontal border length",
+              enable: { key: "grid-config_use-border-horizontal-height" },
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "grid-config_use-border-horizontal-height" },
+            },
+          },
+          target: {
+            label: {
+              text: "Target",
+              enable: { key: "grid-config_use-border-horizontal-height" },
+            },
+            field: {
+              store: { key: "grid-config_border-horizontal-height" },
+              enable: { key: "grid-config_use-border-horizontal-height" },
+            },
+          },
+          factor: {
+            label: {
+              text: "Factor",
+              enable: { key: "grid-config_use-border-horizontal-height" },
+            },
+            field: {
+              store: { key: "grid-config_border-horizontal-height" },
+              enable: { key: "grid-config_use-border-horizontal-height" },
+            },
+          },
+          increment: {
+            label: {
+              text: "Increment",
+              enable: { key: "grid-config_use-border-horizontal-height" },
+            },
+            field: {
+              store: { key: "grid-config_border-horizontal-height" },
+              enable: { key: "grid-config_use-border-horizontal-height" },
             },
           },
         },
@@ -628,7 +748,7 @@ function brush_grid_config(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           title: { 
             label: {
-              text: "Border horizontal color",
+              text: "Horizontal border color",
               enable: { key: "grid-config_use-border-horizontal-color" },
             },
             checkbox: { 
@@ -702,7 +822,7 @@ function brush_grid_config(json = null) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Speed",
+            text: "Color speed",
             enable: { key: "grid-config_use-border-horizontal-color" },
           },
           field: { 
@@ -712,99 +832,99 @@ function brush_grid_config(json = null) {
         },
       },
       {
-        name: "grid-config_transform-border-horizontal-alpha",
+        name: "grid-config_border-horizontal-alpha",
         template: VEComponents.get("transform-numeric-property"),
         layout: VELayouts.get("transform-numeric-property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           title: {
             label: {
-              text: "Transform b. horizontal alpha",
-              enable: { key: "grid-config_use-transform-border-horizontal-alpha" },
+              text: "Horizontal border alpha",
+              enable: { key: "grid-config_use-border-horizontal-alpha" },
             },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
               spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "grid-config_use-transform-border-horizontal-alpha" },
+              store: { key: "grid-config_use-border-horizontal-alpha" },
             },
           },
           target: {
             label: {
               text: "Target",
-              enable: { key: "grid-config_use-transform-border-horizontal-alpha" },
+              enable: { key: "grid-config_use-border-horizontal-alpha" },
             },
             field: {
-              store: { key: "grid-config_transform-border-horizontal-alpha" },
-              enable: { key: "grid-config_use-transform-border-horizontal-alpha" },
+              store: { key: "grid-config_border-horizontal-alpha" },
+              enable: { key: "grid-config_use-border-horizontal-alpha" },
             },
           },
           factor: {
             label: {
               text: "Factor",
-              enable: { key: "grid-config_use-transform-border-horizontal-alpha" },
+              enable: { key: "grid-config_use-border-horizontal-alpha" },
             },
             field: {
-              store: { key: "grid-config_transform-border-horizontal-alpha" },
-              enable: { key: "grid-config_use-transform-border-horizontal-alpha" },
+              store: { key: "grid-config_border-horizontal-alpha" },
+              enable: { key: "grid-config_use-border-horizontal-alpha" },
             },
           },
           increment: {
             label: {
               text: "Increment",
-              enable: { key: "grid-config_use-transform-border-horizontal-alpha" },
+              enable: { key: "grid-config_use-border-horizontal-alpha" },
             },
             field: {
-              store: { key: "grid-config_transform-border-horizontal-alpha" },
-              enable: { key: "grid-config_use-transform-border-horizontal-alpha" },
+              store: { key: "grid-config_border-horizontal-alpha" },
+              enable: { key: "grid-config_use-border-horizontal-alpha" },
             },
           },
         },
       },
       {
-        name: "grid-config_transform-border-horizontal-size",
+        name: "grid-config_border-horizontal-size",
         template: VEComponents.get("transform-numeric-property"),
         layout: VELayouts.get("transform-numeric-property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           title: {
             label: {
-              text: "Transform b. horizontal size",
-              enable: { key: "grid-config_use-transform-border-horizontal-size" },
+              text: "Horizontal border size",
+              enable: { key: "grid-config_use-border-horizontal-size" },
             },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
               spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "grid-config_use-transform-border-horizontal-size" },
+              store: { key: "grid-config_use-border-horizontal-size" },
             },
           },
           target: {
             label: {
               text: "Target",
-              enable: { key: "grid-config_use-transform-border-horizontal-size" },
+              enable: { key: "grid-config_use-border-horizontal-size" },
             },
             field: {
-              store: { key: "grid-config_transform-border-horizontal-size" },
-              enable: { key: "grid-config_use-transform-border-horizontal-size" },
+              store: { key: "grid-config_border-horizontal-size" },
+              enable: { key: "grid-config_use-border-horizontal-size" },
             },
           },
           factor: {
             label: {
               text: "Factor",
-              enable: { key: "grid-config_use-transform-border-horizontal-size" },
+              enable: { key: "grid-config_use-border-horizontal-size" },
             },
             field: {
-              store: { key: "grid-config_transform-border-horizontal-size" },
-              enable: { key: "grid-config_use-transform-border-horizontal-size" },
+              store: { key: "grid-config_border-horizontal-size" },
+              enable: { key: "grid-config_use-border-horizontal-size" },
             },
           },
           increment: {
             label: {
               text: "Increment",
-              enable: { key: "grid-config_use-transform-border-horizontal-size" },
+              enable: { key: "grid-config_use-border-horizontal-size" },
             },
             field: {
-              store: { key: "grid-config_transform-border-horizontal-size" },
-              enable: { key: "grid-config_use-transform-border-horizontal-size" },
+              store: { key: "grid-config_border-horizontal-size" },
+              enable: { key: "grid-config_use-border-horizontal-size" },
             },
           },
         },

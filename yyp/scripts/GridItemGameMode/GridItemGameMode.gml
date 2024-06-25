@@ -38,6 +38,13 @@ function GridItemGameMode(json = {}) constructor {
     return this
   }
 
+  ///@param {GridItem} item
+  ///@param {VisuController} controller
+  ///@return {GridItemGameMode}
+  onStart = Core.isType(Struct.get(json, "onStart"), Callable)
+    ? method(this, json.onStart)
+    : function(item, controller) { return this }
+
   if (Struct.contains(json, "features")) {
     GMArray.forEach(json.features, function(json, index, features) {
       var featureName = Struct.get(json, "feature")

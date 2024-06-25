@@ -6,9 +6,21 @@
   "author": "Alkapivo",
   "license": "ISC",
   "dependencies": {
-    "core-gml": "main",
-    "visu-gml": "main",
-    "gmtf-gml": "main",
-    "bktGlitch-gml": "main"
+    "core-gml": {
+      "remote": "https://github.com/Alkapivo/core-gml.git",
+      "revision": "main"
+    },
+    "visu-gml": {
+      "remote": "https://github.com/Alkapivo/visu-gml.git",
+      "revision": "main"
+    },
+    "gmtf-gml": {
+      "remote": "https://github.com/Alkapivo/mh-cz.gmtf-gml.git",
+      "revision": "main"
+    },
+    "bktGlitch-gml": {
+      "remote": "https://github.com/Alkapivo/fyi.odditica.bktGlitch-gml.git",
+      "revision": "main"
+    }
   }
 }

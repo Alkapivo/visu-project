@@ -11,6 +11,11 @@ global.__GPU_DEFAULT_LINE_TEXTURE_CORNER = null
 #macro GPU_DEFAULT_LINE_TEXTURE_CORNER global.__GPU_DEFAULT_LINE_TEXTURE_CORNER
 
 
+///@type {?Font}
+global.__GPU_DEFAULT_FONT = null
+#macro GPU_DEFAULT_FONT global.__GPU_DEFAULT_FONT
+
+
 ///@enum
 function _BlendMode(): Enum() constructor {
   ADD = bm_add
@@ -105,9 +110,24 @@ function _GPU() constructor {
     ///@param {GMColor} [color]
     ///@param {?GMColor} [outline]
     ///@param {Number} [alpha]
+    ///@param {Font} [font]
+    ///@param {HAlign} [h]
+    ///@param {VAlign} [v]
     ///@return {Struct}
-    text: function(_x, _y, text, color = c_white, outline = null, alpha = 1.0) {
-      if (Optional.is(outline)) {
+    text: function(_x, _y, text, color = c_white, outline = null, alpha = 1.0, font = GPU_DEFAULT_FONT, h = HAlign.LEFT, v = VAlign.TOP) {
+      if (font.asset != draw_get_font()) {
+        draw_set_font(font.asset)
+      }
+
+      if (h != draw_get_halign()) {
+        draw_set_halign(h)
+      }
+  
+      if (v != draw_get_valign()) {
+        draw_set_valign(v)
+      }
+
+      if (outline != null) {
         draw_text_color(_x + 1, _y + 1, text, outline, outline, outline, outline, alpha)
         draw_text_color(_x - 1, _y - 1, text, outline, outline, outline, outline, alpha)
         draw_text_color(_x    , _y + 1, text, outline, outline, outline, outline, alpha)
@@ -203,4 +223,5 @@ global.__GPU = new _GPU()
 function initGPU() {
   GPU_DEFAULT_LINE_TEXTURE = new Texture(texture_grid_line_default)
   GPU_DEFAULT_LINE_TEXTURE_CORNER = new Texture(texture_grid_line_corner_default)
+  GPU_DEFAULT_FONT = new Font(font_consolas_10_regular)
 }

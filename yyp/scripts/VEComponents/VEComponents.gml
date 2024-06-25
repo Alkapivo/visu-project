@@ -1958,7 +1958,7 @@ global.__VEComponents = new Map(String, Callable, {
                   var transformer = item.get()
                   if (!Core.isType(transformer, NumberTransformer) 
                     || !Struct.contains(transformer, key)
-                    || global.GMTF_DATA.active == data.textField) {
+                    || GMTFContext.get() == data.textField) {
                     return 
                   }
 
@@ -2071,7 +2071,7 @@ global.__VEComponents = new Map(String, Callable, {
                   var transformer = item.get()
                   if (!Core.isType(transformer, NumberTransformer) 
                     || !Struct.contains(transformer, key)
-                    || global.GMTF_DATA.active == data.textField) {
+                    || GMTFContext.get() == data.textField) {
                     return 
                   }
                   data.textField.setText(Struct.get(transformer, key))
@@ -2204,7 +2204,7 @@ global.__VEComponents = new Map(String, Callable, {
                   var transformer = Struct.get(vec2Transformer, vec2)
                   if (!Core.isType(transformer, NumberTransformer) 
                     || !Struct.contains(transformer, key)
-                    || global.GMTF_DATA.active == data.textField) {
+                    || GMTFContext.get() == data.textField) {
                     return 
                   }
 
@@ -2427,7 +2427,7 @@ global.__VEComponents = new Map(String, Callable, {
                   var transformer = Struct.get(vec3Transformer, vec3)
                   if (!Core.isType(transformer, NumberTransformer) 
                     || !Struct.contains(transformer, key)
-                    || global.GMTF_DATA.active == data.textField) {
+                    || GMTFContext.get() == data.textField) {
                     return 
                   }
 
@@ -2712,7 +2712,7 @@ global.__VEComponents = new Map(String, Callable, {
                   var transformer = Struct.get(vec4Transformer, vec4)
                   if (!Core.isType(transformer, NumberTransformer) 
                     || !Struct.contains(transformer, key)
-                    || global.GMTF_DATA.active == data.textField) {
+                    || GMTFContext.get() == data.textField) {
                     return 
                   }
 
@@ -3044,7 +3044,7 @@ global.__VEComponents = new Map(String, Callable, {
               store: {
                 callback: function(value, data) { 
                   if (!Core.isType(value, Vector2)
-                    || global.GMTF_DATA.active == data.textField) {
+                    || GMTFContext.get() == data.textField) {
                     return 
                   }
                   data.textField.setText(value.x)
@@ -3081,7 +3081,7 @@ global.__VEComponents = new Map(String, Callable, {
               store: {
                 callback: function(value, data) { 
                   if (!Core.isType(value, Vector2)
-                    || global.GMTF_DATA.active == data.textField) {
+                    || GMTFContext.get() == data.textField) {
                     return 
                   }
                   data.textField.setText(value.y)
@@ -3150,7 +3150,7 @@ global.__VEComponents = new Map(String, Callable, {
                   var vec4 = item.get()
                   if (!Core.isType(vec4, Vector4) 
                     || !Struct.contains(vec4, key)
-                    || global.GMTF_DATA.active == data.textField) {
+                    || GMTFContext.get() == data.textField) {
                     return 
                   }
                   data.textField.setText(Struct.get(vec4, key))

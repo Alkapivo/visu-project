@@ -143,6 +143,7 @@ function brush_grid_player(json = null) {
       },
     }),
     components: new Array(Struct, [
+      /*
       {
         name: "grid-player_use-margin",
         template: VEComponents.get("property"),
@@ -338,6 +339,7 @@ function brush_grid_player(json = null) {
           },
         },
       },
+      */
       {
         name: "grid-player_texture",
         template: VEComponents.get("texture-field-ext"),

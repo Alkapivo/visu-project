@@ -140,6 +140,7 @@ function SpriteFeature(json) {
           if (!this.angle.initialized) {
             this.angle.transform.value = item.sprite.angle
             this.angle.transform.startValue = item.sprite.angle
+            this.angle.transform.target = item.angle + angle_difference(this.angle.transform.target, item.sprite.angle)
             this.angle.initialized = true
           }
           item.sprite.setAngle(this.angle.transform.update().value)

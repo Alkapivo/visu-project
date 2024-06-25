@@ -85,16 +85,16 @@ function GridProperties(config = {}) constructor {
 
   #region borders
   ///@type {Color}
-  borderBottomColor = Assert.isType(ColorUtil.fromHex(Struct
-    .getDefault(config, "properties.borderBottomColor ", "#ff0000")), Color)
+  borderVerticalColor = Assert.isType(ColorUtil.fromHex(Struct
+    .getDefault(config, "properties.borderVerticalColor ", "#ff0000")), Color)
 
   ///@type {Number}
-  borderBottomAlpha = Assert.isType(Struct
-    .getDefault(config, "properties.borderBottomAlpha", 1.0), Number)
+  borderVerticalAlpha = Assert.isType(Struct
+    .getDefault(config, "properties.borderVerticalAlpha", 1.0), Number)
 
   ///@type {Number}
-  borderBottomThickness = Assert.isType(Struct
-      .getDefault(config, "properties.borderBottomThickness", 64), Number)
+  borderVerticalThickness = Assert.isType(Struct
+      .getDefault(config, "properties.borderVerticalThickness", 16), Number)
 
   ///@type {Color}
   borderHorizontalColor = Assert.isType(ColorUtil.fromHex(Struct
@@ -102,11 +102,19 @@ function GridProperties(config = {}) constructor {
 
   ///@type {Number}
   borderHorizontalAlpha = Assert.isType(Struct
-    .getDefault(config, "properties.borderHorizontalAlpha", 1.0), Number)  
+    .getDefault(config, "properties.borderHorizontalAlpha", 0.0), Number)  
 
   ///@type {Number}
   borderHorizontalThickness = Assert.isType(Struct
     .getDefault(config, "properties.borderHorizontalThickness", 16), Number)
+
+  ///@type {Number}
+  borderHorizontalLength = Assert.isType(Struct
+    .getDefault(config, "properties.borderHorizontalLength", 1), Number)
+
+  ///@type {Number}
+  borderVerticalLength = Assert.isType(Struct
+    .getDefault(config, "properties.borderVerticalLength", 1), Number)
   #endregion
   
   #region enable/disable rendering

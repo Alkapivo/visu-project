@@ -34,7 +34,7 @@ function AngleFeature(json) {
         if (!this.isAngleSet) {
           this.transform.value = item.angle
           this.transform.startValue = item.angle
-          this.transform.target = this.transform.target + item.angle
+          this.transform.target = item.angle + angle_difference(this.transform.target, item.angle)
           this.isAngleSet = true
         }
         item.setAngle(this.transform.update().value)

@@ -60,8 +60,15 @@ global.__view_track_event = {
     if (Struct.get(data, "view-config_use-movement")) {
       controller.gridService.movement.enable = Struct
         .get(data, "view-config_movement-enable")
-      controller.gridService.movement.angle = Struct
-        .get(data, "view-config_movement-angle")
+
+      var movementAngle = Struct.get(data, "view-config_movement-angle")
+      var angleDifference = angle_difference(movementAngle.target, controller.gridService.movement.angle.get())
+      controller.gridService.movement.angle = new NumberTransformer({
+        value: controller.gridService.movement.angle.get(),
+        target: controller.gridService.movement.angle.get() + angleDifference,
+        factor: movementAngle.factor,
+        increase: movementAngle.increase,
+      })
 
       var movementSpeed = Struct.get(data, "view-config_movement-speed")
       controller.gridService.movement.speed = new NumberTransformer({
@@ -154,19 +161,19 @@ global.__view_track_event = {
     
     if (Struct.get(data, "view-config_use-transform-angle")) {
       var transformer = Struct.get(data, "view-config_transform-angle")
+      var angleDifference = angle_difference(transformer.target, controller.gridRenderer.camera.angle)
       controller.gridService.send(new Event("transform-property", {
         key: "angle",
         container: controller.gridRenderer.camera,
         executor: controller.gridRenderer.camera.executor,
         transformer: new NumberTransformer({
           value: controller.gridRenderer.camera.angle,
-          target: transformer.target,
+          target: controller.gridRenderer.camera.angle + angleDifference,
           factor: transformer.factor,
           increase: transformer.increase,
         })
       }))
     }
-
     
     if (Struct.get(data, "view-config_use-transform-pitch")) {
       var transformer = Struct.get(data, "view-config_transform-pitch")
@@ -201,7 +208,7 @@ global.__view_track_event = {
     controller.lyricsService.send(new Event("add")
       .setData({
         template: Struct.get(data, "view-lyrics_template"),
-        font: FontUtil.fetch(Struct.get(data, "view-lyrics_font")).asset,
+        font: FontUtil.fetch(Struct.get(data, "view-lyrics_font")),
         fontHeight: Struct.get(data, "view-lyrics_font-height"),
         charSpeed: Struct.get(data, "view-lyrics_char-speed"),
         color: ColorUtil.fromHex(Struct.get(data, "view-lyrics_color")).toGMColor(),
