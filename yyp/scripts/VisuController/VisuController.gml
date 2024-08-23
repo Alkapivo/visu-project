@@ -13,6 +13,39 @@ global.__GameMode = new _GameMode()
 #macro BeanVisuController "visuController"
 ///@param {String} layerName
 function VisuController(layerName) constructor {
+  
+  ///@todo MOVE
+  ///@param {String} name
+  factoryTimer = function(name) {
+    return {
+      a: 0.0,
+      b: 0.0,
+      name: name,
+      value: 0.0,
+      size: 0,
+      start: function() {
+        this.a = get_timer()
+        if (this.size > 60) {
+          this.size = 0
+          this.value = 0
+        }
+        return this
+      },
+      finish: function() {
+        this.b = get_timer()
+        this.size = this.size + 1
+        this.value = this.value + ((this.b - this.a) / 1000)
+        return this
+      },
+      ///@return {Number} time in ms (there are 1000 miliseconds per second)
+      getValue: function() {
+        return this.value / this.size
+      },
+      getMessage: function() {
+        return $"{this.name} avg: {string_format(this.getValue(), 1, 4)} ms"
+      },
+    }
+  }
 
   ////@type {Gamemode}
   gameMode = GameMode.BULLETHELL
@@ -338,38 +371,6 @@ function VisuController(layerName) constructor {
 
   ///@type {Boolean}
   renderGUIEnabled = true
-
-  ///@param {String} name
-  factoryTimer = function(name) {
-    return {
-      a: 0.0,
-      b: 0.0,
-      name: name,
-      value: 0.0,
-      size: 0,
-      start: function() {
-        this.a = get_timer()
-        if (this.size > 60) {
-          this.size = 0
-          this.value = 0
-        }
-        return this
-      },
-      finish: function() {
-        this.b = get_timer()
-        this.size = this.size + 1
-        this.value = this.value + ((this.b - this.a) / 1000)
-        return this
-      },
-      ///@return {Number} time in ms (there are 1000 miliseconds per second)
-      getValue: function() {
-        return this.value / this.size
-      },
-      getMessage: function() {
-        return $"{this.name} avg: {string_format(this.getValue(), 1, 4)} ms"
-      },
-    }
-  }
 
   ///@type {Struct}
   renderTimer = this.factoryTimer("Render")
