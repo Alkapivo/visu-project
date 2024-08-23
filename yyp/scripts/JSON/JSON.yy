@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"JSON",
   "isCompatibility":false,
   "isDnD":false,
   "name":"JSON",
   "parent":{
     "name":"util",
-    "path":"folders/core-gml/src/util.yy",
+    "path":"folders/core/src/util.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

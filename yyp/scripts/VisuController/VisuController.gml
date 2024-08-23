@@ -14,21 +14,21 @@ global.__GameMode = new _GameMode()
 ///@param {String} layerName
 function VisuController(layerName) constructor {
 
-  ///@private
-  ///@type {Struct}
-  fsmConfig = {
-    initialState: { 
-      name: "idle",
-      data: Core.getProperty("visu.manifest.load-on-start", false) 
-        ? new Event("load", {
-            manifest: FileUtil.get(String.concat(
-              (Core.getProperty("visu.manifest.path.absolute", false) ? "" : working_directory), 
-              Core.getProperty("visu.manifest.path"))),
-            autoplay: Assert.isType(Core
-              .getProperty("visu.manifest.play-on-start", false), Boolean),
-          })
-        : null,
-    },
+  ////@type {Gamemode}
+  gameMode = GameMode.BULLETHELL
+
+  ///@type {Boolean}
+  renderUI = true
+
+  ///@type {UIService}
+  uiService = new UIService(this)
+
+  ///@type {DisplayService}
+  displayService = new DisplayService(this, { minWidth: 800, minHeight: 480 })
+
+  ///@type {FSM}
+  fsm = new FSM(this, {
+    initialState: { name: "idle" },
     states: {
       "idle": {
         actions: {
@@ -38,7 +38,13 @@ function VisuController(layerName) constructor {
             }
           },
         },
-        transitions: GMArray.toStruct([ "load", "play", "pause", "quit" ]),
+        transitions: { 
+          "idle": null, 
+          "load": null, 
+          "play": null, 
+          "pause": null, 
+          "quit": null,
+        },
       },
       "load": {
         actions: {
@@ -72,7 +78,11 @@ function VisuController(layerName) constructor {
             fsm.context.loader.fsm.dispatcher.send(new Event("transition", { name: "idle" }))
           }
         },
-        transitions: GMArray.toStruct([ "idle", "play", "pause" ]),
+        transitions: { 
+          "idle": null, 
+          "play": null, 
+          "pause": null,
+        },
       },
       "play": {
         actions: {
@@ -115,7 +125,13 @@ function VisuController(layerName) constructor {
             fsm.dispatcher.send(new Event("transition", { name: "idle" }))
           }
         },
-        transitions: GMArray.toStruct([ "idle", "load", "pause", "rewind", "quit" ]),
+        transitions: { 
+          "idle": null, 
+          "load": null, 
+          "pause": null, 
+          "rewind": null, 
+          "quit": null,
+        },
       },
       "pause": {
         actions: {
@@ -153,7 +169,13 @@ function VisuController(layerName) constructor {
             fsm.dispatcher.send(new Event("transition", { name: "idle" }))
           }
         },
-        transitions: GMArray.toStruct([ "idle", "load", "play", "rewind", "quit" ]),
+        transitions: { 
+          "idle": null, 
+          "load": null, 
+          "play": null, 
+          "rewind": null, 
+          "quit": null,
+        },
       },
       "rewind": {
         actions: {
@@ -237,7 +259,12 @@ function VisuController(layerName) constructor {
             }))
           }
         },
-        transitions: GMArray.toStruct([ "idle", "play", "pause", "quit" ]),
+        transitions: {
+          "idle": null, 
+          "play": null, 
+          "pause": null, 
+          "quit": null,
+        },
       },
       "quit": {
         actions: {
@@ -248,113 +275,7 @@ function VisuController(layerName) constructor {
         },
       },
     },
-  }
-
-  ///@private
-  ///@type {Struct}
-  trackServiceConfig = {
-    handlers: new Map(String, Callable)
-      .merge(
-        DEFAULT_TRACK_EVENT_HANDLERS,
-        new Map(String, Callable, grid_track_event),
-        new Map(String, Callable, shader_track_event),
-        new Map(String, Callable, shroom_track_event),
-        new Map(String, Callable, view_track_event)
-      ),
-    isTrackLoaded: function() {
-      var stateName = this.context.fsm.getStateName()
-      return (stateName == "play" || stateName == "pause") 
-        && Core.isType(this.track, Track)
-    },
-  }
-
-  ///@private
-  ///@type {Struct}
-  exitModalConfig = {
-    message: { text: "Changes you made may not be saved." },
-    accept: {
-      text: "Leave",
-      callback: function() {
-        game_end()
-      }
-    },
-    deny: {
-      text: "Cancel",
-      callback: function() {
-        this.context.modal.send(new Event("close"))
-      }
-    }
-  }
-
-  ///@private
-  ///@type {Sprite}
-  spinner = Assert.isType(SpriteUtil
-    .parse({ 
-      name: "texture_spinner", 
-      scaleX: 0.25, 
-      scaleY: 0.25,
-    }), Sprite)
-
-
-  ///@private
-  ///@type {Number}
-  spinnerFactor = 0
-
-  ////@type {Gamemode}
-  gameMode = GameMode.BULLETHELL
-
-  ///@type {Keyboard}
-  keyboard = new Keyboard(
-    { 
-      controlTrack: KeyboardKeyType.SPACE,
-      renderLeftPane: KeyboardKeyType.F1,
-      renderBottomPane: KeyboardKeyType.F2,
-      renderRightPane: KeyboardKeyType.F3,
-      renderTrackControl: KeyboardKeyType.F4,
-      renderUI: KeyboardKeyType.F5,
-      cameraKeyboardLook: KeyboardKeyType.F6,
-      cameraMouseLook: KeyboardKeyType.F7,
-      fullscreen: KeyboardKeyType.F11,
-      exitModal: KeyboardKeyType.ESC,
-      newProject: "N",
-      openProject: "O",
-      saveProject: "S",
-      saveTemplate: "T",
-      saveBrush: "U",
-      selectTool: "S",
-      eraseTool: "E",
-      brushTool: "B",
-      cloneTool: "C",
-      previewBrush: "P",
-      previewEvent: "I",
-      snapToGrid: "G",
-      zoomIn: KeyboardKeyType.PLUS,
-      zoomOut: KeyboardKeyType.MINUS,
-      numZoomIn: KeyboardKeyType.NUM_PLUS,
-      numZoomOut: KeyboardKeyType.NUM_MINUS,
-      controlLeft: KeyboardKeyType.CONTROL_LEFT,
-    }
-  )
-
-  ///@type {Mouse}
-  mouse = new Mouse({ 
-    left: MouseButtonType.LEFT,
-    right: MouseButtonType.RIGHT,
-    wheelUp: MouseButtonType.WHEEL_UP,
-    wheelDown: MouseButtonType.WHEEL_DOWN,
   })
-
-  ///@type {Boolean}
-  renderUI = true
-
-  ///@type {DisplayService}
-  displayService = new DisplayService(this, { minWidth: 800, minHeight: 480 })
-
-  ///@type {FSM}
-  fsm = new FSM(this, this.fsmConfig)
-
-  ///@type {FileService}
-  fileService = new FileService(this)
 
   ///@type {VisuTrackLoader}
   loader = new VisuTrackLoader(this)
@@ -369,7 +290,21 @@ function VisuController(layerName) constructor {
   particleService = new ParticleService(this, { layerName: layerName })
 
   ///@type {TrackService}
-  trackService = new TrackService(this, this.trackServiceConfig)
+  trackService = new TrackService(this, {
+    handlers: new Map(String, Callable)
+      .merge(
+        DEFAULT_TRACK_EVENT_HANDLERS,
+        new Map(String, Callable, grid_track_event),
+        new Map(String, Callable, shader_track_event),
+        new Map(String, Callable, shroom_track_event),
+        new Map(String, Callable, view_track_event)
+      ),
+    isTrackLoaded: function() {
+      var stateName = this.context.fsm.getStateName()
+      return (stateName == "play" || stateName == "pause") 
+        && Core.isType(this.track, Track)
+    },
+  })
 
   ///@type {PlayerService}
   playerService = new PlayerService(this)
@@ -387,7 +322,7 @@ function VisuController(layerName) constructor {
   gridRenderer = new GridRenderer(this)
 
   ///@type {VideoService}
-  videoService = new VideoService(this)
+  videoService = new VideoService()
 
   ///@type {LyricsService}
   lyricsService = new LyricsService(this)
@@ -395,20 +330,66 @@ function VisuController(layerName) constructor {
   ///@type {LyricsRenderer}
   lyricsRenderer = new LyricsRenderer(this)
 
-  ///@type {UIService}
-  uiService = new UIService(this)
-
-  ///@type {VisuEditor}
-  editor = new VisuEditor(this)
-
-  ///@type {VisuNewProjectModal}
-  newProjectModal = new VisuNewProjectModal(this)
-
-  ///@type {VisuModal}
-  exitModal = new VisuModal(this, this.exitModalConfig)
-
   ///@type {GridSystem}
   //gridSystem = new GridSystem(this) ///@ecs
+
+  ///@type {Boolean}
+  renderEnabled = true
+
+  ///@type {Boolean}
+  renderGUIEnabled = true
+
+  ///@param {String} name
+  factoryTimer = function(name) {
+    return {
+      a: 0.0,
+      b: 0.0,
+      name: name,
+      value: 0.0,
+      size: 0,
+      start: function() {
+        this.a = get_timer()
+        if (this.size > 60) {
+          this.size = 0
+          this.value = 0
+        }
+        return this
+      },
+      finish: function() {
+        this.b = get_timer()
+        this.size = this.size + 1
+        this.value = this.value + ((this.b - this.a) / 1000)
+        return this
+      },
+      ///@return {Number} time in ms (there are 1000 miliseconds per second)
+      getValue: function() {
+        return this.value / this.size
+      },
+      getMessage: function() {
+        return $"{this.name} avg: {string_format(this.getValue(), 1, 4)} ms"
+      },
+    }
+  }
+
+  ///@type {Struct}
+  renderTimer = this.factoryTimer("Render")
+  
+  ///@type {Struct}
+  renderGUITimer = this.factoryTimer("RenderGUI")
+
+  ///@param {Boolean} value
+  ///@return {TopDownController}
+  setRenderEnabled = function(value) {
+    this.renderEnabled = value
+    return this
+  }
+
+  ///@param {Boolean} value
+  ///@return {TopDownController}
+  setRenderGUIEnabled = function(value) {
+    this.renderEnabled = value
+    return this
+  }
 
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
@@ -422,19 +403,9 @@ function VisuController(layerName) constructor {
       }))
     },
     "play": function(event) {
-      /*
-      if (this.fsm.getStateName() != "pause") {
-        return
-      }
-      */
       this.fsm.dispatcher.send(new Event("transition", { name: "play" }))
     },
     "pause": function(event) {
-      /*
-      if (this.fsm.getStateName() != "play") {
-        return
-      }
-      */
       this.fsm.dispatcher.send(new Event("transition", { name: "pause" }))
     },
     "rewind": function(event) {
@@ -461,7 +432,10 @@ function VisuController(layerName) constructor {
       this.fsm.dispatcher.send(new Event("transition", { name: "quit" }))
     },
     "spawn-popup": function(event) {
-      this.editor.popupQueue.send(new Event("push", event.data))
+      var _editor = Beans.get(BeanVisuEditor)
+      if (Core.isType(_editor, VisuEditor)) {
+        _editor.popupQueue.send(new Event("push", event.data))
+      }
     }
   }, {
     enableLogger: true,
@@ -480,7 +454,6 @@ function VisuController(layerName) constructor {
     "fsm",
     "loader",
     "displayService",
-    "fileService",
     "dispatcher",
     "executor",
     "particleService",
@@ -492,9 +465,6 @@ function VisuController(layerName) constructor {
     "lyricsService",
     "gridRenderer",
     "videoService",
-    "editor",
-    "exitModal",
-    "newProjectModal"
   ], function(name, index, controller) {
     Logger.debug("VisuController", $"Load service '{name}'")
     return {
@@ -513,15 +483,92 @@ function VisuController(layerName) constructor {
   ///@return {VisuController}
   init = function() {
     Core.debugOverlay(Assert.isType(Core.getProperty("visu.debug-overlay", false), Boolean))
-    var fullscreen = Assert.isType(Core.getProperty("visu.fullscreen", false), Boolean)
+    var fullscreen = Assert.isType(Visu.settings.getValue("visu.fullscreen", false), Boolean)
     this.displayService
       .resize(
-        Assert.isType(Core.getProperty("visu.window.width", 1280), Number),
-        Assert.isType(Core.getProperty("visu.window.height", 720), Number)
+        Assert.isType(Visu.settings.getValue("visu.window.width", 1280), Number),
+        Assert.isType(Visu.settings.getValue("visu.window.height", 720), Number)
       )
       .setFullscreen(fullscreen)
       .setCursor(Cursor.DEFAULT)
     
+    ///@todo DEMO
+    var tree = new Tree({
+      name: "root-node",
+      value: 0,
+      type: "Number",
+      childrens: [
+        {
+          name: "children-1",
+          value: 1,
+          type: "Number"
+        },
+        {
+          name: "children-2",
+          value: 2,
+          type: "Number",
+          childrens: [
+            {
+              name: "children-2.1",
+              value: 2.1,
+              type: "Number"
+            }
+          ]
+        }
+      ]
+    })
+    tree.print()
+
+    ///@todo DEMO
+    var _player = {
+      "map": {
+        "name": "neon-pub",
+        "x": 0,
+        "y": 0
+      },
+      "level": 1,
+      "exp": 0,
+      "sp": 0,
+      "credits": 100,
+      "visu": {
+        "life": {
+          "value": 1,
+          "max": 3
+        },
+        "bomb": {
+          "value": 2,
+          "max": 3
+        },
+        "slotA": "chip-bomb-01",
+        "slotB": null,
+        "slotC": null
+      },
+      "schematics": [ "chip-bomb-01" ],
+      "items": [
+        {
+          "amount": 3,
+          "item": "empty-chip"
+        }
+      ],
+      "quests": [
+        {
+          "name": "first-quest",
+          "status": "finished",
+          "steps": [
+            "find-item",
+            "return-item",
+            "finished"
+          ],
+          "step": "finished"
+        }
+      ],
+      "vars": {
+        "quest_first-quest_npc-talked": true,
+        "map_neon-pub_secret-lever": true,
+        "map_neon-pub_secret-item": true
+      }
+    }
+
     return this
   }
 
@@ -531,7 +578,7 @@ function VisuController(layerName) constructor {
 
   ///@private
   ///@type {Boolean}
-  autosaveEnabled = Core.getProperty("visu.autosave", false)
+  autosaveEnabled = Visu.settings.getValue("visu.autosave", false)
 
   ///@private
   ///@return {VisuController}
@@ -565,282 +612,18 @@ function VisuController(layerName) constructor {
   }
 
   ///@private
-  ///@return {VisuController}
-  updateIO = function() {
-    this.keyboard.update()
-    this.mouse.update()  
-    GMTFContext.update()
-
-    if (!GMTFContext.isFocused() && this.keyboard.keys.controlTrack.pressed) {
-      switch (this.fsm.getStateName()) {
-        case "play": 
-          this.send(new Event("pause")) 
-          break
-        case "pause": 
-          this.send(new Event("play"))
-          break
-      }
-    }
-
-    if (this.keyboard.keys.fullscreen.pressed) {
-      var fullscreen = this.displayService.getFullscreen()
-      Logger.debug("VisuController", String.join("Set fullscreen to ",
-        fullscreen ? "'false'" : "'true'", "."))
-      this.displayService.setFullscreen(!fullscreen)
-    }
-
-    if (this.keyboard.keys.renderUI.pressed) {
-      this.renderUI = !this.renderUI
-    }
-
-    if (!GMTFContext.isFocused() && this.keyboard.keys.exitModal.pressed) {
-
-      if (Core.isType(this.uiService.find("visu-new-project-modal"), UI)) {
-        this.newProjectModal.send(new Event("close"))
-      } else if (Core.isType(this.uiService.find("visu-modal"), UI)) {
-        this.exitModal.send(new Event("close"))
-      } else {
-        this.exitModal.send(new Event("open").setData({
-          layout: new UILayout({
-            name: "display",
-            x: function() { return 0 },
-            y: function() { return 0 },
-            width: function() { return GuiWidth() },
-            height: function() { return GuiHeight() },
-          }),
-        }))
-        this.gridRenderer.camera.enableMouseLook = false
-        this.gridRenderer.camera.enableKeyboardLook = false
-      }
-    }
-
-    if (this.keyboard.keys.renderTrackControl.pressed) {
-      this.editor.store.get("render-trackControl").set(!this.editor.store.getValue("render-trackControl"))
-    }
-
-    if (this.keyboard.keys.renderLeftPane.pressed) {
-      this.editor.store.get("render-event").set(!this.editor.store.getValue("render-event"))
-    }
-
-    if (this.keyboard.keys.renderBottomPane.pressed) {
-      this.editor.store.get("render-timeline").set(!this.editor.store.getValue("render-timeline"))
-    }
-
-    if (this.keyboard.keys.renderRightPane.pressed) {
-      this.editor.store.get("render-brush").set(!this.editor.store.getValue("render-brush"))
-    }
-
-    if (this.keyboard.keys.cameraKeyboardLook.pressed) {
-      this.gridRenderer.camera.enableKeyboardLook = !this.gridRenderer.camera.enableKeyboardLook
-    }
-
-    if (this.keyboard.keys.cameraMouseLook.pressed) {
-      this.gridRenderer.camera.enableMouseLook = !this.gridRenderer.camera.enableMouseLook
-    }
-
-    if (!GMTFContext.isFocused() && this.keyboard.keys.controlLeft.on && this.keyboard.keys.newProject.pressed) {
-      Beans.get(BeanVisuController).newProjectModal
-      .send(new Event("open").setData({
-        layout: new UILayout({
-          name: "display",
-          x: function() { return 0 },
-          y: function() { return 0 },
-          width: function() { return GuiWidth() },
-          height: function() { return GuiHeight() },
-        }),
-      }))
-    }
-
-    if (this.keyboard.keys.controlLeft.on 
-      && this.keyboard.keys.openProject.pressed
-      && !GMTFContext.isFocused()) {
-      try {
-        var manifest = FileUtil.getPathToOpenWithDialog({ 
-          description: "Visu track file",
-          filename: "manifest", 
-          extension: "visu"
-        })
-
-        if (!FileUtil.fileExists(manifest)) {
-          return
-        }
-
-        Beans.get(BeanVisuController).send(new Event("load", {
-          manifest: manifest,
-          autoplay: false
-        }))
-      } catch (exception) {
-        Beans.get(BeanVisuController).send(new Event("spawn-popup", 
-          { message: $"Cannot load the project: {exception.message}" }))
-      }
-    }
-
-    if (this.keyboard.keys.controlLeft.on 
-      && this.keyboard.keys.saveProject.pressed
-      && !GMTFContext.isFocused()) {
-      try {
-        var path = FileUtil.getPathToSaveWithDialog({ 
-          description: "Visu track file",
-          filename: "manifest", 
-          extension: "visu",
-        })
-
-        if (path == null) {
-          return
-        }
-
-        global.__VisuTrack.saveProject(path)
-
-        var controller = Beans.get(BeanVisuController)
-        controller.send(new Event("spawn-popup", 
-          { message: $"Project '{controller.trackService.track.name}' saved successfully at: '{path}'" }))
-      } catch (exception) {
-        var message = $"Cannot save the project: {exception.message}"
-        Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
-        Logger.error("VETitleBar", message)
-      }
-    }
-
-    if (!GMTFContext.isFocused() 
-      && this.keyboard.keys.saveTemplate.pressed 
-      && this.editor.store.getValue("render-event")) {
-      
-      this.editor.accordion.templateToolbar.send(new Event("save-template"))
-    }
-
-    if (!GMTFContext.isFocused() 
-      && this.keyboard.keys.saveBrush.pressed 
-      && this.editor.store.getValue("render-brush")) {
-      
-      this.editor.brushToolbar.send(new Event("save-brush"))
-    }
+  ///@type {Sprite}
+  spinner = Assert.isType(SpriteUtil
+    .parse({ 
+      name: "texture_spinner", 
+      scaleX: 0.25, 
+      scaleY: 0.25,
+    }), Sprite)
 
 
-    if (!GMTFContext.isFocused() && this.keyboard.keys.selectTool.pressed) {
-      this.editor.store.get("tool").set("tool_select")
-    }
-
-    if (!GMTFContext.isFocused() && this.keyboard.keys.eraseTool.pressed) {
-      this.editor.store.get("tool").set("tool_erase")
-    }
-
-    if (!GMTFContext.isFocused() && this.keyboard.keys.brushTool.pressed) {
-      this.editor.store.get("tool").set("tool_brush")
-    }
-
-    if (!GMTFContext.isFocused() && this.keyboard.keys.cloneTool.pressed) {
-      this.editor.store.get("tool").set("tool_clone")
-    }
-
-    if (!GMTFContext.isFocused() && !this.keyboard.keys.controlLeft.on && this.keyboard.keys.previewBrush.pressed) {
-      var brush = this.editor.brushToolbar.store.getValue("brush")
-      if (Core.isType(brush, VEBrush)) {
-        var handler = this.trackService.handlers.get(brush.type)
-        handler(brush.toTemplate().properties)
-      }
-    }
-
-    if (!GMTFContext.isFocused() && this.keyboard.keys.previewEvent.pressed) {
-      var event = this.editor.accordion.eventInspector.store.getValue("event")
-      if (Core.isType(event, VEEvent)) {
-        var handler = this.trackService.handlers.get(event.type)
-        handler(event.toTemplate().event.data)
-      }
-    }
-
-    if (!this.renderUI) {
-      return this
-    }
-
-    
-    
-
-    if (!GMTFContext.isFocused() && (this.keyboard.keys.zoomIn.pressed 
-      || this.keyboard.keys.numZoomIn.pressed)) {
-
-      var item = this.editor.store.get("timeline-zoom")
-      item.set(clamp(item.get() - 1, 5, 20))
-    }
-
-    if (!GMTFContext.isFocused() && (this.keyboard.keys.zoomOut.pressed 
-      || this.keyboard.keys.numZoomOut.pressed)) {
-
-      var item = this.editor.store.get("timeline-zoom")
-      item.set(clamp(item.get() + 1, 5, 20))
-    }
-
-    if (!GMTFContext.isFocused() && this.keyboard.keys.snapToGrid.pressed) {
-      var item = this.editor.store.get("snap")
-      item.set(!item.get())
-    }
-
-    if (this.mouse.buttons.left.pressed) {
-      this.uiService.send(new Event("MousePressedLeft", { 
-        x: MouseUtil.getMouseX(), 
-        y: MouseUtil.getMouseY(),
-      }))
-    }
-
-    if (this.mouse.buttons.left.released) {
-      this.uiService.send(new Event("MouseReleasedLeft", { 
-        x: MouseUtil.getMouseX(), 
-        y: MouseUtil.getMouseY(),
-      }))
-
-      Beans.get(BeanVisuController).displayService.setCursor(Cursor.DEFAULT)
-    }
-
-    if (this.mouse.buttons.left.drag) {
-      this.uiService.send(new Event("MouseDragLeft", { 
-        x: MouseUtil.getMouseX(), 
-        y: MouseUtil.getMouseY(),
-      }))
-    }
-
-    if (this.mouse.buttons.left.drop) {
-      this.uiService.send(new Event("MouseDropLeft", { 
-        x: MouseUtil.getMouseX(), 
-        y: MouseUtil.getMouseY(),
-      }))
-    }
-
-    if (this.mouse.buttons.right.pressed) {
-      this.uiService.send(new Event("MousePressedRight", { 
-        x: MouseUtil.getMouseX(), 
-        y: MouseUtil.getMouseY(),
-      }))
-    }
-
-    if (this.mouse.buttons.right.released) {
-      this.uiService.send(new Event("MouseReleasedRight", { 
-        x: MouseUtil.getMouseX(), 
-        y: MouseUtil.getMouseY(),
-      }))
-    }
-    
-    if (this.mouse.buttons.wheelUp.on) {  
-      this.uiService.send(new Event("MouseWheelUp", { 
-        x: MouseUtil.getMouseX(), 
-        y: MouseUtil.getMouseY(),
-      }))
-    }
-    
-    if (this.mouse.buttons.wheelDown.on) {  
-      this.uiService.send(new Event("MouseWheelDown", {
-        x: MouseUtil.getMouseX(),
-        y: MouseUtil.getMouseY(),
-      }))
-    }
-
-    if (MouseUtil.hasMoved()) {  
-      this.uiService.send(new Event("MouseHoverOver", {
-        x: MouseUtil.getMouseX(),
-        y: MouseUtil.getMouseY(),
-      }))
-    }
-
-    return this
-  }
+  ///@private
+  ///@type {Number}
+  spinnerFactor = 0
 
   ///@private
   ///@param {Struct} service
@@ -850,7 +633,7 @@ function VisuController(layerName) constructor {
     try {
       service.struct.update()
     } catch (exception) {
-      var message = $"'update-service-{service.name }' fatal error: {exception.message}"
+      var message = $"'update-service-{service.name}' fatal error: {exception.message}"
       Logger.error("VisuController", message)
       Core.printStackTrace()
       controller.send(new Event("spawn-popup", { message: message }))
@@ -860,14 +643,6 @@ function VisuController(layerName) constructor {
   
   ///@return {VisuController}
   update = function() {
-    try {
-      this.updateIO()
-    } catch (exception) {
-      var message = $"'updateIO' set fatal error: {exception.message}"
-      this.send(new Event("spawn-popup", { message: message }))
-      Logger.error("VisuController", message)
-    }
-
     if (this.renderUI) {
       try {
         // reset UI timers after resize to avoid ghost effect
@@ -880,8 +655,15 @@ function VisuController(layerName) constructor {
             container.surfaceTick.skip()
             container.updateTimer.time = container.updateTimer.duration
           })
+
+          Visu.settings.setValue("visu.fullscreen", this.displayService.getFullscreen()).save()
+          if (!this.displayService.getFullscreen()) {
+            Visu.settings
+              .setValue("visu.window.width", this.displayService.getWidth())
+              .setValue("visu.window.height", this.displayService.getHeight())
+              .save()
+          }
         }
-        
         this.uiService.update()
       } catch (exception) {
         var message = $"'update' set fatal error: {exception.message}"
@@ -892,18 +674,30 @@ function VisuController(layerName) constructor {
     }
 
     this.services.forEach(this.updateService, this)
-
     this.autosaveHandler()
 
     return this
   }
+ 
+  preview = {
+    x: function() { return 0 },
+    y: function() { return 0 },
+    width: GuiWidth,
+    height: GuiHeight,
+  }
 
   ///@return {VisuController}
   render = function() {
+    if (!this.renderEnabled) {
+      return this
+    }
+
+    this.renderTimer.start()
     try {
       gpu_set_alphatestenable(true) ///@todo investigate
       var enable = this.renderUI
-      var preview = this.editor.layout.nodes.preview
+      var _editor = Beans.get(BeanVisuEditor)
+      var preview = _editor == null ? this.preview : _editor.layout.nodes.preview
       this.gridRenderer.render({ 
         width: enable ? ceil(preview.width()) : GuiWidth(), 
         height: enable ? ceil(preview.height()) : GuiHeight(),
@@ -917,15 +711,22 @@ function VisuController(layerName) constructor {
       GPU.reset.surface()
       GPU.reset.blendMode()
     }
+    this.renderTimer.finish()
     
     return this
   }
 
   ///@return {VisuController}
   renderGUI = function() {
+    if (!this.renderGUIEnabled) {
+      return this
+    }
+
+    this.renderGUITimer.start()
     try {
       var enable = this.renderUI
-      var preview = this.editor.layout.nodes.preview
+      var _editor = Beans.get(BeanVisuEditor)
+      var preview = _editor == null ? this.preview : _editor.layout.nodes.preview
       this.gridRenderer.renderGUI({ 
         width: enable ? ceil(preview.width()) : GuiWidth(), 
         height: enable ? ceil(preview.height()) : GuiHeight(), 
@@ -978,7 +779,7 @@ function VisuController(layerName) constructor {
       }
       
       //MouseUtil.renderSprite()
-      //this.editor.render()
+      //Beans.get(BeanVisuEditor).render()
     } catch (exception) {
       var message = $"renderGUI throws exception: {exception.message}"
       Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
@@ -987,20 +788,76 @@ function VisuController(layerName) constructor {
       GPU.reset.surface()
       GPU.reset.blendMode()
     }
+    this.renderGUITimer.finish()
 
+    if (is_debug_overlay_open()) {
+      var controller = this
+      var gridService = controller.gridService
+      var shrooms = controller.shroomService.shrooms.size()
+      var bullets = controller.bulletService.bullets.size()
+  
+      var timeSum = gridService.moveGridItemsTimer.getValue()
+        + gridService.signalGridItemsCollisionTimer.getValue()
+        + gridService.updatePlayerServiceTimer.getValue()
+        + gridService.updateShroomServiceTimer.getValue()
+        + gridService.updateBulletServiceTimer.getValue()
+        + controller.renderTimer.getValue()
+        + controller.renderGUITimer.getValue()
+  
+      var text = $"shrooms: {shrooms}" + "\n"
+        + $"bullets: {bullets}" + "\n"
+        + $"fps: {fps}, fps-real: {fps_real}" + "\n\n"
+        + gridService.moveGridItemsTimer.getMessage() + "\n"
+        + gridService.signalGridItemsCollisionTimer.getMessage() + "\n"
+        + gridService.updatePlayerServiceTimer.getMessage() + "\n"
+        + gridService.updateShroomServiceTimer.getMessage() + "\n"
+        + gridService.updateBulletServiceTimer.getMessage() + "\n"
+        + controller.renderTimer.getMessage() + "\n"
+        + controller.renderGUITimer.getMessage() + "\n"
+        + $"Sum: {timeSum}" + "\n"
+      GPU.render.text(32, 32, text, c_lime, c_black, 1.0, GPU_DEFAULT_FONT_BOLD)  
+    }
+
+    var gridCamera = this.gridRenderer.camera
+    var gridCameraMessage = ""
+    if (gridCamera.enableMouseLook) {
+      gridCameraMessage = gridCameraMessage 
+        + $"pitch: {gridCamera.pitch}\n"
+        + $"angle: {gridCamera.angle}\n"
+        + $"zoom: {gridCamera.zoom}\n"
+    }
+
+    if (gridCamera.enableKeyboardLook) {
+      gridCameraMessage = gridCameraMessage 
+        + $"x: {gridCamera.x}\n"
+        + $"y: {gridCamera.y}\n"
+        + $"z: {gridCamera.z}\n"
+    }
+    
+    if (gridCameraMessage != "") {
+      GPU.render.text(32, GuiHeight() - 32, gridCameraMessage, c_lime, c_black, 1.0, GPU_DEFAULT_FONT_BOLD, HAlign.LEFT, VAlign.BOTTOM)  
+    }
     return this
   }
 
   ///@return {VisuController}
   onSceneEnter = function() {
     Logger.info("VisuController", "onSceneEnter")
-    this.editor.send(new Event("open"))
+    VideoUtil.runGC()
+    if (Core.getProperty("visu.manifest.load-on-start", false)) {
+      this.send(new Event("load", {
+        manifest: FileUtil.get(Core.getProperty("visu.manifest.path")),
+        autoplay: Assert.isType(Core.getProperty("visu.manifest.play-on-start", false), Boolean),
+      }))
+    }
+    
     return this
   }
 
   ///@return {VisuController}
   onSceneLeave = function() {
     Logger.info("VisuController", "onSceneLeave")
+    VideoUtil.runGC()
     return this
   }
 
@@ -1036,8 +893,6 @@ function VisuController(layerName) constructor {
         try {
           Logger.debug("VisuController", $"Free '{key}'")
           Callable.run(Struct.get(struct, "free"))
-          var ref = ref_create(context, key)
-          delete ref
         } catch (exception) {
           Logger.error("VisuController", $"Unable to free '{key}'. {exception.message}")
         }

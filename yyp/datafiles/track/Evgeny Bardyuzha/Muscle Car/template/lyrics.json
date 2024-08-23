@@ -1,0 +1,17 @@
+{
+  "model":"Collection<io.alkapivo.visu.service.lyrics.LyricsTemplate>",
+  "version":"1",
+  "data":{
+    "lyrics-default":{
+      "lines":[
+        "Lorem ipsum"
+      ]
+    },
+    "lyrics_alkapivo":{
+      "lines":[
+        "Alkapivo",
+        "2024"
+      ]
+    }
+  }
+}

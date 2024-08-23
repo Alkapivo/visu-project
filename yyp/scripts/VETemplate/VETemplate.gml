@@ -41,55 +41,20 @@ function VETemplate(json) constructor {
       }
     }
 
-    switch (type) {
-      case VETemplateType.SHADER: 
-        return Struct.append(storeConfig, {
-          "template-shader": {
-            type: String,
-            value: json.shader,   
-          },
-          "template-inherit": {
-            type: Optional.of(String),
-            value: Struct.getDefault(json, "inherit", null),
-          },
-        })
-      case VETemplateType.SHROOM: 
-        return Struct.append(storeConfig, {
-          "template-shroom": {
-            type: String,
-            value: json.name,   
-          },
-        })
-      case VETemplateType.BULLET: 
-        return Struct.append(storeConfig, {
-          "template-bullet": {
-            type: String,
-            value: json.name,   
-          },
-        })
-      case VETemplateType.LYRICS: 
-        return Struct.append(storeConfig, {
-          "template-lyrics": {
-            type: String,
-            value: json.name,   
-          },
-        })
-      case VETemplateType.PARTICLE: 
-        return Struct.append(storeConfig, {
-          "template-particle": {
-            type: String,
-            value: json.name,   
-          },
-        })
-      case VETemplateType.TEXTURE: 
-        return Struct.append(storeConfig, {
-          "template-texture": {
-            type: String,
-            value: json.name,   
-          },
-        })
-      default: throw new Exception($"Found unsupported VETemplateType: {type}")
+    if (type == VETemplateType.SHADER) {
+      storeConfig = Struct.append(storeConfig, {
+        "template-shader-asset": {
+          type: String,
+          value: json.shader,   
+        },
+        "template-inherit": {
+          type: Optional.of(String),
+          value: Struct.getDefault(json, "inherit", null),
+        },
+      })
     }
+
+    return storeConfig
   }
 
   ///@type {VETemplateType}
@@ -129,7 +94,7 @@ function VETemplate(json) constructor {
   toShaderTemplate = function() {
     var json = {
       name: Assert.isType(this.store.getValue("template-name"), String, "Store item 'template-name' must be type of String"),
-      shader: Assert.isType(this.store.getValue("template-shader"), String, "Store item 'template-shader' must be type of String"),
+      shader: Assert.isType(this.store.getValue("template-shader-asset"), String, "Store item 'template-shader' must be type of String"),
       type: Assert.isEnum(this.type, VETemplateType, "JSON template 'type' must be type of VETemplateType"),
     }
 
@@ -141,7 +106,7 @@ function VETemplate(json) constructor {
     var properties = this.store.container
       .filter(function(item) {
         return item.name != "template-name" 
-          && item.name != "template-shader" 
+          && item.name != "template-shader-asset" 
           && item.name != "template-inherit" 
       })
       .toStruct(function(item) { 

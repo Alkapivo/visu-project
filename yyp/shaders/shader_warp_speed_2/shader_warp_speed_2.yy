@@ -1,0 +1,12 @@
+{
+  "$GMShader":"",
+  "%Name":"shader_warp_speed_2",
+  "name":"shader_warp_speed_2",
+  "parent":{
+    "name":"shadertoy",
+    "path":"folders/core/resource/shader/shadertoy.yy",
+  },
+  "resourceType":"GMShader",
+  "resourceVersion":"2.0",
+  "type":1,
+}

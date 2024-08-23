@@ -26,7 +26,7 @@
   "origin":0,
   "parent":{
     "name":"timeline",
-    "path":"folders/visu-gml/resource/texture/editor/icon/timeline.yy",
+    "path":"folders/visu/resource/texture/editor/icon/timeline.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",

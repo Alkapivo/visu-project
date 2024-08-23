@@ -160,22 +160,26 @@ function _Struct() constructor {
   ///@param {Type} [keyType]
   ///@param {Type} [valueType]
   ///@param {?Callable} [callback]
-  ///@param {?any} [acc]
+  ///@param {any} [acc]
   ///@return {Map}
   toMap = function(struct, keyType = any, valueType = any, callback = null, acc = null) {
+    var map = new Map(keyType, valueType)
+    var keys = Struct.keys(struct)
+    var size = GMArray.size(keys)
     if (!Core.isType(callback, Callable)) {
-      return new Map(keyType, valueType, struct)
+      for (var index = 0; index < size; index++) {
+        var key = keys[index]
+        var item = Struct.get(struct, key)
+        map.set(key, item)
+      }
     } else {
-      var map = new Map(keyType, valueType)
-      var keys = Struct.keys(struct)
-      var size = GMArray.size(keys)
       for (var index = 0; index < size; index++) {
         var key = keys[index]
         var item = Struct.get(struct, key)
         map.set(key, callback(item, key, acc))
       }
-      return map
     }
+    return map
   }
 
   ///@param {Struct} struct
@@ -201,9 +205,8 @@ function _Struct() constructor {
   ///@return {Struct}
   appendField = function(source, key, value, bind = true) {
     var struct = Core.isType(source, Struct) ? source : {}
-    Struct.set(struct, key, bind
-      ? (Core.isType(value, BindIntent) ? value.bind(struct) : value)
-      : value)
+    var _value = bind ? (Core.isType(value, BindIntent) ? value.bind(struct) : value) : value
+    Struct.set(struct, key, _value)
     return struct
   }
 
@@ -212,13 +215,13 @@ function _Struct() constructor {
   ///@param {Boolean} [bind]
   ///@return {Struct}
   append = function(source = null, json = null, bind = true) {
-    static append = function(value, key, data) {
+    static _append = function(value, key, data) {
       Struct.appendField(data.source, key, value, data.bind)
     }
 
     var struct = Core.isType(source, Struct) ? source : {}
     if (Core.isType(json, Struct)) {
-      Struct.forEach(json, append, { source: struct, bind: bind })
+      Struct.forEach(json, _append, { source: struct, bind: bind })
     }
     return struct
   }

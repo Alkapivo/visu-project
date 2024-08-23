@@ -167,7 +167,7 @@ function Video(json) constructor {
   ///@return {Video}
   open = function() {
     this.close()
-    video_open(this.path)
+    video_open($"{this.path}")
     this.setLoop(this.loop)
     return this
   }
@@ -232,6 +232,7 @@ function _VideoUtil() constructor {
   runGC = function() {
     Logger.debug("Video", $"gcVideo, video status: {video_get_status()}")
     video_close()
+  
     return this
   }
 }

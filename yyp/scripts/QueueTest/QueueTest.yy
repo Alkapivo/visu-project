@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"QueueTest",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"QueueTest",
+  "parent":{
+    "name":"collection",
+    "path":"folders/core/test/collection.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

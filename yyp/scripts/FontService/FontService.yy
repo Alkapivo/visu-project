@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"FontService",
   "isCompatibility":false,
   "isDnD":false,
   "name":"FontService",
   "parent":{
     "name":"font",
-    "path":"folders/core-gml/src/service/font.yy",
+    "path":"folders/core/src/service/font.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

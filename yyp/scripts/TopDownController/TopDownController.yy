@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"TopDownController",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"TopDownController",
+  "parent":{
+    "name":"src",
+    "path":"folders/neon-baron/src.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

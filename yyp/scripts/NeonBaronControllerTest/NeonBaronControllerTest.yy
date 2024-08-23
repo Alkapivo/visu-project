@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"NeonBaronControllerTest",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"NeonBaronControllerTest",
+  "parent":{
+    "name":"test",
+    "path":"folders/neon-baron/test.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

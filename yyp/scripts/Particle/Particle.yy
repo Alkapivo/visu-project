@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"Particle",
   "isCompatibility":false,
   "isDnD":false,
   "name":"Particle",
   "parent":{
     "name":"particle",
-    "path":"folders/core-gml/src/service/particle.yy",
+    "path":"folders/core/src/service/particle.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

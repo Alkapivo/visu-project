@@ -10,7 +10,7 @@ global.__VISU_GRID_CONDITIONS = {
   },
   "boolean": function() {
     return function(item, controller) {
-      return Struct.get(item, this.data.field) == this.data.value
+      return Struct.inject(item, this.data.field, false) == this.data.value
     }
   },
   "logic-gate": function() {

@@ -45,10 +45,19 @@ function GridCamera(config = {}) constructor {
 	update = function() {
 		this.executor.update()
 		if (this.enableMouseLook) {
-			this.angle -= (window_mouse_get_x() - GuiWidth() / 2) / 10
-			this.pitch -= (window_mouse_get_y() - GuiHeight() / 2) / 10
+			var controller = Beans.get(BeanVisuController)
+			var editor = Beans.get(BeanVisuEditor)
+			var enable = controller.renderUI
+      var preview = editor == null ? controller.preview : editor.layout.nodes.preview
+      var width = enable ? ceil(preview.width()) : GuiWidth()
+      var height = enable ? ceil(preview.height()) : GuiHeight()
+      var _x = enable ? ceil(preview.x()) : 0
+      var _y = enable ? ceil(preview.y()) : 0
+
+			this.angle -= ceil(MouseUtil.getMouseX() - _x - width / 2.0) / 10.0
+			this.pitch -= ceil(MouseUtil.getMouseY() - _y - height / 2.0) / 10.0
 			this.pitch = clamp(this.pitch, -85, 85)
-			window_mouse_set(GuiWidth() / 2, GuiHeight() / 2)
+			window_mouse_set(_x + width / 2.0, _y + height / 2.0)
 		}
 
 		if (this.enableKeyboardLook) {

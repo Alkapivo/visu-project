@@ -162,7 +162,7 @@ function _String() constructor {
 		var minutes = String.replace(String.format(time div 60, 2, 0), " ", "0")
 		return $"{minutes}:{seconds}.{miliSeconds}"
 	}
-
+ 
 	///@description Breake string into word wrap lines by delimiter
 	///@param {String} text
 	///@param {Integer} width

@@ -118,7 +118,7 @@ function PlayerBulletHellGameMode(json) {
           cooldown: new Timer(FRAME_MS * Struct
             .getDefault(gun, "cooldown",  8), { loop: Infinity }),
           bullet: Assert.isType(Struct
-            .getDefault(gun, "bullet", "bullet_default"), String),
+            .getDefault(gun, "bullet", "bullet-default"), String),
           angle: Assert.isType(Struct
             .getDefault(gun, "angle", 90.0), Number),
           speed: Assert.isType(Struct
@@ -129,16 +129,7 @@ function PlayerBulletHellGameMode(json) {
             .getDefault(gun, "offsetY", 0.0), Number),
         }
       })
-      : [
-        {
-          "cooldown": new Timer(FRAME_MS * 24, { loop: Infinity }),
-          "bullet": "bullet_default",
-          "angle": 90.0,
-          "speed": 16.0,
-          "offsetX": 0.0,
-          "offsetY": 0.0
-        }
-      ]
+      : []
     ),
 
     ///@override

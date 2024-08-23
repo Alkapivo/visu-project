@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"BrushToolbarTest",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"BrushToolbarTest",
+  "parent":{
+    "name":"test",
+    "path":"folders/visu/test.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

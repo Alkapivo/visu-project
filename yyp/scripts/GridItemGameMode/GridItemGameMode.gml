@@ -50,7 +50,7 @@ function GridItemGameMode(json = {}) constructor {
       var featureName = Struct.get(json, "feature")
       var feature = Callable.get(featureName)
       if (!Optional.is(feature)) {
-        Logger.error("GridItem", $"Found unsupported feature '{featureName}'")
+        Logger.warn("GridItem", $"Found unsupported feature '{featureName}'")
         return
       }
 

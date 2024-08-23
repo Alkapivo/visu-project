@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"GPU",
   "isCompatibility":false,
   "isDnD":false,
   "name":"GPU",
   "parent":{
     "name":"renderer",
-    "path":"folders/core-gml/src/renderer.yy",
+    "path":"folders/core/src/renderer.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

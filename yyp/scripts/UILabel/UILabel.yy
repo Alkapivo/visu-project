@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"UILabel",
   "isCompatibility":false,
   "isDnD":false,
   "name":"UILabel",
   "parent":{
     "name":"ui",
-    "path":"folders/core-gml/src/service/ui.yy",
+    "path":"folders/core/src/service/ui.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

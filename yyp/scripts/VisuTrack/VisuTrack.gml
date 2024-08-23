@@ -7,13 +7,13 @@ function VisuTrack(_path, json) constructor {
   ///@type {String}
   path = Assert.isType(FileUtil.getDirectoryFromPath(_path), String)
 
-  ///@type {Number}
-  bpm = Assert.isType(Struct.getDefault(json, "bpm", Beans
-    .get(BeanVisuController).editor.store.getValue("bpm")), Number)
+  var _editor = Beans.get(BeanVisuEditor)
 
   ///@type {Number}
-  bpmSub = Assert.isType(Struct.getDefault(json, "bpm-sub", Beans
-    .get(BeanVisuController).editor.store.getValue("bpm-sub")), Number)
+  bpm = Assert.isType(Struct.getDefault(json, "bpm", _editor == null ? 120 : _editor.store.getValue("bpm")), Number)
+
+  ///@type {Number}
+  bpmSub = Assert.isType(Struct.getDefault(json, "bpm-sub", _editor == null ? 2 : _editor.store.getValue("bpm-sub")), Number)
 
   ///@type {String}
   sound = Assert.isType(Struct.get(json, "sound"), String)
@@ -49,7 +49,7 @@ function VisuTrack(_path, json) constructor {
 
   saveProject = function(manifestPath) {
     var controller = Beans.get(BeanVisuController)
-    var fileService = controller.fileService
+    var fileService = Beans.get(BeanFileService)
     var previousPath = this.path
     var path = Assert.isType(FileUtil.getDirectoryFromPath(manifestPath), String)
     var manifest = {
@@ -67,7 +67,7 @@ function VisuTrack(_path, json) constructor {
         "sound": this.sound,
         "texture": this.texture,
         "video": this.video,
-        "editor": controller.editor.brushService.templates
+        "editor": Beans.get(BeanVisuEditor).brushService.templates
           .keys()
           .map(function(filename) {
             return $"brush/{filename}.json"
@@ -161,7 +161,7 @@ function VisuTrack(_path, json) constructor {
       }, textureAcc)
 
     var editor = {}
-    controller.editor.brushService.templates
+    Beans.get(BeanVisuEditor).brushService.templates
       .forEach(function(templates, type, editor) {
         Struct.set(editor, type, {
           "model": "Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>",

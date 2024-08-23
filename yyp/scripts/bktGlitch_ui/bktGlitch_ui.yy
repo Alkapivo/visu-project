@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"bktGlitch_ui",
   "isCompatibility":false,
   "isDnD":false,
   "name":"bktGlitch_ui",
   "parent":{
     "name":"src",
-    "path":"folders/gmtf-gml/src.yy",
+    "path":"folders/gmtf/src.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

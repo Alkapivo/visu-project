@@ -1,21 +1,9 @@
 {
   "visu.debug-overlay": false,
-  "visu.fullscreen": false,
-  "visu.autosave": true,
   "visu.autosave.interval": 3,
-  "visu.manifest.load-on-start": false,
+  "visu.manifest.load-on-start": true,
   "visu.manifest.play-on-start": false,
-  "visu.manifest.path.absolute": true,
-  "visu.window.width": 1400,
-  "visu.window.height": 900,
-  "visu.editor.bpm": 120,
-  "visu.editor.bpm-sub": 2,
-  "visu.editor.render-event": true,
-  "visu.editor.render-timeline": true,
-  "visu.editor.render-track-control": true,
-  "visu.editor.render-brush": true,
-  "visu.editor.accordion.render-event-inspector": false,
-  "visu.editor.accordion.render-template-toolbar": true,
+  "visu.manifest.path": "track/Evgeny Bardyuzha/Muscle Car/manifest.visu",
   "visu.editor.status-bar.render-average-fps": true,
   "end-property": null
 }

@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"ShroomServiceTest",
   "isCompatibility":false,
   "isDnD":false,
   "name":"ShroomServiceTest",
   "parent":{
     "name":"shroom",
-    "path":"folders/visu-gml/test/shroom.yy",
+    "path":"folders/visu/test/shroom.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

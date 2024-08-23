@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"DialogueDesignerService",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"DialogueDesignerService",
+  "parent":{
+    "name":"dialogue-designer",
+    "path":"folders/core/src/service/dialogue-designer.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

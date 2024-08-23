@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"GridRenderer",
   "isCompatibility":false,
   "isDnD":false,
   "name":"GridRenderer",
   "parent":{
     "name":"grid",
-    "path":"folders/visu-gml/src/renderer/grid.yy",
+    "path":"folders/visu/src/renderer/grid.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

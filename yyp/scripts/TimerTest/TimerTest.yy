@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"TimerTest",
   "isCompatibility":false,
   "isDnD":false,
   "name":"TimerTest",
   "parent":{
     "name":"util",
-    "path":"folders/core-gml/test/util.yy",
+    "path":"folders/core/test/util.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

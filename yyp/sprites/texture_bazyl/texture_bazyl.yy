@@ -25,8 +25,8 @@
   "nineSlice":null,
   "origin":0,
   "parent":{
-    "name":"texture",
-    "path":"folders/core-gml/resource/texture.yy",
+    "name":"bazyl",
+    "path":"folders/core/resource/texture/bazyl.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",

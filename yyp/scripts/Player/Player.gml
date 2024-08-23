@@ -57,21 +57,21 @@ function Player(template): GridItem(template) constructor {
     this._update(controller)
 
     var view = controller.gridService.view
-    if (controller.editor.store.getValue("target-locked-x")) {
+    var targetLocked = controller.gridService.targetLocked
+    if (targetLocked.isLockedX) { 
       var width = controller.gridService.properties.borderHorizontalLength
       var offsetX = (this.sprite.getWidth()) / GRID_SERVICE_PIXEL_WIDTH
-      var anchorX = view.x //(view.width * floor(view.x / view.width)) 
+      var anchorX = view.x
       this.x = clamp(
         this.x,
         clamp(anchorX - width + offsetX + (view.width / 2.0), 0.0, view.worldWidth),
         clamp(anchorX + width - offsetX + (view.width / 2.0), 0.0, view.worldWidth)
       )
-      //Core.print("x", this.x, "anchorX", anchorX, "follow.x", view.follow.target.x, "view.x", view.x)
     }
 
-    if (controller.editor.store.getValue("target-locked-y")) {
+    if (targetLocked.isLockedY) {
       var height = controller.gridService.properties.borderVerticalLength
-      var anchorY = view.y //(view.height * floor(view.y / view.height))
+      var anchorY = view.y
       var platformerY = this.y
       this.y = clamp(
         this.y, 
@@ -83,7 +83,7 @@ function Player(template): GridItem(template) constructor {
         && controller.gridRenderer.player2DCoords.y > controller.gridRenderer.gridSurface.height) {
 
         this.y = clamp(platformerY, 0.0, view.worldHeight + view.height)
-        controller.editor.store.get("target-locked-y").set(false)
+        targetLocked.isLockedY = false
       }
     }
 

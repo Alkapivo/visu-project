@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"PlayerGameMode",
   "isCompatibility":false,
   "isDnD":false,
   "name":"PlayerGameMode",
   "parent":{
     "name":"player",
-    "path":"folders/visu-gml/src/service/player.yy",
+    "path":"folders/visu/src/service/player.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

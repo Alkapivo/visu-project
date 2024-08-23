@@ -110,4 +110,12 @@ function VEBrushService(_editor) constructor {
 
     return new VEBrushTemplate(json)
   }
+
+  ///@return {VEBrushTemplate}
+  clearTemplates = function() {
+    this.templates.forEach(function(array) {
+      array.clear()
+    })
+    return this
+  }
 }

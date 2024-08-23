@@ -6,9 +6,6 @@ function VEPopupQueue(_editor) constructor {
   ///@type {VisuEditor}
   editor = Assert.isType(_editor, VisuEditor)
 
-  ///@type {UIService}
-  uiService = Assert.isType(this.editor.uiService, UIService)
-
   ///@type {Array<UI>}
   containers = new Array(UI)
 
@@ -234,7 +231,7 @@ function VEPopupQueue(_editor) constructor {
         false
       ))
 
-      this.uiService.send(new Event("add", {
+      Beans.get(BeanVisuController).uiService.send(new Event("add", {
         container: container,
         replace: true,
       }))
@@ -248,7 +245,7 @@ function VEPopupQueue(_editor) constructor {
             name: container.name, 
             quiet: true,
           }))
-        }, this.uiService)
+        }, Beans.get(BeanVisuController).uiService)
         .clear()
     },
     "remove": function(event) {
@@ -260,7 +257,7 @@ function VEPopupQueue(_editor) constructor {
         return
       }
       
-      this.uiService.send(new Event("remove", { 
+      Beans.get(BeanVisuController).uiService.send(new Event("remove", { 
         name: event.data, 
         quiet: true,
       }))

@@ -116,6 +116,65 @@ function ParticleService(_controller, config = {}): Service() constructor {
     "clear-particles": function(event) {
       this.templates.clear()
     },
+    "reset-templates": function(event) {
+      this.templates.clear().set("particle-default", new ParticleTemplate("particle-default", {
+        "color":{
+          "start":"#ffffff",
+          "halfway":"#ffffff",
+          "finish":"#ffffff"
+        },
+        "alpha":{
+          "start":1.0,
+          "halfway":0.0,
+          "finish":0.0
+        },
+        "speed":{
+          "wiggle":0.0,
+          "increase":0.001,
+          "minValue":0.01,
+          "maxValue":5.0
+        },
+        "shape":"CIRCLE",
+        "gravity":{
+          "angle":0.0,
+          "amount":0.0
+        },
+        "orientation":{
+          "wiggle":0.0,
+          "relative":0.0,
+          "increase":0.001,
+          "minValue":0.0,
+          "maxValue":360.0
+        },
+        "angle":{
+          "wiggle":0.0,
+          "increase":0.01,
+          "minValue":0.0,
+          "maxValue":360.0
+        },
+        "life":{
+          "minValue":80.0,
+          "maxValue":120.0
+        },
+        "sprite":{
+          "name":"texture_particle",
+          "stretch":0.0,
+          "randomValue":0.0,
+          "animate":0.0
+        },
+        "scale":{
+          "x":1.0,
+          "y":1.0
+        },
+        "blend":0.0,
+        "size":{
+          "wiggle":0.0,
+          "increase":0.0,
+          "minValue":1.0,
+          "maxValue":32.0
+        }
+      }))
+    },
   }))
 
   ///@param {String} name
@@ -160,4 +219,6 @@ function ParticleService(_controller, config = {}): Service() constructor {
     })
     return this
   }
+
+  this.send(new Event("reset-templates"))
 }

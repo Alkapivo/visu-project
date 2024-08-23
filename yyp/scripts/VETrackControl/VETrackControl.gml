@@ -6,9 +6,6 @@ function VETrackControl(_editor) constructor {
   ///@type {VisuEditor}
   editor = Assert.isType(_editor, VisuEditor)
   
-  ///@type {UIService}
-  uiService = Assert.isType(this.editor.uiService, UIService)
-  
   ///@type {Map<String, Containers>}
   containers = new Map(String, UI)
 
@@ -178,9 +175,9 @@ function VETrackControl(_editor) constructor {
                 return
               }
 
-              var ruler = this.context.controller.editor.timeline.containers.get("ve-timeline-ruler")
+              var ruler = Beans.get(BeanVisuEditor).timeline.containers.get("ve-timeline-ruler")
               if (context == ruler) {
-                var trackService = this.context.controller.editor.trackService
+                var trackService = Beans.get(BeanVisuController).trackService
                 var mouseXTime = context.state.get("mouseXTime")
                 if (Core.isType(mouseXTime, Number)) {
                   this.value = clamp(
@@ -201,7 +198,7 @@ function VETrackControl(_editor) constructor {
               this.state.remove("promise")
             }
 
-            var controller = this.context.controller.editor.controller
+            var controller = Beans.get(BeanVisuController)
             if (controller.fsm.getStateName() == "rewind") {
               return
             }
@@ -217,18 +214,15 @@ function VETrackControl(_editor) constructor {
             var width = this.area.getWidth() - (this.area.getX() * 2)
             this.value = clamp(mouseX / width, this.minValue, this.maxValue)
 
-            var rulerView = this.context.controller.uiService
-              .find("ve-timeline-ruler")
+            var controller = Beans.get(BeanVisuController)
+            var rulerView = controller.uiService.find("ve-timeline-ruler")
             if (Core.isType(rulerView, UI)) {
-              rulerView.state.set("time", this.value
-                * this.context.controller.editor.trackService.duration)
+              rulerView.state.set("time", this.value * controller.trackService.duration)
             }
 
-            var eventsView = this.context.controller.uiService
-              .find("ve-timeline-events")
+            var eventsView = controller.uiService.find("ve-timeline-events")
             if (Core.isType(eventsView, UI)) {
-              eventsView.state.set("time", this.value 
-                * this.context.controller.editor.trackService.duration)
+              eventsView.state.set("time", this.value * controller.trackService.duration)
             }
           },
           onMousePressedLeft: function(event) {
@@ -251,8 +245,9 @@ function VETrackControl(_editor) constructor {
             )
           },
           sendEvent: new BindIntent(function() {
-            var timestamp = this.value * this.context.controller.editor.trackService.duration
-            var promise = this.context.controller.editor.controller
+            var controller = Beans.get(BeanVisuController)
+            var timestamp = this.value * controller.trackService.duration
+            var promise = controller
               .send(new Event("rewind")
               .setData({ timestamp: timestamp })
               .setPromise(new Promise()))
@@ -397,7 +392,7 @@ function VETrackControl(_editor) constructor {
         state: new Map(String, any, {
           "background-color": ColorUtil.fromHex(VETheme.color.primaryShadow).toGMColor(),
           "background-alpha": 0.8,
-          "store": controller.editor.store,
+          "store": Beans.get(BeanVisuEditor).store,
           "tools": new Array(Struct, [
             factoryToolItem({ 
               name: "ve-track-control_tool_brush", 
@@ -473,9 +468,12 @@ function VETrackControl(_editor) constructor {
             sprite: { name: "texture_ve_trackcontrol_button_rewind_left" },
             callback: function() {
               Logger.debug("VETrackControl", $"Button pressed: {this.name}")
-              var trackService = this.context.controller.editor.trackService
-              Beans.get(BeanVisuController).send(new Event("rewind").setData({
-                timestamp: clamp(trackService.time - 10.0, 0, trackService.duration),
+              var controller = Beans.get(BeanVisuController)
+              controller.send(new Event("rewind").setData({
+                timestamp: clamp(
+                  controller.trackService.time - 10.0, 
+                  0, 
+                  controller.trackService.duration),
               }))
             },
           }),
@@ -500,9 +498,12 @@ function VETrackControl(_editor) constructor {
             sprite: { name: "texture_ve_trackcontrol_button_rewind_right" },
             callback: function() {
               Logger.debug("VETrackControl", $"Button pressed: {this.name}")
-              var trackService = this.context.controller.editor.trackService
-              Beans.get(BeanVisuController).send(new Event("rewind").setData({
-                timestamp: clamp(trackService.time + 10.0, 0, trackService.duration),
+              var controller = Beans.get(BeanVisuController)
+              controller.send(new Event("rewind").setData({
+                timestamp: clamp(
+                  controller.trackService.time + 10.0, 
+                  0, 
+                  controller.trackService.duration),
               }))
             },
           }),
@@ -511,15 +512,18 @@ function VETrackControl(_editor) constructor {
             text: "00:00.00",
             align: { v: VAlign.CENTER, h: HAlign.LEFT },
             updateCustom: function() {
+              var trackService = Beans.get(BeanVisuController).trackService
               var value = Struct.get(this.context.items
                 .get("slider_ve-track-control_timeline"), "value")
-              if (!Core.isType(value, Number)) {
+              if (!Core.isType(value, Number) 
+                || Math.isNaN(value) 
+                || Math.isNaN(trackService.duration)) {
                 return
               }
-
+              
               this.label.text = String
                 .formatTimestampMilisecond(NumberUtil
-                .parse(this.context.controller.editor.trackService.duration * value, 0.0))
+                .parse(trackService.duration * value, 0.0))
             },
           }),
           "checkbox_ve-track-control_snap": Struct.appendRecursiveUnique(
@@ -558,7 +562,7 @@ function VETrackControl(_editor) constructor {
               layout: layout.nodes.zoomIn,
               updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
               callback: function() { 
-                var item = Beans.get(BeanVisuController).editor.store
+                var item = Beans.get(BeanVisuEditor).store
                   .get("timeline-zoom")
                 item.set(clamp(item.get() - 1, 5, 20))
               },
@@ -625,7 +629,7 @@ function VETrackControl(_editor) constructor {
               layout: layout.nodes.zoomOut,
               updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
               callback: function() { 
-                var item = Beans.get(BeanVisuController).editor.store
+                var item = Beans.get(BeanVisuEditor).store
                   .get("timeline-zoom")
                 item.set(clamp(item.get() + 1, 5, 20))
               },
@@ -702,7 +706,7 @@ function VETrackControl(_editor) constructor {
           container: container,
           replace: true,
         }))
-      }, this.uiService)
+      }, Beans.get(BeanVisuController).uiService)
     },
     "close": function(event) {
       var context = this
@@ -711,7 +715,7 @@ function VETrackControl(_editor) constructor {
           name: key, 
           quiet: true,
         }))
-      }, this.uiService).clear()
+      }, Beans.get(BeanVisuController).uiService).clear()
     },
   }), { 
     enableLogger: false, 
@@ -726,19 +730,24 @@ function VETrackControl(_editor) constructor {
 
   ///@return {VETrackControl}
   watchdog = function() {
+    var controller = Beans.get(BeanVisuController)
+    if (!Core.isType(controller, VisuController)) {
+      return this
+    }
+
     try {
-      var trackService = this.editor.trackService
+      var trackService = controller.trackService
       var time = trackService.time
       var duration = trackService.duration
       if (trackService.duration != 0 
         && trackService.isTrackLoaded()
         && time >= duration - DeltaTime.apply(FRAME_MS * 2)) {
         
-        this.editor.controller.send(new Event("pause"))
+        controller.send(new Event("pause"))
       }
     } catch (exception) {
       var message = $"watchdog throwed an exception: {exception.message}"
-      Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
+      controller.send(new Event("spawn-popup", { message: message }))
       Logger.error("VETrackControl", message)
     }
     return this

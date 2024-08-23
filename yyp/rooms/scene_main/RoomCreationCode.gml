@@ -1,1 +1,1 @@
-Visu.run("layer_main")
+Visu.run("instance_main")

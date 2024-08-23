@@ -25,8 +25,8 @@
   "nineSlice":null,
   "origin":0,
   "parent":{
-    "name":"texture",
-    "path":"folders/core-gml/resource/texture.yy",
+    "name":"baron",
+    "path":"folders/core/resource/texture/baron.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",

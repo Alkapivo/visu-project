@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"GridTest",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"GridTest",
+  "parent":{
+    "name":"collection",
+    "path":"folders/core/test/collection.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

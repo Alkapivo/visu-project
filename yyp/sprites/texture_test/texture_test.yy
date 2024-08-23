@@ -25,8 +25,8 @@
   "nineSlice":null,
   "origin":4,
   "parent":{
-    "name":"texture",
-    "path":"folders/core-gml/resource/texture.yy",
+    "name":"system",
+    "path":"folders/core/resource/texture/system.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",

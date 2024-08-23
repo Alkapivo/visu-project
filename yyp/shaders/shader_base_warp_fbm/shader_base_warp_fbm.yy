@@ -4,7 +4,7 @@
   "name":"shader_base_warp_fbm",
   "parent":{
     "name":"shadertoy",
-    "path":"folders/core-gml/resource/shader/shadertoy.yy",
+    "path":"folders/core/resource/shader/shadertoy.yy",
   },
   "resourceType":"GMShader",
   "resourceVersion":"2.0",

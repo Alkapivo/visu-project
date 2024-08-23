@@ -1,15 +1,8 @@
 
 ///@package io.alkapivo.visu.editor.ui
 
-///@param {VisuController} _controller
 ///@param {?Struct} [_config]
-function VisuModal(_controller, _config = null) constructor {
-
-  ///@type {VisuController}
-  controller = Assert.isType(_controller, VisuController)
-
-  ///@type {UIService}
-  uiService = Assert.isType(this.controller.uiService, UIService)
+function VisuModal(_config = null) constructor {
 
   ///@type {?Struct}
   config = Optional.is(_config) ? Assert.isType(_config, Struct) : null
@@ -155,7 +148,7 @@ function VisuModal(_controller, _config = null) constructor {
           container: container,
           replace: true,
         }))
-      }, this.uiService)
+      }, Beans.get(BeanVisuController).uiService)
     },
     "close": function(event) {
       var context = this
@@ -164,7 +157,7 @@ function VisuModal(_controller, _config = null) constructor {
           name: key, 
           quiet: true,
         }))
-      }, this.uiService).clear()
+      }, Beans.get(BeanVisuController).uiService).clear()
     },
   }))
 

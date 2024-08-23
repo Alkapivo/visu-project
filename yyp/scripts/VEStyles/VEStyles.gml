@@ -326,7 +326,7 @@ global.__VEStyles = new Map(String, Struct, {
   },
   "spin-select-image": {
     preview: {
-      image: { name: "texture_button" },
+      image: { name: "texture_empty" },
       store: {
         callback: function(value, data) { 
           var image = SpriteUtil.parse({ name: value })

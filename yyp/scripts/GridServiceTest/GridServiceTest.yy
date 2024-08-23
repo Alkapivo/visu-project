@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"GridServiceTest",
   "isCompatibility":false,
   "isDnD":false,
   "name":"GridServiceTest",
   "parent":{
     "name":"grid",
-    "path":"folders/visu-gml/test/grid.yy",
+    "path":"folders/visu/test/grid.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

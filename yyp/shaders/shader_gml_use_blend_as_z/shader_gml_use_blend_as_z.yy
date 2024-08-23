@@ -4,7 +4,7 @@
   "name":"shader_gml_use_blend_as_z",
   "parent":{
     "name":"shader",
-    "path":"folders/core-gml/resource/shader.yy",
+    "path":"folders/core/resource/shader.yy",
   },
   "resourceType":"GMShader",
   "resourceVersion":"2.0",

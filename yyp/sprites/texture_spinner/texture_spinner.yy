@@ -37,7 +37,7 @@
   "origin":0,
   "parent":{
     "name":"icon",
-    "path":"folders/visu-gml/resource/texture/editor/icon.yy",
+    "path":"folders/visu/resource/texture/editor/icon.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",

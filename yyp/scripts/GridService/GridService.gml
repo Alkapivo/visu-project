@@ -4,12 +4,14 @@
 global.__GRID_SERVICE_PIXEL_WIDTH = 2048
 #macro GRID_SERVICE_PIXEL_WIDTH global.__GRID_SERVICE_PIXEL_WIDTH
 
+
 ///@type {Number}
 global.__GRID_SERVICE_PIXEL_HEIGHT = 2048
 #macro GRID_SERVICE_PIXEL_HEIGHT global.__GRID_SERVICE_PIXEL_HEIGHT
 
+
 ///@type {Number}
-global.__GRID_ITEM_FRUSTUM_RANGE = 3.5
+global.__GRID_ITEM_FRUSTUM_RANGE = 5
 #macro GRID_ITEM_FRUSTUM_RANGE global.__GRID_ITEM_FRUSTUM_RANGE
 
 
@@ -25,11 +27,11 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
 
   ///@type {Number}
   width = Assert.isType(Struct
-    .getDefault(this.config, "width", 1000000.0), Number)
+    .getDefault(this.config, "width", 100000.0), Number)
 
   ///@type {Number}
   height = Assert.isType(Struct
-    .getDefault(this.config, "height", 1000000.0), Number)
+    .getDefault(this.config, "height", 100000.0), Number)
 
   ///@type {Number}
   pixelWidth = Assert.isType(Struct
@@ -52,6 +54,8 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
   targetLocked = {
     x: this.view.x,
     y: this.view.y,
+    isLockedX: false,
+    isLockedY: false,
     setX: function(x) {
       this.x = x
       return this
@@ -86,6 +90,8 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
       this.targetLocked = {
         x: this.view.x,
         y: this.view.y,
+        isLockedX: false,
+        isLockedY: false,
         setX: function(x) {
           this.x = x
           return this
@@ -110,6 +116,14 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
 
   ///@type {TaskExecutor}
   executor = new TaskExecutor(this)
+
+
+
+  moveGridItemsTimer = this.controller.factoryTimer("MoveGridItems")
+  signalGridItemsCollisionTimer = this.controller.factoryTimer("GrdCollission")
+  updatePlayerServiceTimer = this.controller.factoryTimer("PlayerService")
+  updateShroomServiceTimer = this.controller.factoryTimer("ShroomService")
+  updateBulletServiceTimer = this.controller.factoryTimer("BulletService")
   
   ///@private
   ///@return {GridService}
@@ -127,8 +141,37 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
       }
     }
 
-    this.controller.bulletService.bullets.forEach(moveGridItem, this.controller.gridService.view)
-    this.controller.shroomService.shrooms.forEach(moveGridItem, this.controller.gridService.view)
+    static moveShroom = function(shroom, key, acc) {
+      var view = acc.view
+      var size = acc.shroomGrid.size
+      var previousColumn = floor(shroom.x / size)
+      var previousRow = floor(shroom.y / size)
+      shroom.move()
+      var afterColumn = floor(shroom.x / size)
+      var afterRow = floor(shroom.y / size)
+      if (previousColumn != afterColumn || previousRow != afterRow) {
+        acc.shroomGrid.move(previousColumn, previousRow, afterColumn, afterRow, shroom)
+      }
+
+      var length = Math.fetchLength(
+        shroom.x, shroom.y,
+        view.x + (view.width / 2.0), 
+        view.y + (view.height / 2.0)
+      )
+
+      if (length > GRID_ITEM_FRUSTUM_RANGE) {
+        shroom.signal("kill")
+      }
+    }
+
+    var view = this.controller.gridService.view
+    var shroomGrid = this.controller.shroomService.shroomGrid
+    this.controller.bulletService.bullets.forEach(moveGridItem, view)
+    this.controller.shroomService.shrooms.forEach(moveShroom, {
+      view: view,
+      shroomGrid: shroomGrid,
+    })
+
     var player = this.controller.playerService.player
     if (Core.isType(player, Player)) {
       player.move()
@@ -155,7 +198,16 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
 
       switch (bullet.producer) {
         case Player:
-          context.controller.shroomService.shrooms.forEach(playerBullet, bullet)
+          var shroomGrid = context.controller.shroomService.shroomGrid
+          var column = floor(bullet.x / shroomGrid.size)
+          var row = floor(bullet.y / shroomGrid.size)
+          for (var rowIndex = row - 1; rowIndex <= row + 1; rowIndex++) {
+            for (var columnIndex = column - 1; columnIndex <= column + 1; columnIndex++) {
+              shroomGrid.get(columnIndex, rowIndex).forEach(playerBullet, bullet)
+            } 
+          }
+
+          //context.controller.shroomService.shrooms.forEach(playerBullet, bullet)
           break
         case Shroom:
           shroomBullet(context.controller.playerService.player, bullet)
@@ -182,12 +234,22 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
     return this
   }
 
+
+
   ///@private
   ///@return {GridService}
   updateGridItems = function() {
+    this.updatePlayerServiceTimer.start()
     this.controller.playerService.update(this)
+    this.updatePlayerServiceTimer.finish()
+
+    this.updateShroomServiceTimer.start()
     this.controller.shroomService.update(this)
+    this.updateShroomServiceTimer.finish()
+
+    this.updateBulletServiceTimer.start()
     this.controller.bulletService.update(this)
+    this.updateBulletServiceTimer.finish()
     return this
   }
 
@@ -226,11 +288,11 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
         this.targetLocked.setY(player.y)
       }
 
-      if (this.controller.editor.store.getValue("target-locked-x")) {
+      if (this.targetLocked.isLockedX) {
         this.targetLocked.setX((this.view.width * floor(this.view.x / this.view.width)) + (this.view.width / 2))
       }
   
-      if (this.controller.editor.store.getValue("target-locked-y")) {
+      if (this.targetLocked.isLockedY) {
         this.targetLocked.setY((this.view.height * floor(this.view.y / this.view.height)) + (this.view.height / 2))
       }
     }
@@ -244,9 +306,15 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
       .setFollowTarget(this.targetLocked)
       .update()
     
+    this.moveGridItemsTimer.start()
     this.moveGridItems()
-      .signalGridItemsCollision()
-      .updateGridItems()
+    this.moveGridItemsTimer.finish()
+
+    this.signalGridItemsCollisionTimer.start()
+    this.signalGridItemsCollision()
+    this.signalGridItemsCollisionTimer.finish()
+
+    this.updateGridItems()
     return this
   }
 }

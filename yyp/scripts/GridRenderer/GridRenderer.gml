@@ -1,41 +1,5 @@
 ///@package com.alkapivo.visu.service.grid.GridRenderer
 
-///@param {Number} x
-///@param {Number} y
-///@param {Number} z
-///@param {Matrix} view
-///@param {Matrix} projection
-///@param {Number} width
-///@param {Number} height
-///@return {Struct}
-function project3DCoordsOn2D(x, y, z, view, projection, width, height) {
-  var _x = 0
-  var _y = 0
-  if (projection[15] == 0) {
-    // perspective projection
-    var _width = view[2] * x + view[6] * y + view[10] * z + view[14];
-    if (_width == 0) {
-      return { 
-        x: null, 
-        y: null
-      }
-    }
-
-    _x = projection[8] + projection[0] * (view[0] * x + view[4] * y + view[8] * z + view[12]) / _width
-    _y = projection[9] + projection[5] * (view[1] * x + view[5] * y + view[9] * z + view[13]) / _width
-  } else {
-    /// ortho projection
-    _x = projection[12] + projection[0] * (view[0] * x + view[4] * y + view[8]  * z + view[12])
-    _y = projection[13] + projection[5] * (view[1] * x + view[5] * y + view[9]  * z + view[13])
-  }
-
-  return { 
-    x: (0.5 + 0.5 * _x) * width,
-    y: (0.5 + 0.5 * _y) * height,
-  }
-}
-
-
 ///@param {Controller} _controller
 ///@param {Struct} [config]
 function GridRenderer(_controller, config = {}) constructor {
@@ -250,7 +214,7 @@ function GridRenderer(_controller, config = {}) constructor {
   ///@private
   renderBorders = function() {
     static renderTop = function(controller) {
-      if (!controller.editor.store.getValue("target-locked-y")) {
+      if (!controller.gridService.targetLocked.isLockedY) {
         return
       }
 
@@ -276,7 +240,7 @@ function GridRenderer(_controller, config = {}) constructor {
       var height = gridService.properties.borderVerticalLength
       var anchorY = view.y//view.height * floor(view.y / view.height)
       var beginX = GRID_SERVICE_PIXEL_WIDTH * -5.0
-      var beginY = GRID_SERVICE_PIXEL_HEIGHT * (controller.editor.store.getValue("target-locked-y")
+      var beginY = GRID_SERVICE_PIXEL_HEIGHT * (controller.gridService.targetLocked.isLockedY
         ? clamp(anchorY + height + (view.height / 2.0), 0.0, view.worldHeight) - view.y
         : clamp(view.worldHeight - view.y, 0.0, view.worldHeight))
       var endX = GRID_SERVICE_PIXEL_WIDTH * (view.width + 5.0)
@@ -367,7 +331,7 @@ function GridRenderer(_controller, config = {}) constructor {
       var _x = (player.x - ((player.sprite.texture.width * player.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) + ((player.sprite.texture.offsetX * player.sprite.scaleX) / GRID_SERVICE_PIXEL_WIDTH) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
       var _y = (player.y - ((player.sprite.texture.height * player.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) + ((player.sprite.texture.offsetY * player.sprite.scaleY) / GRID_SERVICE_PIXEL_HEIGHT) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
       player.sprite.render(_x, _y)
-      this.player2DCoords = project3DCoordsOn2D(_x + baseX, _y + baseY,this.controller.gridService.properties.depths.playerZ, this.camera.viewMatrix, this.camera.projectionMatrix, this.gridSurface.width, this.gridSurface.height)
+      this.player2DCoords = Math.project3DCoordsOn2D(_x + baseX, _y + baseY,this.controller.gridService.properties.depths.playerZ, this.camera.viewMatrix, this.camera.projectionMatrix, this.gridSurface.width, this.gridSurface.height)
       /*
       GPU.render.rectangle(
         (player.x - ((player.mask.getWidth() * player.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,

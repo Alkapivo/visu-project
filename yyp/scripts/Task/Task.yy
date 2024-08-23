@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"Task",
   "isCompatibility":false,
   "isDnD":false,
   "name":"Task",
   "parent":{
     "name":"task",
-    "path":"folders/core-gml/src/util/task.yy",
+    "path":"folders/core/src/util/task.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

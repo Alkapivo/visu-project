@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"VETemplate",
   "isCompatibility":false,
   "isDnD":false,
   "name":"VETemplate",
   "parent":{
     "name":"template",
-    "path":"folders/visu-gml/src/editor/service/template.yy",
+    "path":"folders/visu/src/editor/service/template.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

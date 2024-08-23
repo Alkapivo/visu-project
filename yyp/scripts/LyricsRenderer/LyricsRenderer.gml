@@ -7,6 +7,13 @@ function LyricsRenderer(_controller, config = {}) constructor {
   ///@type {VisuController}
   controller = Assert.isType(_controller, VisuController)
 
+  preview = {
+    x: function() { return 0 },
+    y: function() { return 0 },
+    width: GuiWidth,
+    height: GuiHeight,
+  }
+
   ///@return {LyricsService}
   renderGUI = function() {
     var service = this.controller.lyricsService
@@ -15,7 +22,8 @@ function LyricsRenderer(_controller, config = {}) constructor {
       GPU.set.font(lyrics.font.asset).align.h(lyrics.align).align.v(lyrics.align)
 
       var enable = renderer.controller.renderUI
-      var preview = renderer.controller.editor.layout.nodes.preview
+      var editor = Beans.get(BeanVisuEditor)
+      var preview = Core.isType(editor, VisuEditor) ? editor.layout.nodes.preview : this.preview
       var guiWidth = enable ? ceil(preview.width()) : GuiWidth()
       var guiHeight = enable ? ceil(preview.height()) : GuiHeight()
       var guiX = enable ? ceil(preview.x()) : 0 

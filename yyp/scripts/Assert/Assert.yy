@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"Assert",
   "isCompatibility":false,
   "isDnD":false,
   "name":"Assert",
   "parent":{
     "name":"lang",
-    "path":"folders/core-gml/src/lang.yy",
+    "path":"folders/core/src/lang.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

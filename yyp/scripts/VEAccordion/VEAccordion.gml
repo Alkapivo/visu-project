@@ -7,9 +7,6 @@ function VEAccordion(_editor, config = null) constructor {
   ///@type {VisuEditor}
   editor = _editor
 
-  ///@type {UIService}
-  uiService = Assert.isType(this.editor.uiService, UIService)
-
   ///@type {?UILayout}
   layout = null
 
@@ -26,15 +23,21 @@ function VEAccordion(_editor, config = null) constructor {
   store = new Store({
     "render-event-inspector": {
       type: Boolean,
-      value: Assert.isType(Core.getProperty(
-        "visu.editor.accordion.render-event-inspector", false), Boolean),
+      value: Assert.isType(Visu.settings
+        .getValue("visu.editor.accordion.render-event-inspector", false), Boolean),
     },
     "render-template-toolbar": {
       type: Boolean,
-      value: Assert.isType(Core.getProperty(
-        "visu.editor.accordion.render-template-toolbar", false), Boolean),
+      value: Assert.isType(Visu.settings
+        .getValue("visu.editor.accordion.render-template-toolbar", false), Boolean),
     },
   })
+
+  var generateSettingsSubscriber = Visu.settings.generateSettingsSubscriber
+  store.get("render-event-inspector").addSubscriber(
+    generateSettingsSubscriber("visu.editor.accordion.render-event-inspector"))
+  store.get("render-template-toolbar").addSubscriber(
+    generateSettingsSubscriber("visu.editor.accordion.render-template-toolbar"))
   
   ///@private
   ///@type {Map<String, Callable>}
@@ -172,7 +175,7 @@ function VEAccordion(_editor, config = null) constructor {
               }
             },
             updateLayout: new BindIntent(function(position) {
-              var node = Struct.get(Beans.get(BeanVisuController).editor.layout.nodes, "accordion")
+              var node = Struct.get(Beans.get(BeanVisuEditor).layout.nodes, "accordion")
               node.percentageWidth = position / GuiWidth()
             }),
             onMousePressedLeft: function(event) {
@@ -348,7 +351,7 @@ function VEAccordion(_editor, config = null) constructor {
       }, {
         keys: GMArray.sort(this.containers.keys().getContainer()),
         containers: context.containers,
-        uiService: context.uiService,
+        uiService: Beans.get(BeanVisuController).uiService,
       })
     },
     "close": function(event) {
@@ -358,7 +361,7 @@ function VEAccordion(_editor, config = null) constructor {
           name: key, 
           quiet: true,
         }))
-      }, this.uiService).clear()
+      }, Beans.get(BeanVisuController).uiService).clear()
 
       eventInspector.send(new Event("close"))
       templateToolbar.send(new Event("close"))

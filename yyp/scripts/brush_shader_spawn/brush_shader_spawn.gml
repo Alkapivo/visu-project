@@ -16,10 +16,10 @@ function brush_shader_spawn(json = null) {
       },
       "shader-spawn_template": {
         type: String,
-        value: Struct.getDefault(json, "shader-spawn_template", "Wave 01"),
+        value: Struct.getDefault(json, "shader-spawn_template", "shader-default"),
         passthrough: function(value) {
-          return Beans.get(BeanVisuController).shaderPipeline.templates
-            .contains(value) ? value : this.value
+          ///@todo weird bug
+          return Beans.get(BeanVisuController).shaderPipeline.templates.contains(value) ? value : (Core.isType(this.value, String) ? this.value : "shader-default")
         },
       },
       "shader-spawn_duration": {

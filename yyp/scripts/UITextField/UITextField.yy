@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"UITextField",
   "isCompatibility":false,
   "isDnD":false,
   "name":"UITextField",
   "parent":{
     "name":"item",
-    "path":"folders/core-gml/src/service/ui/item.yy",
+    "path":"folders/core/src/service/ui/item.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",
