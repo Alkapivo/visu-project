@@ -6,9 +6,6 @@ function VEStatusBar(_editor) constructor {
   ///@type {VisuEditor}
   editor = Assert.isType(_editor, VisuEditor)
 
-  ///@type {UIService}
-  uiService = Assert.isType(this.editor.uiService, UIService)
-
   ///@type {Map<String, Containers>}
   containers = new Map(String, UI)
 
@@ -325,7 +322,7 @@ function VEStatusBar(_editor) constructor {
         name: "ve-status-bar",
         state: new Map(String, any, {
           "background-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-          "store": controller.editor.store,
+          "store": Beans.get(BeanVisuEditor).store,
         }),
         controller: controller,
         layout: layout,
@@ -340,7 +337,7 @@ function VEStatusBar(_editor) constructor {
             layout: layout.nodes.fpsValue,
             updateCustom: Core.getProperty("visu.editor.status-bar.render-average-fps", true)
               ? function() {
-                this.label.text = string(fps);//string(clamp(ceil(fps_real + 1), 0, 60))
+                this.label.text = string(fps)
               }
               :
               function() {
@@ -443,6 +440,7 @@ function VEStatusBar(_editor) constructor {
             callback: function() {
               var controller = Beans.get(BeanVisuController)
               controller.autosaveEnabled = this.value
+              Visu.settings.setValue("visu.autosave", this.value).save()
               if (!controller.autosaveEnabled) {
                 controller.autosaveTimer.time = 0
               }
@@ -495,7 +493,7 @@ function VEStatusBar(_editor) constructor {
           container: container,
           replace: true,
         }))
-      }, this.uiService)
+      }, Beans.get(BeanVisuController).uiService)
     },
     "close": function(event) {
       var context = this
@@ -504,7 +502,7 @@ function VEStatusBar(_editor) constructor {
           name: key, 
           quiet: true,
         }))
-      }, this.uiService).clear()
+      }, Beans.get(BeanVisuController).uiService).clear()
     },
   }), { 
     enableLogger: false, 

@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"TemplateToolbarTest",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"TemplateToolbarTest",
+  "parent":{
+    "name":"test",
+    "path":"folders/visu/test.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

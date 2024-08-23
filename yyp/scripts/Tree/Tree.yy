@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"Tree",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"Tree",
+  "parent":{
+    "name":"collection",
+    "path":"folders/core/src/collection.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

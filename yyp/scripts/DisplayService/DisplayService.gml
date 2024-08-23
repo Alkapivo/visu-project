@@ -67,7 +67,7 @@ function DisplayService(_controller, config = {}): Service() constructor {
 
   ///@return {Boolean}
   getFullscreen = function() {
-    return window_get_fullscreen()
+    return window_get_fullscreen() == true
   }
 
   ///@return {DisplayService}

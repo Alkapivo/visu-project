@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"HTTP",
   "isCompatibility":false,
   "isDnD":false,
   "name":"HTTP",
   "parent":{
     "name":"network",
-    "path":"folders/core-gml/src/service/network.yy",
+    "path":"folders/core/src/service/network.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

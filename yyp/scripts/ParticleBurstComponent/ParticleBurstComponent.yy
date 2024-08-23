@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"ParticleBurstComponent",
   "isCompatibility":false,
   "isDnD":false,
   "name":"ParticleBurstComponent",
   "parent":{
     "name":"component",
-    "path":"folders/visu-gml/src/ecs/grid/component.yy",
+    "path":"folders/visu/src/ecs/grid/component.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

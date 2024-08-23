@@ -38,7 +38,7 @@ function Track(json, config = null) constructor {
   parseTrackChannel = Core.isType(Struct.get(config, "parseTrackChannel"), Callable)
     ? method(this, config.parseTrackChannel)
     : function(channel, index, config = null) {
-        Logger.debug("Track", $"Parse channel '{channel.name}' at index {index}")
+        //Logger.debug("Track", $"Parse channel '{channel.name}' at index {index}")
         return new TrackChannel({ 
           name: Assert.isType(Struct.get(channel, "name"), String),
           events: Assert.isType(Struct.get(channel, "events"), GMArray),

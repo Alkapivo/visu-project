@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"brush_shroom_spawn",
   "isCompatibility":false,
   "isDnD":false,
   "name":"brush_shroom_spawn",
   "parent":{
     "name":"shroom",
-    "path":"folders/visu-gml/src/editor/service/brush/shroom.yy",
+    "path":"folders/visu/src/editor/service/brush/shroom.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

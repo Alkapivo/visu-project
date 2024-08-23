@@ -107,15 +107,16 @@ function Map(_keyType = any, _valueType = any, _container = null, config = { val
   ///@throws {Exception}
   ///@return {Map}
   static add = function(item, key = null) {
-    if (key == null) {
-      key = this.generateKey()
+    var _key = key
+    if (_key == null) {
+      _key = this.generateKey()
     }
 
-    if (this.contains(key)) {
-      throw new Exception($"Key already exists: '{key}'")
+    if (this.contains(_key)) {
+      throw new Exception($"Key already exists: '{_key}'")
     }
 
-    this.set(key, item)
+    this.set(_key, item)
     return this
   }
 

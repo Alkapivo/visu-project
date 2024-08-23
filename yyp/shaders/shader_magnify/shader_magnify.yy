@@ -4,7 +4,7 @@
   "name":"shader_magnify",
   "parent":{
     "name":"xygthop3",
-    "path":"folders/core-gml/resource/shader/xygthop3.yy",
+    "path":"folders/core/resource/shader/xygthop3.yy",
   },
   "resourceType":"GMShader",
   "resourceVersion":"2.0",

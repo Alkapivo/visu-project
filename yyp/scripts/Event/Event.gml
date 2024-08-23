@@ -169,12 +169,21 @@ global.__EVENT_DISPATCHERS = {
         }
       }
     
-      var fadeInSpeed = Assert.isType(Struct.getDefault(event.data, "fadeInSpeed", 0.01), Number)
-      var fadeOutSpeed = Assert.isType(Struct.getDefault(event.data, "fadeOutSpeed", 0.01), Number)
+      var fadeInSpeed = 1.0
+      var fadeInDuration = Assert.isType(Struct.getDefault(event.data, "fadeInDuration", 0.0), Number)
+      if (fadeInDuration > 0.0) {
+        fadeInSpeed = FRAME_MS / fadeInDuration
+      }
+
+      var fadeOutSpeed = 1.0
+      var fadeOutDuration = Assert.isType(Struct.getDefault(event.data, "fadeOutDuration", 0.0), Number)
+      if (fadeOutDuration > 0.0) {
+        fadeOutSpeed = FRAME_MS / fadeOutDuration
+      }
       var sprite = Assert.isType(event.data.sprite, Sprite)
       var originalAlpha = sprite.getAlpha()
       var type = Assert.isType(event.data.type, String)
-      sprite.setAlpha(0.0)
+      sprite.setAlpha(fadeInSpeed)
       var task = new Task(event.name)
         .setState(new Map(String, any, {
           stage: "fade-in",
@@ -230,12 +239,22 @@ global.__EVENT_DISPATCHERS = {
         }
       }
     
-      var fadeInSpeed = Assert.isType(Struct.getDefault(event.data, "fadeInSpeed", 0.01), Number)
-      var fadeOutSpeed = Assert.isType(Struct.getDefault(event.data, "fadeOutSpeed", 0.01), Number)
+      var fadeInSpeed = 1.0
+      var fadeInDuration = Assert.isType(Struct.getDefault(event.data, "fadeInDuration", 0.0), Number)
+      if (fadeInDuration > 0.0) {
+        fadeInSpeed = FRAME_MS / fadeInDuration
+      }
+
+      var fadeOutSpeed = 1.0
+      var fadeOutDuration = Assert.isType(Struct.getDefault(event.data, "fadeOutDuration", 0.0), Number)
+      if (fadeOutDuration > 0.0) {
+        fadeOutSpeed = FRAME_MS / fadeOutDuration
+      }
+
       var color = Assert.isType(event.data.color, Color)
       var originalAlpha = color.alpha
       var type = Assert.isType(event.data.type, String)
-      color.alpha = 0.0
+      color.alpha = fadeInSpeed
       var task = new Task(event.name)
         .setState(new Map(String, any, {
           stage: "fade-in",

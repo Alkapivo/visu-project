@@ -13,7 +13,7 @@
   "name":"sound_visu_wasm",
   "parent":{
     "name":"sound",
-    "path":"folders/visu-gml/resource/sound.yy",
+    "path":"folders/visu/resource/sound.yy",
   },
   "preload":false,
   "resourceType":"GMSound",

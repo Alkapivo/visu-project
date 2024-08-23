@@ -49,13 +49,13 @@ function _Beans() constructor {
     if (this.beans.contains(name)) {
       var bean = this.beans.get(name)
       if (!Core.isType(bean, Bean)) {
-        Logger.error("Beans", $"Found non-bean entity in beans?: {name}")
+        Logger.warn("Beans", $"Found non-bean entity in beans?: {name}")
         this.beans.remove(name)
         return false
       }
 
       if (bean.get() == null) {
-        Logger.error("Beans", $"Found corrupted bean: {name}")
+        Logger.warn("Beans", $"Found corrupted bean: {name}")
         this.beans.remove(name)
         return false
       }
@@ -96,7 +96,7 @@ function _Beans() constructor {
   ///@param {String} name
   static remove = function(name) {
     var bean = this.beans.get(name)
-    Core.dereference(bean, $"Bean `{name}` dereferenced successfully")
+    //Core.dereference(bean, $"Bean `{name}` dereferenced successfully")
     this.beans.remove(name)
   }
 
@@ -133,5 +133,7 @@ global.__Beans = null
 #macro Beans global.__Beans
 
 function initBeans() {
-  global.__Beans = new _Beans()
+  if (global.__Beans == null) {
+    global.__Beans = new _Beans()
+  }
 }

@@ -6,6 +6,15 @@
 ///@static
 ///@type {Struct}
 global.__shaders = {
+  "shader_nog_betere_2": {
+    "type": "GLSL_ES",
+    "uniforms": {
+      "iTime": "FLOAT",
+      "iResolution": "VECTOR2",
+      "iColor": "VECTOR3",
+      "iMix": "FLOAT"
+    }
+  },
   "shader_art": {
     "type": "GLSL_ES",
     "uniforms": {
@@ -215,6 +224,100 @@ global.__shaders = {
       "lineThickness": "FLOAT",
       "pointRadius": "FLOAT"
     }
+  },
+  "shader_lighting_with_glow": {
+    "type": "GLSL_ES",
+    "uniforms": {
+      "iTime": "FLOAT",
+      "iResolution": "VECTOR2"
+    }
+  },
+  "shader_discoteq_2": {
+    "type": "GLSL_ES",
+    "uniforms": {
+      "iTime": "FLOAT",
+      "iResolution": "VECTOR2"
+    }
+  },
+  "shader_ui_noise_halo": {
+    "type": "GLSL_ES",
+    "uniforms": {
+      "iTime": "FLOAT",
+      "iResolution": "VECTOR2"
+    }
+  },
+  "shader_colors_embody": {
+    "type": "GLSL_ES",
+    "uniforms": {
+      "iTime": "FLOAT",
+      "iResolution": "VECTOR2"
+    }
+  },
+  "shader_grid_space": {
+    "type": "GLSL_ES",
+    "uniforms": {
+      "iTime": "FLOAT",
+      "iResolution": "VECTOR2"
+    }
+  },
+  "shader_002_blue": {
+    "type": "GLSL_ES",
+    "uniforms": {
+      "iTime": "FLOAT",
+      "iResolution": "VECTOR2",
+      "iIterations": "FLOAT",
+      "iSize": "FLOAT",
+      "iPhase": "FLOAT",
+      "iTreshold": "FLOAT",
+      "iDistance": "FLOAT",
+      "iTint": "VECTOR3"
+    }
+  },
+  "shader_monster": {
+    "type": "GLSL_ES",
+    "uniforms": {
+      "iTime": "FLOAT",
+      "iResolution": "VECTOR2",
+      "iTint": "VECTOR3",
+      "iSize": "FLOAT"
+    }
+  },
+  "shader_clouds_2d": {
+    "type": "GLSL_ES",
+    "uniforms": {
+      "iTime": "FLOAT",
+      "iResolution": "VECTOR2"
+    }
+  },
+  "shader_flame": {
+    "type": "GLSL_ES",
+    "uniforms": {
+      "iTime": "FLOAT",
+      "iResolution": "VECTOR2",
+      "iPosition": "VECTOR3",
+      "iIterations": "FLOAT"
+    }
+  },
+  "shader_whirlpool": {
+    "type": "GLSL_ES",
+    "uniforms": {
+      "iTime": "FLOAT",
+      "iResolution": "VECTOR2",
+      "iIterations": "FLOAT",
+      "iSize": "FLOAT",
+      "iFactor": "FLOAT"
+    }
+  },
+  "shader_warp_speed_2": {
+    "type": "GLSL_ES",
+    "uniforms": {
+      "iTime": "FLOAT",
+      "iResolution": "VECTOR2",
+      "iIterations": "FLOAT",
+      "iSize": "VECTOR2",
+      "iFactor": "FLOAT",
+      "iSeed": "VECTOR3"
+    }
   }
 }
 #macro SHADERS global.__shaders
@@ -244,11 +347,16 @@ function Shader(_asset, json) constructor {
 
   ///@type {Map<String, ShaderUniform>}
   uniforms = Struct
-    .toMap(Struct.getDefault(json, "uniforms", {}), String, ShaderUniform)
-    .map(function(type, name, shader) {
-      var prototype = ShaderUniformType.get(type)
-      return Assert.isType(new prototype(shader, name, type), ShaderUniform)
-    }, this.asset)
+    .toMap(
+      Struct.getDefault(json, "uniforms", {}), 
+      String, 
+      ShaderUniform,
+      function(type, name, asset) {
+        var prototype = ShaderUniformType.get(type)
+        return Assert.isType(new prototype(asset, name, type), ShaderUniform)
+      },
+      this.asset
+    )
 }
 
 

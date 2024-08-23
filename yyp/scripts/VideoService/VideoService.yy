@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"VideoService",
   "isCompatibility":false,
   "isDnD":false,
   "name":"VideoService",
   "parent":{
     "name":"video",
-    "path":"folders/core-gml/src/service/video.yy",
+    "path":"folders/core/src/service/video.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

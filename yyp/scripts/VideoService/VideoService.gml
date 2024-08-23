@@ -1,12 +1,9 @@
 ///@package com.alkapivo.core.component.video.VideoService
 
-///@param {Controller} _controller
 ///@param {Struct} [config]
-function VideoService(_controller, config = {}): Service() constructor {
+function VideoService(config = {}): Service() constructor {
 
-  ///@deprecated
-  ///@type {Struct}
-  controller = Assert.isType(_controller, Struct)
+  VideoUtil.runGC()
 
   ///@private
   ///@type {?Video}
@@ -97,7 +94,7 @@ function VideoService(_controller, config = {}): Service() constructor {
             }
           }
         }))
-        .setTimeout(3.0)
+        .setTimeout(this.timeout)
         .whenUpdate(this.factoryTaskUpdate())
       
       this.executor.tasks.forEach(this.rejectExistingTask)
@@ -170,7 +167,7 @@ function VideoService(_controller, config = {}): Service() constructor {
             }
           }
         }))
-        .setTimeout(3.0)
+        .setTimeout(this.timeout)
         .whenUpdate(this.factoryTaskUpdate())
       
       this.executor.tasks.forEach(this.rejectExistingTask)

@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"Visu",
   "isCompatibility":false,
   "isDnD":false,
   "name":"Visu",
   "parent":{
     "name":"src",
-    "path":"folders/visu-gml/src.yy",
+    "path":"folders/visu/src.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

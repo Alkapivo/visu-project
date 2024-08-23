@@ -26,7 +26,7 @@
   "origin":0,
   "parent":{
     "name":"VETimeline",
-    "path":"folders/visu-gml/resource/texture/editor/containers/VETimeline.yy",
+    "path":"folders/visu/resource/texture/editor/containers/VETimeline.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",

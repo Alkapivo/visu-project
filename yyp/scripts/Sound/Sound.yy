@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"Sound",
   "isCompatibility":false,
   "isDnD":false,
   "name":"Sound",
   "parent":{
     "name":"sound",
-    "path":"folders/core-gml/src/service/sound.yy",
+    "path":"folders/core/src/service/sound.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

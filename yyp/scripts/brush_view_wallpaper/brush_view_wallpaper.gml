@@ -23,18 +23,18 @@ function brush_view_wallpaper(json = null) {
         },
         data: new Array(String, WALLPAPER_TYPES),
       },
-      "view-wallpaper_fade-in-speed": {
+      "view-wallpaper_fade-in-duration": {
         type: Number,
-        value: Struct.getDefault(json, "view-wallpaper_fade-in-speed", 0.01),
+        value: Struct.getDefault(json, "view-wallpaper_fade-in-duration", 0.0),
         passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0.000001, 1.0) 
+          return NumberUtil.parse(value, this.value)
         },
       },
-      "view-wallpaper_fade-out-speed": {
+      "view-wallpaper_fade-out-duration": {
         type: Number,
-        value: Struct.getDefault(json, "view-wallpaper_fade-out-speed", 0.01),
+        value: Struct.getDefault(json, "view-wallpaper_fade-out-duration", 0.0),
         passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0.000001, 1.0) 
+          return NumberUtil.parse(value, this.value)
         },
       },
       "view-wallpaper_use-color": {
@@ -98,34 +98,25 @@ function brush_view_wallpaper(json = null) {
           next: { store: { key: "view-wallpaper_type" } },
         },
       },
+      
       {
-        name: "view-wallpaper_fade-in-speed",  
-        template: VEComponents.get("numeric-slider-field"),
-        layout: VELayouts.get("numeric-slider-field"),
+        name: "view-wallpaper_fade-in-duration",  
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Fade in" },
-          field: { store: { key: "view-wallpaper_fade-in-speed" } },
-          slider: { 
-            minValue: 0.0001,
-            maxValue: 1.0,
-            store: { key: "view-wallpaper_fade-in-speed" },
-          },
+          field: { store: { key: "view-wallpaper_fade-in-duration" } },
         },
       },
       {
-        name: "view-wallpaper_fade-out-speed",  
-        template: VEComponents.get("numeric-slider-field"),
-        layout: VELayouts.get("numeric-slider-field"),
+        name: "view-wallpaper_fade-out-duration",  
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Fade out" },
-          field: { store: { key: "view-wallpaper_fade-out-speed" } },
-          slider: { 
-            minValue: 0.000001,
-            maxValue: 1.0,
-            store: { key: "view-wallpaper_fade-out-speed" },
-          },
+          field: { store: { key: "view-wallpaper_fade-out-duration" } },
         },
       },
       {

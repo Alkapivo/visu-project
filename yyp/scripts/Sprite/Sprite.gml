@@ -37,7 +37,7 @@ function Sprite(_texture, config = {}) constructor {
   blend = Struct.getDefault(config, "blend", c_white)
 
   ///@type {Boolean}
-  animate = Struct.getDefault(config, "animate", true)
+  animate = Struct.getDefault(config, "animate", this.texture.frames > 1)
 
   ///@return {String}
   getName = function() {

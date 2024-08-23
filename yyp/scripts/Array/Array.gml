@@ -72,7 +72,7 @@ function Array(_type = any, _container = null) constructor {
     
     var size = this.size()
     if (size < 32000) { ///@description GML array limitation
-      index = index == null ? size : clamp(index, -31999, 31999)
+      index = index == null ? size : clamp(index, 0, 32000)
       array_insert(this.container, index, item)
     }
     return this
@@ -163,21 +163,6 @@ function Array(_type = any, _container = null) constructor {
       mapped.add(result)
     }
     return mapped
-  }
-
-  ///@override
-  ///@param {Callable} callback
-  ///@param {any} [acc]
-  ///@return {any}
-  static flat = function(callback, acc = null) {
-    var size = this.size()
-    for (var index = 0; index < size; index++) {
-      var item = this.container[index]
-      if (callback(item, index, acc) == BREAK_LOOP) {
-        break
-      }
-    }
-    return acc
   }
 
   ///@override
@@ -438,6 +423,44 @@ function _GMArray() constructor {
     return arr
   }
 
+  ///@override
+  ///@param {GMArray} arr
+  ///@return {GMArray}
+  static clear = function(arr) {
+    array_delete(arr, 0, this.size(arr))
+    return arr
+  }
+
+  ///@param {GMArray} arr
+  ///@param {Callable} callback
+  ///@param {any} [acc]
+  ///@return {any}
+  static find = function(arr, callback, acc = null) {
+    var size = this.size(arr)
+    for (var index = 0; index < size; index++) {
+      var item = arr[index]
+      if (callback(item, index, acc)) {
+        return item
+      }
+    }
+    return null
+  }
+
+  ///@param {GMArray} arr
+  ///@param {any} value
+  ///@param {any} [acc]
+  ///@return {?Number}
+  static findIndex = function(arr, callback, acc = null) {
+    var size = this.size(arr)
+    for (var index = 0; index < size; index++) {
+      var item = arr[index]
+      if (callback(item, index, acc)) {
+        return index
+      }
+    }
+    return null
+  }
+
   ///@param {GMArray} arr
   ///@param {Number} index
   ///@return {GMArray}
@@ -541,24 +564,24 @@ function _GMArray() constructor {
     if (Core.isType(keyCallback, Callable)) {
       if (isValueCallback) {
         for (var index = 0; index < size; index++) {
-          var key = arr[index]
-          map.set(keyCallback(key, acc), valueCallback(key, acc))
+          var value = arr[index]
+          map.set(keyCallback(value, index, acc), valueCallback(value, index, acc))
         }
       } else {
         for (var index = 0; index < size; index++) {
-          var key = arr[index]
-          map.set(key, valueCallback(key, acc))
+          var value = arr[index]
+          map.set(keyCallback(value, index, acc), value)
         }
       }
     } else {
       if (isValueCallback) {
         for (var index = 0; index < size; index++) {
-          var key = arr[index]
-          map.set(key, valueCallback(key, acc))
+          var value = arr[index]
+          map.set($"_{index}", valueCallback(value, index, acc))
         }
       } else {
         for (var index = 0; index < size; index++) {
-          map.set(arr[index], null)
+          map.set($"_{index}", arr[index])
         }
       }
     }
@@ -577,24 +600,24 @@ function _GMArray() constructor {
     if (Core.isType(keyCallback, Callable)) {
       if (isValueCallback) {
         for (var index = 0; index < size; index++) {
-          var key = arr[index]
-          Struct.set(struct, keyCallback(key, acc), valueCallback(key, acc))
+          var value = arr[index]
+          Struct.set(struct, keyCallback(value, index, acc), valueCallback(value, index, acc))
         }
       } else {
         for (var index = 0; index < size; index++) {
-          var key = arr[index]
-          Struct.set(struct, key, valueCallback(key, acc))
+          var value = arr[index]
+          Struct.set(struct, keyCallback(value, index, acc), value)
         }
       }
     } else {
       if (isValueCallback) {
         for (var index = 0; index < size; index++) {
-          var key = arr[index]
-          Struct.set(struct, key, valueCallback(key, acc))
+          var value = arr[index]
+          Struct.set(struct, $"_{index}", valueCallback(value, index, acc))
         }
       } else {
         for (var index = 0; index < size; index++) {
-          Struct.set(struct, arr[index], null)
+          Struct.set(struct, $"_{index}", arr[index])
         }
       }
     }

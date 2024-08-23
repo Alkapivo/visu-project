@@ -4,9 +4,12 @@
 function Store(json) constructor {
 
   ///@type {Map<String, any>}
-  container = Struct.toMap(json, String, StoreItem,
-    function(item, key) { return new StoreItem(key, item) }, null, 
-    function(item, key) { return key })
+  container = Struct.toMap(
+    json, 
+    String, 
+    StoreItem,
+    function(item, key) { return new StoreItem(key, item) }
+  )
 
   ///@private
   ///@param {StoreItem} item

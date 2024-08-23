@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"LyricsRenderer",
   "isCompatibility":false,
   "isDnD":false,
   "name":"LyricsRenderer",
   "parent":{
     "name":"renderer",
-    "path":"folders/visu-gml/src/renderer.yy",
+    "path":"folders/visu/src/renderer.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

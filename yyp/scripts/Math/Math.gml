@@ -328,6 +328,47 @@ function _Math() constructor {
   areNumbersEqual = function(a, b, epsilon = 0.0) {
     return a >= b - epsilon && a <= b + epsilon
   }
+
+  ///@param {any} value
+  ///@return {Boolean}
+  isNaN = function(value) {
+    return is_nan(value)
+  }
+
+  ///@param {Number} x
+  ///@param {Number} y
+  ///@param {Number} z
+  ///@param {Matrix} view
+  ///@param {Matrix} projection
+  ///@param {Number} width
+  ///@param {Number} height
+  ///@return {Struct}
+  project3DCoordsOn2D = function(x, y, z, view, projection, width, height) {
+    var _x = 0
+    var _y = 0
+    if (projection[15] == 0) {
+      // perspective projection
+      var _width = view[2] * x + view[6] * y + view[10] * z + view[14];
+      if (_width == 0) {
+        return { 
+          x: null, 
+          y: null
+        }
+      }
+
+      _x = projection[8] + projection[0] * (view[0] * x + view[4] * y + view[8] * z + view[12]) / _width
+      _y = projection[9] + projection[5] * (view[1] * x + view[5] * y + view[9] * z + view[13]) / _width
+    } else {
+      /// ortho projection
+      _x = projection[12] + projection[0] * (view[0] * x + view[4] * y + view[8]  * z + view[12])
+      _y = projection[13] + projection[5] * (view[1] * x + view[5] * y + view[9]  * z + view[13])
+    }
+
+    return { 
+      x: (0.5 + 0.5 * _x) * width,
+      y: (0.5 + 0.5 * _y) * height,
+    }
+  }
 }
 global.__Math = new _Math()
 #macro Math global.__Math

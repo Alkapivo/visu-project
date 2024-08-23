@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"ShaderTemplate",
   "isCompatibility":false,
   "isDnD":false,
   "name":"ShaderTemplate",
   "parent":{
     "name":"shader",
-    "path":"folders/core-gml/src/renderer/shader.yy",
+    "path":"folders/core/src/renderer/shader.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

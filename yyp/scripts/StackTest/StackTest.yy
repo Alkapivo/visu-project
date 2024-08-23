@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"StackTest",
   "isCompatibility":false,
   "isDnD":false,
   "name":"StackTest",
   "parent":{
     "name":"collection",
-    "path":"folders/core-gml/test/collection.yy",
+    "path":"folders/core/test/collection.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

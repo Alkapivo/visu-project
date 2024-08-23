@@ -36,8 +36,8 @@
   "nineSlice":null,
   "origin":9,
   "parent":{
-    "name":"texture",
-    "path":"folders/core-gml/resource/texture.yy",
+    "name":"icon",
+    "path":"folders/visu/resource/texture/editor/icon.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",

@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"VEComponents",
   "isCompatibility":false,
   "isDnD":false,
   "name":"VEComponents",
   "parent":{
     "name":"ui",
-    "path":"folders/visu-gml/src/ui.yy",
+    "path":"folders/visu/src/ui.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

@@ -628,7 +628,7 @@ function VisuNewProjectForm(json = null) constructor {
             extension: "visu" 
           })
 
-          if (!Optional.is(path)) {
+          if (!Core.isType(path, String) || String.isEmpty(path)) {
             return
           }
 
@@ -734,8 +734,8 @@ function VisuNewProjectForm(json = null) constructor {
       "model": "io.alkapivo.visu.controller.VisuTrack",
       "version": "1",
       "data": {  
-        "bpm": controller.editor.store.getValue("bpm"),
-        "bpm-sub": controller.editor.store.getValue("bpm-sub"),
+        "bpm": Beans.get(BeanVisuEditor).store.getValue("bpm"),
+        "bpm-sub": Beans.get(BeanVisuEditor).store.getValue("bpm-sub"),
         "bullet": "template/bullet.json",
         "editor": [],
         "lyrics": "template/lyrics.json",
@@ -1220,8 +1220,8 @@ function VisuNewProjectForm(json = null) constructor {
                     "view-wallpaper_texture-blend":"#BC2EFC",
                     "view-wallpaper_clear-texture":true,
                     "view-wallpaper_type":"Background",
-                    "view-wallpaper_fade-in-speed":1.0,
-                    "view-wallpaper_fade-out-speed":1.0,
+                    "view-wallpaper_fade-in-duration":0.0,
+                    "view-wallpaper_fade-out-duration":0.0,
                     "view-wallpaper_use-color":0.0,
                     "view-wallpaper_color":"#00FFF7",
                     "view-wallpaper_clear-color":1.0,
@@ -1258,8 +1258,8 @@ function VisuNewProjectForm(json = null) constructor {
                     "view-wallpaper_texture-blend":"#BC2EFC",
                     "view-wallpaper_clear-texture":true,
                     "view-wallpaper_type":"Foreground",
-                    "view-wallpaper_fade-in-speed":1.0,
-                    "view-wallpaper_fade-out-speed":1.0,
+                    "view-wallpaper_fade-in-duration":0.0,
+                    "view-wallpaper_fade-out-duration":0.0,
                     "view-wallpaper_use-color":0.0,
                     "view-wallpaper_color":"#00FFF7",
                     "view-wallpaper_clear-color":1.0,
@@ -1473,15 +1473,9 @@ function VisuNewProjectForm(json = null) constructor {
   }
 }
 
-///@param {VisuController} _controller
+
 ///@param {?Struct} [_config]
-function VisuNewProjectModal(_controller, _config = null) constructor {
-
-  ///@type {VisuController}
-  controller = Assert.isType(_controller, VisuController)
-
-  ///@type {UIService}
-  uiService = Assert.isType(this.controller.uiService, UIService)
+function VisuNewProjectModal(_config = null) constructor {
 
   ///@type {?Struct}
   config = Optional.is(_config) ? Assert.isType(_config, Struct) : null
@@ -1564,7 +1558,7 @@ function VisuNewProjectModal(_controller, _config = null) constructor {
           container: container,
           replace: true,
         }))
-      }, this.uiService)
+      }, Beans.get(BeanVisuController).uiService)
     },
     "close": function(event) {
       var context = this
@@ -1573,7 +1567,7 @@ function VisuNewProjectModal(_controller, _config = null) constructor {
           name: key, 
           quiet: true,
         }))
-      }, this.uiService).clear()
+      }, Beans.get(BeanVisuController).uiService).clear()
     },
   }))
 

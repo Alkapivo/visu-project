@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"VisuIO",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"VisuIO",
+  "parent":{
+    "name":"src",
+    "path":"folders/visu/src.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

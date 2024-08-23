@@ -1,0 +1,12 @@
+{
+  "$GMShader":"",
+  "%Name":"shader_nog_betere_2",
+  "name":"shader_nog_betere_2",
+  "parent":{
+    "name":"absurdiscord",
+    "path":"folders/core/resource/shader/absurdiscord.yy",
+  },
+  "resourceType":"GMShader",
+  "resourceVersion":"2.0",
+  "type":1,
+}

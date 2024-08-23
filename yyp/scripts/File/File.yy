@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"File",
   "isCompatibility":false,
   "isDnD":false,
   "name":"File",
   "parent":{
     "name":"file",
-    "path":"folders/core-gml/src/service/file.yy",
+    "path":"folders/core/src/service/file.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

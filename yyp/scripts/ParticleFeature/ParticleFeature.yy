@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"ParticleFeature",
   "isCompatibility":false,
   "isDnD":false,
   "name":"ParticleFeature",
   "parent":{
     "name":"feature",
-    "path":"folders/visu-gml/src/service/grid/feature.yy",
+    "path":"folders/visu/src/service/grid/feature.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

@@ -1,11 +1,7 @@
 ///@package io.alkapivo.core.service.file
 
-///@param {Struct} _controller
-///@param {Struct} [config]
-function FileService(_controller, config = {}): Service() constructor {
-
-  ///@type {Controller}
-  controller = Assert.isType(_controller, Struct)
+#macro BeanFileService "FileService"
+function FileService(): Service() constructor {
 
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {

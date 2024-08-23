@@ -12,10 +12,10 @@ function brush_shroom_spawn(json = null) {
       },
       "shroom-spawn_template": {
         type: String,
-        value: Struct.getDefault(json, "shroom-spawn_template", "shroom-01"),
-        validate: function(value) {
-          Assert.areEqual(true, Beans.get(BeanVisuController)
-            .shroomService.templates.contains(value))
+        value: Struct.getDefault(json, "shroom-spawn_template", "shroom-default"),
+        passthrough: function(value) {
+          ///@todo weird bug
+          return Beans.get(BeanVisuController).shroomService.templates.contains(value) ? value : (Core.isType(this.value, String) ? this.value : "shroom-default")
         },
       },
       "shroom-spawn_speed": {
@@ -33,7 +33,7 @@ function brush_shroom_spawn(json = null) {
         type: Number,
         value: Struct.getDefault(json, "shroom-spawn_spawn-x", 0.0),
         passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), -1.5, 2.5) 
+          return clamp(NumberUtil.parse(value, this.value), -3.5, 4.5) 
         },
       },
       "shroom-spawn_channels-spawn-x": {
@@ -238,8 +238,8 @@ function brush_shroom_spawn(json = null) {
             enable: { key: "shroom-spawn_use-spawn-x" },
           },
           slider:{
-            minValue: -1.5,
-            maxValue: 2.5,
+            minValue: -3.5,
+            maxValue: 4.5,
             store: { key: "shroom-spawn_spawn-x" },
             enable: { key: "shroom-spawn_use-spawn-x" },
             customKey: "shroom-spawn_channels-spawn-x",

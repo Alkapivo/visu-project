@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"PlayerServiceTest",
   "isCompatibility":false,
   "isDnD":false,
   "name":"PlayerServiceTest",
   "parent":{
     "name":"player",
-    "path":"folders/visu-gml/test/player.yy",
+    "path":"folders/visu/test/player.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

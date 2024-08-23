@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"BulletServiceTest",
   "isCompatibility":false,
   "isDnD":false,
   "name":"BulletServiceTest",
   "parent":{
     "name":"bullet",
-    "path":"folders/visu-gml/test/bullet.yy",
+    "path":"folders/visu/test/bullet.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

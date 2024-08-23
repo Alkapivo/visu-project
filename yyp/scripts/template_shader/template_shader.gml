@@ -321,11 +321,11 @@ global.__ShaderUniformTemplates = new Map(String, Callable)
 
 ///@param {Struct} json
 ///@return {Struct}
-function template_shader(json = null) {
+function template_shader(json) {
   var shader = Assert.isType(ShaderUtil.fetch(json.shader), Shader)
   var template = {
     name: Assert.isType(json.name, String),
-    shader: shader.name,
+    shader: Assert.isType(shader.name, String),
     store: new Map(String, Struct),
     components: new Array(Struct),
     json: json,

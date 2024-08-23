@@ -219,8 +219,9 @@ function GridItem(config = {}) constructor {
       gameMode.update(this, controller)
     }
 
-    this.fadeIn = clamp(this.fadeIn + this.fadeInFactor, 0.0, 1.0)
-
+    if (this.fadeIn < 1.0) {
+      this.fadeIn = clamp(this.fadeIn + this.fadeInFactor, 0.0, 1.0)
+    }
     return this
   }
 }

@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"Sprite",
   "isCompatibility":false,
   "isDnD":false,
   "name":"Sprite",
   "parent":{
     "name":"texture",
-    "path":"folders/core-gml/src/service/texture.yy",
+    "path":"folders/core/src/service/texture.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

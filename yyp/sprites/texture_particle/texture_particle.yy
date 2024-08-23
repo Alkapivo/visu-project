@@ -25,8 +25,8 @@
   "nineSlice":null,
   "origin":4,
   "parent":{
-    "name":"texture",
-    "path":"folders/core-gml/resource/texture.yy",
+    "name":"particle",
+    "path":"folders/core/resource/texture/particle.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",

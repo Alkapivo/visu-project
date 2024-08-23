@@ -1,0 +1,12 @@
+{
+  "$GMShader":"",
+  "%Name":"shader_lighting_with_glow",
+  "name":"shader_lighting_with_glow",
+  "parent":{
+    "name":"shadertoy",
+    "path":"folders/core/resource/shader/shadertoy.yy",
+  },
+  "resourceType":"GMShader",
+  "resourceVersion":"2.0",
+  "type":1,
+}

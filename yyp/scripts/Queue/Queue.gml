@@ -104,27 +104,18 @@ function Queue(_type = any, items = null, config = { validate: false }) construc
     return this.container.size()
   }
 
-  ///@private
-  ///@todo extract to generic component (collection?)
-  ///@type {Number} index
-  ///@type {Number} streamIndex
-  ///@type {Collection} container
-  static removeItem = function(index, streamIndex, container) {
-    container.remove(index)
-  }
-
   ///@override
   ///@param {Callable} callback
   ///@param {any} [acc]
   ///@throws {Exception}
   ///@return {Queue}
   static filter = function(callback, acc = null) {
-    var filtered = new Array(this.type)
+    var filtered = []
     var size = this.container.size()
     for (var index = 0; index < size; index++) {
       var item = this.pop()
       if (callback(item, index, acc)) {
-        filtered.add(item)
+        filtered = GMArray.add(filtered, item)
       }
     }
     return new Queue(this.type, filtered)
@@ -151,14 +142,14 @@ function Queue(_type = any, items = null, config = { validate: false }) construc
   ///@throws {Exception}
   ///@return {Queue}
   static map = function(callback, acc = null) {
-    var mapped = new Array(this.type)
+    var mapped = []
     var size = this.container.size()
     for (var index = 0; index < size; index++) {
       var result = callback(this.pop(), index, acc)
       if (result == BREAK_LOOP) {
         break
       }
-      mapped.add(result)
+      GMArray.add(mapped, result)
     }
     return new Queue(this.type, mapped)
   }

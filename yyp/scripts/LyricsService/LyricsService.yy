@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"LyricsService",
   "isCompatibility":false,
   "isDnD":false,
   "name":"LyricsService",
   "parent":{
     "name":"lyrics",
-    "path":"folders/visu-gml/src/service/lyrics.yy",
+    "path":"folders/visu/src/service/lyrics.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

@@ -15,6 +15,8 @@ show_debug_message("init Core.gml")
 #macro Matrix "Matrix"
 #macro NonNull "NonNull"
 #macro GMCamera "GMCamera"
+#macro GMTileset "GMTileset"
+#macro GMScene "GMScene"
 
 ///@static
 function _Core() constructor {
@@ -40,6 +42,9 @@ function _Core() constructor {
 
   ///@type {?Map<String, any>}
   properties = null
+
+  ///@type {?Map<String, any>}
+  typeParsers = null
 
   ///@param {any} object
   ///@param {any} type
@@ -67,9 +72,11 @@ function _Core() constructor {
         case GMObject: return result == "ref"
         case GMShader: return result == "ref" && shader_is_compiled(object)
         case GMShaderUniform: return (result == "number" || result == "ref") && object != -1
+        case GMScene: return result == "ref" && asset_get_type(object) == asset_room
         case GMSound: return (result == "number" || result == "ref") && audio_exists(object)
         case GMSurface: return result == "ref" && surface_exists(object)
         case GMVideoSurface: return result == "ref" && surface_exists(object)
+        case GMTileset: return result == "ref"
         case GMTexture: return (result == "ref" || result == "number") && sprite_exists(object)
         ///@todo bug, ref will be returned only when gamemaker is initalizing
         case NonNull: return object != null
@@ -225,6 +232,14 @@ function _Core() constructor {
     return Core.properties.getDefault(key, defaultValue)
   }
 
+  ///@param {String} key
+  ///@param {any} value
+  ///@return {Core}
+  static setProperty = function(key, value) {
+    Core.properties.set(key, value)
+    return this
+  }
+
   ///@param {Boolean} value
   ///@return {Core}
   static debugOverlay = function(value) {
@@ -250,6 +265,24 @@ function _Core() constructor {
       default: return RuntimeType.UNKNOWN
     }
   }
+
+  ///@param {Type} type
+  ///@return {Callable}
+  static fetchTypeParser = function(type) {
+    ///@param {any} value
+    ///@return {any}
+    static passthrough = function(value) { 
+      return value
+    }
+
+    if (!Core.isType(Core.typeParsers, Map)) {
+      Logger.debug("Core", "Create typeParsers map")
+      Core.typeParsers = new Map()
+    }
+
+    var parser = Core.typeParsers.get(type)
+    return Core.isType(parser, Callable) ? parser : passthrough
+  }
 }
 global.__Core = new _Core()
 #macro Core global.__Core
@@ -272,3 +305,125 @@ function _RuntimeType(): Enum() constructor {
 }
 global.__RuntimeType = new _RuntimeType()
 #macro RuntimeType global.__RuntimeType
+
+
+///@param {Struct} json
+function CLIParam(json) constructor {
+
+  ///@type {String}
+  name = Assert.isType(json.name, String)
+
+  ///@type {?String}
+  fullName = Struct.contains(json, "fullName") 
+    ? Assert.isType(json.fullName, String) 
+    : null
+
+  ///@type {?String}
+  description = Struct.contains(json, "description") 
+    ? Assert.isType(json.description, String) 
+    : null
+
+  ///@type {Array<CLIParamArg>}
+  args = Core.isType(Struct.get(json, "args"), GMArray)
+    ? GMArray.toArray(json.args, Struct, function(arg) {
+      return new CLIParamArg(arg)
+    })
+    : new Array(Struct)
+
+  ///@type {Callable}
+  handler = Assert.isType(method(this, json.handler), Callable)
+}
+
+
+///@param {Struct} json
+function CLIParamArg(json) constructor {
+  
+  ///@type {String}
+  name = Assert.isType(json.name, String)
+
+  ///@type {String}
+  type = Assert.isType(json.type, String)
+
+  ///@type {?String}
+  description = Struct.contains(json, "description") 
+    ? Assert.isType(json.description, String) 
+    : null
+}
+
+
+///@param {Struct} json
+function CLIParamParser(json) constructor {
+
+  ///@type {Array<CLIParam>}
+  cliParams = Assert.isType(json.cliParams, Array)
+
+  ///@private
+  ///@type {Queue<String>} params
+  ///@throws {Exception}
+  dispatchParam = function(params) {
+    Logger.debug("CLIParamParser", $"DispatchParam, total: {params.size()}")
+    if (params.size() == 0) {
+      return
+    }
+  
+    var param = params.pop()
+    var cliParam = this.cliParams.find(function(cliParam, index, param) {
+      return param == cliParam.name || param == cliParam.fullName
+    }, param)
+  
+    if (!Core.isType(cliParam, CLIParam)) {
+      Logger.warn("CLIParamParser", $"Cannot parse parameter '{param}'")
+      this.dispatchParam(params)
+      return
+    }
+  
+    if (cliParam.args.size() > params.size()) {
+      throw new Exception($"param '{cliParam.name}' require '{cliParam.args.size()}' options while '{params.size()} were provided'")
+    }
+  
+    var args = new Array()
+    IntStream.forEach(0, cliParam.args.size(), function(num, idx, acc) {
+      acc.args.add(acc.params.pop())
+    }, { args: args, params: params })
+  
+    cliParam.handler(args)
+  
+    this.dispatchParam(params)
+  }
+
+  ///@return {CLIParamParser}
+  parse = function() {
+    var count = parameter_count()
+    var params = new Queue(any)
+    Logger.debug("CLIParamParser", $"Parameters count: {count}")
+    for (var index = 1; index < count; index++) {
+      var param = parameter_string(index)
+      if (!String.isEmpty(param)) {
+        params.push(param)
+        Logger.debug("CLIParamParser", $"{index} Adding param: '{param}'")
+      }
+    }
+    Logger.debug("CLIParamParser", $"Parameters parsed: {params.size()}")
+
+    this.dispatchParam(params)
+    return this
+  }
+}
+
+global.__SceneContext = {
+  intent: null,
+  getIntent: function() {
+    return this.intent
+  },
+  setIntent: function(intent) {
+    this.intent = intent
+    return this
+  },
+  open: function(name, intent = null) {
+    var scene = Assert.isType(asset_get_index(name), GMScene)
+    this.setIntent(intent)
+    room_goto(scene)
+    return this
+  }
+}
+#macro SceneContext global.__SceneContext

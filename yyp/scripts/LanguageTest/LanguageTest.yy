@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"LanguageTest",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"LanguageTest",
+  "parent":{
+    "name":"test",
+    "path":"folders/core/test.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

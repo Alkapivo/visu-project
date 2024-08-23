@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"DeltaTimeService",
   "isCompatibility":false,
   "isDnD":false,
   "name":"DeltaTimeService",
   "parent":{
     "name":"util",
-    "path":"folders/core-gml/src/util.yy",
+    "path":"folders/core/src/util.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

@@ -13,13 +13,13 @@ function brush_grid_particle(json = null) {
       },
       "grid-particle_template": {
         type: String,
-        value: Struct.getDefault(json, "grid-particle_template", "particle_default"),
+        value: Struct.getDefault(json, "grid-particle_template", "particle-default"),
       },
       "grid-particle_beginX": {
         type: Number,
         value: Struct.getDefault(json, "grid-particle_beginX", 0.5),
         passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), -1.5, 2.5) 
+          return clamp(NumberUtil.parse(value, this.value), -3.5, 4.5) 
           //return NumberUtil.parse(value, this.value)
         },
       },
@@ -35,7 +35,7 @@ function brush_grid_particle(json = null) {
         type: Number,
         value: Struct.getDefault(json, "grid-particle_endX", 0.5),
         passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), -1.5, 2.5) 
+          return clamp(NumberUtil.parse(value, this.value), -3.5, 4.5) 
           //return NumberUtil.parse(value, this.value)
         },
       },
@@ -218,8 +218,8 @@ function brush_grid_particle(json = null) {
           field: { store: { key: "grid-particle_beginX" } },
           slider: { 
             store: { key: "grid-particle_beginX" },
-            minValue: -1.5,
-            maxValue: 2.5,
+            minValue: -3.5,
+            maxValue: 4.5,
           },
         },
       },
@@ -248,8 +248,8 @@ function brush_grid_particle(json = null) {
           field: { store: { key: "grid-particle_endX" } },
           slider: { 
             store: { key: "grid-particle_endX" },
-            minValue: -1.5,
-            maxValue: 2.5,
+            minValue: -3.5,
+            maxValue: 4.5,
           },
         },
       },

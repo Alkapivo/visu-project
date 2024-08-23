@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"DialogueDesignerTest",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"DialogueDesignerTest",
+  "parent":{
+    "name":"service",
+    "path":"folders/core/test/service.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

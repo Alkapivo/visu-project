@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"VETitleBar",
   "isCompatibility":false,
   "isDnD":false,
   "name":"VETitleBar",
   "parent":{
     "name":"ui",
-    "path":"folders/visu-gml/src/editor/ui.yy",
+    "path":"folders/visu/src/editor/ui.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

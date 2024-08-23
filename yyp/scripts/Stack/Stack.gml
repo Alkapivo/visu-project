@@ -37,11 +37,6 @@ function Stack(_type = any, items = null, config = { validate: false }) construc
     return this.container.getLast()
   }
 
-  ///@return {any}
-  static head = function() {
-    return this.container.getFirst()
-  }
-
   ///@override
   ///@param {any} item
   ///@param {any} [key]
@@ -80,7 +75,9 @@ function Stack(_type = any, items = null, config = { validate: false }) construc
 
   ///@override
   ///@return {any}
-  static getLast = this.head
+  static getLast = function() {
+    return this.container.getFirst()
+  }
 
   ///@override
   ///@param {any} key
@@ -103,32 +100,6 @@ function Stack(_type = any, items = null, config = { validate: false }) construc
     return this.container.size()
   }
 
-  ///@private
-  ///@todo extract to generic component (collection?)
-  ///@type {Number} index
-  ///@type {Number} streamIndex
-  ///@type {Collection} container
-  static removeItem = function(index, streamIndex, container) {
-    container.remove(index)
-  }
-
-  ///@override
-  ///@param {Callable} callback
-  ///@param {any} [acc]
-  ///@throws {Exception}
-  ///@return {Stack}
-  static filter = function(callback, acc = null) {
-    var filtered = new Array(this.type)
-    var size = this.container.size()
-    for (var index = size - 1; index >= 0; index--) {
-      var item = this.pop()
-      if (callback(item, index, acc)) {
-        filtered.add(item)
-      }
-    }
-    return new Stack(this.type, filtered)
-  }
-
   ///@override
   ///@param {Callable} callback
   ///@param {any} [acc]
@@ -149,15 +120,32 @@ function Stack(_type = any, items = null, config = { validate: false }) construc
   ///@param {any} [acc]
   ///@throws {Exception}
   ///@return {Stack}
+  static filter = function(callback, acc = null) {
+    var filtered = []
+    var size = this.container.size()
+    for (var index = size - 1; index >= 0; index--) {
+      var item = this.pop()
+      if (callback(item, index, acc)) {
+        filtered = GMArray.add(filtered, item)
+      }
+    }
+    return new Stack(this.type, filtered)
+  }
+
+  ///@override
+  ///@param {Callable} callback
+  ///@param {any} [acc]
+  ///@throws {Exception}
+  ///@return {Stack}
   static map = function(callback, acc = null) {
-    var mapped = new Array(this.type)
+    var mapped = []
     var size = this.container.size()
     for (var index = size - 1; index >= 0; index--) {
       var result = callback(this.pop(), index, acc)
       if (result == BREAK_LOOP) {
         break
       }
-      mapped.add(result)
+      GMArray.add(mapped, result)
     }
     return new Stack(this.type, mapped)
   }

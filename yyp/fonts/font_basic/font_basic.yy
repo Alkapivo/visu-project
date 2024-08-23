@@ -120,7 +120,7 @@
   "name":"font_basic",
   "parent":{
     "name":"font",
-    "path":"folders/core-gml/resource/font.yy",
+    "path":"folders/core/resource/font.yy",
   },
   "pointRounding":0,
   "ranges":[

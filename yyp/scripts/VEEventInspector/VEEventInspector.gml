@@ -6,9 +6,6 @@ function VEEventInspector(_editor) constructor {
   ///@type {VisuEditor}
   editor = Assert.isType(_editor, VisuEditor)
 
-  ///@type {UIService}
-  uiService = Assert.isType(this.editor.uiService, UIService)
-
   ///@type {Map<String, Containers>}
   containers = new Map(String, UI)
 
@@ -63,7 +60,7 @@ function VEEventInspector(_editor) constructor {
           }
 
           this.state.set("updateTrackEvent", false)
-          var selectedEvent = Beans.get(BeanVisuController).editor.store
+          var selectedEvent = Beans.get(BeanVisuEditor).store
             .getValue("selected-event")
           if (!Core.isType(selectedEvent, Struct)) {
             return
@@ -79,7 +76,7 @@ function VEEventInspector(_editor) constructor {
           selectedEvent.data.data = template.event.data
           selectedEvent.channel = template.channel
 
-          var container = this.eventInspector.uiService
+          var container = Beans.get(BeanVisuController).uiService
             .find("ve-timeline-events")
           if (!Core.isType(container, UI)) {
             return
@@ -111,12 +108,7 @@ function VEEventInspector(_editor) constructor {
         onInit: function() {
           var container = this
           this.collection = new UICollection(this, { layout: container.layout })
-
-          if (!Core.isType(this.eventInspector.editor.trackService.track, Track)) {
-            //return
-          }
-
-          Beans.get(BeanVisuController).editor.store
+          Beans.get(BeanVisuEditor).store
             .get("selected-event")
             .addSubscriber({ 
               name: container.name,
@@ -173,9 +165,11 @@ function VEEventInspector(_editor) constructor {
             })
         },
         onDestroy: function() {
-          Beans.get(BeanVisuController).editor.store
-            .get("selected-event")
-            .removeSubscriber(this.name)
+          if (Core.isType(this.eventInspector.editor, VisuEditor)) {
+            this.eventInspector.editor.store
+              .get("selected-event")
+              .removeSubscriber(this.name)
+          }
         },
       }),
     })
@@ -190,7 +184,7 @@ function VEEventInspector(_editor) constructor {
           container: container,
           replace: true,
         }))
-      }, this.uiService)
+      }, Beans.get(BeanVisuController).uiService)
     },
     "close": function(event) {
       var context = this
@@ -199,7 +193,7 @@ function VEEventInspector(_editor) constructor {
           name: key, 
           quiet: true,
         }))
-      }, this.uiService).clear()
+      }, Beans.get(BeanVisuController).uiService).clear()
 
       this.store.get("event").set(null)
     },

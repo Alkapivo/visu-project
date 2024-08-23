@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"brush_shader_config",
   "isCompatibility":false,
   "isDnD":false,
   "name":"brush_shader_config",
   "parent":{
     "name":"shader",
-    "path":"folders/visu-gml/src/editor/service/brush/shader.yy",
+    "path":"folders/visu/src/editor/service/brush/shader.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

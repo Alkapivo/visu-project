@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"ArrayTest",
   "isCompatibility":false,
   "isDnD":false,
   "name":"ArrayTest",
   "parent":{
     "name":"collection",
-    "path":"folders/core-gml/test/collection.yy",
+    "path":"folders/core/test/collection.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

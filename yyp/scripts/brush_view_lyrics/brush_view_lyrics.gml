@@ -19,10 +19,10 @@ function brush_view_lyrics(json = null) {
     store: new Map(String, Struct, {
       "view-lyrics_template": {
         type: String,
-        value: Struct.getDefault(json, "view-lyrics_template", "lyrics ID"),
+        value: Struct.getDefault(json, "view-lyrics_template", "lyrics-default"),
         passthrough: function(value) {
-          return Beans.get(BeanVisuController).lyricsService.templates
-            .contains(value) ? value : "lyrics ID"
+          ///@todo weird bug
+          return Beans.get(BeanVisuController).lyricsService.templates.contains(value) ? value : (Core.isType(this.value, String) ? this.value : "lyrics-default")
         },
       },
       "view-lyrics_font": {

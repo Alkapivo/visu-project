@@ -6,9 +6,6 @@ function VETitleBar(_editor) constructor {
   ///@type {VisuEditor}
   editor = Assert.isType(_editor, VisuEditor)
 
-  ///@type {UIService}
-  uiService = Assert.isType(this.editor.uiService, UIService)
-
   ///@type {Map<String, Containers>}
   containers = new Map(String, UI)
 
@@ -143,7 +140,7 @@ function VETitleBar(_editor) constructor {
         name: "ve-title-bar",
         state: new Map(String, any, {
           "background-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-          "store": controller.editor.store,
+          "store": Beans.get(BeanVisuEditor).store,
         }),
         controller: controller,
         layout: layout,
@@ -155,7 +152,7 @@ function VETitleBar(_editor) constructor {
             layout: layout.nodes.file,
             options: new Array(),
             callback: function() {
-              Beans.get(BeanVisuController).newProjectModal
+              Beans.get(BeanVisuEditor).newProjectModal
                 .send(new Event("open").setData({
                   layout: new UILayout({
                     name: "display",
@@ -205,7 +202,7 @@ function VETitleBar(_editor) constructor {
                   extension: "visu",
                 })
 
-                if (path == null) {
+                if (!Core.isType(path, String) || String.isEmpty(path)) {
                   return
                 }
 
@@ -282,7 +279,7 @@ function VETitleBar(_editor) constructor {
           container: container,
           replace: true,
         }))
-      }, this.uiService)
+      }, Beans.get(BeanVisuController).uiService)
     },
     "close": function(event) {
       var context = this
@@ -291,7 +288,7 @@ function VETitleBar(_editor) constructor {
           name: key, 
           quiet: true,
         }))
-      }, this.uiService).clear()
+      }, Beans.get(BeanVisuController).uiService).clear()
     },
   }), { 
     enableLogger: false, 

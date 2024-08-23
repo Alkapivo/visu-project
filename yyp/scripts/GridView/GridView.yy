@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"GridView",
   "isCompatibility":false,
   "isDnD":false,
   "name":"GridView",
   "parent":{
     "name":"grid",
-    "path":"folders/visu-gml/src/service/grid.yy",
+    "path":"folders/visu/src/service/grid.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

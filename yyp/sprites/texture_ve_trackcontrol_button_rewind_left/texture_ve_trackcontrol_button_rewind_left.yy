@@ -26,7 +26,7 @@
   "origin":0,
   "parent":{
     "name":"VETrackControl",
-    "path":"folders/visu-gml/resource/texture/editor/containers/VETrackControl.yy",
+    "path":"folders/visu/resource/texture/editor/containers/VETrackControl.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",

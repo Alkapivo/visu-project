@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"brush_view_glitch",
   "isCompatibility":false,
   "isDnD":false,
   "name":"brush_view_glitch",
   "parent":{
     "name":"view",
-    "path":"folders/visu-gml/src/editor/service/brush/view.yy",
+    "path":"folders/visu/src/editor/service/brush/view.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

@@ -1,0 +1,44 @@
+{
+  "model":"Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>",
+  "version":"1",
+  "data":[
+    {
+      "type":"brush_shroom_config",
+      "name":"render shrooms ON",
+      "properties":{
+        "shroom-config_use-render-shrooms":1.0,
+        "shroom-config_render-shrooms":1.0,
+        "shroom-config_use-transform-shroom-z":0.0,
+        "shroom-config_transform-shroom-z":{
+          "startValue":0.0,
+          "finished":0.0,
+          "value":0.0,
+          "factor":1.0,
+          "target":100.0,
+          "increase":0.20000000000000001
+        }
+      },
+      "color":"#38FF63",
+      "texture":"texture_visu_editor_icon_event_shroom_config"
+    },
+    {
+      "type":"brush_shroom_config",
+      "name":"render shrooms OFF",
+      "properties":{
+        "shroom-config_use-render-shrooms":1.0,
+        "shroom-config_render-shrooms":0.0,
+        "shroom-config_use-transform-shroom-z":0.0,
+        "shroom-config_transform-shroom-z":{
+          "startValue":0.0,
+          "finished":0.0,
+          "value":0.0,
+          "factor":1.0,
+          "target":100.0,
+          "increase":0.20000000000000001
+        }
+      },
+      "color":"#FF184E",
+      "texture":"texture_visu_editor_icon_event_shroom_config"
+    }
+  ]
+}

@@ -15,6 +15,10 @@ global.__GPU_DEFAULT_LINE_TEXTURE_CORNER = null
 global.__GPU_DEFAULT_FONT = null
 #macro GPU_DEFAULT_FONT global.__GPU_DEFAULT_FONT
 
+///@type {?Font}
+global.__GPU_DEFAULT_FONT_BOLD = null
+#macro GPU_DEFAULT_FONT_BOLD global.__GPU_DEFAULT_FONT_BOLD
+
 
 ///@enum
 function _BlendMode(): Enum() constructor {
@@ -224,4 +228,5 @@ function initGPU() {
   GPU_DEFAULT_LINE_TEXTURE = new Texture(texture_grid_line_default)
   GPU_DEFAULT_LINE_TEXTURE_CORNER = new Texture(texture_grid_line_corner_default)
   GPU_DEFAULT_FONT = new Font(font_consolas_10_regular)
+  GPU_DEFAULT_FONT_BOLD = new Font(font_consolas_12_bold)
 }

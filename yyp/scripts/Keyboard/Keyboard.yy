@@ -1,12 +1,12 @@
 {
-  "$GMScript":"",
+  "$GMScript":"v1",
   "%Name":"Keyboard",
   "isCompatibility":false,
   "isDnD":false,
   "name":"Keyboard",
   "parent":{
     "name":"input",
-    "path":"folders/core-gml/src/service/input.yy",
+    "path":"folders/core/src/service/input.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

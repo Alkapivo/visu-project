@@ -1,0 +1,42 @@
+{
+  "model":"Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>",
+  "version":"1",
+  "data":[
+    {
+      "type":"brush_grid_particle",
+      "name":"particle fullscreen",
+      "properties":{
+        "grid-particle_endX":2.5,
+        "grid-particle_endY":2.0,
+        "grid-particle_amount":30.0,
+        "grid-particle_interval":0.22,
+        "grid-particle_duration":1.5,
+        "grid-particle_shape":"RECTANGLE",
+        "grid-particle_template":"particle_default",
+        "grid-particle_beginX":-1.5,
+        "grid-particle_distribution":"LINEAR",
+        "grid-particle_beginY":-1.0
+      },
+      "color":"#146CFF",
+      "texture":"texture_visu_editor_icon_event_grid_particle"
+    },
+    {
+      "type":"brush_grid_particle",
+      "name":"particle intro",
+      "properties":{
+        "grid-particle_endX":1.54251,
+        "grid-particle_endY":0.66801600000000005,
+        "grid-particle_amount":2.0,
+        "grid-particle_interval":0.29999999999999999,
+        "grid-particle_duration":5.0,
+        "grid-particle_shape":"DIAMOND",
+        "grid-particle_template":"particle_intro",
+        "grid-particle_beginX":-1.1295550000000001,
+        "grid-particle_distribution":"INVERTEDGAUSSIAN",
+        "grid-particle_beginY":-1.0
+      },
+      "color":"#FF00FF",
+      "texture":"texture_visu_editor_icon_event_grid_particle"
+    }
+  ]
+}

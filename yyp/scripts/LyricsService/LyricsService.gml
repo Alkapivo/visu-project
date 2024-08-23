@@ -9,8 +9,6 @@ function LyricsService(config = null): Service() constructor {
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "add": function(event) {
-      Logger.debug("LyricsService", "dispatch 'add' event")
-
       var lines = new Array(String)
       var template = Assert.isType(this.templates.get(event.data.template), LyricsTemplate)
 
@@ -110,6 +108,9 @@ function LyricsService(config = null): Service() constructor {
     "clear-lyrics": function(event) {
       this.templates.clear()
     },
+    "reset-templates": function(event) {
+      this.templates.clear().set("lyrics-default", new LyricsTemplate("lyrics-default", { "lines": [ "Lorem ipsum" ] }))
+    },
   }))
 
   ///@type {TaskExecutor}
@@ -128,4 +129,6 @@ function LyricsService(config = null): Service() constructor {
     this.executor.update()
     return this
   }
+
+  this.send(new Event("reset-templates"))
 }

@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"TDMC",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"TDMC",
+  "parent":{
+    "name":"src",
+    "path":"folders/tdmc/src.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}
