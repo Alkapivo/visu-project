@@ -28,7 +28,7 @@ function Track(json, config = null) constructor {
   name = Assert.isType(Struct.get(json, "name"), String)
 
   ///@type {Sound}
-  audio = Assert.isType(SoundUtil.fetch(Struct.get(json, "audio"), { loop: true }), Sound)
+  audio = Assert.isType(SoundUtil.fetch(Struct.get(json, "audio"), { loop: false }), Sound)
 
   ///@private
   ///@param {Struct} channel

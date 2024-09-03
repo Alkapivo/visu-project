@@ -3,7 +3,10 @@
 ///@param {Struct} json
 ///@return {GridItemFeature}
 function LifespawnFeature(json) {
-  var data = Assert.isType(Struct.get(json, "data"), Struct)
+  var data = Struct.map(Assert.isType(Struct
+    .getDefault(json, "data", {}), Struct), GMArray
+    .resolveRandom)
+  
   return new GridItemFeature(Struct.append(json, {
 
     ///@param {Callable}

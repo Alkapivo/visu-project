@@ -121,6 +121,28 @@ global.__grid_track_event = {
       }))
     }
   },
+  "brush_grid_coin": function(data) {
+    var controller = Beans.get(BeanVisuController)
+    var view = controller.gridService.view
+    var viewX = Struct.getDefault(data, "grid-coin_use-snap-h", false)
+      ? floor(view.x / view.width) * view.width
+      : view.x
+    var viewY = Struct.getDefault(data, "grid-coin_use-snap-v", false)
+      ? floor(view.y / view.height) * view.height
+      : view.y
+    
+    var coin = {
+      template: Struct.get(data, "grid-coin_template"),
+      x: viewX + (Struct.get(data, "grid-coin_use-spawn-x")
+        ? Struct.get(data, "grid-coin_spawn-x")
+        : (-1.5 + random(4))),
+      y: viewY + (Struct.get(data, "grid-coin_use-spawn-y")
+        ? Struct.get(data, "grid-coin_spawn-y")
+        : (-2.5 + random(4))),
+    }
+    
+    controller.coinService.send(new Event("spawn-coin", coin))
+  },
   "brush_grid_config": function(data) {
     var controller = Beans.get(BeanVisuController)
     if (Struct.get(data, "grid-config_use-render-grid")) {
@@ -330,6 +352,10 @@ global.__grid_track_event = {
 
     if (Struct.get(data, "grid-player_use-mask")) {
       Struct.set(json, "mask", Struct.get(data, "grid-player_mask"))
+    }
+
+    if (Struct.get(data, "grid-player_use-reset-position")) {
+      Struct.set(json, "reset-position", Struct.get(data, "grid-player_reset-position") == true)
     }
 
     if (Struct.get(data, "grid-player_use-racing")) {

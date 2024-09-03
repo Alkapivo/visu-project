@@ -15,6 +15,7 @@ function _VEBrushType(): Enum() constructor {
   VIEW_GLITCH = "brush_view_glitch"
   VIEW_CONFIG = "brush_view_config"
   GRID_CHANNEL = "brush_grid_channel"
+  GRID_COIN = "brush_grid_coin"
   GRID_CONFIG = "brush_grid_config"
   GRID_PARTICLE = "brush_grid_particle"
   GRID_PLAYER = "brush_grid_player"
@@ -40,9 +41,10 @@ global.__VEBrushTypeNames = {
   "brush_view_glitch": "View glitch",
   "brush_view_config": "View lyrics",
   "brush_grid_channel": "Grid channel",
+  "brush_grid_coin": "Spawn coin",
   "brush_grid_config": "Grid config",
-  "brush_grid_particle": "Grid particle",
-  "brush_grid_player": "Grid player",
+  "brush_grid_particle": "Spawn particle",
+  "brush_grid_player": "Spawn player",
   "brush_grid_separator": "Grid separator",
 }
 #macro VEBrushTypeNames global.__VEBrushTypeNames

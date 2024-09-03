@@ -74,6 +74,24 @@ function _GPU() constructor {
       line.render(beginX, beginY, 0, scale, thickness, alpha, angle, blend)
     },
 
+    ///@param {Number} beginX
+    ///@param {Number} beginY
+    ///@param {Number} endX
+    ///@param {Number} endY
+    ///@param {Number} [thickness]
+    ///@param {Number} [alpha]
+    ///@param {GMColor} [blend]
+    ///@param {Texture} [line]
+    texturedLineSimple: function(beginX, beginY, endX, endY, 
+        thickness = 1.0, alpha = 1.0, blend = c_white, 
+        line = GPU_DEFAULT_LINE_TEXTURE) {
+
+      var angle = point_direction(beginX, beginY, endX, endY)
+      var length = point_distance(beginX, beginY, endX, endY)
+      var scale = length / line.width
+      line.render(beginX, beginY, 0, scale, thickness, alpha, angle, blend)
+    },
+
     ///@param {Color} color
     clear: function(color) {
       draw_clear_alpha(color.toGMColor(), color.alpha)

@@ -127,6 +127,10 @@ function PlayerBulletHellGameMode(json) {
             .getDefault(gun, "offsetX", 0.0), Number),
           offsetY: Assert.isType(Struct
             .getDefault(gun, "offsetY", 0.0), Number),
+          minForce: Assert.isType(Struct
+            .getDefault(gun, "minForce", 0.0), Number),
+          maxForce: Core.isType(Struct.get(gun, "maxForce"), Number) 
+            ? gun.maxForce : null,
         }
       })
       : []
@@ -154,14 +158,21 @@ function PlayerBulletHellGameMode(json) {
     ///@param {VisuController} controller
     ///@return {GridItemGameMode}
     update: function(player, controller) {
-      static calcSpeed = function(config, player, keyA, keyB) {
+      static calcSpeed = function(config, player, keyA, keyB, keyFocus) {
+        var speedMax = config.speedMax
+        if (keyFocus) {
+          var factor = abs(config.speedMax - config.speedMaxFocus) / GAME_FPS
+          speedMax = clamp(abs(config.speed) - DeltaTime.apply(factor), 
+            config.speedMaxFocus, config.speedMax)
+        }
+
         config.speed = keyA || keyB
           ? (config.speed + (keyA ? -1 : 1) 
             * DeltaTime.apply(config.acceleration))
           : (abs(config.speed) - config.friction >= 0
             ? config.speed - sign(config.speed) 
               * DeltaTime.apply(config.friction) : 0)
-        config.speed = sign(config.speed) * clamp(abs(config.speed), 0, config.speedMax)
+        config.speed = sign(config.speed) * clamp(abs(config.speed), 0, speedMax)
         return config.speed
       }
       
@@ -180,6 +191,13 @@ function PlayerBulletHellGameMode(json) {
             gun.cooldown.update()
             return
           }
+
+          var force = acc.player.stats.force.get()
+          if (force < gun.minForce 
+            || (gun.maxForce != null && force > gun.maxForce)) {
+            return
+          }
+
           gun.cooldown.update()
           acc.controller.bulletService.send(new Event("spawn-bullet", {
             x: acc.player.x + (gun.offsetX / GRID_SERVICE_PIXEL_WIDTH),
@@ -201,9 +219,18 @@ function PlayerBulletHellGameMode(json) {
         })
       }
 
-      player.x = player.x + calcSpeed(this.x, player, keys.left.on, keys.right.on)
+      if (keys.bomb.pressed) {
+        player.stats.dispatchBomb()
+      }
+
+      if (Optional.is(player.signals.shroomCollision) 
+        || Optional.is(player.signals.bulletCollision)) {
+        player.stats.dispatchDeath()
+      }
+
+      player.x = player.x + calcSpeed(this.x, player, keys.left.on, keys.right.on, keys.focus.on)
       player.y = clamp(
-        player.y + calcSpeed(this.y, player, keys.up.on, keys.down.on), 
+        player.y + calcSpeed(this.y, player, keys.up.on, keys.down.on, keys.focus.on), 
         0.0, 
         controller.gridService.height
       )

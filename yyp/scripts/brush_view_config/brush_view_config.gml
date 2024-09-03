@@ -33,6 +33,14 @@ function brush_view_config(json = null) {
         type: Boolean,
         value: Struct.getDefault(json, "view-config_render-video", false),
       },
+      "view-config_use-render-HUD": {
+        type: Boolean,
+        value: Struct.getDefault(json, "view-config_use-render-HUD", false),
+      },
+      "view-config_render-HUD": {
+        type: Boolean,
+        value: Struct.getDefault(json, "view-config_render-HUD", false),
+      },
     }),
     components: new Array(Struct, [
       {
@@ -127,6 +135,29 @@ function brush_view_config(json = null) {
             spriteOff: { name: "visu_texture_checkbox_switch_off" },
             store: { key: "view-config_render-video" },
             enable: { key: "view-config_use-render-video" },
+          }
+        },
+      },
+      {
+        name: "view-config_use-render-HUD",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Render HUD",
+            enable: { key: "view-config_use-render-HUD" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "view-config_use-render-HUD" },
+          },
+          input: {
+            spriteOn: { name: "visu_texture_checkbox_switch_on" },
+            spriteOff: { name: "visu_texture_checkbox_switch_off" },
+            store: { key: "view-config_render-HUD" },
+            enable: { key: "view-config_use-render-HUD" },
           }
         },
       },

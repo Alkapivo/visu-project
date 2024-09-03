@@ -5,6 +5,7 @@ function _VETemplateType(): Enum() constructor {
   SHADER = "template_shader"
   SHROOM = "template_shroom"
   BULLET = "template_bullet"
+  COIN = "template_coin"
   LYRICS = "template_lyrics"
   PARTICLE = "template_particle"
   TEXTURE = "template_texture"
@@ -19,6 +20,7 @@ global.__VETemplateTypeNames = new Map(String, String)
   .set(VETemplateType.SHADER, "Shader template")
   .set(VETemplateType.SHROOM, "Shroom template")
   .set(VETemplateType.BULLET, "Bullet template")
+  .set(VETemplateType.COIN, "Coin template")
   .set(VETemplateType.LYRICS, "Lyrics template")
   .set(VETemplateType.PARTICLE, "Particle template")
   .set(VETemplateType.TEXTURE, "Texture template")
@@ -172,6 +174,34 @@ function VETemplate(json) constructor {
   }
 
   ///@private
+  ///@return {CoinTemplate}
+  toCoinTemplate = function() {
+    var sprite = this.store.getValue("coin_sprite")
+    var json = {
+      name: Assert.isType(this.store.getValue("template-name"), String),
+      category: Assert.isEnum(this.store.getValue("coin_category"), CoinCategory),
+      sprite: sprite.serialize(),
+    }
+
+    if (this.store.getValue("coin_use-mask")) {
+      Struct.set(json, "mask", this.store
+        .getValue("coin_mask").serialize())
+    }
+
+    if (this.store.getValue("coin_use-amount")) {
+      Struct.set(json, "amount", Assert.isType(this.store
+        .getValue("coin_amount"), Number))
+    }
+
+    if (this.store.getValue("coin_use-speed")) {
+      Struct.set(json, "speed", this.store
+        .getValue("coin_speed").serialize())
+    }
+
+    return new CoinTemplate(json.name, json)
+  }
+
+  ///@private
   ///@return {LyricsTemplate}
   toLyricsTemplate = function() {
     var store = this.store
@@ -201,7 +231,7 @@ function VETemplate(json) constructor {
         stretch: this.store.getValue("particle-sprite-stretch"),
       })
     } else {
-      Struct.remove(template, "sprite")
+      Struct.set(template, "sprite", null)
     }
     
     return template
@@ -215,12 +245,13 @@ function VETemplate(json) constructor {
   }
 
   ///@throws {Exception}
-  ///@return {ShaderTemplate|ShroomTemplate|BulletTemplate|LyricsTemplate|ParticleTemplate|TextureTemplate}
+  ///@return {ShaderTemplate|ShroomTemplate|BulletTemplate|CoinTemplate|LyricsTemplate|ParticleTemplate|TextureTemplate}
   serialize = function() {
     switch (this.type) {
       case VETemplateType.SHADER: return this.toShaderTemplate()
       case VETemplateType.SHROOM: return this.toShroomTemplate()
       case VETemplateType.BULLET: return this.toBulletTemplate()
+      case VETemplateType.COIN: return this.toCoinTemplate()
       case VETemplateType.LYRICS: return this.toLyricsTemplate()
       case VETemplateType.PARTICLE: return this.toParticleTemplate()
       case VETemplateType.TEXTURE: return this.toTextureTemplate()

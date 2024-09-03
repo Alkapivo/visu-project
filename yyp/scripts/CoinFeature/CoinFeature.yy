@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"CoinFeature",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"CoinFeature",
+  "parent":{
+    "name":"feature",
+    "path":"folders/visu/src/service/grid/feature.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

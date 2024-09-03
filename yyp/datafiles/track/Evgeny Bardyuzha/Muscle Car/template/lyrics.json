@@ -1,6 +1,4 @@
 {
-  "model":"Collection<io.alkapivo.visu.service.lyrics.LyricsTemplate>",
-  "version":"1",
   "data":{
     "lyrics-default":{
       "lines":[
@@ -13,5 +11,7 @@
         "2024"
       ]
     }
-  }
+  },
+  "model":"Collection<io.alkapivo.visu.service.lyrics.LyricsTemplate>",
+  "version":"1"
 }

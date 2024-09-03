@@ -46,6 +46,14 @@ function VisuNewProjectForm(json = null) constructor {
       type: Optional.of(String),
       value: Struct.getDefault(json, "bullet", ""),
     },
+    "use-coin": {
+      type: Boolean,
+      value: Struct.getDefault(json, "use-coin", false),
+    },
+    "coin": {
+      type: Optional.of(String),
+      value: Struct.getDefault(json, "coin", ""),
+    },
     "use-lyrics": {
       type: Boolean,
       value: Struct.getDefault(json, "use-lyrics", false),
@@ -374,6 +382,64 @@ function VisuNewProjectForm(json = null) constructor {
       },
     },
     {
+      name: "coin",  
+      template: VEComponents.get("text-field-button-checkbox"),
+      layout: VELayouts.get("text-field-button-checkbox"),
+      config: { 
+        layout: { type: UILayoutType.VERTICAL },
+        checkbox: { 
+          store: { key: "use-coin" },
+          spriteOn: { name: "visu_texture_checkbox_switch_on" },
+          spriteOff: { name: "visu_texture_checkbox_switch_off" },
+          
+        },
+        label: { 
+          text: "Coins",
+          enable: { key: "use-coin" },
+        },
+        field: { 
+          read_only: true,
+          updateCustom: function() {
+            var text = this.context.state.get("store").getValue("coin")
+            if (Core.isType(text, String)) {
+              this.textField.setText(FileUtil.getFilenameFromPath(text))
+            } else {
+              this.textField.setText("")
+            }
+          },
+          enable: { key: "use-coin"},
+        },
+        button: { 
+          label: { text: "Open" },
+          enable: { key: "use-coin"},
+          callback: function() {
+            var path = FileUtil.getPathToOpenWithDialog({
+              description: "JSON file",
+              extension: "json",
+            })
+            if (!FileUtil.fileExists(path)) {
+              return
+            }
+
+            this.context.state.get("store")
+              .get("coin")
+              .set(path)
+          },
+          colorHoverOver: VETheme.color.accent,
+          colorHoverOut: VETheme.color.accentShadow,
+          onMouseHoverOver: function(event) {
+            if (!this.enable.value) {
+              return 
+            }
+            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+          },
+          onMouseHoverOut: function(event) {
+            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+          },
+        },
+      },
+    },
+    {
       name: "lyrics",  
       template: VEComponents.get("text-field-button-checkbox"),
       layout: VELayouts.get("text-field-button-checkbox"),
@@ -637,9 +703,11 @@ function VisuNewProjectForm(json = null) constructor {
           } catch (exception) {
             Beans.get(BeanVisuController).send(new Event("spawn-popup", 
               { message: $"Cannot create project: {exception.message}" }))
+            this.context.modal.send(new Event("close"))
+            return
           }
           this.context.modal.send(new Event("close"))
-
+          
           try {
             Assert.isTrue(FileUtil.fileExists(path))
             Beans.get(BeanVisuController).send(new Event("load", {
@@ -705,6 +773,11 @@ function VisuNewProjectForm(json = null) constructor {
       Struct.set(json, "bullet", this.store.getValue("bullet"))
     }
 
+    if (this.store.getValue("use-coin")
+      && Core.isType(this.store.getValue("coin"), String)) {
+      Struct.set(json, "coin", this.store.getValue("coin"))
+    }
+
     if (this.store.getValue("use-lyrics")
       && Core.isType(this.store.getValue("lyrics"), String)) {
       Struct.set(json, "lyrics", this.store.getValue("lyrics"))
@@ -727,6 +800,7 @@ function VisuNewProjectForm(json = null) constructor {
   ///@return {VisuNewProjectForm}
   save = function(manifestPath) {
     var json = this.serialize()
+    Core.print("JSON_", JSON.stringify(json, { pretty: true }))
     var controller = Beans.get(BeanVisuController)
 
     var path = Assert.isType(FileUtil.getDirectoryFromPath(manifestPath), String)
@@ -737,6 +811,7 @@ function VisuNewProjectForm(json = null) constructor {
         "bpm": Beans.get(BeanVisuEditor).store.getValue("bpm"),
         "bpm-sub": Beans.get(BeanVisuEditor).store.getValue("bpm-sub"),
         "bullet": "template/bullet.json",
+        "coin": "template/coin.json",
         "editor": [],
         "lyrics": "template/lyrics.json",
         "particle": "template/particle.json",
@@ -751,6 +826,11 @@ function VisuNewProjectForm(json = null) constructor {
     var templates = new Map(String, any, {
       "bullet": {
         "model": "Collection<io.alkapivo.visu.service.bullet.BulletTemplate>",
+        "version": "1",
+        "data": {},
+      },
+      "coin": {
+        "model": "Collection<io.alkapivo.visu.service.coin.CoinTemplate>",
         "version": "1",
         "data": {},
       },
@@ -901,7 +981,19 @@ function VisuNewProjectForm(json = null) constructor {
                       "increase":0.0,
                       "startValue":0.0,
                       "finished":false
-                    }
+                    },
+                    "shroom-config_use-render-coins":true,
+                    "shroom-config_render-coins":true,
+                    "shroom-config_use-transform-coin-z":true,
+                    "shroom-config_transform-coin-z":{
+                      "value":0.0,
+                      "factor":9999.0,
+                      "overrideValue":false,
+                      "target":2047.0,
+                      "increase":0.0,
+                      "startValue":0.0,
+                      "finished":false
+                    },
                   }
                 }
               ]
@@ -1406,6 +1498,10 @@ function VisuNewProjectForm(json = null) constructor {
       templates.remove("bullet")
       FileUtil.copyFile(json.bullet, $"{path}{manifest.data.bullet}")
     }
+    if (Struct.contains(json, "coin")) {
+      templates.remove("coin")
+      FileUtil.copyFile(json.coin, $"{path}{manifest.data.coin}")
+    }
     if (Struct.contains(json, "lyrics")) {
       templates.remove("lyrics")
       FileUtil.copyFile(json.lyrics, $"{path}{manifest.data.lyrics}")
@@ -1456,7 +1552,6 @@ function VisuNewProjectForm(json = null) constructor {
         data: String.replaceAll(JSON.stringify(template, { pretty: true }), "\\", ""),
       }))
     }, {
-      fs: fileService,
       manifest: manifest,
       path: path,
     })
@@ -1498,7 +1593,7 @@ function VisuNewProjectModal(_config = null) constructor {
         x: function() { return (this.context.width() - this.width()) / 2 },
         y: function() { return (this.context.height() - this.height()) / 2 },
         width: function() { return 500 },
-        height: function() { return 532 },
+        height: function() { return 572 },
       },
       parent
     )

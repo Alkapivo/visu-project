@@ -335,6 +335,11 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             brushType: VEBrushType.GRID_PLAYER,
           },
           {
+            name: "button_category-grid_type-coin",
+            text: "Coin",
+            brushType: VEBrushType.GRID_COIN,
+          },
+          {
             name: "button_category-grid_type-config",
             text: "Config",
             brushType: VEBrushType.GRID_CONFIG,
@@ -1051,7 +1056,8 @@ function VEBrushToolbar(_editor) constructor {
       VEBrushType.SHROOM_CONFIG 
     ]),
     "grid": new Array(String, [ 
-      VEBrushType.GRID_CHANNEL, 
+      VEBrushType.GRID_CHANNEL,
+      VEBrushType.GRID_COIN,  
       VEBrushType.GRID_CONFIG, 
       VEBrushType.GRID_PARTICLE,
       VEBrushType.GRID_PLAYER,

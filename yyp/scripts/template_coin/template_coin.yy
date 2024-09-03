@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"template_coin",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"template_coin",
+  "parent":{
+    "name":"template",
+    "path":"folders/visu/src/editor/service/template.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

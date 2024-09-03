@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"brush_grid_coin",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"brush_grid_coin",
+  "parent":{
+    "name":"grid",
+    "path":"folders/visu/src/editor/service/brush/grid.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

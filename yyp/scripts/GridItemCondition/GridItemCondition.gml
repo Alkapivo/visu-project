@@ -66,6 +66,19 @@ global.__VISU_GRID_CONDITIONS = {
       }
     }
   },
+  "speed": function() {
+    return function(item, controller) {
+      var value = this.data.value
+      switch (this.data.operator) {
+        case "equal": return item.speed * 1000 == value
+        case "greater": return item.speed * 1000 > value
+        case "less": return item.speed * 1000 < value
+        case "greaterOrEqual": return item.speed * 1000 >= value
+        case "lessOrEqual": return item.speed * 1000 <= value
+        default: throw new Exception($"Found unsupported operator for 'speed': {this.data.operator}")
+      }
+    }
+  },
   "player-distance": function() {
     return function(shroom, controller) {
       var player = controller.playerService.player

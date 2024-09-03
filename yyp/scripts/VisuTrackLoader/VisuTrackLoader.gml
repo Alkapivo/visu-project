@@ -57,8 +57,6 @@ function VisuTrackLoader(_controller): Service() constructor {
             window_set_caption($"{game_display_name}")
             audio_master_gain(0.0)
 
-            
-
             var controller = Beans.get(BeanVisuController)
             controller.gridRenderer.clear()
             var editor = Beans.get(BeanVisuEditor)
@@ -74,10 +72,9 @@ function VisuTrackLoader(_controller): Service() constructor {
             controller.shaderPipeline.dispatcher.execute(new Event("clear-shaders")).execute(new Event("reset-templates"))
             controller.shroomService.dispatcher.execute(new Event("clear-shrooms")).execute(new Event("reset-templates"))
             controller.bulletService.dispatcher.execute(new Event("clear-bullets")).execute(new Event("reset-templates"))
+            controller.coinService.dispatcher.execute(new Event("clear-coins")).execute(new Event("reset-templates"))
             controller.lyricsService.dispatcher.execute(new Event("clear-lyrics")).execute(new Event("reset-templates"))
             controller.particleService.dispatcher.execute(new Event("clear-particles")).execute(new Event("reset-templates"))
-
-            
             
             Beans.get(BeanTextureService).dispatcher.execute(new Event("free"))
 
@@ -251,6 +248,22 @@ function VisuTrackLoader(_controller): Service() constructor {
                         acc.set(key, new prototype(key, json))
                       },
                       acc: controller.bulletService.templates,
+                      steps: MAGIC_NUMBER_TASK,
+                    })
+                    .whenSuccess(function(result) {
+                      return Assert.isType(JSON.parserTask(result.data, this.state), Task)
+                    }))
+              ),
+              "coin": Beans.get(BeanFileService).send(
+                new Event("fetch-file")
+                  .setData({ path: $"{data.path}{data.manifest.coin}" })
+                  .setPromise(new Promise()
+                    .setState({ 
+                      callback: function(prototype, json, key, acc) {
+                        //Logger.debug("VisuTrackLoader", $"Load coin template '{key}'")
+                        acc.set(key, new prototype(key, json))
+                      },
+                      acc: controller.coinService.templates,
                       steps: MAGIC_NUMBER_TASK,
                     })
                     .whenSuccess(function(result) {
@@ -442,6 +455,7 @@ function VisuTrackLoader(_controller): Service() constructor {
             var executor = fsm.context.executor
             var promises = new Map(String, Promise, {
               "bullet": addTask(tasks.get("bullet"), executor),
+              "coin": addTask(tasks.get("coin"), executor),
               "lyrics": addTask(tasks.get("lyrics"), executor),
               "particle": addTask(tasks.get("particle"), executor),
               "shroom": addTask(tasks.get("shroom"), executor),

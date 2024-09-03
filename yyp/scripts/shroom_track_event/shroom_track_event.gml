@@ -99,6 +99,26 @@ global.__shroom_track_event = {
         })
       }))
     }
+
+    if (Struct.get(data, "shroom-config_use-render-coins")) {
+      gridService.properties.renderCoins = Struct
+        .get(data, "shroom-config_render-coins")
+    }
+
+    if (Struct.get(data, "shroom-config_use-transform-coin-z")) {
+      var transformer = Struct.get(data, "shroom-config_transform-coin-z")
+      gridService.send(new Event("transform-property", {
+        key: "coinZ",
+        container: gridService.properties.depths,
+        executor: gridService.executor,
+        transformer: new NumberTransformer({
+          value: gridService.properties.depths.coinZ,
+          target: transformer.target,
+          factor: transformer.factor,
+          increase: transformer.increase,
+        })
+      }))
+    }
   },
 }
 #macro shroom_track_event global.__shroom_track_event

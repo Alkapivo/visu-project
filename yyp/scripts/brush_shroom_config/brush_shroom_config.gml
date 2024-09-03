@@ -22,7 +22,7 @@ function brush_shroom_config(json = null) {
         type: NumberTransformer,
         value: new NumberTransformer(Struct.getDefault(json, 
           "shroom-config_transform-shroom-z", 
-          { value: 0, target: 100, factor: 1.0, increase: 0.2 }
+          { value: 0, target: 2049, factor: 1.0, increase: 0.2 }
         )),
       },
       "shroom-config_use-render-bullets": {
@@ -41,7 +41,27 @@ function brush_shroom_config(json = null) {
         type: NumberTransformer,
         value: new NumberTransformer(Struct.getDefault(json, 
           "shroom-config_transform-bullet-z", 
-          { value: 0, target: 100, factor: 1.0, increase: 0.2 }
+          { value: 0, target: 2048, factor: 1.0, increase: 0.2 }
+        )),
+      },
+
+      "shroom-config_use-render-coins": {
+        type: Boolean,
+        value: Struct.getDefault(json, "shroom-config_use-render-coins", false),
+      },
+      "shroom-config_render-coins": {
+        type: Boolean,
+        value: Struct.getDefault(json, "shroom-config_render-coins", false),
+      },
+      "shroom-config_use-transform-coin-z": {
+        type: Boolean,
+        value: Struct.getDefault(json, "shroom-config_use-transform-coin-z", true),
+      },
+      "shroom-config_transform-coin-z": {
+        type: NumberTransformer,
+        value: new NumberTransformer(Struct.getDefault(json, 
+          "shroom-config_transform-coin-z", 
+          { value: 0, target: 2047, factor: 1.0, increase: 0.2 }
         )),
       },
     }),
@@ -186,6 +206,78 @@ function brush_shroom_config(json = null) {
             field: {
               store: { key: "shroom-config_transform-bullet-z" },
               enable: { key: "shroom-config_use-transform-bullet-z" },
+            },
+          },
+        },
+      },
+      {
+        name: "shroom-config_render-coins",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Render coins",
+            enable: { key: "shroom-config_use-render-coins" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "shroom-config_use-render-coins" },
+          },
+          input: { 
+            spriteOn: { name: "visu_texture_checkbox_switch_on" },
+            spriteOff: { name: "visu_texture_checkbox_switch_off" },
+            store: { key: "shroom-config_render-coins" },
+            enable: { key: "shroom-config_use-render-coins" },
+          },
+        },
+      },
+      {
+        name: "shroom-config_transform-coin-z",
+        template: VEComponents.get("transform-numeric-property"),
+        layout: VELayouts.get("transform-numeric-property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          title: {
+            label: { 
+              text: "Transform coin z",
+              enable: { key: "shroom-config_use-transform-coin-z" },
+            },  
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "shroom-config_use-transform-coin-z" },
+            },
+          },
+          target: {
+            label: {
+              text: "Target",
+              enable: { key: "shroom-config_use-transform-coin-z" },
+            },
+            field: {
+              store: { key: "shroom-config_transform-coin-z" },
+              enable: { key: "shroom-config_use-transform-coin-z" },
+            },
+          },
+          factor: {
+            label: {
+              text: "Factor",
+              enable: { key: "shroom-config_use-transform-coin-z" },
+            },
+            field: {
+              store: { key: "shroom-config_transform-coin-z" },
+              enable: { key: "shroom-config_use-transform-coin-z" },
+            },
+          },
+          increment: {
+            label: {
+              text: "Increment",
+              enable: { key: "shroom-config_use-transform-coin-z" },
+            },
+            field: {
+              store: { key: "shroom-config_transform-coin-z" },
+              enable: { key: "shroom-config_use-transform-coin-z" },
             },
           },
         },

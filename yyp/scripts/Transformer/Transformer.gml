@@ -111,6 +111,16 @@ function NumberTransformer(json = null): Transformer(json) constructor {
     }
     return this
   }
+
+  ///@return {Struct}
+  serialize = function() {
+    return {
+      value: this.value,
+      target: this.target,
+      factor: this.factor,
+      increase: this.increase,
+    }
+  }
 }
 
 

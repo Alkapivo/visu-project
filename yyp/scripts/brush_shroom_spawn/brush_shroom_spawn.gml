@@ -40,7 +40,7 @@ function brush_shroom_spawn(json = null) {
         type: Number,
         value: Struct.getDefault(json, "shroom-spawn_channels-spawn-x", 0),
         passthrough: function(value) {
-          return round(clamp(NumberUtil.parse(value, this.value), 0, 20))
+          return round(clamp(NumberUtil.parse(value, this.value), 0, 50))
         },
       },
       "shroom-spawn_use-spawn-y": {
@@ -58,7 +58,7 @@ function brush_shroom_spawn(json = null) {
         type: Number,
         value: Struct.getDefault(json, "shroom-spawn_channels-spawn-y", 0),
         passthrough: function(value) {
-          return round(clamp(NumberUtil.parse(value, this.value), 0, 20))
+          return round(clamp(NumberUtil.parse(value, this.value), 0, 50))
         },
       },
       "shroom-spawn_use-snap-h": {
@@ -277,7 +277,7 @@ function brush_shroom_spawn(json = null) {
           },
           slider:{
             minValue: 0,
-            maxValue: 20,
+            maxValue: 50,
             store: { key: "shroom-spawn_channels-spawn-x" },
             enable: { key: "shroom-spawn_use-spawn-x" },
           },
@@ -354,7 +354,7 @@ function brush_shroom_spawn(json = null) {
           },
           slider:{
             minValue: 0,
-            maxValue: 20,
+            maxValue: 50,
             store: { key: "shroom-spawn_channels-spawn-y" },
             enable: { key: "shroom-spawn_use-spawn-y" },
           },

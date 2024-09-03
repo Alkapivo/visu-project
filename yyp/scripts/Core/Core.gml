@@ -427,3 +427,71 @@ global.__SceneContext = {
   }
 }
 #macro SceneContext global.__SceneContext
+
+/**
+ * new DebugNumericKeyboardValue({
+    name: "debugLine",
+    value: -10,
+    factor: 1,
+    keyIncrement: ord("T"),
+    keyDecrement: ord("Y"),
+    pressed: true,
+  })
+ */
+///@param {Struct} config
+function DebugNumericKeyboardValue(config) constructor {
+
+  ///@type {String}
+  name = Assert.isType(config.name, String)
+
+  ///@type {Number}
+  value = Assert.isType(config.value, Number)
+
+  ///@type {Number}
+  factor = Core.isType(Struct.get(config, "factor"), Number) ? config.factor : 1
+
+  ///@type {?Number}
+  minValue = Core.isType(Struct.get(config, "minValue"), Number) ? config.minValue : null
+
+  ///@type {?Number}
+  maxValue = Core.isType(Struct.get(config, "maxValue"), Number) ? config.maxValue : null
+
+  ///@type {Number}
+  keyIncrement = Assert.isType(config.keyIncrement, Number)
+
+  ///@type {Number}
+  keyDecrement = Assert.isType(config.keyDecrement, Number)
+
+  ///@type {Boolean}
+  pressed = Core.isType(Struct.get(config, "pressed"), Boolean) ? config.pressed : false
+
+  ///@return {DebugNumericKeyboardValue}
+  update = function() {
+    var keyFunction = this.pressed ? keyboard_check_pressed : keyboard_check
+    if (keyFunction(this.keyIncrement)) {
+      this.value = this.value + this.factor
+      if (Optional.is(this.minValue) && this.value < this.minValue) {
+        this.value = this.minValue
+      }
+      if (Optional.is(this.maxValue) && this.value > this.maxValue) {
+        this.value = this.maxValue
+      }
+
+      Logger.debug(this.name, $"Increment: {this.value}")
+    }
+
+    if (keyFunction(this.keyDecrement)) {
+      this.value = this.value - this.factor
+      if (Optional.is(this.minValue) && this.value < this.minValue) {
+        this.value = this.minValue
+      }
+      if (Optional.is(this.maxValue) && this.value > this.maxValue) {
+        this.value = this.maxValue
+      }
+
+      Logger.debug(this.name, $"Decrement: {this.value}")
+    }
+
+    return this
+  }
+}

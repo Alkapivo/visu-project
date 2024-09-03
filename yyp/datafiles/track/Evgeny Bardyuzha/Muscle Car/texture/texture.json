@@ -1,110 +1,110 @@
 {
-  "model":"Collection<io.alkapivo.core.service.texture.TextureIntent>",
-  "version":"1",
   "data":{
     "texture_muscle_car_wallpaper_1":{
+      "frames":1.0,
+      "file":"texture/texture_muscle_car_wallpaper_1.jpg",
       "name":"texture_muscle_car_wallpaper_1",
       "originX":0.0,
-      "file":"texture/texture_muscle_car_wallpaper_1.jpg",
-      "frames":1.0,
       "originY":0.0,
       "prefetch":true
     },
     "texture_shroom_baron_green":{
+      "frames":1.0,
+      "file":"texture/texture_shroom_baron_green.png",
       "name":"texture_shroom_baron_green",
       "originX":0.0,
-      "file":"texture/texture_shroom_baron_green.png",
-      "frames":1.0,
       "originY":0.0,
       "prefetch":true
     },
     "texture_shroom_baron_magenta":{
+      "frames":1.0,
+      "file":"texture/texture_shroom_baron_magenta.png",
       "name":"texture_shroom_baron_magenta",
       "originX":0.0,
-      "file":"texture/texture_shroom_baron_magenta.png",
-      "frames":1.0,
       "originY":0.0,
       "prefetch":true
     },
     "texture_muscle_car_shroom_2":{
+      "frames":1.0,
+      "file":"texture/texture_muscle_car_shroom_2.jpg",
       "name":"texture_muscle_car_shroom_2",
       "originX":0.0,
-      "file":"texture/texture_muscle_car_shroom_2.jpg",
-      "frames":1.0,
       "originY":0.0,
       "prefetch":true
     },
     "texture_shroom_baron_red":{
+      "frames":1.0,
+      "file":"texture/texture_shroom_baron_red.png",
       "name":"texture_shroom_baron_red",
       "originX":0.0,
-      "file":"texture/texture_shroom_baron_red.png",
-      "frames":1.0,
       "originY":0.0,
       "prefetch":true
     },
     "texture_muscle_car_wallpaper_2":{
+      "frames":1.0,
+      "file":"texture/texture_muscle_car_wallpaper_2.jpg",
       "name":"texture_muscle_car_wallpaper_2",
       "originX":0.0,
-      "file":"texture/texture_muscle_car_wallpaper_2.jpg",
-      "frames":1.0,
       "originY":0.0,
       "prefetch":true
     },
     "texture_shroom_baron_yellow":{
+      "frames":1.0,
+      "file":"texture/texture_shroom_baron_yellow.png",
       "name":"texture_shroom_baron_yellow",
       "originX":0.0,
-      "file":"texture/texture_shroom_baron_yellow.png",
-      "frames":1.0,
       "originY":0.0,
       "prefetch":true
     },
     "texture_muscle_car_shroom_3":{
+      "frames":1.0,
+      "file":"texture/texture_muscle_car_shroom_3.jpg",
       "name":"texture_muscle_car_shroom_3",
       "originX":0.0,
-      "file":"texture/texture_muscle_car_shroom_3.jpg",
-      "frames":1.0,
       "originY":0.0,
       "prefetch":true
     },
     "texture_muscle_car_wallpaper_3":{
+      "frames":1.0,
+      "file":"texture/texture_muscle_car_wallpaper_3.jpg",
       "name":"texture_muscle_car_wallpaper_3",
       "originX":0.0,
-      "file":"texture/texture_muscle_car_wallpaper_3.jpg",
-      "frames":1.0,
       "originY":0.0,
       "prefetch":true
     },
     "texture_muscle_car_wallpaper_4":{
+      "frames":1.0,
+      "file":"texture/texture_muscle_car_wallpaper_4.jpg",
       "name":"texture_muscle_car_wallpaper_4",
       "originX":0.0,
-      "file":"texture/texture_muscle_car_wallpaper_4.jpg",
-      "frames":1.0,
       "originY":0.0,
       "prefetch":true
     },
     "texture_muscle_car_shroom_1":{
+      "frames":1.0,
+      "file":"texture/texture_muscle_car_shroom_1.jpg",
       "name":"texture_muscle_car_shroom_1",
       "originX":0.0,
-      "file":"texture/texture_muscle_car_shroom_1.jpg",
-      "frames":1.0,
       "originY":0.0,
       "prefetch":true
     },
     "texture_shroom_baron":{
+      "frames":1.0,
+      "file":"texture/texture_shroom_baron.png",
       "name":"texture_shroom_baron",
       "originX":0.0,
-      "file":"texture/texture_shroom_baron.png",
-      "frames":1.0,
       "originY":0.0,
       "prefetch":true
     },
     "texture_shroom_baron_blue":{
+      "frames":1.0,
+      "file":"texture/texture_shroom_baron_blue.png",
       "name":"texture_shroom_baron_blue",
       "originX":0.0,
-      "file":"texture/texture_shroom_baron_blue.png",
-      "frames":1.0,
       "originY":0.0,
       "prefetch":true
     }
-  }
+  },
+  "model":"Collection<io.alkapivo.core.service.texture.TextureIntent>",
+  "version":"1"
 }

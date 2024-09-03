@@ -3,7 +3,14 @@
 ///@param {Struct} json
 ///@return {GridItemFeature}
 function FollowPlayerFeature(json = {}) {
-  var data = Assert.isType(Struct.get(json, "data"), Struct)
+  var data = Struct.map(Assert.isType(Struct
+    .getDefault(json, "data", {}), Struct), GMArray
+    .resolveRandom)
+  
+  if (Struct.contains(data, "value")) {
+    data.value = Struct.map(data.value, GMArray.resolveRandom)
+  }
+
   return new GridItemFeature(Struct.append(json, {
 
     ///@param {Callable}

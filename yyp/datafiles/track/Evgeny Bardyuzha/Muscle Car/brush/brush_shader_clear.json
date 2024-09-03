@@ -1,37 +1,37 @@
 {
-  "model":"Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>",
-  "version":"1",
   "data":[
     {
-      "type":"brush_shader_clear",
       "name":"clear all",
       "properties":{
-        "shader-clear_use-clear-amount":0.0,
         "shader-clear_clear-amount":1.0,
         "shader-clear_pipeline":"Grid",
-        "shader-clear_use-clear-all-shaders":1.0
+        "shader-clear_use-clear-all-shaders":1.0,
+        "shader-clear_use-clear-amount":0.0
       },
+      "texture":"texture_visu_editor_icon_event_shader_clear",
       "color":"#FF0000",
-      "texture":"texture_visu_editor_icon_event_shader_clear"
+      "type":"brush_shader_clear"
     },
     {
-      "type":"brush_shader_clear",
       "name":"clear 1",
       "properties":{
-        "shader-clear_use-clear-amount":1.0,
         "shader-clear_clear-amount":1.0,
         "shader-clear_pipeline":"Grid",
-        "shader-clear_use-clear-all-shaders":0.0
+        "shader-clear_use-clear-all-shaders":0.0,
+        "shader-clear_use-clear-amount":1.0
       },
+      "texture":"texture_visu_editor_icon_event_shader_clear",
       "color":"#FFFF2E",
-      "texture":"texture_visu_editor_icon_event_shader_clear"
+      "type":"brush_shader_clear"
     },
     {
-      "type":"brush_shader_clear",
       "name":"new brush template",
       "properties":null,
+      "texture":"texture_baron",
       "color":"#FFFFFF",
-      "texture":"texture_baron"
+      "type":"brush_shader_clear"
     }
-  ]
+  ],
+  "model":"Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>",
+  "version":"1"
 }

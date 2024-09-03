@@ -211,6 +211,16 @@ function Array(_type = any, _container = null) constructor {
     return size > 0 ? this.get(size - 1) : null
   }
 
+  ///@return {any}
+  static getRandom = function() {
+    var size = this.size()
+    if (size == 0) {
+      return null
+    }
+
+    return this.get(irandom(size - 1))
+  }
+
   ///@param {Number} indexA
   ///@param {Number} indexB
   ///@return {Array}
@@ -432,6 +442,32 @@ function _GMArray() constructor {
   }
 
   ///@param {GMArray} arr
+  ///@param {Number} index
+  ///@return {any}
+  static get = function(arr, index) {
+    return index >= 0 && index < this.size(arr) ? arr[index] : null
+  }
+
+  ///@param {GMArray} arr
+  ///@return {any}
+  static getFirst = function(arr) {
+    return this.get(arr, 0)
+  }
+
+  ///@return {any}
+  static getLast = function(arr) {
+    var size = this.size(arr)
+    return size > 0 ? this.get(arr, size - 1) : null
+  }
+
+  ///@param {GMArray} arr
+  ///@return {any}
+  static getRandom = function(arr) {
+    var size = this.size(arr)
+    return size > 0 ? this.get(arr, irandom(size - 1)) : null
+  }
+
+  ///@param {GMArray} arr
   ///@param {Callable} callback
   ///@param {any} [acc]
   ///@return {any}
@@ -630,6 +666,12 @@ function _GMArray() constructor {
   static sort = function(arr, callback = true) {
     array_sort(arr, callback)
     return arr
+  }
+
+  ///@param {GMArray|any} value
+  ///@return {any}
+  static resolveRandom = function(value) {
+    return Core.isType(value, GMArray) ? GMArray.getRandom(value) : value
   }
 }
 global.__GMArray = new _GMArray()

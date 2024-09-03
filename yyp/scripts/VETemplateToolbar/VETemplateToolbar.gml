@@ -102,6 +102,36 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             },
           },
           {
+            name: "button_type-coin",
+            template: VEComponents.get("category-button"),
+            layout: VELayouts.get("horizontal-item"),
+            config: {
+              backgroundColor: VETheme.color.primary,
+              backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
+              backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
+              backgroundColorOff: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+              backgroundMargin: { top: 4, bottom: 4, right: 1, left: 1 },
+              callback: function() { 
+                this.context.templateToolbar.store
+                  .get("type")
+                  .set(this.templateType)
+                
+                this.context.templateToolbar.store
+                  .get("template")
+                  .set(null)
+              },
+              updateCustom: function() {
+                this.backgroundColor = this.templateType == this.context.templateToolbar.store.getValue("type")
+                  ? this.backgroundColorOn
+                  : (this.isHoverOver ? this.backgroundColorHover : this.backgroundColorOff)
+              },
+              onMouseHoverOver: function(event) { },
+              onMouseHoverOut: function(event) { },
+              label: { text: "Coin" },
+              templateType: VETemplateType.COIN,
+            },
+          },
+          {
             name: "button_type-lyrics",
             template: VEComponents.get("category-button"),
             layout: VELayouts.get("horizontal-item"),
@@ -378,6 +408,51 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                 }
               },
               label: { text: "Create bullet" },
+              colorHoverOver: VETheme.color.accept,
+              colorHoverOut: VETheme.color.acceptShadow,
+              onMouseHoverOver: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+              },
+              onMouseHoverOut: function(event) {
+                this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+              },
+            },
+          },
+        ]),
+        "template_coin": new Array(Struct, [
+          {
+            name: "text-field_new-coin-template_name",
+            template: VEComponents.get("text-field"),
+            layout: VELayouts.get("text-field"),
+            config: {
+              layout: { type: UILayoutType.VERTICAL },
+              label: { text: "Name" },
+              field: { store: { key: "template_coin_name" } },
+            },
+          },
+          {
+            name: "button_new-coin-template_add",
+            template: VEComponents.get("button"),
+            layout: VELayouts.get("button"),
+            config: {
+              layout: { type: UILayoutType.VERTICAL },
+              backgroundColor: VETheme.color.acceptShadow,
+              backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
+              callback: function(event) {
+                if (Core.isType(GMTFContext.get(), GMTF)) {
+                  if (Core.isType(GMTFContext.get().uiItem, UIItem)) {
+                    GMTFContext.get().uiItem.update()
+                  }
+                  GMTFContext.get().unfocus()
+                }
+
+                this.context.templateToolbar.send(new Event("add-template"))
+                
+                if (Optional.is(this.context.updateTimer)) {
+                  this.context.updateTimer.time = this.context.updateTimer.duration
+                }
+              },
+              label: { text: "Create coin" },
               colorHoverOver: VETheme.color.accept,
               colorHoverOut: VETheme.color.acceptShadow,
               onMouseHoverOver: function(event) {
@@ -804,6 +879,29 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                       return task
                     })
                   break
+                case VETemplateType.COIN:
+                  event.data.filename = "coin"
+                  event.promise
+                    .setState({
+                      callback: function(prototype, json, key, acc) {
+                        Logger.debug("VisuTrackLoader", $"load coin template '{key}'")
+                        acc.set(key, new prototype(key, json))
+                      },
+                      acc: controller.coinService.templates,
+                      steps: MAGIC_NUMBER_TASK,
+                      store: store,
+                    })
+                    .whenSuccess(function(result) {
+                      var task = JSON.parserTask(result.data, this.state)
+                      task.state.set("store", this.state.store)
+                      task.whenFinish(function() {
+                        var type = this.state.get("store").get("type")
+                        type.set(type.get())
+                      })
+                      Beans.get(BeanVisuController).executor.add(task)
+                      return task
+                    })
+                  break
                 case VETemplateType.LYRICS:
                   event.data.filename = "lyrics"
                   event.promise
@@ -902,6 +1000,11 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                   templates = controller.bulletService.templates
                   model = "Collection<io.alkapivo.visu.service.bullet.BulletTemplate>"
                   filename = "bullet"
+                  break
+                case VETemplateType.COIN:
+                  templates = controller.coinService.templates
+                  model = "Collection<io.alkapivo.visu.service.coin.CoinTemplate>"
+                  filename = "coin"
                   break
                 case VETemplateType.LYRICS:
                   templates = controller.lyricsService.templates
@@ -1135,6 +1238,60 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                           callback: function() {
                             this.removeUIItemfromUICollection()
                             Beans.get(BeanVisuController).bulletService.templates
+                              .remove(this.templateName)
+                          },
+                          templateName: template.name,
+                          removeUIItemfromUICollection: new BindIntent(Callable
+                            .run(UIUtil.templates.get("removeUIItemfromUICollection"))),
+                        },
+                      },
+                    }
+                  }, null, String, Struct)
+
+                var keys = GMArray.sort(components.keys().getContainer())
+                IntStream.forEach(0, components.size(), function(iterator, index, acc) {
+                  var component = acc.components.get(acc.keys[iterator])
+                  acc.collection.add(new UIComponent(component))
+                }, {
+                  keys: keys,
+                  components: components,
+                  collection: data.collection,
+                })
+                break
+              case VETemplateType.COIN:
+                var components = Beans.get(BeanVisuController).coinService.templates
+                  .map(function(template, name) {
+                    return {
+                      name: template.name,
+                      template: VEComponents.get("template-entry"),
+                      layout: VELayouts.get("template-entry"),
+                      config: {
+                        label: { 
+                          text: template.name,
+                          colorHoverOver: VETheme.color.accentShadow,
+                          colorHoverOut: VETheme.color.primaryShadow,
+                          onMouseReleasedLeft: function() {
+                            var coin = Beans.get(BeanVisuController).coinService.templates
+                              .get(this.templateName)
+                            if (!Core.isType(coin, CoinTemplate)) {
+                              return
+                            }
+
+                            Struct.set(coin, "type", VETemplateType.COIN)
+                            this.context.templateToolbar.store
+                              .get("template")
+                              .set(new VETemplate(coin))
+                          },
+                          templateName: template.name,
+                        },
+                        button: { 
+                          sprite: {
+                            name: "texture_ve_icon_trash",
+                            blend: VETheme.color.textShadow,
+                          },
+                          callback: function() {
+                            this.removeUIItemfromUICollection()
+                            Beans.get(BeanVisuController).coinService.templates
                               .remove(this.templateName)
                           },
                           templateName: template.name,
@@ -1645,6 +1802,10 @@ function VETemplateToolbar(_editor) constructor {
       type: String,
       value: "bullet",
     },
+    "template_coin_name": {
+      type: String,
+      value: "coin",
+    },
     "template_lyrics_name": {
       type: String,
       value: "lyrics",
@@ -1815,6 +1976,14 @@ function VETemplateToolbar(_editor) constructor {
               sprite: { name: "texture_baron" },
             }))
           break
+        case VETemplateType.COIN:
+          controller.coinService.templates
+            .set(name, new CoinTemplate(name, {
+              name: name,
+              category: CoinCategory.POINT,
+              sprite: { name: "texture_coin_point" },
+            }))
+          break
         case VETemplateType.LYRICS:
           controller.lyricsService.templates
             .set(name, new LyricsTemplate(name, { todo: "json" }))
@@ -1867,6 +2036,9 @@ function VETemplateToolbar(_editor) constructor {
           break
         case VETemplateType.BULLET:
           controller.bulletService.templates.set(name, serialized)
+          break
+        case VETemplateType.COIN:
+          controller.coinService.templates.set(name, serialized)
           break
         case VETemplateType.LYRICS:
           controller.lyricsService.templates.set(name, serialized)

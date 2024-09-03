@@ -110,6 +110,14 @@ function DisplayService(_controller, config = {}): Service() constructor {
     return this
   }
 
+  ///@return {DisplayService}
+  center = function() {
+    if (!this.getFullscreen()) {
+      window_center()
+    }
+    return this
+  }
+
   ///@param {Number} _width
   ///@param {Number} _height
   ///@return {DisplayService}

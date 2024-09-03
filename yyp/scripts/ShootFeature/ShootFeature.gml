@@ -3,7 +3,10 @@
 ///@param {Struct} json
 ///@return {GridItemFeature}
 function ShootFeature(json) {
-  var data = Assert.isType(Struct.get(json, "data"), Struct)
+  var data = Struct.map(Assert.isType(Struct
+    .getDefault(json, "data", {}), Struct), GMArray
+    .resolveRandom)
+  
   return new GridItemFeature(Struct.append(json, {
 
     ///@param {Callable}
@@ -18,14 +21,11 @@ function ShootFeature(json) {
     ///@type {Number}
     speed: Core.isType(Struct.get(data, "speed"), Number) ? data.speed : 20.0,
 
-    ///@type {Number}
-    interval: Core.isType(Struct.get(data, "interval"), Number) ? data.interval : 1.0,
-
     ///@private
     ///@type {Timer}
     cooldown: new Timer(
-      Core.isType(Struct.get(data, "interval"), Number) ? data.interval : 1.0,
-      { loop: Core.isType(Struct.get(data, "bullets"), Number) ? data.bullets : Infinity }
+      Core.isType(Struct.get(data, "interval"), Number) ? data.interval : 0.0,
+      { loop: Core.isType(Struct.get(data, "bullets"), Number) ? data.bullets + 1 : Infinity }
     ),
 
     ///@private
@@ -35,6 +35,7 @@ function ShootFeature(json) {
     ///@type {Boolean}
     targetPlayer: Core.isType(Struct.get(data, "targetPlayer"), Boolean) ? data.targetPlayer : false,
 
+    ///@type {Number}
     randomRange: Core.isType(Struct.get(data, "randomRange"), Number) ? data.randomRange : 0,
 
     ///@override

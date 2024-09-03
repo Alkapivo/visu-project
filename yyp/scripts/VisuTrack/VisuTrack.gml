@@ -23,6 +23,9 @@ function VisuTrack(_path, json) constructor {
   
   ///@type {String}
   bullet = Assert.isType(Struct.get(json, "bullet"), String)
+
+  ///@type {String}
+  coin = Assert.isType(Struct.get(json, "coin"), String)
   
   ///@type {String}
   lyrics = Assert.isType(Struct.get(json, "lyrics"), String)
@@ -47,6 +50,7 @@ function VisuTrack(_path, json) constructor {
   ///@type {Array<String>}
   editor = new Array(String, json.editor)
 
+  ///@param {String} manifestPath
   saveProject = function(manifestPath) {
     var controller = Beans.get(BeanVisuController)
     var fileService = Beans.get(BeanFileService)
@@ -60,6 +64,7 @@ function VisuTrack(_path, json) constructor {
         "bpm-sub": this.bpmSub,
         "track": this.track,
         "bullet": this.bullet,
+        "coin": this.coin,
         "lyrics": this.lyrics,
         "particle": this.particle,
         "shader": this.shader,
@@ -102,6 +107,16 @@ function VisuTrack(_path, json) constructor {
       .forEach(function(template, name, data) {
         Struct.set(data, template.name, template.serialize())
       }, bullet.data)
+
+    var coin = {
+      "model": "Collection<io.alkapivo.visu.service.coin.CoinTemplate>",
+      "version": "1",
+      "data": {},
+    }
+    controller.coinService.templates
+      .forEach(function(template, name, data) {
+        Struct.set(data, template.name, template.serialize())
+      }, coin.data)
 
     var lyrics = {
       "model": "Collection<io.alkapivo.visu.service.lyrics.LyricsTemplate>",
@@ -195,6 +210,12 @@ function VisuTrack(_path, json) constructor {
       .setData(new File({
         path: $"{path}{this.bullet}",
         data: JSON.stringify(bullet, { pretty: true }),
+    })))
+
+    fileService.send(new Event("save-file-sync")
+      .setData(new File({
+        path: $"{path}{this.coin}",
+        data: JSON.stringify(coin, { pretty: true }),
     })))
 
     fileService.send(new Event("save-file-sync")

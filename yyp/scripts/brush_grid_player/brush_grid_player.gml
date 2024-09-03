@@ -21,6 +21,14 @@ function brush_grid_player(json = null) {
         type: Rectangle,
         value: new Rectangle(Struct.getDefault(json, "grid-player_mask", null)),
       },
+      "grid-player_use-reset-position": {
+        type: Boolean,
+        value: Struct.get(json, "grid-player_use-reset-position") == true,
+      },
+      "grid-player_reset-position": {
+        type: Boolean,
+        value: Struct.get(json, "grid-player_reset-position") == true,
+      },
       "grid-player_use-bullet-hell": {
         type: Boolean,
         value: Struct.getDefault(json, "grid-player_use-bullet-hell", true),
@@ -452,6 +460,29 @@ function brush_grid_player(json = null) {
               enable: { key: "grid-player_use-mask" },
             },
           },
+        },
+      },
+      {
+        name: "grid-player_use-reset-position",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Reset position",
+            enable: { key: "grid-player_use-reset-position" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "grid-player_use-reset-position" },
+          },
+          input: {
+            spriteOn: { name: "visu_texture_checkbox_switch_on" },
+            spriteOff: { name: "visu_texture_checkbox_switch_off" },
+            store: { key: "grid-player_reset-position" },
+            enable: { key: "grid-player_use-reset-position" },
+          }
         },
       },
       {

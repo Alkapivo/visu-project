@@ -128,6 +128,13 @@ function VisuController(layerName) constructor {
             }
 
             fsmState.state.set("promises", promises)
+
+            ///@hack
+            var trackService = fsm.context.trackService
+            if (trackService.isTrackLoaded()
+              && !trackService.track.audio.isLoaded()) {
+              trackService.time = 0.0
+            }
           },
         },
         update: function(fsm) {
@@ -338,6 +345,36 @@ function VisuController(layerName) constructor {
         && Core.isType(this.track, Track)
     },
   })
+  
+  watchdogPromise = null
+
+  ///@return {VisuController}
+  watchdog = function() {
+    try {
+      if (Optional.is(this.watchdogPromise)) {
+        this.watchdogPromise = this.watchdogPromise.status == PromiseStatus.PENDING
+          ? this.watchdogPromise
+          : null
+        return this
+      }
+
+      if (!Optional.is(this.watchdogPromise)
+        && this.trackService.isTrackLoaded()
+        && !this.trackService.track.audio.isLoaded() 
+        && 1 > abs(this.trackService.time - this.trackService.duration)
+        && this.fsm.getStateName() == "play") {
+        
+        Logger.info("VisuController", $"Track finished at {this.trackService.time}")
+        this.watchdogPromise = this.send(new Event("pause").setPromise(new Promise()))
+      }
+    } catch (exception) {
+      var message = $"Watchdog throwed an exception: {exception.message}"
+      this.send(new Event("spawn-popup", { message: message }))
+      Logger.error("VisuController", message)
+    }
+
+    return this
+  }
 
   ///@type {PlayerService}
   playerService = new PlayerService(this)
@@ -347,6 +384,9 @@ function VisuController(layerName) constructor {
 
 	///@type {BulletService}
   bulletService = new BulletService(this)
+
+  ///@type {CoinService}
+  coinService = new CoinService()
 
   ///@type {GridService}
   gridService = new GridService(this)
@@ -372,11 +412,108 @@ function VisuController(layerName) constructor {
   ///@type {Boolean}
   renderGUIEnabled = true
 
+  ///@type {Boolean}
+  renderHUDEnabled = false
+
   ///@type {Struct}
   renderTimer = this.factoryTimer("Render")
   
   ///@type {Struct}
   renderGUITimer = this.factoryTimer("RenderGUI")
+
+  ///@type {BKTGlitch}
+  hudBKTGlitchService = new BKTGlitchService()
+
+  setHUDConfig = function(factor = 0.0, useConfig = true) {
+    var config = {
+      lineSpeed: {
+        defValue: 0.01,
+        minValue: 0.0,
+        maxValue: 0.5,
+      },
+      lineShift: {
+        defValue: 0.0,
+        minValue: 0.0,
+        maxValue: 0.05,
+      },
+      lineResolution: {
+        defValue: 0.0,
+        minValue: 0.0,
+        maxValue: 3.0,
+      },
+      lineVertShift: {
+        defValue: 0.0,
+        minValue: 0.0,
+        maxValue: 1.0,
+      },
+      lineDrift: {
+        defValue: 0.0,
+        minValue: 0.0,
+        maxValue: 1.0,
+      },
+      jumbleSpeed: {
+        defValue: 4.5,
+        minValue: 0.0,
+        maxValue: 25.0,
+      },
+      jumbleShift: {
+        defValue: 0.059999999999999998,
+        minValue: 0.0,
+        maxValue: 1.0,
+      },
+      jumbleResolution: {
+        defValue: 0.25,
+        minValue: 0.0,
+        maxValue: 1.0,
+      },
+      jumbleness: {
+        defValue: 0.10000000000000001,
+        minValue: 0.0,
+        maxValue: 1.0,
+      },
+      dispersion: {
+        defValue: 0.002,
+        minValue: 0.0,
+        maxValue: 0.5,
+      },
+      channelShift: {
+        defValue: 0.00050000000000000001,
+        minValue: 0.0,
+        maxValue: 0.05,
+      },
+      noiseLevel: {
+        defValue: 0.10000000000000001,
+        minValue: 0.0,
+        maxValue: 1.0,
+      },
+      shakiness: {
+        defValue: 0.5,
+        minValue: 0.0,
+        maxValue: 10.0,
+      },
+      rngSeed: {
+        defValue: 0.66600000000000004,
+        minValue: 0.0,
+        maxValue: 1.0,
+      },
+      intensity: {
+        defValue: 0.40000000000000002,
+        minValue: 0.0,
+        maxValue: 5.0,
+      },
+    }
+
+    if (useConfig) {
+      this.hudBKTGlitchService.dispatcher
+        .execute(new Event("load-config", config))
+    }
+
+    this.hudBKTGlitchService.dispatcher
+      .execute(new Event("spawn", { 
+        factor: factor, 
+        rng: !useConfig
+      }))
+  }
 
   ///@param {Boolean} value
   ///@return {TopDownController}
@@ -413,7 +550,8 @@ function VisuController(layerName) constructor {
       var fsmEvent = new Event("transition", { 
         name: "rewind", 
         data: {
-          resume: this.fsm.getStateName() == "play",
+          resume: Core.isType(Struct.get(event.data, "resume"), Boolean) 
+            ? event.data.resume : this.fsm.getStateName() == "play",
           timestamp: Assert.isType(event.data.timestamp, Number),
           videoServiceAttempts: Struct.getDefault(
             event.data, 
@@ -464,6 +602,7 @@ function VisuController(layerName) constructor {
     "gridService",
     //"gridSystem", ///@ecs
     "lyricsService",
+    "coinService",
     "gridRenderer",
     "videoService",
   ], function(name, index, controller) {
@@ -492,7 +631,9 @@ function VisuController(layerName) constructor {
       )
       .setFullscreen(fullscreen)
       .setCursor(Cursor.DEFAULT)
+      .center()
     
+    this.setHUDConfig()
     ///@todo DEMO
     var tree = new Tree({
       name: "root-node",
@@ -676,6 +817,8 @@ function VisuController(layerName) constructor {
 
     this.services.forEach(this.updateService, this)
     this.autosaveHandler()
+    this.watchdog()
+    this.hudBKTGlitchService.update(GuiWidth(), GuiHeight())
 
     return this
   }
@@ -717,6 +860,87 @@ function VisuController(layerName) constructor {
     return this
   }
 
+  ///@type {Font}
+  guiFont = new Font(font_kodeo_mono_18_bold)
+
+  hudBKTCooldown = new Timer(0.33)
+
+  shakeHUD = function() {
+    var value = choose(0.3, 0.4, 0.5, 0.6, 0.7)
+    this.setHUDConfig(value / 100.0, false)
+    hudBKTCooldown.reset()
+  }
+
+  renderHUD = function() {
+    if (!this.renderHUDEnabled) {
+      return
+    }
+
+    if (!this.hudBKTCooldown.finished) {
+      if (hudBKTCooldown.update().finished) {
+        hudBKTCooldown.time = hudBKTCooldown.duration
+        this.setHUDConfig(0.0, true)
+      }
+    }
+
+    var player = this.playerService.player
+    if (Core.isType(player, Player)) {
+      var enable = this.renderUI
+      var _editor = Beans.get(BeanVisuEditor)
+      var preview = _editor == null ? this.preview : _editor.layout.nodes.preview
+      var _x = enable ? ceil(preview.x()) : 0
+      var _y = enable ? ceil(preview.y()) : 0
+      var _width = enable ? ceil(preview.width()) : GuiWidth()
+      var _height = enable ? ceil(preview.height()) : GuiHeight()
+
+      var lifeString = ""
+      repeat (player.stats.life.get()) {
+        lifeString = $"{lifeString}L "
+      }
+
+      var bombString = ""
+      repeat (player.stats.bomb.get()) {
+        bombString = $"{bombString}B "
+      }
+
+      var point = string(player.stats.point.get())
+      repeat (4 - String.size(point)) {
+        point = $"0{point}"
+      }
+
+      var force = string(player.stats.force.get())
+      repeat (4 - String.size(force)) {
+        force = $"0{force}"
+      }
+
+      /*
+      var text = ""
+        + $"SCORE: {point}" + "\n"  
+        + $"FORCE: {force}" + "\n"
+        + $" LIFE: {lifeString}" + "\n"
+        + $" BOMB: {bombString}" + "\n"
+      */
+
+      var textMask  = $"SCORE: {point}\nFORCE: {force}\n LIFE: {lifeString}\n BOMB: {bombString}"
+      var textLabel = $"SCORE:        \nFORCE:        \n LIFE:\n BOMB:"
+      var textPoint = $"       {point}\n              \n      \n      "
+      var textForce = $"              \n       {force}\n      \n      "
+      var textLife = $"\n\n       {lifeString}\n\n"
+      var textBomb = $"\n\n\n       {bombString}"
+
+      var xStart = _width * 0.06
+      var yStart = _height * 0.08
+      var offset = (this.hudBKTCooldown.duration - this.hudBKTCooldown.time) * 64
+      GPU.render.text(_x + xStart + offset, _y + _height - yStart, textLabel, c_fuchsia, null, 0.20, this.guiFont, HAlign.LEFT, VAlign.BOTTOM)  
+      GPU.render.text(_x + xStart, _y + _height - yStart - offset, textPoint, c_blue,    null, 0.66, this.guiFont, HAlign.LEFT, VAlign.BOTTOM)  
+      GPU.render.text(_x + xStart, _y + _height - yStart - offset, textForce, c_red,     null, 0.66, this.guiFont, HAlign.LEFT, VAlign.BOTTOM)  
+      GPU.render.text(_x + xStart + offset, _y + _height - yStart, textMask,  c_white,   null, 0.33, this.guiFont, HAlign.LEFT, VAlign.BOTTOM)  
+      GPU.render.text(_x + xStart, _y + _height - yStart + offset, textLife,  c_lime,    null, 0.33, this.guiFont, HAlign.LEFT, VAlign.BOTTOM)  
+      GPU.render.text(_x + xStart, _y + _height - yStart + offset, textBomb,  c_yellow,  null, 0.33, this.guiFont, HAlign.LEFT, VAlign.BOTTOM)
+    }
+    
+  }
+
   ///@return {VisuController}
   renderGUI = function() {
     if (!this.renderGUIEnabled) {
@@ -728,13 +952,18 @@ function VisuController(layerName) constructor {
       var enable = this.renderUI
       var _editor = Beans.get(BeanVisuEditor)
       var preview = _editor == null ? this.preview : _editor.layout.nodes.preview
+      var _x = enable ? ceil(preview.x()) : 0
+      var _y = enable ? ceil(preview.y()) : 0
+      var _width = enable ? ceil(preview.width()) : GuiWidth()
+      var _height = enable ? ceil(preview.height()) : GuiHeight()
       this.gridRenderer.renderGUI({ 
-        width: enable ? ceil(preview.width()) : GuiWidth(), 
-        height: enable ? ceil(preview.height()) : GuiHeight(), 
-        x: enable ? ceil(preview.x()) : 0, 
-        y: enable ? ceil(preview.y()) : 0,
+        width: _width, 
+        height: _height, 
+        x: _x, 
+        y: _y,
       })
       this.lyricsRenderer.renderGUI()
+      this.hudBKTGlitchService.renderOn(this.renderHUD)
       if (this.renderUI) {
         this.uiService.render()
         var loaderState = this.loader.fsm.getStateName()
@@ -777,7 +1006,7 @@ function VisuController(layerName) constructor {
               - (this.spinnerFactor / 2)
           )
         }
-      }
+      }      
       
       //MouseUtil.renderSprite()
       //Beans.get(BeanVisuEditor).render()

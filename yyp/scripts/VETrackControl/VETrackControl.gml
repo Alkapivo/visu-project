@@ -729,31 +729,6 @@ function VETrackControl(_editor) constructor {
   }
 
   ///@return {VETrackControl}
-  watchdog = function() {
-    var controller = Beans.get(BeanVisuController)
-    if (!Core.isType(controller, VisuController)) {
-      return this
-    }
-
-    try {
-      var trackService = controller.trackService
-      var time = trackService.time
-      var duration = trackService.duration
-      if (trackService.duration != 0 
-        && trackService.isTrackLoaded()
-        && time >= duration - DeltaTime.apply(FRAME_MS * 2)) {
-        
-        controller.send(new Event("pause"))
-      }
-    } catch (exception) {
-      var message = $"watchdog throwed an exception: {exception.message}"
-      controller.send(new Event("spawn-popup", { message: message }))
-      Logger.error("VETrackControl", message)
-    }
-    return this
-  }
-
-  ///@return {VETrackControl}
   update = function() { 
     try {
       this.dispatcher.update()
@@ -762,8 +737,6 @@ function VETrackControl(_editor) constructor {
       Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
       Logger.error("UI", message)
     }
-    
-    this.watchdog()
     return this
   }
 }

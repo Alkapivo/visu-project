@@ -76,7 +76,12 @@ function TrackService(_context, config = {}): Service() constructor {
   ///@return {TrackService}
   resume = function() {
     if (this.isTrackLoaded()) {
-      this.track.audio.resume().setVolume(1)
+      if (this.track.audio.isLoaded()) {
+        this.track.audio.resume()
+      } else {
+        this.time = 0.0
+        this.track.audio.play()
+      }
     }
     return this
   }
@@ -101,7 +106,12 @@ function TrackService(_context, config = {}): Service() constructor {
   ///@return {TrackService}
   rewind = function(timestamp) {
     if (this.isTrackLoaded) {
-      this.track.rewind(timestamp)
+      if (this.track.audio.isLoaded()) {
+        this.track.rewind(timestamp)
+      } else {
+        this.time = timestamp
+        this.track.audio.play().rewind(timestamp).pause()
+      }
     }
     return this
   }
@@ -110,7 +120,9 @@ function TrackService(_context, config = {}): Service() constructor {
   update = function() {
     this.dispatcher.update()
     if (this.isTrackLoaded()) {
-      this.time = this.track.audio.getPosition()
+      this.time = this.track.audio.isLoaded()
+        ? this.track.audio.getPosition()
+        : this.time
       this.track.update(this.time)
     }
     return this

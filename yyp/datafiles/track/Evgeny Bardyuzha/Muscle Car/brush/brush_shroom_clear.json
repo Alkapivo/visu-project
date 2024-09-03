@@ -1,28 +1,28 @@
 {
-  "model":"Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>",
-  "version":"1",
   "data":[
     {
-      "type":"brush_shroom_clear",
       "name":"clear all",
       "properties":{
-        "shroom-clear_use-clear-all-shrooms":1.0,
         "shroom-clear_use-clear-amount":0.0,
-        "shroom-clear_clear-amount":1.0
+        "shroom-clear_clear-amount":1.0,
+        "shroom-clear_use-clear-all-shrooms":1.0
       },
+      "texture":"texture_visu_editor_icon_event_shroom_clear",
       "color":"#FF0000",
-      "texture":"texture_visu_editor_icon_event_shroom_clear"
+      "type":"brush_shroom_clear"
     },
     {
-      "type":"brush_shroom_clear",
       "name":"clear 1",
       "properties":{
-        "shroom-clear_use-clear-all-shrooms":0.0,
         "shroom-clear_use-clear-amount":1.0,
-        "shroom-clear_clear-amount":1.0
+        "shroom-clear_clear-amount":1.0,
+        "shroom-clear_use-clear-all-shrooms":0.0
       },
+      "texture":"texture_visu_editor_icon_event_shroom_clear",
       "color":"#FFDF43",
-      "texture":"texture_visu_editor_icon_event_shroom_clear"
+      "type":"brush_shroom_clear"
     }
-  ]
+  ],
+  "model":"Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>",
+  "version":"1"
 }

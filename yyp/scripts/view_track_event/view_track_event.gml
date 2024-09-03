@@ -239,7 +239,6 @@ global.__view_track_event = {
   },
   "brush_view_glitch": function(data) {
     var bktGlitchService = Beans.get(BeanVisuController).gridRenderer.bktGlitchService
-
     var config = {
       lineSpeed: {
         defValue: Struct.getDefault(data, "view-glitch_line-speed", 0.0),
@@ -330,7 +329,8 @@ global.__view_track_event = {
     }))
   },
   "brush_view_config": function(data) {
-    var gridService = Beans.get(BeanVisuController).gridService
+    var controller = Beans.get(BeanVisuController)
+    var gridService = controller.gridService
 
     if (Struct.get(data, "view-config_use-render-particles")) {
       gridService.properties.renderParticles = Struct
@@ -355,6 +355,11 @@ global.__view_track_event = {
     if (Struct.get(data, "view-config_use-render-video")) {
       gridService.properties.renderVideo = Struct
         .get(data, "view-config_render-video")
+    }
+
+    if (Struct.get(data, "view-config_use-render-HUD")) {
+      controller.renderHUDEnabled = Struct
+        .get(data, "view-config_render-HUD")
     }
   },
 }

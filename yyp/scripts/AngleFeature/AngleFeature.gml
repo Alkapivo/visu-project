@@ -3,7 +3,18 @@
 ///@param {Struct} json
 ///@return {GridItemFeature}
 function AngleFeature(json) {
-  var data = Struct.get(json, "data")
+  var data = Struct.map(Assert.isType(Struct
+    .getDefault(json, "data", {}), Struct), GMArray
+    .resolveRandom)
+  
+  if (Struct.contains(data, "transform")) {
+    data.transform = Struct.map(data.transform, GMArray.resolveRandom)
+  }
+
+  if (Struct.contains(data, "add")) {
+    data.add = Struct.map(data.add, GMArray.resolveRandom)
+  }
+
   return new GridItemFeature(Struct.append(json, {
 
     ///@param {Callable}
@@ -34,7 +45,8 @@ function AngleFeature(json) {
         if (!this.isAngleSet) {
           this.transform.value = item.angle
           this.transform.startValue = item.angle
-          this.transform.target = item.angle + angle_difference(this.transform.target, item.angle)
+          this.transform.target = item.angle + ((this.transform.factor >= 0 ? 1 : -1) * angle_difference(this.transform.target, item.angle))
+          this.transform.factor = abs(this.transform.factor)
           this.isAngleSet = true
         }
         item.setAngle(this.transform.update().value)

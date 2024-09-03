@@ -1,43 +1,19 @@
 {
-  "model":"Collection<io.alkapivo.visu.service.bullet.BulletTemplate>",
-  "version":"1",
   "data":{
-    "bullet-default":{
-      "gameModes":{
-        "racing":{
-          "features":[
-          ]
-        },
-        "bulletHell":{
-          "features":[
-            {
-              "data":{
-                "duration":10.0
-              },
-              "feature":"LifespawnFeature"
-            }
-          ]
-        },
-        "platformer":{
-          "features":[
-          ]
-        }
-      },
-      "sprite":{
-        "scaleY":3.0,
-        "frame":4.1618966666666655,
-        "angle":0.0,
-        "name":"texture_bullet",
-        "blend":"#FFFFFF",
-        "alpha":1.0,
-        "speed":10.0,
-        "scaleX":3.0,
-        "animate":true
-      }
-    },
     "bullet-player":{
+      "sprite":{
+        "frame":4.8827363333333311,
+        "blend":"#FFFFFF",
+        "angle":0.0,
+        "speed":10.0,
+        "name":"texture_bullet",
+        "alpha":1.0,
+        "animate":1.0,
+        "scaleX":3.0,
+        "scaleY":3.0
+      },
       "gameModes":{
-        "racing":{
+        "platformer":{
           "features":[
           ]
         },
@@ -45,70 +21,94 @@
           "features":[
           ]
         },
-        "platformer":{
+        "racing":{
           "features":[
           ]
         }
-      },
-      "sprite":{
-        "scaleY":3.0,
-        "frame":4.8827363333333311,
-        "angle":0.0,
-        "name":"texture_bullet",
-        "blend":"#FFFFFF",
-        "alpha":1.0,
-        "speed":10.0,
-        "scaleX":3.0,
-        "animate":1.0
       }
     },
     "bullet-swing":{
+      "sprite":{
+        "frame":3.4212399999999974,
+        "blend":"#FFFFFF",
+        "angle":0.0,
+        "speed":10.0,
+        "name":"texture_bullet",
+        "alpha":1.0,
+        "animate":true,
+        "scaleX":3.0,
+        "scaleY":3.0
+      },
       "gameModes":{
-        "racing":{
+        "platformer":{
           "features":[
             {
+              "feature":"SwingFeature",
               "data":{
-                "size":4.0,
-                "amount":8.0
-              },
-              "feature":"SwingFeature"
+                "amount":8.0,
+                "size":4.0
+              }
             }
           ]
         },
         "bulletHell":{
           "features":[
             {
+              "feature":"SwingFeature",
               "data":{
-                "size":4.0,
-                "amount":8.0
-              },
-              "feature":"SwingFeature"
+                "amount":8.0,
+                "size":4.0
+              }
             }
           ]
         },
-        "platformer":{
+        "racing":{
           "features":[
             {
+              "feature":"SwingFeature",
               "data":{
-                "size":4.0,
-                "amount":8.0
-              },
-              "feature":"SwingFeature"
+                "amount":8.0,
+                "size":4.0
+              }
             }
           ]
         }
-      },
+      }
+    },
+    "bullet-default":{
       "sprite":{
-        "scaleY":3.0,
-        "frame":3.4212399999999974,
-        "angle":0.0,
-        "name":"texture_bullet",
+        "frame":4.1618966666666655,
         "blend":"#FFFFFF",
-        "alpha":1.0,
+        "angle":0.0,
         "speed":10.0,
+        "name":"texture_bullet",
+        "alpha":1.0,
+        "animate":true,
         "scaleX":3.0,
-        "animate":true
+        "scaleY":3.0
+      },
+      "gameModes":{
+        "platformer":{
+          "features":[
+          ]
+        },
+        "bulletHell":{
+          "features":[
+            {
+              "feature":"LifespawnFeature",
+              "data":{
+                "duration":10.0
+              }
+            }
+          ]
+        },
+        "racing":{
+          "features":[
+          ]
+        }
       }
     }
-  }
+  },
+  "model":"Collection<io.alkapivo.visu.service.bullet.BulletTemplate>",
+  "version":"1"
 }

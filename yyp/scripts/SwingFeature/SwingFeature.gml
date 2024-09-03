@@ -3,7 +3,10 @@
 ///@param {Struct} json
 ///@return {GridItemFeature}
 function SwingFeature(json) {
-  var data = Struct.get(json, "data")
+  var data = Struct.map(Assert.isType(Struct
+    .getDefault(json, "data", {}), Struct), GMArray
+    .resolveRandom)
+  
   return new GridItemFeature(Struct.append(json, {
 
     ///@param {Callable}

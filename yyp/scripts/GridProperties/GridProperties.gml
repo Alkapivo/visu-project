@@ -135,6 +135,10 @@ function GridProperties(config = {}) constructor {
     .getDefault(config, "properties.renderShrooms", true), Boolean)
 
   ///@type {Boolean}
+  renderCoins = Assert.isType(Struct
+    .getDefault(config, "properties.renderCoins", true), Boolean)
+
+  ///@type {Boolean}
   renderBackground = Assert.isType(Struct
     .getDefault(config, "properties.renderBackground", true), Boolean)
 
@@ -204,6 +208,7 @@ function GridProperties(config = {}) constructor {
     separatorZ: 2,
     bulletZ: 2048,
     shroomZ: 2049,
+    coinZ: 2047,
     particleZ: 1024,
     playerZ: 2051,
   }

@@ -8,27 +8,27 @@
   "dependencies": {
     "core": {
       "remote": "https://github.com/Alkapivo/core-gml.git",
-      "revision": "main"
+      "revision": "caacd3bf1aeaa45177b0be292cc7411b65cb290d"
     },
     "visu": {
       "remote": "https://github.com/Alkapivo/visu-gml.git",
-      "revision": "main"
+      "revision": "1445f38be568d3dee50e487e76b3af42e2fc405c"
     },
     "neon-baron": {
       "remote": "https://github.com/Alkapivo/neon-baron-gml.git",
-      "revision": "main"
+      "revision": "ca60a6a36f96a1dfd9834158848ed49d90f737ea"
     },
     "gmtf": {
       "remote": "https://github.com/Alkapivo/mh-cz.gmtf-gml.git",
-      "revision": "main"
+      "revision": "c6b500576e3d65d8b5a591f9b9021c237a6651b9"
     },
     "bktGlitch": {
       "remote": "https://github.com/Alkapivo/fyi.odditica.bktGlitch-gml.git",
-      "revision": "main"
+      "revision": "5073d7124b2e2801de5af5f10d40baff70387804"
     },
     "tdmc": {
       "remote": "https://github.com/Alkapivo/com.pixelatedpope.tdmc.git",
-      "revision": "main"
+      "revision": "e92758a2cd7cfb611b1157fa58a56530eb8da981"
     }
   }
 }

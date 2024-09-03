@@ -3,10 +3,58 @@
 ///@param {Struct} json
 ///@return {GridItemFeature}
 function SpriteFeature(json) {
-  var data = Assert.isType(Struct.get(json, "data"), Struct)
+  var data = Struct.map(Assert.isType(Struct
+    .getDefault(json, "data", {}), Struct), GMArray
+    .resolveRandom)
+
+  if (Struct.contains(data, "scaleX")) {
+    var scaleX = data.scaleX
+    if (Struct.contains(scaleX, "transform")) {
+      scaleX.transform = Struct.map(scaleX.transform, GMArray.resolveRandom)
+    }
+  
+    if (Struct.contains(scaleX, "add")) {
+      scaleX.add = Struct.map(scaleX.add, GMArray.resolveRandom)
+    }
+  }
+
+  if (Struct.contains(data, "scaleY")) {
+    var scaleY = data.scaleY
+    if (Struct.contains(scaleY, "transform")) {
+      scaleY.transform = Struct.map(scaleY.transform, GMArray.resolveRandom)
+    }
+  
+    if (Struct.contains(scaleY, "add")) {
+      scaleY.add = Struct.map(scaleY.add, GMArray.resolveRandom)
+    }
+  }
+
+  if (Struct.contains(data, "angle")) {
+    var angle = data.angle
+    if (Struct.contains(angle, "transform")) {
+      angle.transform = Struct.map(angle.transform, GMArray.resolveRandom)
+    }
+  
+    if (Struct.contains(angle, "add")) {
+      angle.add = Struct.map(angle.add, GMArray.resolveRandom)
+    }
+  }
+
+  if (Struct.contains(data, "alpha")) {
+    var alpha = data.alpha
+    if (Struct.contains(alpha, "transform")) {
+      alpha.transform = Struct.map(alpha.transform, GMArray.resolveRandom)
+    }
+  
+    if (Struct.contains(alpha, "add")) {
+      alpha.add = Struct.map(alpha.add, GMArray.resolveRandom)
+    }
+  }
+
   var sprite = Core.isType(Struct.get(data, "sprite"), Struct) 
     ? Assert.isType(SpriteUtil.parse(data.sprite), Sprite) 
     : null
+  
   return new GridItemFeature(Struct.append(json, {
 
     ///@param {Callable}
@@ -140,7 +188,8 @@ function SpriteFeature(json) {
           if (!this.angle.initialized) {
             this.angle.transform.value = item.sprite.angle
             this.angle.transform.startValue = item.sprite.angle
-            this.angle.transform.target = item.angle + angle_difference(this.angle.transform.target, item.sprite.angle)
+            this.angle.transform.target = item.angle + ((this.angle.transform.factor >= 0 ? 1 : -1) * angle_difference(this.angle.transform.target, item.sprite.angle))
+            this.angle.transform.factor = abs(this.angle.transform.factor)
             this.angle.initialized = true
           }
           item.sprite.setAngle(this.angle.transform.update().value)

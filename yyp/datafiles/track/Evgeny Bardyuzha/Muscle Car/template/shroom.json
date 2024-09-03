@@ -1,28 +1,122 @@
 {
-  "model":"Collection<io.alkapivo.visu.service.shroom.ShroomTemplate>",
-  "version":"1",
   "data":{
     "baron_yellow":{
-      "name":"baron_yellow",
-      "mask":{
-        "x":16.0,
-        "y":32.0,
-        "width":256.0,
-        "height":224.0
+      "sprite":{
+        "frame":0.0,
+        "blend":"#FFFFFF",
+        "angle":0.0,
+        "speed":30.0,
+        "name":"texture_shroom_baron_yellow",
+        "alpha":1.0,
+        "animate":false,
+        "scaleX":3.0,
+        "scaleY":3.0
       },
+      "name":"baron_yellow",
       "gameModes":{
-        "racing":{
+        "platformer":{
           "features":[
+            {
+              "conditions":[
+                {
+                  "type":"player-landed"
+                }
+              ],
+              "feature":"BooleanFeature",
+              "data":{
+                "field":"landed",
+                "value":true
+              }
+            },
+            {
+              "conditions":[
+                {
+                  "type":"player-leave"
+                }
+              ],
+              "feature":"BooleanFeature",
+              "data":{
+                "field":"landed",
+                "value":false
+              }
+            },
+            {
+              "conditions":[
+                {
+                  "data":{
+                    "field":"landed",
+                    "value":false
+                  },
+                  "type":"boolean"
+                }
+              ],
+              "feature":"SwingFeature",
+              "data":{
+                "amount":5.0,
+                "size":8.0
+              }
+            },
+            {
+              "conditions":[
+                {
+                  "data":{
+                    "field":"landed",
+                    "value":true
+                  },
+                  "type":"boolean"
+                }
+              ],
+              "feature":"LifespawnFeature",
+              "data":{
+                "duration":5.0
+              }
+            },
+            {
+              "timer":0.25,
+              "conditions":[
+                {
+                  "data":{
+                    "field":"landed",
+                    "value":true
+                  },
+                  "type":"boolean"
+                },
+                {
+                  "data":{
+                    "operator":"greaterOrEqual",
+                    "value":2.0
+                  },
+                  "type":"lifespawn"
+                }
+              ],
+              "feature":"ParticleFeature",
+              "data":{
+                "amount":8.0,
+                "particle":"particle_shroom_lifespawn"
+              }
+            },
+            {
+              "conditions":[
+                {
+                  "type":"kill"
+                }
+              ],
+              "feature":"ParticleFeature",
+              "data":{
+                "amount":8.0,
+                "particle":"particle_shroom_death"
+              }
+            }
           ]
         },
         "bulletHell":{
           "features":[
             {
+              "feature":"SwingFeature",
               "data":{
-                "size":10.0,
-                "amount":8.0
-              },
-              "feature":"SwingFeature"
+                "amount":8.0,
+                "size":10.0
+              }
             },
             {
               "conditions":[
@@ -41,36 +135,36 @@
               "feature":"KillFeature"
             },
             {
+              "feature":"LifespawnFeature",
               "data":{
                 "duration":15.0
-              },
-              "feature":"LifespawnFeature"
+              }
             },
             {
               "conditions":[
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":1.0,
-                    "operator":"greaterOrEqual"
-                  }
+                    "operator":"greaterOrEqual",
+                    "value":1.0
+                  },
+                  "type":"lifespawn"
                 },
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":9.0,
-                    "operator":"lessOrEqual"
-                  }
+                    "operator":"lessOrEqual",
+                    "value":9.0
+                  },
+                  "type":"lifespawn"
                 }
               ],
+              "feature":"ShootFeature",
               "data":{
-                "bullet":"bullet-default",
-                "randomRange":30.0,
+                "interval":0.75,
                 "speed":22.0,
+                "bullet":"bullet-default",
                 "bullets":6.0,
-                "interval":0.75
-              },
-              "feature":"ShootFeature"
+                "randomRange":30.0
+              }
             },
             {
               "conditions":[
@@ -78,346 +172,40 @@
                   "type":"kill"
                 }
               ],
+              "feature":"ParticleFeature",
               "data":{
-                "particle":"particle_shroom_death",
-                "amount":8.0
-              },
-              "feature":"ParticleFeature"
+                "amount":8.0,
+                "particle":"particle_shroom_death"
+              }
             }
           ]
         },
-        "platformer":{
-          "features":[
-            {
-              "conditions":[
-                {
-                  "type":"player-landed"
-                }
-              ],
-              "data":{
-                "value":true,
-                "field":"landed"
-              },
-              "feature":"BooleanFeature"
-            },
-            {
-              "conditions":[
-                {
-                  "type":"player-leave"
-                }
-              ],
-              "data":{
-                "value":false,
-                "field":"landed"
-              },
-              "feature":"BooleanFeature"
-            },
-            {
-              "conditions":[
-                {
-                  "type":"boolean",
-                  "data":{
-                    "value":false,
-                    "field":"landed"
-                  }
-                }
-              ],
-              "data":{
-                "size":8.0,
-                "amount":5.0
-              },
-              "feature":"SwingFeature"
-            },
-            {
-              "conditions":[
-                {
-                  "type":"boolean",
-                  "data":{
-                    "value":true,
-                    "field":"landed"
-                  }
-                }
-              ],
-              "data":{
-                "duration":5.0
-              },
-              "feature":"LifespawnFeature"
-            },
-            {
-              "conditions":[
-                {
-                  "type":"boolean",
-                  "data":{
-                    "value":true,
-                    "field":"landed"
-                  }
-                },
-                {
-                  "type":"lifespawn",
-                  "data":{
-                    "value":2.0,
-                    "operator":"greaterOrEqual"
-                  }
-                }
-              ],
-              "timer":0.25,
-              "data":{
-                "particle":"particle_shroom_lifespawn",
-                "amount":8.0
-              },
-              "feature":"ParticleFeature"
-            },
-            {
-              "conditions":[
-                {
-                  "type":"kill"
-                }
-              ],
-              "data":{
-                "particle":"particle_shroom_death",
-                "amount":8.0
-              },
-              "feature":"ParticleFeature"
-            }
-          ]
-        }
-      },
-      "sprite":{
-        "scaleY":3.0,
-        "frame":0.0,
-        "angle":0.0,
-        "name":"texture_shroom_baron_yellow",
-        "blend":"#FFFFFF",
-        "alpha":1.0,
-        "speed":30.0,
-        "scaleX":3.0,
-        "animate":false
-      }
-    },
-    "baron_idle":{
-      "name":"baron_idle",
-      "mask":{
-        "x":16.0,
-        "y":32.0,
-        "width":256.0,
-        "height":224.0
-      },
-      "gameModes":{
         "racing":{
           "features":[
           ]
-        },
-        "bulletHell":{
-          "features":[
-            {
-              "conditions":[
-                {
-                  "type":"kill"
-                }
-              ],
-              "data":{
-                "particle":"particle_shroom_death",
-                "amount":8.0
-              },
-              "feature":"ParticleFeature"
-            },
-            {
-              "data":{
-                "bullet":"bullet-default",
-                "speed":1.5,
-                "bullets":2.0,
-                "angle":0.0,
-                "interval":0.01
-              },
-              "feature":"ShootFeature"
-            }
-          ]
-        },
-        "platformer":{
-          "features":[
-            {
-              "conditions":[
-                {
-                  "type":"player-landed"
-                }
-              ],
-              "data":{
-                "value":true,
-                "field":"landed"
-              },
-              "feature":"BooleanFeature"
-            },
-            {
-              "conditions":[
-                {
-                  "type":"player-leave"
-                }
-              ],
-              "data":{
-                "value":false,
-                "field":"landed"
-              },
-              "feature":"BooleanFeature"
-            },
-            {
-              "conditions":[
-                {
-                  "type":"boolean",
-                  "data":{
-                    "value":false,
-                    "field":"landed"
-                  }
-                }
-              ],
-              "data":{
-                "size":8.0,
-                "amount":5.0
-              },
-              "feature":"SwingFeature"
-            },
-            {
-              "conditions":[
-                {
-                  "type":"boolean",
-                  "data":{
-                    "value":true,
-                    "field":"landed"
-                  }
-                }
-              ],
-              "data":{
-                "duration":5.0
-              },
-              "feature":"LifespawnFeature"
-            },
-            {
-              "conditions":[
-                {
-                  "type":"boolean",
-                  "data":{
-                    "value":true,
-                    "field":"landed"
-                  }
-                },
-                {
-                  "type":"lifespawn",
-                  "data":{
-                    "value":2.0,
-                    "operator":"greaterOrEqual"
-                  }
-                }
-              ],
-              "timer":0.25,
-              "data":{
-                "particle":"particle_shroom_lifespawn",
-                "amount":8.0
-              },
-              "feature":"ParticleFeature"
-            },
-            {
-              "conditions":[
-                {
-                  "type":"kill"
-                }
-              ],
-              "data":{
-                "particle":"particle_shroom_death",
-                "amount":8.0
-              },
-              "feature":"ParticleFeature"
-            }
-          ]
         }
       },
-      "sprite":{
-        "scaleY":1.0,
-        "name":"texture_shroom_baron_yellow",
-        "frame":0.0,
-        "angle":0.0,
-        "blend":"#FFFFFF",
-        "alpha":1.0,
-        "speed":30.0,
-        "scaleX":1.0,
-        "animate":false
+      "mask":{
+        "height":224.0,
+        "x":16.0,
+        "y":32.0,
+        "width":256.0
       }
     },
     "baron_green":{
-      "name":"baron_green",
-      "mask":{
-        "x":16.0,
-        "y":32.0,
-        "width":256.0,
-        "height":224.0
+      "sprite":{
+        "frame":0.0,
+        "blend":"#FFFFFF",
+        "angle":0.0,
+        "speed":30.0,
+        "name":"texture_shroom_baron_green",
+        "alpha":1.0,
+        "animate":false,
+        "scaleX":3.0,
+        "scaleY":3.0
       },
+      "name":"baron_green",
       "gameModes":{
-        "racing":{
-          "features":[
-          ]
-        },
-        "bulletHell":{
-          "features":[
-            {
-              "conditions":[
-                {
-                  "type":"player-collision"
-                }
-              ],
-              "feature":"KillFeature"
-            },
-            {
-              "conditions":[
-                {
-                  "type":"bullet-collision"
-                }
-              ],
-              "feature":"KillFeature"
-            },
-            {
-              "data":{
-                "duration":15.0
-              },
-              "feature":"LifespawnFeature"
-            },
-            {
-              "conditions":[
-                {
-                  "type":"lifespawn",
-                  "data":{
-                    "value":0.5,
-                    "operator":"greaterOrEqual"
-                  }
-                },
-                {
-                  "type":"lifespawn",
-                  "data":{
-                    "value":4.0,
-                    "operator":"lessOrEqual"
-                  }
-                }
-              ],
-              "data":{
-                "bullet":"bullet-default",
-                "speed":25.0,
-                "bullets":5.0,
-                "targetPlayer":true,
-                "interval":0.25
-              },
-              "feature":"ShootFeature"
-            },
-            {
-              "conditions":[
-                {
-                  "type":"kill"
-                }
-              ],
-              "data":{
-                "particle":"particle_shroom_death",
-                "amount":8.0
-              },
-              "feature":"ParticleFeature"
-            }
-          ]
-        },
         "platformer":{
           "features":[
             {
@@ -426,11 +214,11 @@
                   "type":"player-landed"
                 }
               ],
+              "feature":"BooleanFeature",
               "data":{
-                "value":true,
-                "field":"landed"
-              },
-              "feature":"BooleanFeature"
+                "field":"landed",
+                "value":true
+              }
             },
             {
               "conditions":[
@@ -438,66 +226,66 @@
                   "type":"player-leave"
                 }
               ],
+              "feature":"BooleanFeature",
               "data":{
-                "value":false,
-                "field":"landed"
-              },
-              "feature":"BooleanFeature"
+                "field":"landed",
+                "value":false
+              }
             },
             {
               "conditions":[
                 {
-                  "type":"boolean",
                   "data":{
-                    "value":true,
-                    "field":"landed"
-                  }
+                    "field":"landed",
+                    "value":true
+                  },
+                  "type":"boolean"
                 }
               ],
+              "feature":"SwingFeature",
               "data":{
-                "size":10.0,
-                "amount":8.0
-              },
-              "feature":"SwingFeature"
+                "amount":8.0,
+                "size":10.0
+              }
             },
             {
               "conditions":[
                 {
-                  "type":"boolean",
                   "data":{
-                    "value":true,
-                    "field":"landed"
-                  }
+                    "field":"landed",
+                    "value":true
+                  },
+                  "type":"boolean"
                 }
               ],
+              "feature":"LifespawnFeature",
               "data":{
                 "duration":5.0
-              },
-              "feature":"LifespawnFeature"
+              }
             },
             {
+              "timer":0.25,
               "conditions":[
                 {
-                  "type":"boolean",
                   "data":{
-                    "value":true,
-                    "field":"landed"
-                  }
+                    "field":"landed",
+                    "value":true
+                  },
+                  "type":"boolean"
                 },
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":2.0,
-                    "operator":"greaterOrEqual"
-                  }
+                    "operator":"greaterOrEqual",
+                    "value":2.0
+                  },
+                  "type":"lifespawn"
                 }
               ],
-              "timer":0.25,
+              "feature":"ParticleFeature",
               "data":{
-                "particle":"particle_shroom_lifespawn",
-                "amount":8.0
-              },
-              "feature":"ParticleFeature"
+                "amount":8.0,
+                "particle":"particle_shroom_lifespawn"
+              }
             },
             {
               "conditions":[
@@ -505,32 +293,12 @@
                   "type":"kill"
                 }
               ],
+              "feature":"ParticleFeature",
               "data":{
-                "particle":"particle_shroom_death",
-                "amount":8.0
-              },
-              "feature":"ParticleFeature"
+                "amount":8.0,
+                "particle":"particle_shroom_death"
+              }
             }
-          ]
-        }
-      },
-      "sprite":{
-        "scaleY":3.0,
-        "frame":0.0,
-        "angle":0.0,
-        "name":"texture_shroom_baron_green",
-        "blend":"#FFFFFF",
-        "alpha":1.0,
-        "speed":30.0,
-        "scaleX":3.0,
-        "animate":false
-      }
-    },
-    "shroom-default":{
-      "name":"shroom-default",
-      "gameModes":{
-        "racing":{
-          "features":[
           ]
         },
         "bulletHell":{
@@ -550,37 +318,174 @@
                 }
               ],
               "feature":"KillFeature"
+            },
+            {
+              "feature":"LifespawnFeature",
+              "data":{
+                "duration":15.0
+              }
+            },
+            {
+              "conditions":[
+                {
+                  "data":{
+                    "operator":"greaterOrEqual",
+                    "value":0.5
+                  },
+                  "type":"lifespawn"
+                },
+                {
+                  "data":{
+                    "operator":"lessOrEqual",
+                    "value":4.0
+                  },
+                  "type":"lifespawn"
+                }
+              ],
+              "feature":"ShootFeature",
+              "data":{
+                "interval":0.25,
+                "speed":25.0,
+                "bullet":"bullet-default",
+                "bullets":5.0,
+                "targetPlayer":true
+              }
+            },
+            {
+              "conditions":[
+                {
+                  "type":"kill"
+                }
+              ],
+              "feature":"ParticleFeature",
+              "data":{
+                "amount":8.0,
+                "particle":"particle_shroom_death"
+              }
             }
           ]
         },
-        "platformer":{
+        "racing":{
           "features":[
           ]
         }
       },
-      "sprite":{
-        "scaleY":2.0,
-        "frame":0.0,
-        "angle":0.0,
-        "name":"texture_baron",
-        "blend":"#FFFFFF",
-        "alpha":1.0,
-        "speed":30.0,
-        "scaleX":2.0,
-        "animate":false
+      "mask":{
+        "height":224.0,
+        "x":16.0,
+        "y":32.0,
+        "width":256.0
       }
     },
     "baron_blue":{
-      "name":"baron_blue",
-      "mask":{
-        "x":16.0,
-        "y":32.0,
-        "width":256.0,
-        "height":224.0
+      "sprite":{
+        "frame":0.0,
+        "blend":"#FFFFFF",
+        "angle":0.0,
+        "speed":30.0,
+        "name":"texture_shroom_baron_blue",
+        "alpha":1.0,
+        "animate":false,
+        "scaleX":3.0,
+        "scaleY":3.0
       },
+      "name":"baron_blue",
       "gameModes":{
-        "racing":{
+        "platformer":{
           "features":[
+            {
+              "conditions":[
+                {
+                  "type":"player-landed"
+                }
+              ],
+              "feature":"BooleanFeature",
+              "data":{
+                "field":"landed",
+                "value":true
+              }
+            },
+            {
+              "conditions":[
+                {
+                  "type":"player-leave"
+                }
+              ],
+              "feature":"BooleanFeature",
+              "data":{
+                "field":"landed",
+                "value":false
+              }
+            },
+            {
+              "conditions":[
+                {
+                  "data":{
+                    "field":"landed",
+                    "value":true
+                  },
+                  "type":"boolean"
+                }
+              ],
+              "feature":"AngleFeature",
+              "data":{
+                "transform":{
+                  "target":180.0,
+                  "factor":360.0
+                }
+              }
+            },
+            {
+              "conditions":[
+                {
+                  "data":{
+                    "field":"landed",
+                    "value":true
+                  },
+                  "type":"boolean"
+                }
+              ],
+              "feature":"LifespawnFeature",
+              "data":{
+                "duration":5.0
+              }
+            },
+            {
+              "timer":0.25,
+              "conditions":[
+                {
+                  "data":{
+                    "field":"landed",
+                    "value":true
+                  },
+                  "type":"boolean"
+                },
+                {
+                  "data":{
+                    "operator":"greaterOrEqual",
+                    "value":2.0
+                  },
+                  "type":"lifespawn"
+                }
+              ],
+              "feature":"ParticleFeature",
+              "data":{
+                "amount":8.0,
+                "particle":"particle_shroom_lifespawn"
+              }
+            },
+            {
+              "conditions":[
+                {
+                  "type":"kill"
+                }
+              ],
+              "feature":"ParticleFeature",
+              "data":{
+                "amount":8.0,
+                "particle":"particle_shroom_death"
+              }
+            }
           ]
         },
         "bulletHell":{
@@ -602,140 +507,140 @@
               "feature":"KillFeature"
             },
             {
+              "feature":"LifespawnFeature",
               "data":{
                 "duration":15.0
-              },
-              "feature":"LifespawnFeature"
+              }
             },
             {
               "conditions":[
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":0.0,
-                    "operator":"greaterOrEqual"
-                  }
+                    "operator":"greaterOrEqual",
+                    "value":0.0
+                  },
+                  "type":"lifespawn"
                 },
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":1.6000000000000001,
-                    "operator":"lessOrEqual"
-                  }
+                    "operator":"lessOrEqual",
+                    "value":1.6000000000000001
+                  },
+                  "type":"lifespawn"
                 }
               ],
+              "feature":"AngleFeature",
               "data":{
                 "add":{
-                  "factor":0.10000000000000001,
                   "target":-1.0,
+                  "factor":0.10000000000000001,
                   "increase":0.0
                 }
-              },
-              "feature":"AngleFeature"
+              }
             },
             {
               "conditions":[
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":2.0,
-                    "operator":"greaterOrEqual"
-                  }
+                    "operator":"greaterOrEqual",
+                    "value":2.0
+                  },
+                  "type":"lifespawn"
                 },
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":4.0,
-                    "operator":"lessOrEqual"
-                  }
+                    "operator":"lessOrEqual",
+                    "value":4.0
+                  },
+                  "type":"lifespawn"
                 }
               ],
+              "feature":"ShootFeature",
               "data":{
-                "bullet":"bullet-default",
+                "interval":0.40000000000000002,
                 "speed":20.0,
+                "bullet":"bullet-default",
                 "bullets":20.0,
-                "angle":90.0,
-                "interval":0.40000000000000002
-              },
-              "feature":"ShootFeature"
+                "angle":90.0
+              }
             },
             {
               "conditions":[
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":4.0,
-                    "operator":"greaterOrEqual"
-                  }
+                    "operator":"greaterOrEqual",
+                    "value":4.0
+                  },
+                  "type":"lifespawn"
                 },
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":7.0,
-                    "operator":"lessOrEqual"
-                  }
+                    "operator":"lessOrEqual",
+                    "value":7.0
+                  },
+                  "type":"lifespawn"
                 }
               ],
+              "feature":"AngleFeature",
               "data":{
                 "add":{
-                  "factor":0.10000000000000001,
                   "target":1.0,
+                  "factor":0.10000000000000001,
                   "increase":0.0
                 }
-              },
-              "feature":"AngleFeature"
+              }
             },
             {
               "conditions":[
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":7.0,
-                    "operator":"greaterOrEqual"
-                  }
+                    "operator":"greaterOrEqual",
+                    "value":7.0
+                  },
+                  "type":"lifespawn"
                 },
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":9.0,
-                    "operator":"lessOrEqual"
-                  }
+                    "operator":"lessOrEqual",
+                    "value":9.0
+                  },
+                  "type":"lifespawn"
                 }
               ],
+              "feature":"ShootFeature",
               "data":{
-                "bullet":"bullet-default",
+                "interval":0.40000000000000002,
                 "speed":20.0,
+                "bullet":"bullet-default",
                 "bullets":20.0,
-                "angle":270.0,
-                "interval":0.40000000000000002
-              },
-              "feature":"ShootFeature"
+                "angle":270.0
+              }
             },
             {
               "conditions":[
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":9.0,
-                    "operator":"greaterOrEqual"
-                  }
+                    "operator":"greaterOrEqual",
+                    "value":9.0
+                  },
+                  "type":"lifespawn"
                 },
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":11.0,
-                    "operator":"lessOrEqual"
-                  }
+                    "operator":"lessOrEqual",
+                    "value":11.0
+                  },
+                  "type":"lifespawn"
                 }
               ],
+              "feature":"AngleFeature",
               "data":{
                 "add":{
-                  "factor":0.10000000000000001,
                   "target":-1.0,
+                  "factor":0.10000000000000001,
                   "increase":0.0
                 }
-              },
-              "feature":"AngleFeature"
+              }
             },
             {
               "conditions":[
@@ -743,150 +648,122 @@
                   "type":"kill"
                 }
               ],
+              "feature":"ParticleFeature",
               "data":{
-                "particle":"particle_shroom_death",
-                "amount":8.0
-              },
-              "feature":"ParticleFeature"
+                "amount":8.0,
+                "particle":"particle_shroom_death"
+              }
             }
           ]
         },
-        "platformer":{
+        "racing":{
           "features":[
-            {
-              "conditions":[
-                {
-                  "type":"player-landed"
-                }
-              ],
-              "data":{
-                "value":true,
-                "field":"landed"
-              },
-              "feature":"BooleanFeature"
-            },
-            {
-              "conditions":[
-                {
-                  "type":"player-leave"
-                }
-              ],
-              "data":{
-                "value":false,
-                "field":"landed"
-              },
-              "feature":"BooleanFeature"
-            },
-            {
-              "conditions":[
-                {
-                  "type":"boolean",
-                  "data":{
-                    "value":true,
-                    "field":"landed"
-                  }
-                }
-              ],
-              "data":{
-                "transform":{
-                  "factor":360.0,
-                  "target":180.0
-                }
-              },
-              "feature":"AngleFeature"
-            },
-            {
-              "conditions":[
-                {
-                  "type":"boolean",
-                  "data":{
-                    "value":true,
-                    "field":"landed"
-                  }
-                }
-              ],
-              "data":{
-                "duration":5.0
-              },
-              "feature":"LifespawnFeature"
-            },
-            {
-              "conditions":[
-                {
-                  "type":"boolean",
-                  "data":{
-                    "value":true,
-                    "field":"landed"
-                  }
-                },
-                {
-                  "type":"lifespawn",
-                  "data":{
-                    "value":2.0,
-                    "operator":"greaterOrEqual"
-                  }
-                }
-              ],
-              "timer":0.25,
-              "data":{
-                "particle":"particle_shroom_lifespawn",
-                "amount":8.0
-              },
-              "feature":"ParticleFeature"
-            },
-            {
-              "conditions":[
-                {
-                  "type":"kill"
-                }
-              ],
-              "data":{
-                "particle":"particle_shroom_death",
-                "amount":8.0
-              },
-              "feature":"ParticleFeature"
-            }
           ]
         }
       },
-      "sprite":{
-        "scaleY":3.0,
-        "frame":0.0,
-        "angle":0.0,
-        "name":"texture_shroom_baron_blue",
-        "blend":"#FFFFFF",
-        "alpha":1.0,
-        "speed":30.0,
-        "scaleX":3.0,
-        "animate":false
+      "mask":{
+        "height":224.0,
+        "x":16.0,
+        "y":32.0,
+        "width":256.0
       }
     },
     "muscle_car_2":{
+      "sprite":{
+        "frame":0.0,
+        "blend":"#FFFFFF",
+        "angle":0.0,
+        "speed":30.0,
+        "name":"texture_muscle_car_shroom_2",
+        "alpha":1.0,
+        "animate":false,
+        "scaleX":1.5,
+        "scaleY":1.5
+      },
       "name":"muscle_car_2",
       "gameModes":{
-        "racing":{
+        "platformer":{
           "features":[
             {
               "conditions":[
                 {
-                  "type":"player-collision"
+                  "type":"player-landed"
                 }
               ],
-              "feature":"KillFeature"
+              "feature":"BooleanFeature",
+              "data":{
+                "field":"landed",
+                "value":true
+              }
             },
             {
               "conditions":[
                 {
-                  "type":"bullet-collision"
+                  "type":"player-leave"
                 }
               ],
-              "feature":"KillFeature"
+              "feature":"BooleanFeature",
+              "data":{
+                "field":"landed",
+                "value":false
+              }
             },
             {
+              "conditions":[
+                {
+                  "data":{
+                    "field":"landed",
+                    "value":true
+                  },
+                  "type":"boolean"
+                }
+              ],
+              "feature":"AngleFeature",
               "data":{
-                "duration":10.0
-              },
-              "feature":"LifespawnFeature"
+                "transform":{
+                  "target":180.0,
+                  "factor":360.0
+                }
+              }
+            },
+            {
+              "conditions":[
+                {
+                  "data":{
+                    "field":"landed",
+                    "value":true
+                  },
+                  "type":"boolean"
+                }
+              ],
+              "feature":"LifespawnFeature",
+              "data":{
+                "duration":5.0
+              }
+            },
+            {
+              "timer":0.25,
+              "conditions":[
+                {
+                  "data":{
+                    "field":"landed",
+                    "value":true
+                  },
+                  "type":"boolean"
+                },
+                {
+                  "data":{
+                    "operator":"greaterOrEqual",
+                    "value":2.0
+                  },
+                  "type":"lifespawn"
+                }
+              ],
+              "feature":"ParticleFeature",
+              "data":{
+                "amount":8.0,
+                "particle":"particle_shroom_lifespawn"
+              }
             },
             {
               "conditions":[
@@ -894,11 +771,11 @@
                   "type":"kill"
                 }
               ],
+              "feature":"ParticleFeature",
               "data":{
-                "particle":"particle_shroom_death",
-                "amount":8.0
-              },
-              "feature":"ParticleFeature"
+                "amount":8.0,
+                "particle":"particle_shroom_death"
+              }
             }
           ]
         },
@@ -921,140 +798,140 @@
               "feature":"KillFeature"
             },
             {
+              "feature":"LifespawnFeature",
               "data":{
                 "duration":15.0
-              },
-              "feature":"LifespawnFeature"
+              }
             },
             {
               "conditions":[
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":0.0,
-                    "operator":"greaterOrEqual"
-                  }
+                    "operator":"greaterOrEqual",
+                    "value":0.0
+                  },
+                  "type":"lifespawn"
                 },
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":1.6000000000000001,
-                    "operator":"lessOrEqual"
-                  }
+                    "operator":"lessOrEqual",
+                    "value":1.6000000000000001
+                  },
+                  "type":"lifespawn"
                 }
               ],
+              "feature":"AngleFeature",
               "data":{
                 "add":{
-                  "factor":0.10000000000000001,
                   "target":-1.0,
+                  "factor":0.10000000000000001,
                   "increase":0.0
                 }
-              },
-              "feature":"AngleFeature"
+              }
             },
             {
               "conditions":[
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":2.0,
-                    "operator":"greaterOrEqual"
-                  }
+                    "operator":"greaterOrEqual",
+                    "value":2.0
+                  },
+                  "type":"lifespawn"
                 },
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":4.0,
-                    "operator":"lessOrEqual"
-                  }
+                    "operator":"lessOrEqual",
+                    "value":4.0
+                  },
+                  "type":"lifespawn"
                 }
               ],
+              "feature":"ShootFeature",
               "data":{
-                "bullet":"bullet-default",
+                "interval":0.40000000000000002,
                 "speed":20.0,
+                "bullet":"bullet-default",
                 "bullets":20.0,
-                "angle":90.0,
-                "interval":0.40000000000000002
-              },
-              "feature":"ShootFeature"
+                "angle":90.0
+              }
             },
             {
               "conditions":[
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":4.0,
-                    "operator":"greaterOrEqual"
-                  }
+                    "operator":"greaterOrEqual",
+                    "value":4.0
+                  },
+                  "type":"lifespawn"
                 },
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":7.0,
-                    "operator":"lessOrEqual"
-                  }
+                    "operator":"lessOrEqual",
+                    "value":7.0
+                  },
+                  "type":"lifespawn"
                 }
               ],
+              "feature":"AngleFeature",
               "data":{
                 "add":{
-                  "factor":0.10000000000000001,
                   "target":1.0,
+                  "factor":0.10000000000000001,
                   "increase":0.0
                 }
-              },
-              "feature":"AngleFeature"
+              }
             },
             {
               "conditions":[
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":7.0,
-                    "operator":"greaterOrEqual"
-                  }
+                    "operator":"greaterOrEqual",
+                    "value":7.0
+                  },
+                  "type":"lifespawn"
                 },
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":9.0,
-                    "operator":"lessOrEqual"
-                  }
+                    "operator":"lessOrEqual",
+                    "value":9.0
+                  },
+                  "type":"lifespawn"
                 }
               ],
+              "feature":"ShootFeature",
               "data":{
-                "bullet":"bullet-default",
+                "interval":0.40000000000000002,
                 "speed":20.0,
+                "bullet":"bullet-default",
                 "bullets":20.0,
-                "angle":270.0,
-                "interval":0.40000000000000002
-              },
-              "feature":"ShootFeature"
+                "angle":270.0
+              }
             },
             {
               "conditions":[
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":9.0,
-                    "operator":"greaterOrEqual"
-                  }
+                    "operator":"greaterOrEqual",
+                    "value":9.0
+                  },
+                  "type":"lifespawn"
                 },
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":11.0,
-                    "operator":"lessOrEqual"
-                  }
+                    "operator":"lessOrEqual",
+                    "value":11.0
+                  },
+                  "type":"lifespawn"
                 }
               ],
+              "feature":"AngleFeature",
               "data":{
                 "add":{
-                  "factor":0.10000000000000001,
                   "target":-1.0,
+                  "factor":0.10000000000000001,
                   "increase":0.0
                 }
-              },
-              "feature":"AngleFeature"
+              }
             },
             {
               "conditions":[
@@ -1062,96 +939,37 @@
                   "type":"kill"
                 }
               ],
+              "feature":"ParticleFeature",
               "data":{
-                "particle":"particle_shroom_death",
-                "amount":8.0
-              },
-              "feature":"ParticleFeature"
+                "amount":8.0,
+                "particle":"particle_shroom_death"
+              }
             }
           ]
         },
-        "platformer":{
+        "racing":{
           "features":[
             {
               "conditions":[
                 {
-                  "type":"player-landed"
+                  "type":"player-collision"
                 }
               ],
-              "data":{
-                "value":true,
-                "field":"landed"
-              },
-              "feature":"BooleanFeature"
+              "feature":"KillFeature"
             },
             {
               "conditions":[
                 {
-                  "type":"player-leave"
+                  "type":"bullet-collision"
                 }
               ],
-              "data":{
-                "value":false,
-                "field":"landed"
-              },
-              "feature":"BooleanFeature"
+              "feature":"KillFeature"
             },
             {
-              "conditions":[
-                {
-                  "type":"boolean",
-                  "data":{
-                    "value":true,
-                    "field":"landed"
-                  }
-                }
-              ],
+              "feature":"LifespawnFeature",
               "data":{
-                "transform":{
-                  "factor":360.0,
-                  "target":180.0
-                }
-              },
-              "feature":"AngleFeature"
-            },
-            {
-              "conditions":[
-                {
-                  "type":"boolean",
-                  "data":{
-                    "value":true,
-                    "field":"landed"
-                  }
-                }
-              ],
-              "data":{
-                "duration":5.0
-              },
-              "feature":"LifespawnFeature"
-            },
-            {
-              "conditions":[
-                {
-                  "type":"boolean",
-                  "data":{
-                    "value":true,
-                    "field":"landed"
-                  }
-                },
-                {
-                  "type":"lifespawn",
-                  "data":{
-                    "value":2.0,
-                    "operator":"greaterOrEqual"
-                  }
-                }
-              ],
-              "timer":0.25,
-              "data":{
-                "particle":"particle_shroom_lifespawn",
-                "amount":8.0
-              },
-              "feature":"ParticleFeature"
+                "duration":10.0
+              }
             },
             {
               "conditions":[
@@ -1159,38 +977,125 @@
                   "type":"kill"
                 }
               ],
+              "feature":"ParticleFeature",
               "data":{
-                "particle":"particle_shroom_death",
-                "amount":8.0
-              },
-              "feature":"ParticleFeature"
+                "amount":8.0,
+                "particle":"particle_shroom_death"
+              }
             }
           ]
         }
-      },
-      "sprite":{
-        "scaleY":1.5,
-        "frame":0.0,
-        "angle":0.0,
-        "name":"texture_muscle_car_shroom_2",
-        "blend":"#FFFFFF",
-        "alpha":1.0,
-        "speed":30.0,
-        "scaleX":1.5,
-        "animate":false
       }
     },
     "baron_red":{
-      "name":"baron_red",
-      "mask":{
-        "x":16.0,
-        "y":32.0,
-        "width":256.0,
-        "height":224.0
+      "sprite":{
+        "frame":0.0,
+        "blend":"#FFFFFF",
+        "angle":0.0,
+        "speed":30.0,
+        "name":"texture_shroom_baron_red",
+        "alpha":1.0,
+        "animate":false,
+        "scaleX":3.0,
+        "scaleY":3.0
       },
+      "name":"baron_red",
       "gameModes":{
-        "racing":{
+        "platformer":{
           "features":[
+            {
+              "conditions":[
+                {
+                  "type":"player-landed"
+                }
+              ],
+              "feature":"BooleanFeature",
+              "data":{
+                "field":"landed",
+                "value":true
+              }
+            },
+            {
+              "conditions":[
+                {
+                  "type":"player-leave"
+                }
+              ],
+              "feature":"BooleanFeature",
+              "data":{
+                "field":"landed",
+                "value":false
+              }
+            },
+            {
+              "conditions":[
+                {
+                  "data":{
+                    "field":"landed",
+                    "value":true
+                  },
+                  "type":"boolean"
+                }
+              ],
+              "feature":"AngleFeature",
+              "data":{
+                "transform":{
+                  "target":0.0,
+                  "factor":360.0
+                }
+              }
+            },
+            {
+              "conditions":[
+                {
+                  "data":{
+                    "field":"landed",
+                    "value":true
+                  },
+                  "type":"boolean"
+                }
+              ],
+              "feature":"LifespawnFeature",
+              "data":{
+                "duration":5.0
+              }
+            },
+            {
+              "timer":0.25,
+              "conditions":[
+                {
+                  "data":{
+                    "field":"landed",
+                    "value":true
+                  },
+                  "type":"boolean"
+                },
+                {
+                  "data":{
+                    "operator":"greaterOrEqual",
+                    "value":2.0
+                  },
+                  "type":"lifespawn"
+                }
+              ],
+              "feature":"ParticleFeature",
+              "data":{
+                "amount":8.0,
+                "particle":"particle_shroom_lifespawn"
+              }
+            },
+            {
+              "conditions":[
+                {
+                  "type":"kill"
+                }
+              ],
+              "feature":"ParticleFeature",
+              "data":{
+                "amount":8.0,
+                "particle":"particle_shroom_death"
+              }
+            }
           ]
         },
         "bulletHell":{
@@ -1212,140 +1117,140 @@
               "feature":"KillFeature"
             },
             {
+              "feature":"LifespawnFeature",
               "data":{
                 "duration":15.0
-              },
-              "feature":"LifespawnFeature"
+              }
             },
             {
               "conditions":[
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":0.0,
-                    "operator":"greaterOrEqual"
-                  }
+                    "operator":"greaterOrEqual",
+                    "value":0.0
+                  },
+                  "type":"lifespawn"
                 },
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":1.6000000000000001,
-                    "operator":"lessOrEqual"
-                  }
+                    "operator":"lessOrEqual",
+                    "value":1.6000000000000001
+                  },
+                  "type":"lifespawn"
                 }
               ],
+              "feature":"AngleFeature",
               "data":{
                 "add":{
-                  "factor":0.10000000000000001,
                   "target":1.0,
+                  "factor":0.10000000000000001,
                   "increase":0.0
                 }
-              },
-              "feature":"AngleFeature"
+              }
             },
             {
               "conditions":[
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":2.0,
-                    "operator":"greaterOrEqual"
-                  }
+                    "operator":"greaterOrEqual",
+                    "value":2.0
+                  },
+                  "type":"lifespawn"
                 },
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":4.0,
-                    "operator":"lessOrEqual"
-                  }
+                    "operator":"lessOrEqual",
+                    "value":4.0
+                  },
+                  "type":"lifespawn"
                 }
               ],
+              "feature":"ShootFeature",
               "data":{
-                "bullet":"bullet-default",
+                "interval":0.40000000000000002,
                 "speed":20.0,
+                "bullet":"bullet-default",
                 "bullets":20.0,
-                "angle":-90.0,
-                "interval":0.40000000000000002
-              },
-              "feature":"ShootFeature"
+                "angle":-90.0
+              }
             },
             {
               "conditions":[
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":4.0,
-                    "operator":"greaterOrEqual"
-                  }
+                    "operator":"greaterOrEqual",
+                    "value":4.0
+                  },
+                  "type":"lifespawn"
                 },
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":7.0,
-                    "operator":"lessOrEqual"
-                  }
+                    "operator":"lessOrEqual",
+                    "value":7.0
+                  },
+                  "type":"lifespawn"
                 }
               ],
+              "feature":"AngleFeature",
               "data":{
                 "add":{
-                  "factor":0.10000000000000001,
                   "target":-1.0,
+                  "factor":0.10000000000000001,
                   "increase":0.0
                 }
-              },
-              "feature":"AngleFeature"
+              }
             },
             {
               "conditions":[
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":7.0,
-                    "operator":"greaterOrEqual"
-                  }
+                    "operator":"greaterOrEqual",
+                    "value":7.0
+                  },
+                  "type":"lifespawn"
                 },
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":9.0,
-                    "operator":"lessOrEqual"
-                  }
+                    "operator":"lessOrEqual",
+                    "value":9.0
+                  },
+                  "type":"lifespawn"
                 }
               ],
+              "feature":"ShootFeature",
               "data":{
-                "bullet":"bullet-default",
+                "interval":0.40000000000000002,
                 "speed":20.0,
+                "bullet":"bullet-default",
                 "bullets":20.0,
-                "angle":-270.0,
-                "interval":0.40000000000000002
-              },
-              "feature":"ShootFeature"
+                "angle":-270.0
+              }
             },
             {
               "conditions":[
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":9.0,
-                    "operator":"greaterOrEqual"
-                  }
+                    "operator":"greaterOrEqual",
+                    "value":9.0
+                  },
+                  "type":"lifespawn"
                 },
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":11.0,
-                    "operator":"lessOrEqual"
-                  }
+                    "operator":"lessOrEqual",
+                    "value":11.0
+                  },
+                  "type":"lifespawn"
                 }
               ],
+              "feature":"AngleFeature",
               "data":{
                 "add":{
-                  "factor":0.10000000000000001,
                   "target":1.0,
+                  "factor":0.10000000000000001,
                   "increase":0.0
                 }
-              },
-              "feature":"AngleFeature"
+              }
             },
             {
               "conditions":[
@@ -1353,145 +1258,134 @@
                   "type":"kill"
                 }
               ],
+              "feature":"ParticleFeature",
               "data":{
-                "particle":"particle_shroom_death",
-                "amount":8.0
-              },
-              "feature":"ParticleFeature"
+                "amount":8.0,
+                "particle":"particle_shroom_death"
+              }
             }
           ]
         },
-        "platformer":{
+        "racing":{
           "features":[
-            {
-              "conditions":[
-                {
-                  "type":"player-landed"
-                }
-              ],
-              "data":{
-                "value":true,
-                "field":"landed"
-              },
-              "feature":"BooleanFeature"
-            },
-            {
-              "conditions":[
-                {
-                  "type":"player-leave"
-                }
-              ],
-              "data":{
-                "value":false,
-                "field":"landed"
-              },
-              "feature":"BooleanFeature"
-            },
-            {
-              "conditions":[
-                {
-                  "type":"boolean",
-                  "data":{
-                    "value":true,
-                    "field":"landed"
-                  }
-                }
-              ],
-              "data":{
-                "transform":{
-                  "factor":360.0,
-                  "target":0.0
-                }
-              },
-              "feature":"AngleFeature"
-            },
-            {
-              "conditions":[
-                {
-                  "type":"boolean",
-                  "data":{
-                    "value":true,
-                    "field":"landed"
-                  }
-                }
-              ],
-              "data":{
-                "duration":5.0
-              },
-              "feature":"LifespawnFeature"
-            },
-            {
-              "conditions":[
-                {
-                  "type":"boolean",
-                  "data":{
-                    "value":true,
-                    "field":"landed"
-                  }
-                },
-                {
-                  "type":"lifespawn",
-                  "data":{
-                    "value":2.0,
-                    "operator":"greaterOrEqual"
-                  }
-                }
-              ],
-              "timer":0.25,
-              "data":{
-                "particle":"particle_shroom_lifespawn",
-                "amount":8.0
-              },
-              "feature":"ParticleFeature"
-            },
-            {
-              "conditions":[
-                {
-                  "type":"kill"
-                }
-              ],
-              "data":{
-                "particle":"particle_shroom_death",
-                "amount":8.0
-              },
-              "feature":"ParticleFeature"
-            }
           ]
         }
       },
-      "sprite":{
-        "scaleY":3.0,
-        "frame":0.0,
-        "angle":0.0,
-        "name":"texture_shroom_baron_red",
-        "blend":"#FFFFFF",
-        "alpha":1.0,
-        "speed":30.0,
-        "scaleX":3.0,
-        "animate":false
+      "mask":{
+        "height":224.0,
+        "x":16.0,
+        "y":32.0,
+        "width":256.0
       }
     },
     "baron_magenta":{
-      "name":"baron_magenta",
-      "mask":{
-        "x":16.0,
-        "y":32.0,
-        "width":256.0,
-        "height":224.0
+      "sprite":{
+        "frame":0.0,
+        "blend":"#FFFFFF",
+        "angle":0.0,
+        "speed":30.0,
+        "name":"texture_shroom_baron_magenta",
+        "alpha":1.0,
+        "animate":false,
+        "scaleX":3.0,
+        "scaleY":3.0
       },
+      "name":"baron_magenta",
       "gameModes":{
-        "racing":{
+        "platformer":{
           "features":[
+            {
+              "conditions":[
+                {
+                  "type":"player-landed"
+                }
+              ],
+              "feature":"BooleanFeature",
+              "data":{
+                "field":"landed",
+                "value":true
+              }
+            },
+            {
+              "conditions":[
+                {
+                  "type":"player-leave"
+                }
+              ],
+              "feature":"BooleanFeature",
+              "data":{
+                "field":"landed",
+                "value":false
+              }
+            },
+            {
+              "feature":"SwingFeature",
+              "data":{
+                "amount":8.0,
+                "size":7.0
+              }
+            },
+            {
+              "conditions":[
+                {
+                  "data":{
+                    "field":"landed",
+                    "value":true
+                  },
+                  "type":"boolean"
+                }
+              ],
+              "feature":"LifespawnFeature",
+              "data":{
+                "duration":5.0
+              }
+            },
+            {
+              "timer":0.25,
+              "conditions":[
+                {
+                  "data":{
+                    "field":"landed",
+                    "value":true
+                  },
+                  "type":"boolean"
+                },
+                {
+                  "data":{
+                    "operator":"greaterOrEqual",
+                    "value":2.0
+                  },
+                  "type":"lifespawn"
+                }
+              ],
+              "feature":"ParticleFeature",
+              "data":{
+                "amount":8.0,
+                "particle":"particle_shroom_lifespawn"
+              }
+            },
+            {
+              "conditions":[
+                {
+                  "type":"kill"
+                }
+              ],
+              "feature":"ParticleFeature",
+              "data":{
+                "amount":8.0,
+                "particle":"particle_shroom_death"
+              }
+            }
           ]
         },
         "bulletHell":{
           "features":[
             {
+              "feature":"SwingFeature",
               "data":{
-                "size":10.0,
-                "amount":8.0
-              },
-              "feature":"SwingFeature"
+                "amount":8.0,
+                "size":10.0
+              }
             },
             {
               "conditions":[
@@ -1510,36 +1404,36 @@
               "feature":"KillFeature"
             },
             {
+              "feature":"LifespawnFeature",
               "data":{
                 "duration":15.0
-              },
-              "feature":"LifespawnFeature"
+              }
             },
             {
               "conditions":[
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":1.5,
-                    "operator":"greaterOrEqual"
-                  }
+                    "operator":"greaterOrEqual",
+                    "value":1.5
+                  },
+                  "type":"lifespawn"
                 },
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":7.0,
-                    "operator":"lessOrEqual"
-                  }
+                    "operator":"lessOrEqual",
+                    "value":7.0
+                  },
+                  "type":"lifespawn"
                 }
               ],
+              "feature":"ShootFeature",
               "data":{
-                "bullet":"bullet-swing",
+                "interval":0.5,
                 "speed":21.0,
+                "bullet":"bullet-swing",
                 "bullets":8.0,
-                "targetPlayer":true,
-                "interval":0.5
-              },
-              "feature":"ShootFeature"
+                "targetPlayer":true
+              }
             },
             {
               "conditions":[
@@ -1547,139 +1441,122 @@
                   "type":"kill"
                 }
               ],
+              "feature":"ParticleFeature",
               "data":{
-                "particle":"particle_shroom_death",
-                "amount":8.0
-              },
-              "feature":"ParticleFeature"
+                "amount":8.0,
+                "particle":"particle_shroom_death"
+              }
             }
           ]
         },
-        "platformer":{
+        "racing":{
           "features":[
-            {
-              "conditions":[
-                {
-                  "type":"player-landed"
-                }
-              ],
-              "data":{
-                "value":true,
-                "field":"landed"
-              },
-              "feature":"BooleanFeature"
-            },
-            {
-              "conditions":[
-                {
-                  "type":"player-leave"
-                }
-              ],
-              "data":{
-                "value":false,
-                "field":"landed"
-              },
-              "feature":"BooleanFeature"
-            },
-            {
-              "data":{
-                "size":7.0,
-                "amount":8.0
-              },
-              "feature":"SwingFeature"
-            },
-            {
-              "conditions":[
-                {
-                  "type":"boolean",
-                  "data":{
-                    "value":true,
-                    "field":"landed"
-                  }
-                }
-              ],
-              "data":{
-                "duration":5.0
-              },
-              "feature":"LifespawnFeature"
-            },
-            {
-              "conditions":[
-                {
-                  "type":"boolean",
-                  "data":{
-                    "value":true,
-                    "field":"landed"
-                  }
-                },
-                {
-                  "type":"lifespawn",
-                  "data":{
-                    "value":2.0,
-                    "operator":"greaterOrEqual"
-                  }
-                }
-              ],
-              "timer":0.25,
-              "data":{
-                "particle":"particle_shroom_lifespawn",
-                "amount":8.0
-              },
-              "feature":"ParticleFeature"
-            },
-            {
-              "conditions":[
-                {
-                  "type":"kill"
-                }
-              ],
-              "data":{
-                "particle":"particle_shroom_death",
-                "amount":8.0
-              },
-              "feature":"ParticleFeature"
-            }
           ]
         }
       },
-      "sprite":{
-        "scaleY":3.0,
-        "frame":0.0,
-        "angle":0.0,
-        "name":"texture_shroom_baron_magenta",
-        "blend":"#FFFFFF",
-        "alpha":1.0,
-        "speed":30.0,
-        "scaleX":3.0,
-        "animate":false
+      "mask":{
+        "height":224.0,
+        "x":16.0,
+        "y":32.0,
+        "width":256.0
       }
     },
     "muscle_car_3":{
+      "sprite":{
+        "frame":0.0,
+        "blend":"#FFFFFF",
+        "angle":0.0,
+        "speed":30.0,
+        "name":"texture_muscle_car_shroom_3",
+        "alpha":1.0,
+        "animate":false,
+        "scaleX":1.5,
+        "scaleY":1.5
+      },
       "name":"muscle_car_3",
       "gameModes":{
-        "racing":{
+        "platformer":{
           "features":[
             {
               "conditions":[
                 {
-                  "type":"player-collision"
+                  "type":"player-landed"
                 }
               ],
-              "feature":"KillFeature"
+              "feature":"BooleanFeature",
+              "data":{
+                "field":"landed",
+                "value":true
+              }
             },
             {
               "conditions":[
                 {
-                  "type":"bullet-collision"
+                  "type":"player-leave"
                 }
               ],
-              "feature":"KillFeature"
+              "feature":"BooleanFeature",
+              "data":{
+                "field":"landed",
+                "value":false
+              }
             },
             {
+              "conditions":[
+                {
+                  "data":{
+                    "field":"landed",
+                    "value":true
+                  },
+                  "type":"boolean"
+                }
+              ],
+              "feature":"AngleFeature",
               "data":{
-                "duration":10.0
-              },
-              "feature":"LifespawnFeature"
+                "transform":{
+                  "target":180.0,
+                  "factor":360.0
+                }
+              }
+            },
+            {
+              "conditions":[
+                {
+                  "data":{
+                    "field":"landed",
+                    "value":true
+                  },
+                  "type":"boolean"
+                }
+              ],
+              "feature":"LifespawnFeature",
+              "data":{
+                "duration":5.0
+              }
+            },
+            {
+              "timer":0.25,
+              "conditions":[
+                {
+                  "data":{
+                    "field":"landed",
+                    "value":true
+                  },
+                  "type":"boolean"
+                },
+                {
+                  "data":{
+                    "operator":"greaterOrEqual",
+                    "value":2.0
+                  },
+                  "type":"lifespawn"
+                }
+              ],
+              "feature":"ParticleFeature",
+              "data":{
+                "amount":8.0,
+                "particle":"particle_shroom_lifespawn"
+              }
             },
             {
               "conditions":[
@@ -1687,11 +1564,11 @@
                   "type":"kill"
                 }
               ],
+              "feature":"ParticleFeature",
               "data":{
-                "particle":"particle_shroom_death",
-                "amount":8.0
-              },
-              "feature":"ParticleFeature"
+                "amount":8.0,
+                "particle":"particle_shroom_death"
+              }
             }
           ]
         },
@@ -1714,140 +1591,140 @@
               "feature":"KillFeature"
             },
             {
+              "feature":"LifespawnFeature",
               "data":{
                 "duration":15.0
-              },
-              "feature":"LifespawnFeature"
+              }
             },
             {
               "conditions":[
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":0.0,
-                    "operator":"greaterOrEqual"
-                  }
+                    "operator":"greaterOrEqual",
+                    "value":0.0
+                  },
+                  "type":"lifespawn"
                 },
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":1.6000000000000001,
-                    "operator":"lessOrEqual"
-                  }
+                    "operator":"lessOrEqual",
+                    "value":1.6000000000000001
+                  },
+                  "type":"lifespawn"
                 }
               ],
+              "feature":"AngleFeature",
               "data":{
                 "add":{
-                  "factor":0.10000000000000001,
                   "target":-1.0,
+                  "factor":0.10000000000000001,
                   "increase":0.0
                 }
-              },
-              "feature":"AngleFeature"
+              }
             },
             {
               "conditions":[
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":2.0,
-                    "operator":"greaterOrEqual"
-                  }
+                    "operator":"greaterOrEqual",
+                    "value":2.0
+                  },
+                  "type":"lifespawn"
                 },
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":4.0,
-                    "operator":"lessOrEqual"
-                  }
+                    "operator":"lessOrEqual",
+                    "value":4.0
+                  },
+                  "type":"lifespawn"
                 }
               ],
+              "feature":"ShootFeature",
               "data":{
-                "bullet":"bullet-default",
+                "interval":0.40000000000000002,
                 "speed":20.0,
+                "bullet":"bullet-default",
                 "bullets":20.0,
-                "angle":90.0,
-                "interval":0.40000000000000002
-              },
-              "feature":"ShootFeature"
+                "angle":90.0
+              }
             },
             {
               "conditions":[
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":4.0,
-                    "operator":"greaterOrEqual"
-                  }
+                    "operator":"greaterOrEqual",
+                    "value":4.0
+                  },
+                  "type":"lifespawn"
                 },
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":7.0,
-                    "operator":"lessOrEqual"
-                  }
+                    "operator":"lessOrEqual",
+                    "value":7.0
+                  },
+                  "type":"lifespawn"
                 }
               ],
+              "feature":"AngleFeature",
               "data":{
                 "add":{
-                  "factor":0.10000000000000001,
                   "target":1.0,
+                  "factor":0.10000000000000001,
                   "increase":0.0
                 }
-              },
-              "feature":"AngleFeature"
+              }
             },
             {
               "conditions":[
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":7.0,
-                    "operator":"greaterOrEqual"
-                  }
+                    "operator":"greaterOrEqual",
+                    "value":7.0
+                  },
+                  "type":"lifespawn"
                 },
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":9.0,
-                    "operator":"lessOrEqual"
-                  }
+                    "operator":"lessOrEqual",
+                    "value":9.0
+                  },
+                  "type":"lifespawn"
                 }
               ],
+              "feature":"ShootFeature",
               "data":{
-                "bullet":"bullet-default",
+                "interval":0.40000000000000002,
                 "speed":20.0,
+                "bullet":"bullet-default",
                 "bullets":20.0,
-                "angle":270.0,
-                "interval":0.40000000000000002
-              },
-              "feature":"ShootFeature"
+                "angle":270.0
+              }
             },
             {
               "conditions":[
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":9.0,
-                    "operator":"greaterOrEqual"
-                  }
+                    "operator":"greaterOrEqual",
+                    "value":9.0
+                  },
+                  "type":"lifespawn"
                 },
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":11.0,
-                    "operator":"lessOrEqual"
-                  }
+                    "operator":"lessOrEqual",
+                    "value":11.0
+                  },
+                  "type":"lifespawn"
                 }
               ],
+              "feature":"AngleFeature",
               "data":{
                 "add":{
-                  "factor":0.10000000000000001,
                   "target":-1.0,
+                  "factor":0.10000000000000001,
                   "increase":0.0
                 }
-              },
-              "feature":"AngleFeature"
+              }
             },
             {
               "conditions":[
@@ -1855,96 +1732,37 @@
                   "type":"kill"
                 }
               ],
+              "feature":"ParticleFeature",
               "data":{
-                "particle":"particle_shroom_death",
-                "amount":8.0
-              },
-              "feature":"ParticleFeature"
+                "amount":8.0,
+                "particle":"particle_shroom_death"
+              }
             }
           ]
         },
-        "platformer":{
+        "racing":{
           "features":[
             {
               "conditions":[
                 {
-                  "type":"player-landed"
+                  "type":"player-collision"
                 }
               ],
-              "data":{
-                "value":true,
-                "field":"landed"
-              },
-              "feature":"BooleanFeature"
+              "feature":"KillFeature"
             },
             {
               "conditions":[
                 {
-                  "type":"player-leave"
+                  "type":"bullet-collision"
                 }
               ],
-              "data":{
-                "value":false,
-                "field":"landed"
-              },
-              "feature":"BooleanFeature"
+              "feature":"KillFeature"
             },
             {
-              "conditions":[
-                {
-                  "type":"boolean",
-                  "data":{
-                    "value":true,
-                    "field":"landed"
-                  }
-                }
-              ],
+              "feature":"LifespawnFeature",
               "data":{
-                "transform":{
-                  "factor":360.0,
-                  "target":180.0
-                }
-              },
-              "feature":"AngleFeature"
-            },
-            {
-              "conditions":[
-                {
-                  "type":"boolean",
-                  "data":{
-                    "value":true,
-                    "field":"landed"
-                  }
-                }
-              ],
-              "data":{
-                "duration":5.0
-              },
-              "feature":"LifespawnFeature"
-            },
-            {
-              "conditions":[
-                {
-                  "type":"boolean",
-                  "data":{
-                    "value":true,
-                    "field":"landed"
-                  }
-                },
-                {
-                  "type":"lifespawn",
-                  "data":{
-                    "value":2.0,
-                    "operator":"greaterOrEqual"
-                  }
-                }
-              ],
-              "timer":0.25,
-              "data":{
-                "particle":"particle_shroom_lifespawn",
-                "amount":8.0
-              },
-              "feature":"ParticleFeature"
+                "duration":10.0
+              }
             },
             {
               "conditions":[
@@ -1952,53 +1770,112 @@
                   "type":"kill"
                 }
               ],
+              "feature":"ParticleFeature",
               "data":{
-                "particle":"particle_shroom_death",
-                "amount":8.0
-              },
-              "feature":"ParticleFeature"
+                "amount":8.0,
+                "particle":"particle_shroom_death"
+              }
             }
           ]
         }
-      },
-      "sprite":{
-        "scaleY":1.5,
-        "frame":0.0,
-        "angle":0.0,
-        "name":"texture_muscle_car_shroom_3",
-        "blend":"#FFFFFF",
-        "alpha":1.0,
-        "speed":30.0,
-        "scaleX":1.5,
-        "animate":false
       }
     },
     "muscle_car_1":{
+      "sprite":{
+        "frame":0.0,
+        "blend":"#FFFFFF",
+        "angle":0.0,
+        "speed":30.0,
+        "name":"texture_muscle_car_shroom_1",
+        "alpha":1.0,
+        "animate":false,
+        "scaleX":1.5,
+        "scaleY":1.5
+      },
       "name":"muscle_car_1",
       "gameModes":{
-        "racing":{
+        "platformer":{
           "features":[
             {
               "conditions":[
                 {
-                  "type":"player-collision"
+                  "type":"player-landed"
                 }
               ],
-              "feature":"KillFeature"
+              "feature":"BooleanFeature",
+              "data":{
+                "field":"landed",
+                "value":true
+              }
             },
             {
               "conditions":[
                 {
-                  "type":"bullet-collision"
+                  "type":"player-leave"
                 }
               ],
-              "feature":"KillFeature"
+              "feature":"BooleanFeature",
+              "data":{
+                "field":"landed",
+                "value":false
+              }
             },
             {
+              "conditions":[
+                {
+                  "data":{
+                    "field":"landed",
+                    "value":true
+                  },
+                  "type":"boolean"
+                }
+              ],
+              "feature":"AngleFeature",
               "data":{
-                "duration":10.0
-              },
-              "feature":"LifespawnFeature"
+                "transform":{
+                  "target":180.0,
+                  "factor":360.0
+                }
+              }
+            },
+            {
+              "conditions":[
+                {
+                  "data":{
+                    "field":"landed",
+                    "value":true
+                  },
+                  "type":"boolean"
+                }
+              ],
+              "feature":"LifespawnFeature",
+              "data":{
+                "duration":5.0
+              }
+            },
+            {
+              "timer":0.25,
+              "conditions":[
+                {
+                  "data":{
+                    "field":"landed",
+                    "value":true
+                  },
+                  "type":"boolean"
+                },
+                {
+                  "data":{
+                    "operator":"greaterOrEqual",
+                    "value":2.0
+                  },
+                  "type":"lifespawn"
+                }
+              ],
+              "feature":"ParticleFeature",
+              "data":{
+                "amount":8.0,
+                "particle":"particle_shroom_lifespawn"
+              }
             },
             {
               "conditions":[
@@ -2006,11 +1883,11 @@
                   "type":"kill"
                 }
               ],
+              "feature":"ParticleFeature",
               "data":{
-                "particle":"particle_shroom_death",
-                "amount":8.0
-              },
-              "feature":"ParticleFeature"
+                "amount":8.0,
+                "particle":"particle_shroom_death"
+              }
             }
           ]
         },
@@ -2033,140 +1910,140 @@
               "feature":"KillFeature"
             },
             {
+              "feature":"LifespawnFeature",
               "data":{
                 "duration":15.0
-              },
-              "feature":"LifespawnFeature"
+              }
             },
             {
               "conditions":[
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":0.0,
-                    "operator":"greaterOrEqual"
-                  }
+                    "operator":"greaterOrEqual",
+                    "value":0.0
+                  },
+                  "type":"lifespawn"
                 },
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":1.6000000000000001,
-                    "operator":"lessOrEqual"
-                  }
+                    "operator":"lessOrEqual",
+                    "value":1.6000000000000001
+                  },
+                  "type":"lifespawn"
                 }
               ],
+              "feature":"AngleFeature",
               "data":{
                 "add":{
-                  "factor":0.10000000000000001,
                   "target":-1.0,
+                  "factor":0.10000000000000001,
                   "increase":0.0
                 }
-              },
-              "feature":"AngleFeature"
+              }
             },
             {
               "conditions":[
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":2.0,
-                    "operator":"greaterOrEqual"
-                  }
+                    "operator":"greaterOrEqual",
+                    "value":2.0
+                  },
+                  "type":"lifespawn"
                 },
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":4.0,
-                    "operator":"lessOrEqual"
-                  }
+                    "operator":"lessOrEqual",
+                    "value":4.0
+                  },
+                  "type":"lifespawn"
                 }
               ],
+              "feature":"ShootFeature",
               "data":{
-                "bullet":"bullet-default",
+                "interval":0.40000000000000002,
                 "speed":20.0,
+                "bullet":"bullet-default",
                 "bullets":20.0,
-                "angle":90.0,
-                "interval":0.40000000000000002
-              },
-              "feature":"ShootFeature"
+                "angle":90.0
+              }
             },
             {
               "conditions":[
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":4.0,
-                    "operator":"greaterOrEqual"
-                  }
+                    "operator":"greaterOrEqual",
+                    "value":4.0
+                  },
+                  "type":"lifespawn"
                 },
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":7.0,
-                    "operator":"lessOrEqual"
-                  }
+                    "operator":"lessOrEqual",
+                    "value":7.0
+                  },
+                  "type":"lifespawn"
                 }
               ],
+              "feature":"AngleFeature",
               "data":{
                 "add":{
-                  "factor":0.10000000000000001,
                   "target":1.0,
+                  "factor":0.10000000000000001,
                   "increase":0.0
                 }
-              },
-              "feature":"AngleFeature"
+              }
             },
             {
               "conditions":[
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":7.0,
-                    "operator":"greaterOrEqual"
-                  }
+                    "operator":"greaterOrEqual",
+                    "value":7.0
+                  },
+                  "type":"lifespawn"
                 },
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":9.0,
-                    "operator":"lessOrEqual"
-                  }
+                    "operator":"lessOrEqual",
+                    "value":9.0
+                  },
+                  "type":"lifespawn"
                 }
               ],
+              "feature":"ShootFeature",
               "data":{
-                "bullet":"bullet-default",
+                "interval":0.40000000000000002,
                 "speed":20.0,
+                "bullet":"bullet-default",
                 "bullets":20.0,
-                "angle":270.0,
-                "interval":0.40000000000000002
-              },
-              "feature":"ShootFeature"
+                "angle":270.0
+              }
             },
             {
               "conditions":[
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":9.0,
-                    "operator":"greaterOrEqual"
-                  }
+                    "operator":"greaterOrEqual",
+                    "value":9.0
+                  },
+                  "type":"lifespawn"
                 },
                 {
-                  "type":"lifespawn",
                   "data":{
-                    "value":11.0,
-                    "operator":"lessOrEqual"
-                  }
+                    "operator":"lessOrEqual",
+                    "value":11.0
+                  },
+                  "type":"lifespawn"
                 }
               ],
+              "feature":"AngleFeature",
               "data":{
                 "add":{
-                  "factor":0.10000000000000001,
                   "target":-1.0,
+                  "factor":0.10000000000000001,
                   "increase":0.0
                 }
-              },
-              "feature":"AngleFeature"
+              }
             },
             {
               "conditions":[
@@ -2174,96 +2051,37 @@
                   "type":"kill"
                 }
               ],
+              "feature":"ParticleFeature",
               "data":{
-                "particle":"particle_shroom_death",
-                "amount":8.0
-              },
-              "feature":"ParticleFeature"
+                "amount":8.0,
+                "particle":"particle_shroom_death"
+              }
             }
           ]
         },
-        "platformer":{
+        "racing":{
           "features":[
             {
               "conditions":[
                 {
-                  "type":"player-landed"
+                  "type":"player-collision"
                 }
               ],
-              "data":{
-                "value":true,
-                "field":"landed"
-              },
-              "feature":"BooleanFeature"
+              "feature":"KillFeature"
             },
             {
               "conditions":[
                 {
-                  "type":"player-leave"
+                  "type":"bullet-collision"
                 }
               ],
-              "data":{
-                "value":false,
-                "field":"landed"
-              },
-              "feature":"BooleanFeature"
+              "feature":"KillFeature"
             },
             {
-              "conditions":[
-                {
-                  "type":"boolean",
-                  "data":{
-                    "value":true,
-                    "field":"landed"
-                  }
-                }
-              ],
+              "feature":"LifespawnFeature",
               "data":{
-                "transform":{
-                  "factor":360.0,
-                  "target":180.0
-                }
-              },
-              "feature":"AngleFeature"
-            },
-            {
-              "conditions":[
-                {
-                  "type":"boolean",
-                  "data":{
-                    "value":true,
-                    "field":"landed"
-                  }
-                }
-              ],
-              "data":{
-                "duration":5.0
-              },
-              "feature":"LifespawnFeature"
-            },
-            {
-              "conditions":[
-                {
-                  "type":"boolean",
-                  "data":{
-                    "value":true,
-                    "field":"landed"
-                  }
-                },
-                {
-                  "type":"lifespawn",
-                  "data":{
-                    "value":2.0,
-                    "operator":"greaterOrEqual"
-                  }
-                }
-              ],
-              "timer":0.25,
-              "data":{
-                "particle":"particle_shroom_lifespawn",
-                "amount":8.0
-              },
-              "feature":"ParticleFeature"
+                "duration":10.0
+              }
             },
             {
               "conditions":[
@@ -2271,26 +2089,61 @@
                   "type":"kill"
                 }
               ],
+              "feature":"ParticleFeature",
               "data":{
-                "particle":"particle_shroom_death",
-                "amount":8.0
-              },
-              "feature":"ParticleFeature"
+                "amount":8.0,
+                "particle":"particle_shroom_death"
+              }
             }
           ]
         }
-      },
+      }
+    },
+    "shroom-default":{
       "sprite":{
-        "scaleY":1.5,
         "frame":0.0,
-        "angle":0.0,
-        "name":"texture_muscle_car_shroom_1",
         "blend":"#FFFFFF",
-        "alpha":1.0,
+        "angle":0.0,
         "speed":30.0,
-        "scaleX":1.5,
-        "animate":false
+        "name":"texture_baron",
+        "alpha":1.0,
+        "animate":false,
+        "scaleX":2.0,
+        "scaleY":2.0
+      },
+      "name":"shroom-default",
+      "gameModes":{
+        "platformer":{
+          "features":[
+          ]
+        },
+        "bulletHell":{
+          "features":[
+            {
+              "conditions":[
+                {
+                  "type":"player-collision"
+                }
+              ],
+              "feature":"KillFeature"
+            },
+            {
+              "conditions":[
+                {
+                  "type":"bullet-collision"
+                }
+              ],
+              "feature":"KillFeature"
+            }
+          ]
+        },
+        "racing":{
+          "features":[
+          ]
+        }
       }
     }
-  }
+  },
+  "model":"Collection<io.alkapivo.visu.service.shroom.ShroomTemplate>",
+  "version":"1"
 }

@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"CoinService",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"CoinService",
+  "parent":{
+    "name":"coin",
+    "path":"folders/visu/src/service/coin.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}
