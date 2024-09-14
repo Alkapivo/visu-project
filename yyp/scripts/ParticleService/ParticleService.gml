@@ -79,6 +79,22 @@ function ParticleService(_controller, config = {}): Service() constructor {
     main: new ParticleSystem(Struct.get(config, "layerName")),
   }))
 
+  ///@return {Map<String, ParticleTemplate>}
+  getStaticTemplates = method(this, Core.isType(Struct.get(config, "getStaticTemplates"), Callable)
+    ? config.getStaticTemplates
+    : function() {
+      return this.templates
+    })
+
+  ///@param {String} name
+  ///@return {?TextureTemplate}
+  getTemplate = function(name) {
+    var template = this.templates.get(name)
+    return template == null
+      ? this.getStaticTemplates().get(name)
+      : template
+  }
+
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "spawn-particle-emitter": function(event) {
@@ -117,70 +133,14 @@ function ParticleService(_controller, config = {}): Service() constructor {
       this.templates.clear()
     },
     "reset-templates": function(event) {
-      this.templates.clear().set("particle-default", new ParticleTemplate("particle-default", {
-        "color":{
-          "start":"#ffffff",
-          "halfway":"#ffffff",
-          "finish":"#ffffff"
-        },
-        "alpha":{
-          "start":1.0,
-          "halfway":0.0,
-          "finish":0.0
-        },
-        "speed":{
-          "wiggle":0.0,
-          "increase":0.001,
-          "minValue":0.01,
-          "maxValue":5.0
-        },
-        "shape":"CIRCLE",
-        "gravity":{
-          "angle":0.0,
-          "amount":0.0
-        },
-        "orientation":{
-          "wiggle":0.0,
-          "relative":0.0,
-          "increase":0.001,
-          "minValue":0.0,
-          "maxValue":360.0
-        },
-        "angle":{
-          "wiggle":0.0,
-          "increase":0.01,
-          "minValue":0.0,
-          "maxValue":360.0
-        },
-        "life":{
-          "minValue":80.0,
-          "maxValue":120.0
-        },
-        "sprite":{
-          "name":"texture_particle",
-          "stretch":0.0,
-          "randomValue":0.0,
-          "animate":0.0
-        },
-        "scale":{
-          "x":1.0,
-          "y":1.0
-        },
-        "blend":0.0,
-        "size":{
-          "wiggle":0.0,
-          "increase":0.0,
-          "minValue":1.0,
-          "maxValue":32.0
-        }
-      }))
+      this.templates.clear()
     },
   }))
 
   ///@param {String} name
   ///@return {?Particle}
   factoryParticle = function(name) {
-    var template = this.templates.get(name)
+    var template = this.getTemplate(name)
     return template != null ? new Particle(template) : null
   }
 
@@ -188,7 +148,7 @@ function ParticleService(_controller, config = {}): Service() constructor {
   ///@return {Event}
   factoryEventSpawnParticleEmitter = function(config = {}) {
     return new Event("spawn-particle-emitter", {
-      particle: this.factoryParticle(Struct.getDefault(config, "particleName", "particle_default")),
+      particle: this.factoryParticle(Struct.getDefault(config, "particleName", "particle-default")),
       system: this.systems.get(Struct.getDefault(config, "systemName", "main")),
       coords: new Vector4(
         Struct.get(config, "beginX"),

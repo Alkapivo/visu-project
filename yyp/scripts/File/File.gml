@@ -54,6 +54,7 @@ function _FileUtil() constructor {
     var posixPath = Core.isType(path, String) 
       ? String.replaceAll(String.replaceAll(path, "\\", "/"), "//", "/") 
       : null
+    
     var type = FileUtil.getPathType(posixPath)
     switch (type) {
       case PathType.FILE: return posixPath
@@ -149,7 +150,8 @@ function _FileUtil() constructor {
   ///@param {?String} file - path to file
   ///@param {?String} path - path to new file or target directory
   ///@return {FileUtil}
-  static copyFile = function(file, path) {
+  static copyFile = function(_file, path) {
+    var file = FileUtil.get(_file)
     var type = FileUtil.getPathType(path)
     if (!Optional.is(type)) {
       return this
@@ -167,8 +169,13 @@ function _FileUtil() constructor {
         return this
     }
 
-    if (file == target) {
-      Logger.info("FileUtil", $"Skip copying, paths are the same: '{file}'")
+    var rootPath = String.replaceAll(String.replaceAll(working_directory, "\\", "/"), "//", "/") 
+    var arePathsEqual = String.contains(String.toLowerCase(file), String.toLowerCase(rootPath))
+      ? String.toLowerCase(target) == String.toLowerCase(file)
+      : String.toLowerCase(target) == $"{String.toLowerCase(rootPath)}{String.toLowerCase(file)}" 
+
+    if (file == target || arePathsEqual) {
+      Logger.info("FileUtil", $"Skip copying, paths are the same: file: '{file}', target: '{target}'")
       return this
     }
 

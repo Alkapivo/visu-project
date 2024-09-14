@@ -54,6 +54,8 @@ function VideoSurface(config = null): Surface(config) constructor {
     }
 
     this.asset = data[1]
+    this.width = surface_get_width(this.asset)
+    this.height = surface_get_height(this.asset)
     return this
   }
 
@@ -71,13 +73,19 @@ function VideoSurface(config = null): Surface(config) constructor {
   }
 
   ///@override
+  ///@param {Number} [x]
+  ///@param {Number} [y]
+  ///@param {Number} [width]
+  ///@param {Number} [height]
   ///@return {Surface}
-  render = function(x = 0, y = 0) {
+  render = function(x = 0, y = 0, width = null, height = null) {
     if (!Core.isType(this.asset, GMVideoSurface)) {
       return this
     }
 
-    draw_surface_stretched(this.asset, x, y, this.width, this.height)
+    var _width = Core.isType(width, Number) && width > 1 ? width : this.width
+    var _height = Core.isType(height, Number) && height > 1 ? height : this.height
+    draw_surface_stretched(this.asset, x, y, _width, _height)
     return this
   }
 
@@ -168,7 +176,7 @@ function Video(json) constructor {
   open = function() {
     this.close()
     video_open($"{this.path}")
-    this.setLoop(this.loop)
+    this.setVolume(this.volume).setLoop(this.loop)
     return this
   }
 
@@ -230,9 +238,9 @@ function _VideoUtil() constructor {
 
   ///@return {VideoUtil}
   runGC = function() {
-    Logger.debug("Video", $"gcVideo, video status: {video_get_status()}")
+    Logger.debug("Video", $"gcVideo, video status before: {VideoStatusNames.get(video_get_status())}")
     video_close()
-  
+    Logger.debug("Video", $"gcVideo, video status after: {VideoStatusNames.get(video_get_status())}")
     return this
   }
 }

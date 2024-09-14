@@ -20,7 +20,7 @@ function GridItemFeature(json) constructor {
     : null
 
   ///@return {Boolean}
-  checkConditions = function(gridItem, controller) {
+  static checkConditions = function(gridItem, controller) {
     if (this.conditions == null) {
       return true
     }
@@ -35,7 +35,7 @@ function GridItemFeature(json) constructor {
   }
 
   ///@return {Boolean}
-  updateTimer = function() {
+  static updateTimer = function() {
     return this.timer == null ? true : this.timer.update().finished
   }
 

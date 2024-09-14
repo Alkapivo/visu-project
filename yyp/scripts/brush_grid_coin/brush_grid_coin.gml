@@ -14,10 +14,10 @@ function brush_grid_coin(json = null) {
         type: String,
         value: Struct.getDefault(json, "grid-coin_template", "coin-default"),
         passthrough: function(value) {
-          ///@todo weird bug
-          return !Beans.get(BeanVisuController).coinService.templates.contains(value) 
-            ? (Core.isType(this.value, String) ? this.value : "coin-default")
-            : value
+          var coinService = Beans.get(BeanVisuController).coinService
+          return coinService.templates.contains(value) || Visu.assets().coinTemplates.contains(value)
+            ? value
+            : (Core.isType(this.value, String) ? this.value : "coin-default")
         },
       },
       "grid-coin_use-spawn-x": {

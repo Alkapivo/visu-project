@@ -1,34 +1,21 @@
 ///@package io.alkapivo.visu.service.lyrics
 
-///@param {Controller} _controller
-///@param {Struct} [config]
-function LyricsRenderer(_controller, config = {}) constructor {
+function LyricsRenderer() constructor {
 
-  ///@type {VisuController}
-  controller = Assert.isType(_controller, VisuController)
-
-  preview = {
-    x: function() { return 0 },
-    y: function() { return 0 },
-    width: GuiWidth,
-    height: GuiHeight,
-  }
-
+  ///@type {UILayout} canvas
   ///@return {LyricsService}
-  renderGUI = function() {
-    var service = this.controller.lyricsService
-    service.executor.tasks.forEach(function(task, iterator, renderer) {
+  renderGUI = function(canvas) {
+    var lyricsService = Beans.get(BeanVisuController).lyricsService
+    lyricsService.executor.tasks.forEach(function(task, iterator, canvas) {
       var lyrics = task.state.lyrics
-      GPU.set.font(lyrics.font.asset).align.h(lyrics.align).align.v(lyrics.align)
+      GPU.set.font(lyrics.font.asset)
+        .set.align.h(lyrics.align)
+        .set.align.v(lyrics.align)
 
-      var enable = renderer.controller.renderUI
-      var editor = Beans.get(BeanVisuEditor)
-      var preview = Core.isType(editor, VisuEditor) ? editor.layout.nodes.preview : this.preview
-      var guiWidth = enable ? ceil(preview.width()) : GuiWidth()
-      var guiHeight = enable ? ceil(preview.height()) : GuiHeight()
-      var guiX = enable ? ceil(preview.x()) : 0 
-      var guiY = enable ? ceil(preview.y()) : 0
-
+      var guiWidth = canvas.width()
+      var guiHeight = canvas.height()
+      var guiX = canvas.x()
+      var guiY = canvas.y()
       var charPointer = task.state.charPointer
       var linePointer = task.state.linePointer
       var displayLines = (lyrics.area.getHeight()) / (lyrics.fontHeight / guiHeight)
@@ -84,7 +71,7 @@ function LyricsRenderer(_controller, config = {}) constructor {
         _y = guiY + (_y * guiHeight)
         GPU.render.text(_x, _y, text, color, outline, alpha, lyrics.font, lyrics.align.h, lyrics.align.v)
       }
-    }, this)
+    }, canvas)
 
     return this
   }

@@ -46,33 +46,17 @@ function Bullet(template): GridItem(template) constructor {
   producer = template.producer
   Assert.isTrue(this.producer == Player || this.producer == Shroom)
   
-  ///@private
-  ///@param {GridView} view
+  ///@param {VisuController} controller
   ///@return {Bullet}
-  healthcheck = function(view) {
-    var distance = Math.getDistance(this.x, this.y,
-      view.x + (view.width / 2.0),
-      view.y + (view.height / 2.0)
-    )
-
-    if (distance > BULLET_MAX_DISTANCE) {
-      var event = new Event("remove-bullet", key)
-      service.dispatcher.send(service.dispatcher, event)
+  static update = function(controller) {
+    if (Optional.is(this.gameMode)) {
+      gameMode.update(this, controller)
     }
 
-    return this
-  }
-  
-  ///@private
-  ///@param {VisuController} controller
-  ///@type {Callable}
-  _update = method(this, this.update)
-
-  ///@param {VisuController} controller
-  ///@return {Bullet}
-  update = function(controller) {
-    //this.healthcheck(controller.gridService.view)
-    this._update(controller)    
+    if (this.fadeIn < 1.0) {
+      this.fadeIn = clamp(this.fadeIn + this.fadeInFactor, 0.0, 1.0)
+    }
+    
     return this
   }
 

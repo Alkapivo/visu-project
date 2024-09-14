@@ -4,7 +4,7 @@
 function SoundService(): Service() constructor {
 
   ///@type {Map<String, GMSound>}
-  sounds = new Map(String, any)
+  sounds = new Map(String, GMSound)
 
   ///@type {Map<String, SoundIntent>}
   intents = new Map(String, SoundIntent)

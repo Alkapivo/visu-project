@@ -1148,6 +1148,31 @@ global.__VEComponents = new Map(String, Callable, {
       )
     ).forEach(addItem, items)
 
+    factoryProperty(
+      "${name}_randomFrame",
+      layout.nodes.randomFrame,
+      Struct.appendRecursive(
+        { 
+          checkbox: { 
+            store: { 
+              callback: function(value, data) {
+                if (!Core.isType(value, Sprite)) {
+                  return
+                }
+                data.updateValue(value.getRandomFrame())
+              },
+              set: function(value) { 
+                var item = this.get()
+                item.get().setRandomFrame(value)
+              },
+            }
+          }
+        }, 
+        Struct.get(config, "randomFrame"),
+        false
+      )
+    ).forEach(addItem, items)
+
     factoryTextField(
       $"{name}_frame",
       layout.nodes.frame, 

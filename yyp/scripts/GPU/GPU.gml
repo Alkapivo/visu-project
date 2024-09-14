@@ -24,6 +24,8 @@ global.__GPU_DEFAULT_FONT_BOLD = null
 function _BlendMode(): Enum() constructor {
   ADD = bm_add
   NORMAL = bm_normal
+  SUBTRACT = bm_subtract
+  REVERSE_SUBTRACT = bm_reverse_subtract
 }
 global.__BlendMode = new _BlendMode()
 #macro BlendMode global.__BlendMode
@@ -51,6 +53,8 @@ global.__HAlign = new _HAlign()
 
 ///@static
 function _GPU() constructor {
+
+  ///@type {Struct}
   render = {
     ///@param {Number} beginX
     ///@param {Number} beginY
@@ -61,6 +65,7 @@ function _GPU() constructor {
     ///@param {GMColor} [blend]
     ///@param {Texture} [line]
     ///@param {Texture} [corner]
+    ///@return {GPU}
     texturedLine: function(beginX, beginY, endX, endY, 
         thickness = 1.0, alpha = 1.0, blend = c_white, 
         line = GPU_DEFAULT_LINE_TEXTURE, 
@@ -72,6 +77,8 @@ function _GPU() constructor {
       corner.render(beginX, beginY, 0, thickness, thickness, alpha, angle, blend)
       corner.render(endX, endY, 0, thickness, thickness, alpha, angle + 180.0, blend)
       line.render(beginX, beginY, 0, scale, thickness, alpha, angle, blend)
+
+      return GPU
     },
 
     ///@param {Number} beginX
@@ -82,6 +89,7 @@ function _GPU() constructor {
     ///@param {Number} [alpha]
     ///@param {GMColor} [blend]
     ///@param {Texture} [line]
+    ///@return {GPU}
     texturedLineSimple: function(beginX, beginY, endX, endY, 
         thickness = 1.0, alpha = 1.0, blend = c_white, 
         line = GPU_DEFAULT_LINE_TEXTURE) {
@@ -90,11 +98,24 @@ function _GPU() constructor {
       var length = point_distance(beginX, beginY, endX, endY)
       var scale = length / line.width
       line.render(beginX, beginY, 0, scale, thickness, alpha, angle, blend)
+      return GPU
     },
 
     ///@param {Color} color
+    ///@return {GPU}
     clear: function(color) {
       draw_clear_alpha(color.toGMColor(), color.alpha)
+      return GPU
+    },
+
+    ///@param {Number} width
+    ///@param {Number} height
+    ///@param {GMColor} [color]
+    ///@param {Number} [alpha]
+    ///@return {GPU}
+    fillColor: function(width, height, color = c_white, alpha = 1.0) {
+      draw_sprite_ext(texture_white, 0.0, 0, 0, width / 32.0, height / 32.0, 0.0, color, alpha)
+      return GPU
     },
 
     ///@param {Number} beginX
@@ -107,6 +128,7 @@ function _GPU() constructor {
     ///@param {?GMColor} [color3]
     ///@param {?GMColor} [color4]
     ///@param {?Number} [alpha]
+    ///@return {GPU}
     rectangle: function(beginX, beginY, endX, endY, outline = false, color1 = null, color2 = null, color3 = null, color4 = null, alpha = null) {
       var c1 = color1 == null ? c_black : color1
       var c2 = color2 == null ? c1 : color2
@@ -124,6 +146,8 @@ function _GPU() constructor {
           draw_set_alpha(_alpha)
         }
       }
+
+      return GPU
     },
 
     ///@param {Number} _x
@@ -136,6 +160,7 @@ function _GPU() constructor {
     ///@param {HAlign} [h]
     ///@param {VAlign} [v]
     ///@return {Struct}
+    ///@return {GPU}
     text: function(_x, _y, text, color = c_white, outline = null, alpha = 1.0, font = GPU_DEFAULT_FONT, h = HAlign.LEFT, v = VAlign.TOP) {
       if (font.asset != draw_get_font()) {
         draw_set_font(font.asset)
@@ -161,81 +186,104 @@ function _GPU() constructor {
       }
 
       draw_text_color(_x, _y, text, color, color, color, color, alpha)
-      return GPU.render
+      return GPU
     }
   }
 
+  ///@type {Struct}
   set = {
     ///@param {Shader}
-    ///@return {Struct}
+    ///@return {GPU}
     shader: function(shader) {
       shader_set(shader.asset) 
-      return GPU.set
+      return GPU
     },
 
     ///@param {Surface}
-    ///@return {Struct}
+    ///@return {GPU}
     surface: function(surface) {
       surface_set_target(surface.asset)
-      return GPU.set
+      return GPU
     },
 
     ///@param {BlendMode} mode
-    ///@return {Struct}
+    ///@return {GPU}
     blendMode: function(mode) {
       gpu_set_blendmode(mode)
-      return GPU.set
+      return GPU
     },
 
     ///@param {Boolean} enable
-    ///@return {Struct}
+    ///@return {GPU}
     blendEnable: function(enable) {
       gpu_set_blendenable(enable)
-      return GPU.set
+      return GPU
     },
 
     ///@param {GMFont} asset
-    ///@return {Struct}
+    ///@return {GPU}
     font: function(asset) {
       draw_set_font(asset)
-      return GPU.set
+      return GPU
     },
 
+    ///@type {Struct}
     align: {
       ///@param {Struct} align
-      ///@return {Struct}
+      ///@return {GPU}
       h: function(align) {
         draw_set_halign(align.h)
-        return GPU.set
+        return GPU
       },
 
       ///@param {Struct} align
-      ///@return {Struct}
+      ///@return {GPU}
       v: function(align) {
         draw_set_valign(align.v)
-        return GPU.set
+        return GPU
       },
     },
   }
 
+  ///@type {Struct}
   get = {
+    ///@return {?GMSurface}
     surface: function() {
-      return surface_get_target()
+      var target = surface_get_target()
+      return target != -1 ? target : null
+    },
+
+    ///@return {Boolean}
+    blendEnable: function() {
+      return gpu_get_blendenable()
     },
   }
 
+  ///@type {Struct}
   reset = {
+    ///@return {GPU}
     shader: function() {
-      shader_reset()
+      if (shader_current() != -1) {
+        shader_reset()
+      }
+      
+      return GPU
     },
+
+    ///@return {GPU}
     surface: function() {
       var target = surface_get_target()
       if (target != application_surface && target != -1) {
         surface_reset_target()
       }
+
+      return GPU
     },
+
+    ///@return {GPU}
     blendMode: function() {
       gpu_set_blendmode(BlendMode.NORMAL)
+      return GPU
     },
   }
 }
@@ -245,6 +293,6 @@ global.__GPU = new _GPU()
 function initGPU() {
   GPU_DEFAULT_LINE_TEXTURE = new Texture(texture_grid_line_default)
   GPU_DEFAULT_LINE_TEXTURE_CORNER = new Texture(texture_grid_line_corner_default)
-  GPU_DEFAULT_FONT = new Font(font_consolas_10_regular)
+  GPU_DEFAULT_FONT = new Font(font_consolas_12_regular)
   GPU_DEFAULT_FONT_BOLD = new Font(font_consolas_12_bold)
 }

@@ -18,9 +18,12 @@ function GridItemMovement(json = null, _useScale = true) constructor {
     / (this.useScale ? 100.0 : 1.0), Number)
 
   ///@type {Number}
-  speedMaxFocus = Assert.isType(Struct
-    .getDefault(json, "speedMaxFocus", Struct.getDefault(json, "speedMax", 2.1) / 2.0) 
-    / (this.useScale ? 100.0 : 1.0), Number)
+
+  
+  speedMaxFocus = (Core.isType(Struct.get(json, "speedMaxFocus"), Number) 
+    ? json.speedMaxFocus 
+    : 0.66) 
+    / (this.useScale ? 100.0 : 1.0)
   
   ///@type {Number}
   acceleration = Assert.isType(Struct
@@ -74,7 +77,7 @@ function GridItemSignals() constructor {
 
   ///@return {GridItemSignals}
   reset = function() {
-    this.kill = false
+    //this.kill = false
     this.bulletCollision = null
     this.shroomCollision = null
     this.playerCollision = null
@@ -138,14 +141,14 @@ function GridItem(config = {}) constructor {
 
   ///@param {Number} angle
   ///@return {GridItem}
-  setAngle = function(angle) {
+  static setAngle = function(angle) {
     this.angle = angle
     return this
   }
 
   ///@param {Number} speed
   ///@return {GridItem}
-  setSpeed = function(speed) {
+  static setSpeed = function(speed) {
     if (speed > 0) {
       this.speed = speed
     }
@@ -154,23 +157,21 @@ function GridItem(config = {}) constructor {
 
   ///@param {Sprite} sprite
   ///@return {GridItem}
-  setSprite = function(sprite) {
+  static setSprite = function(sprite) {
     this.sprite = sprite
     return this
   }
 
   ///@param {Rectangle} mask
   ///@return {GridItem}
-  setMask = function(mask) {
+  static setMask = function(mask) {
     this.mask = mask
     return this
   }
 
   ///@param {GameMode} mode
   ///@return {GridItem}
-  updateGameMode = Struct.contains(config, "updateGameMode")
-  ? method(this, Assert.isType(config.updateGameMode, Callable))
-  : function(mode) {
+  static updateGameMode = function(mode) {
     this.gameMode = this.gameModes.get(mode)
     this.gameMode.onStart(this, Beans.get(BeanVisuController))
     return this
@@ -179,49 +180,43 @@ function GridItem(config = {}) constructor {
   ///@param {any} name
   ///@param {any} [value]
   ///@return {GridItem}
-  signal = Struct.contains(config, "signal")
-    ? method(this, Assert.isType(config.signal, Callable))
-    : function(name, value = true) { 
-      this.signals.set(name, value)
-      return this
-    }
+  static signal = function(name, value = true) { 
+    this.signals.set(name, value)
+    return this
+  }
 
   ///@param {GridItem} target
   ///@return {Bollean} collide?
-  collide = Struct.contains(config, "collide")
-    ? method(this, Assert.isType(config.collide, Callable))
-    : function(target) { 
-      var halfSourceWidth = (this.mask.getWidth() * this.sprite.scaleX) / 2.0
-      var halfSourceHeight = (this.mask.getHeight() * this.sprite.scaleY) / 2.0
-      var halfTargetWidth = (target.mask.getWidth() * target.sprite.scaleX) / 2.0
-      var halfTargetHeight = (target.mask.getHeight() * target.sprite.scaleY) / 2.0
-            
-      var sourceX = this.x * GRID_SERVICE_PIXEL_WIDTH
-      var sourceY = this.y * GRID_SERVICE_PIXEL_HEIGHT
-      var targetX = target.x * GRID_SERVICE_PIXEL_WIDTH
-      var targetY = target.y * GRID_SERVICE_PIXEL_HEIGHT
-      return Math.rectangleOverlaps(
-        sourceX - halfSourceWidth, sourceY - halfSourceHeight,
-        sourceX + halfSourceWidth, sourceY + halfSourceHeight,
-        targetX - halfTargetWidth, targetY - halfTargetHeight,
-        targetX + halfTargetWidth, targetY + halfTargetHeight
-      )
-    }
+  static collide = function(target) { 
+    var halfSourceWidth = (this.mask.getWidth() * this.sprite.scaleX) / 2.0
+    var halfSourceHeight = (this.mask.getHeight() * this.sprite.scaleY) / 2.0
+    var halfTargetWidth = (target.mask.getWidth() * target.sprite.scaleX) / 2.0
+    var halfTargetHeight = (target.mask.getHeight() * target.sprite.scaleY) / 2.0
+          
+    var sourceX = this.x * GRID_SERVICE_PIXEL_WIDTH
+    var sourceY = this.y * GRID_SERVICE_PIXEL_HEIGHT
+    var targetX = target.x * GRID_SERVICE_PIXEL_WIDTH
+    var targetY = target.y * GRID_SERVICE_PIXEL_HEIGHT
+    return Math.rectangleOverlaps(
+      sourceX - halfSourceWidth, sourceY - halfSourceHeight,
+      sourceX + halfSourceWidth, sourceY + halfSourceHeight,
+      targetX - halfTargetWidth, targetY - halfTargetHeight,
+      targetX + halfTargetWidth, targetY + halfTargetHeight
+    )
+  }
 
   ///@param {VisuController} controller
   ///@return {GridItem}
-  move = Struct.contains(config, "move")
-    ? method(this, Assert.isType(config.move, Callable))
-    : function() {
-      this.signals.reset()
-      this.x += Math.fetchCircleX(this.speed, this.angle)
-      this.y += Math.fetchCircleY(this.speed, this.angle)
-      return this
-    }
+  static move = function() {
+    this.signals.reset()
+    this.x += Math.fetchCircleX(this.speed, this.angle)
+    this.y += Math.fetchCircleY(this.speed, this.angle)
+    return this
+  }
 
   ///@param {VisuController} controller
   ///@return {GridItem}
-  update = function(controller) { 
+  static update = function(controller) { 
     if (Optional.is(this.gameMode)) {
       gameMode.update(this, controller)
     }

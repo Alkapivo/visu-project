@@ -14,85 +14,119 @@ function ShroomGrid(_size) constructor {
   ///@param {Number} y
   ///@return {String}
   toKey = function(x, y) {
-    return $"x{x}y{y}"
+    var key = "x" + string(int64(x)) + "y" + string(int64(y))
+    return key 
+    //return $"x{int64(x)}y{int64(y)}"
   }
 
-  ///@param {Number} x
-  ///@param {Number} y
-  ///@param {GridItem} item
-  ///@return {ShroomGrid}
-  add = function(x, y, item) {
-    var cell = this.get(x, y)
-    var index = cell.findIndex(function(item, index, target) {
-      return item == target
-    }, item)
-    if (!Optional.is(index)) {
-      cell.add(item)
-      //Core.print($"Added shroom to cell x{x}y{y}")
-    } else {
-      Logger.error("ShroomGrid", $"Shroom was already added in this cell x{x}y{y}. This should not happened")
-    }
-
-    return this
-  }
-
-  ///@param {Number} x
-  ///@param {Number} y
+  ///@param {String}
+  ///@throws {AssertException}
   ///@return {Array}
-  get = function(x, y) {
-    var key = this.toKey(x, y)
+  get = function(key) {
+    Assert.isType(key, String, "Key must be type of string")
     if (!this.map.contains(key)) {
-      this.map.set(key, new Array(GridItem))
+      this.map.set(key, new Array(Shroom))
     }
+
     return this.map.get(key)
   }
 
-  ///@param {Number} fromX
-  ///@param {Number} fromY
-  ///@param {Number} toX
-  ///@param {Number} toY
-  ///@param {GridItem} item
+  ///@param {Shroom} shroom
+  ///@throws {Exception}
   ///@return {ShroomGrid}
-  move = function(fromX, fromY, toX, toY, item) {
-    var from = this.get(fromX, fromY)
-    var index = from.findIndex(function(item, index, target) {
-      return item == target
-    }, item)
+  add = function(shroom) {
+    shroom.shroomGridKey = this.toKey(
+      floor(shroom.x / this.size),
+      floor(shroom.y / this.size)
+    )
+    
+    var cell = this.get(shroom.shroomGridKey)
+    var index = cell.findIndex(function(shroom, index, target) {
+      return shroom == target
+    }, shroom)
+
     if (Optional.is(index)) {
-      from.remove(index)
-    } else {
-      //Core.print($"Shroom was not found in this cell x{fromX}y{fromY}. This should not happened")
+      var message = $"Shroom was already added to cell '{shroom.shroomGridKey}'"
+      Logger.error("ShroomGrid", message)
+      Core.printStackTrace()
+      throw new Exception(message)
     }
 
-    var to = this.get(toX, toY)
-    index = to.findIndex(function(item, index, target) {
-      return item == target
-    }, item)
-    if (!Optional.is(index)) {
-      to.add(item)
-      //Core.print($"Shroom moved from x{fromX}y{fromY} to x{toX}y{toY}")
-    } else {
-      Logger.error("ShroomGrid", $"Shroom from x{fromX}y{fromY} was already found in cell x{toX}y{toY}. This should not happened")
-    }
+    cell.add(shroom)
+    //Logger.debug("ShroomGrid", $"Added shroom to cell '{shroom.shroomGridKey}'")
     return this
   }
 
-  ///@param {Number} x
-  ///@param {Number} y
-  ///@param {GridItem} item
+  ///@param {Shroom} shroom
+  ///@throws {Exception}
   ///@return {ShroomGrid}
-  remove = function(x, y, item) {
-    var cell = this.get(x, y)
-    var index = cell.findIndex(function(item, index, target) {
-      return item == target
-    }, item)
-    if (Optional.is(index)) {
-      cell.remove(index)
-      //Core.print($"Removed shroom from x{x}y{y}")
-    } else {
-      Logger.error("ShroomGrid", $"Shroom was already removed from this cell x{x}y{y}. This should not happened")
+  update = function(shroom) {
+    var newKey = this.toKey(
+      floor(shroom.x / this.size),
+      floor(shroom.y / this.size)
+    )
+    
+    if (newKey == shroom.shroomGridKey) {
+      return this
     }
 
+    this.remove(shroom).add(shroom)
+    return this
+
+    /*
+    var oldKey = shroom.shroomGridKey
+    var from = this.get(oldKey)
+    var index = from.findIndex(function(shroom, index, target) {
+      return shroom == target
+    }, shroom)
+    if (Optional.is(index)) {
+      from.remove(index)
+      shroom.shroomGridKey = newKey
+      Logger.debug("ShroomGrid", $"Remove shroom at index {index} from cell '{oldKey}'")
+    } else {
+      var message = $"Shroom was not found in cell '{oldKey}'"
+      Logger.error("ShroomGrid", message)
+      Core.printStackTrace()
+      throw new Exception(message)
+    }
+
+    var to = this.get(newKey)
+    index = to.findIndex(function(shroom, index, target) {
+      return shroom == target
+    }, shroom)
+    if (!Optional.is(index)) {
+      to.add(shroom)
+      Logger.debug("ShroomGrid", $"Shroom at index {index} moved from '{oldKey}' to '{newKey}'")
+    } else {
+      var message = $"Shroom from cell '{oldKey}' was already found in cell '{newKey}'"
+      Logger.error("ShroomGrid", message)
+      Core.printStackTrace()
+      throw new Exception(message)
+    }
+
+    return this
+    */
+  }
+
+  ///@param {Shroom} shroom
+  ///@throws {Exception}
+  ///@return {ShroomGrid}
+  remove = function(shroom) {
+    var cell = this.get(shroom.shroomGridKey)
+    var index = cell.findIndex(function(shroom, index, target) {
+      return shroom == target
+    }, shroom)
+
+    if (!Optional.is(index)) {
+      var message = $"Shroom was already removed from cell '{shroom.shroomGridKey}'"
+      Logger.error("ShroomGrid", message)
+      Core.printStackTrace()
+      throw new Exception(message)
+    }
+      
+    cell.remove(index)
+    //Logger.debug("ShroomGrid", $"Removed shroom at index {index} from cell '{shroom.shroomGridKey}'")
+    shroom.shroomGridKey = null
     return this
   }
 }
@@ -108,7 +142,7 @@ function ShroomService(_controller, config = {}): Service() constructor {
   shrooms = new Array(Shroom)
 
   ///@type {ShroomGrid}
-  shroomGrid = new ShroomGrid(0.2)
+  shroomGrid = new ShroomGrid(0.3)
 
   ///@type {Map<String, ShroomTemplate>}
   templates = new Map(String, ShroomTemplate)
@@ -151,12 +185,21 @@ function ShroomService(_controller, config = {}): Service() constructor {
     )
   }
 
+  ///@param {String} name
+  ///@return {?ShroomTemplate}
+  getTemplate = function(name) {
+    var template = this.templates.get(name)
+    return template == null
+      ? Visu.assets().shroomTemplates.get(name)
+      : template
+  }
+
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "spawn-shroom": function(event) {
       var view = this.controller.gridService.view
-      var template = new ShroomTemplate(event.data.template, this.templates
-        .get(event.data.template)
+      var template = new ShroomTemplate(event.data.template, this
+        .getTemplate(event.data.template)
         .serialize())
       var spawnX = Assert.isType(Struct
         .getDefault(event.data, "spawnX", choose(1, -1) * random(3) * (random(100) / 100)), Number)
@@ -185,40 +228,13 @@ function ShroomService(_controller, config = {}): Service() constructor {
       shroom.updateGameMode(this.controller.gameMode)
 
       this.shrooms.add(shroom)
-
-      this.shroomGrid.add(floor(shroom.x / this.shroomGrid.size), floor(shroom.y / this.shroomGrid.size), shroom)
+      this.shroomGrid.add(shroom)
     },
     "clear-shrooms": function(event) {
       this.shrooms.clear()
     },
     "reset-templates": function(event) {
-      this.templates.clear().set("shroom-default", new ShroomTemplate("shroom-default", {
-        "gameModes":{
-          "racing":{ "features": [] },
-          "bulletHell":{
-            "features":[
-              {
-                "feature":"KillFeature",
-                "conditions":[
-                  {
-                    "type":"player-collision"
-                  }
-                ]
-              },
-              {
-                "feature":"KillFeature",
-                "conditions":[
-                  {
-                    "type":"bullet-collision"
-                  }
-                ]
-              }
-            ]
-          },
-          "platformer": { "features": [] }
-        },
-        "sprite": { "name": "texture_baron" },
-      }))
+      this.templates.clear()
     },
   }))
 
@@ -238,7 +254,7 @@ function ShroomService(_controller, config = {}): Service() constructor {
       shroom.update(context.controller)
       if (shroom.signals.kill) {
         context.gc.push(index)
-        context.shroomGrid.remove(floor(shroom.x / context.shroomGrid.size), floor(shroom.y / context.shroomGrid.size), shroom)
+        context.shroomGrid.remove(shroom)
       }
     }
 

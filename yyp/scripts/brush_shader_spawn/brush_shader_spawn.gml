@@ -18,8 +18,10 @@ function brush_shader_spawn(json = null) {
         type: String,
         value: Struct.getDefault(json, "shader-spawn_template", "shader-default"),
         passthrough: function(value) {
-          ///@todo weird bug
-          return Beans.get(BeanVisuController).shaderPipeline.templates.contains(value) ? value : (Core.isType(this.value, String) ? this.value : "shader-default")
+          var shaderPipeline = Beans.get(BeanVisuController).shaderPipeline
+          return shaderPipeline.templates.contains(value) || Visu.assets().shaderTemplates.contains(value)
+            ? value
+            : (Core.isType(this.value, String) ? this.value : "shader-default")
         },
       },
       "shader-spawn_duration": {

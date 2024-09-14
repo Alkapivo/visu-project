@@ -55,6 +55,14 @@ function template_shroom(json = null) {
               spriteOff: { name: "visu_texture_checkbox_off" },
             },
           },
+          randomFrame: {
+            label: { text: "Random frame" }, 
+            checkbox: { 
+              store: { key: "shroom_texture" },
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+            },
+          },
           frame: {
             label: { text: "Frame" },
             field: { store: { key: "shroom_texture" } },

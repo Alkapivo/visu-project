@@ -29,6 +29,33 @@ function brush_grid_player(json = null) {
         type: Boolean,
         value: Struct.get(json, "grid-player_reset-position") == true,
       },
+      "grid-player_use-stats": {
+        type: Boolean,
+        value: Struct.getDefault(json, "grid-player_use-stats", false),
+      },
+      "grid-player_stats": {
+        type: String,
+        value: JSON.stringify(Struct.getDefault(json, "grid-player_stats", {
+          "force": {
+            "value": 0
+          },
+          "point": {
+            "value": 0
+          },
+          "bomb": {
+            "value": 5
+          },
+          "life": {
+            "value": 4
+          }
+        }), { pretty: true }),
+        serialize: function() {
+          return JSON.parse(this.get())
+        },
+        validate: function(value) {
+          Assert.isType(JSON.parse(value), Struct)
+        },
+      },
       "grid-player_use-bullet-hell": {
         type: Boolean,
         value: Struct.getDefault(json, "grid-player_use-bullet-hell", true),
@@ -369,6 +396,14 @@ function brush_grid_player(json = null) {
               spriteOff: { name: "visu_texture_checkbox_off" },
             },
           },
+          randomFrame: {
+            label: { text: "Random frame" }, 
+            checkbox: { 
+              store: { key: "grid-player_texture" },
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+            },
+          },
           frame: {
             label: { text: "Frame" },
             field: { store: { key: "grid-player_texture" } },
@@ -483,6 +518,37 @@ function brush_grid_player(json = null) {
             store: { key: "grid-player_reset-position" },
             enable: { key: "grid-player_use-reset-position" },
           }
+        },
+      },
+      {
+        name: "grid-player_use-stats",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Use stats",
+            enable: { key: "grid-player_use-stats" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "grid-player_use-stats" },
+          },
+        },
+      },
+      {
+        name: "grid-player_stats",
+        template: VEComponents.get("text-area"),
+        layout: VELayouts.get("text-area"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          field: { 
+            v_grow: true,
+            w_min: 570,
+            store: { key: "grid-player_stats" },
+            enable: { key: "grid-player_use-stats" },
+          },
         },
       },
       {

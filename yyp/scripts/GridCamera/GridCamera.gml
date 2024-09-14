@@ -41,18 +41,15 @@ function GridCamera(config = {}) constructor {
 
 	executor = new TaskExecutor(this)
 
+	///@param {UILayout} layout
 	///@return {Camera}
-	update = function() {
+	update = function(layout) {
 		this.executor.update()
 		if (this.enableMouseLook) {
-			var controller = Beans.get(BeanVisuController)
-			var editor = Beans.get(BeanVisuEditor)
-			var enable = controller.renderUI
-      var preview = editor == null ? controller.preview : editor.layout.nodes.preview
-      var width = enable ? ceil(preview.width()) : GuiWidth()
-      var height = enable ? ceil(preview.height()) : GuiHeight()
-      var _x = enable ? ceil(preview.x()) : 0
-      var _y = enable ? ceil(preview.y()) : 0
+      var width = layout.width()
+      var height = layout.height()
+      var _x = layout.x()
+      var _y = layout.y()
 
 			this.angle -= ceil(MouseUtil.getMouseX() - _x - width / 2.0) / 10.0
 			this.pitch -= ceil(MouseUtil.getMouseY() - _y - height / 2.0) / 10.0
@@ -67,35 +64,35 @@ function GridCamera(config = {}) constructor {
 			if (keyboard_check(ord("A"))) {
 				dx += dsin(this.angle) * moveSpeed
 				dy += dcos(this.angle) * moveSpeed
-				Core.print("x", this.x, "y", this.y, "z", this.z)
+				Logger.debug("GridCamera", $"x: {this.x}, y: {this.y} z: {this.z}")
 			}
 	
 			if (keyboard_check(ord("D"))) {
 				dx -= dsin(this.angle) * moveSpeed
 				dy -= dcos(this.angle) * moveSpeed
-				Core.print("x", this.x, "y", this.y, "z", this.z)
+				Logger.debug("GridCamera", $"x: {this.x}, y: {this.y} z: {this.z}")
 			}
 	
 			if (keyboard_check(ord("W"))) {
 				dx -= dcos(this.angle) * moveSpeed
 				dy += dsin(this.angle) * moveSpeed
-				Core.print("x", this.x, "y", this.y, "z", this.z)
+				Logger.debug("GridCamera", $"x: {this.x}, y: {this.y} z: {this.z}")
 			}
 	
 			if (keyboard_check(ord("S"))) {
 				dx += dcos(this.angle) * moveSpeed
 				dy -= dsin(this.angle) * moveSpeed
-				Core.print("x", this.x, "y", this.y, "z", this.z)
+				Logger.debug("GridCamera", $"x: {this.x}, y: {this.y} z: {this.z}")
 			}
 	
 			if (mouse_wheel_up()) {
 				dz += moveSpeed * 10
-				Core.print("x", this.x, "y", this.y, "z", this.z)
+				Logger.debug("GridCamera", $"x: {this.x}, y: {this.y} z: {this.z}")
 			}
 	
 			if (mouse_wheel_down()) {
 				dz -= moveSpeed * 10
-				Core.print("x", this.x, "y", this.y, "z", this.z)
+				Logger.debug("GridCamera", $"x: {this.x}, y: {this.y} z: {this.z}")
 			}
 			this.x += dx
 			this.y += dy

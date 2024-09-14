@@ -95,10 +95,26 @@ function Surface(config = null) constructor {
   static render = function(x = 0, y = 0, alpha = 1.0) {
     if (!Core.isType(this.asset, GMSurface)) {
       Logger.error("Surface", "render fatal error")
-      return
+      return this
     }
 
     draw_surface_ext(this.asset, x, y, 1.0, 1.0, 0.0, c_white, alpha)
+    return this
+  }
+
+  ///@param {Number} width
+  ///@param {Number} height
+  ///@param {Number} [x]
+  ///@param {Number} [y]
+  ///@param {Number} [alpha]
+  ///@return {Surface}
+  static renderStretched = function(width, height, x = 0, y = 0, alpha = 1.0) {
+    if (!Core.isType(this.asset, GMSurface)) {
+      Logger.error("Surface", "render fatal error")
+      return this
+    }
+
+    draw_surface_stretched_ext(this.asset, x, y, width, height, c_white, alpha)
     return this
   }
 

@@ -1,9 +1,0 @@
-{
-  "data":{
-    "sound_external":{
-      "file":"Muscle Car.ogg"
-    }
-  },
-  "model":"Collection<io.alkapivo.core.service.sound.SoundIntent>",
-  "version":"1"
-}

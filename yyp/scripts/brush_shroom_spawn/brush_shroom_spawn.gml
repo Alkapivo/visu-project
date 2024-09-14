@@ -14,8 +14,10 @@ function brush_shroom_spawn(json = null) {
         type: String,
         value: Struct.getDefault(json, "shroom-spawn_template", "shroom-default"),
         passthrough: function(value) {
-          ///@todo weird bug
-          return Beans.get(BeanVisuController).shroomService.templates.contains(value) ? value : (Core.isType(this.value, String) ? this.value : "shroom-default")
+          var shroomService = Beans.get(BeanVisuController).shroomService
+          return shroomService.templates.contains(value) || Visu.assets().shroomTemplates.contains(value)
+            ? value
+            : (Core.isType(this.value, String) ? this.value : "shroom-default")
         },
       },
       "shroom-spawn_speed": {

@@ -47,7 +47,7 @@ function EventPump(_context, _dispatchers, config = {}) constructor {
 
   ///@private
   ///@type {Number}
-  limit = Assert.isType(Struct.getDefault(config, "limit", Infinity), Number)
+  limit = Core.isType(Struct.get(config, "limit"), Number) ? config.limit : Infinity
 
   ///@private
   ///@type {Boolean}

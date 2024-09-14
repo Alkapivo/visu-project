@@ -39,18 +39,26 @@ function BulletService(_controller, config = {}): Service() constructor {
   ///@type {Map<String, BulletTemplate>}
   templates = new Map(String, BulletTemplate)
   
-
   ///@type {Stack<Number>}
   gc = new Stack(Number)
 
   ///@type {?GameMode}
   gameMode = null
 
+  ///@param {String} name
+  ///@return {?BulletTemplate}
+  getTemplate = function(name) {
+    var template = this.templates.get(name)
+    return template == null
+      ? Visu.assets().bulletTemplates.get(name)
+      : template
+  }
+
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "spawn-bullet": function (event, dispatcher) {
-      var bulletTemplate = new BulletTemplate(event.data.template, this.templates
-        .get(event.data.template)
+      var bulletTemplate = new BulletTemplate(event.data.template, this
+        .getTemplate(event.data.template)
         .serialize())
         
       Struct.set(bulletTemplate, "x", event.data.x)
@@ -59,10 +67,14 @@ function BulletService(_controller, config = {}): Service() constructor {
       Struct.set(bulletTemplate, "speed", event.data.speed / 1000)
       Struct.set(bulletTemplate, "producer", event.data.producer)
       if (Struct.contains(event.data, "template")) {
-        var template = this.templates.get(event.data.template)
+        var template = this.getTemplate(event.data.template)
         if (Struct.contains(template, "mask")) {
           Struct.set(bulletTemplate, "mask", template.mask)
         }
+      }
+
+      if (event.data.producer == Shroom) {
+        Beans.get(BeanVisuController).sfxService.play("shroom-shoot")
       }
       
       var bullet = new Bullet(bulletTemplate)
@@ -74,29 +86,7 @@ function BulletService(_controller, config = {}): Service() constructor {
       this.bullets.clear()
     },
     "reset-templates": function(event) {
-      this.templates.clear().set("bullet-default", new BulletTemplate("bullet-default", {
-        "gameModes":{
-          "racing": { "features": [] },
-          "bulletHell": {
-            "features": [
-              {
-                "feature":"LifespawnFeature",
-                "data":{
-                  "duration":10.0
-                }
-              }
-            ]
-          },
-          "platformer": { "features": [] }
-        },
-        "sprite":{
-          "name":"texture_bullet"
-        },
-        "mask":{
-          "width":128.0,
-          "height":128.0
-        }
-      }))
+      this.templates.clear()
     },
   }))
 

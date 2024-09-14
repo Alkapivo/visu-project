@@ -1,14 +1,39 @@
 ///@package io.alkapivo.visu.editor.service.brush.view
 
 global.__VISU_FONT = [
+  "font_kodeo_mono_10_regular",
+  "font_kodeo_mono_12_regular",
+  "font_kodeo_mono_18_regular",
+  "font_kodeo_mono_28_regular",
+
+  "font_kodeo_mono_10_bold",
+  "font_kodeo_mono_12_bold",
+  "font_kodeo_mono_18_bold",
+  "font_kodeo_mono_28_bold",
+
   "font_inter_8_regular",
   "font_inter_10_regular",
   "font_inter_12_regular",
+  "font_inter_18_regular",
   "font_inter_24_regular",
+  "font_inter_28_regular",
+
+  "font_inter_8_bold",
+  "font_inter_10_bold",
+  "font_inter_12_bold",
+  "font_inter_18_bold",
+  "font_inter_24_bold",
+  "font_inter_28_bold",
+
   "font_consolas_10_regular",
+  "font_consolas_12_regular",
+  "font_consolas_18_regular",
+  "font_consolas_28_regular",
+
   "font_consolas_10_bold",
   "font_consolas_12_bold",
-  "font_kodeo_mono_22_bold",
+  "font_consolas_18_bold",
+  "font_consolas_28_bold"
 ]
 #macro VISU_FONT global.__VISU_FONT
 
@@ -22,8 +47,10 @@ function brush_view_lyrics(json = null) {
         type: String,
         value: Struct.getDefault(json, "view-lyrics_template", "lyrics-default"),
         passthrough: function(value) {
-          ///@todo weird bug
-          return Beans.get(BeanVisuController).lyricsService.templates.contains(value) ? value : (Core.isType(this.value, String) ? this.value : "lyrics-default")
+          var lyricsService = Beans.get(BeanVisuController).lyricsService
+          return lyricsService.templates.contains(value) || Visu.assets().lyricsTemplates.contains(value)
+            ? value
+            : (Core.isType(this.value, String) ? this.value : "lyrics-default")
         },
       },
       "view-lyrics_font": {

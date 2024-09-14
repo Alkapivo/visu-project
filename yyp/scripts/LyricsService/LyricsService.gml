@@ -6,11 +6,20 @@ function LyricsService(config = null): Service() constructor {
   ///@type {Map<String, LyricsTemplate>}
   templates = new Map(String, LyricsTemplate)
 
+  ///@param {String} name
+  ///@return {?LyricsTemplate}
+  getTemplate = function(name) {
+    var template = this.templates.get(name)
+    return template == null
+      ? Visu.assets().lyricsTemplates.get(name)
+      : template
+  }
+
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "add": function(event) {
       var lines = new Array(String)
-      var template = Assert.isType(this.templates.get(event.data.template), LyricsTemplate)
+      var template = Assert.isType(this.getTemplate(event.data.template), LyricsTemplate)
 
       GPU.set.font(event.data.font.asset)
       template.lines.forEach(function(line, index, acc) {
@@ -109,7 +118,7 @@ function LyricsService(config = null): Service() constructor {
       this.templates.clear()
     },
     "reset-templates": function(event) {
-      this.templates.clear().set("lyrics-default", new LyricsTemplate("lyrics-default", { "lines": [ "Lorem ipsum" ] }))
+      this.templates.clear()
     },
   }))
 

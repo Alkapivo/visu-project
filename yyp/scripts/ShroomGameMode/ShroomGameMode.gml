@@ -30,6 +30,10 @@ function ShroomBulletHellGameMode(json) {
       if (shroom.signals.playerCollision != null) {
         shroom.signal("kill")
       }
+
+      if (shroom.signals.kill) {
+        controller.sfxService.play("shroom-die")
+      }
     },
   }))
 }

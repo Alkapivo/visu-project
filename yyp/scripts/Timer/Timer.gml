@@ -99,3 +99,59 @@ function Timer(_duration, config = {}) constructor {
     return this
   }
 }
+
+
+///@param {String} _name
+///@param {Number} [_size]
+function DebugOSTimer(_name, _size = 60) constructor {
+
+  ///@type {String}
+  name = Assert.isType(_name, String)
+
+  ///@type {Number}
+  value = 0.0
+
+  ///@type {Number}
+  maxSize = Assert.isType(_size, Number)
+
+  ///@private
+  ///@type {Number}
+  a = 0.0
+
+  ///@private
+  ///@type {Number}
+  b = 0.0
+
+  ///@private
+  ///@type {Number}
+  size = 0.0
+
+  ///@return {DebugOSTimer}
+  start = function() {
+    this.a = get_timer()
+    if (this.size > this.maxSize) {
+      this.size = 0
+      this.value = 0
+    }
+
+    return this
+  }
+
+  ///@return {DebugOSTimer}
+  finish = function() {
+    this.b = get_timer()
+    this.size = this.size + 1
+    this.value = this.value + ((this.b - this.a) / 1000)
+    return this
+  }
+
+  ///@return {Number} time in ms (there are 1000 miliseconds per second)
+  getValue = function() {
+    return this.size > 0 ? this.value / this.size : 0.0
+  }
+
+  ///@return {String}
+  getMessage = function() {
+    return $"{this.name} avg: {string_format(this.getValue(), 1, 4)} ms"
+  }
+}

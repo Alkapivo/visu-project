@@ -52,9 +52,17 @@ function Sound(_asset, config = {}) constructor {
   ///@type {Number}
   priority = Assert.isType(Struct.getDefault(config, "priority", 100), Number)
 
+  ///@param {Number} [volume]
   ///@return {Sound}
-  play = function() {
-    this.stop().soundId = audio_play_sound(this.asset, this.priority, this.loop)
+  play = function(volume = 1.0) {
+    this.stop()
+    this.soundId = audio_play_sound_ext({
+      sound: this.asset,
+      priority: this.priority,
+      loop: this.loop,
+      gain: volume,
+    })
+    
     return this
   }
 

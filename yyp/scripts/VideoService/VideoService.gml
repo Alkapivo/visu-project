@@ -2,9 +2,9 @@
 
 ///@param {Struct} [config]
 function VideoService(config = {}): Service() constructor {
-
+  
   VideoUtil.runGC()
-
+  
   ///@private
   ///@type {?Video}
   video = null

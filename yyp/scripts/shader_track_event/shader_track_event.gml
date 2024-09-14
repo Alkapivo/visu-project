@@ -28,13 +28,13 @@ global.__shader_track_event = {
     var controller = Beans.get(BeanVisuController)
     var pipeline = Struct.getDefault(data, "shader-spawn_pipeline", "Grid")
     switch (pipeline) {
-      case "Grid": 
+      case "Grid":
         controller.shaderPipeline.send(event)
         break
       case "Background":
         controller.shaderBackgroundPipeline.send(event)
         break
-      case "All": 
+      case "All":
         controller.shaderPipeline.send(event)
         controller.shaderBackgroundPipeline
           .send(new Event("spawn-shader", JSON.clone(eventData)))

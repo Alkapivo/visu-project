@@ -9,8 +9,8 @@ global.__view_track_event = {
       controller.gridService.send(new Event("fade-color", {
         color: ColorUtil.fromHex(Struct.get(data, "view-wallpaper_color")),
         collection: Struct.get(data, "view-wallpaper_type") == "Background" 
-          ? controller.gridRenderer.overlayRenderer.backgroundColors
-          : controller.gridRenderer.overlayRenderer.foregroundColors,
+          ? controller.visuRenderer.gridRenderer.overlayRenderer.backgroundColors
+          : controller.visuRenderer.gridRenderer.overlayRenderer.foregroundColors,
         type: Struct.get(data, "view-wallpaper_type"),
         fadeInDuration: Struct.get(data, "view-wallpaper_fade-in-duration"),
         fadeOutDuration: Struct.get(data, "view-wallpaper_fade-out-duration"),
@@ -33,15 +33,17 @@ global.__view_track_event = {
         Struct.set(sprite, "animate", animate)
         Struct.set(sprite, "speed", Struct.get(data, "view-wallpaper_texture-speed"))
       }
-      
+
       controller.gridService.send(new Event("fade-sprite", {
         sprite: SpriteUtil.parse(sprite),
         collection: Struct.get(data, "view-wallpaper_type") == "Background" 
-          ? controller.gridRenderer.overlayRenderer.backgrounds
-          : controller.gridRenderer.overlayRenderer.foregrounds,
+          ? controller.visuRenderer.gridRenderer.overlayRenderer.backgrounds
+          : controller.visuRenderer.gridRenderer.overlayRenderer.foregrounds,
         type: Struct.get(data, "view-wallpaper_type"),
         fadeInDuration: Struct.get(data, "view-wallpaper_fade-in-duration"),
         fadeOutDuration: Struct.get(data, "view-wallpaper_fade-out-duration"),
+        angle: Struct.get(data, "view-wallpaper_angle"),
+        speed: Struct.get(data, "view-wallpaper_speed"),
         executor: controller.gridService.executor,
       }))
     }
@@ -99,10 +101,10 @@ global.__view_track_event = {
       var transformer = Struct.get(data, "view-config_transform-x")
       controller.gridService.send(new Event("transform-property", {
         key: "x",
-        container: controller.gridRenderer.camera,
-        executor: controller.gridRenderer.camera.executor,
+        container: controller.visuRenderer.gridRenderer.camera,
+        executor: controller.visuRenderer.gridRenderer.camera.executor,
         transformer: new NumberTransformer({
-          value: controller.gridRenderer.camera.x,
+          value: controller.visuRenderer.gridRenderer.camera.x,
           target: transformer.target,
           factor: transformer.factor,
           increase: transformer.increase,
@@ -114,10 +116,10 @@ global.__view_track_event = {
       var transformer = Struct.get(data, "view-config_transform-y")
       controller.gridService.send(new Event("transform-property", {
         key: "y",
-        container: controller.gridRenderer.camera,
-        executor: controller.gridRenderer.camera.executor,
+        container: controller.visuRenderer.gridRenderer.camera,
+        executor: controller.visuRenderer.gridRenderer.camera.executor,
         transformer: new NumberTransformer({
-          value: controller.gridRenderer.camera.y,
+          value: controller.visuRenderer.gridRenderer.camera.y,
           target: transformer.target,
           factor: transformer.factor,
           increase: transformer.increase,
@@ -129,10 +131,10 @@ global.__view_track_event = {
       var transformer = Struct.get(data, "view-config_transform-z")
       controller.gridService.send(new Event("transform-property", {
         key: "z",
-        container: controller.gridRenderer.camera,
-        executor: controller.gridRenderer.camera.executor,
+        container: controller.visuRenderer.gridRenderer.camera,
+        executor: controller.visuRenderer.gridRenderer.camera.executor,
         transformer: new NumberTransformer({
-          value: controller.gridRenderer.camera.z,
+          value: controller.visuRenderer.gridRenderer.camera.z,
           target: transformer.target,
           factor: transformer.factor,
           increase: transformer.increase,
@@ -144,10 +146,10 @@ global.__view_track_event = {
       var transformer = Struct.get(data, "view-config_transform-zoom")
       controller.gridService.send(new Event("transform-property", {
         key: "zoom",
-        container: controller.gridRenderer.camera,
-        executor: controller.gridRenderer.camera.executor,
+        container: controller.visuRenderer.gridRenderer.camera,
+        executor: controller.visuRenderer.gridRenderer.camera.executor,
         transformer: new NumberTransformer({
-          value: controller.gridRenderer.camera.zoom,
+          value: controller.visuRenderer.gridRenderer.camera.zoom,
           target: transformer.target,
           factor: transformer.factor,
           increase: transformer.increase,
@@ -157,14 +159,14 @@ global.__view_track_event = {
     
     if (Struct.get(data, "view-config_use-transform-angle")) {
       var transformer = Struct.get(data, "view-config_transform-angle")
-      var angleDifference = angle_difference(transformer.target, controller.gridRenderer.camera.angle)
+      var angleDifference = angle_difference(transformer.target, controller.visuRenderer.gridRenderer.camera.angle)
       controller.gridService.send(new Event("transform-property", {
         key: "angle",
-        container: controller.gridRenderer.camera,
-        executor: controller.gridRenderer.camera.executor,
+        container: controller.visuRenderer.gridRenderer.camera,
+        executor: controller.visuRenderer.gridRenderer.camera.executor,
         transformer: new NumberTransformer({
-          value: controller.gridRenderer.camera.angle,
-          target: controller.gridRenderer.camera.angle + angleDifference,
+          value: controller.visuRenderer.gridRenderer.camera.angle,
+          target: controller.visuRenderer.gridRenderer.camera.angle + angleDifference,
           factor: transformer.factor,
           increase: transformer.increase,
         })
@@ -175,10 +177,10 @@ global.__view_track_event = {
       var transformer = Struct.get(data, "view-config_transform-pitch")
       controller.gridService.send(new Event("transform-property", {
         key: "pitch",
-        container: controller.gridRenderer.camera,
-        executor: controller.gridRenderer.camera.executor,
+        container: controller.visuRenderer.gridRenderer.camera,
+        executor: controller.visuRenderer.gridRenderer.camera.executor,
         transformer: new NumberTransformer({
-          value: controller.gridRenderer.camera.pitch,
+          value: controller.visuRenderer.gridRenderer.camera.pitch,
           target: transformer.target,
           factor: transformer.factor,
           increase: transformer.increase,
@@ -238,7 +240,7 @@ global.__view_track_event = {
       }))
   },
   "brush_view_glitch": function(data) {
-    var bktGlitchService = Beans.get(BeanVisuController).gridRenderer.bktGlitchService
+    var bktGlitchService = Beans.get(BeanVisuController).visuRenderer.gridRenderer.glitchService
     var config = {
       lineSpeed: {
         defValue: Struct.getDefault(data, "view-glitch_line-speed", 0.0),
@@ -358,7 +360,7 @@ global.__view_track_event = {
     }
 
     if (Struct.get(data, "view-config_use-render-HUD")) {
-      controller.renderHUDEnabled = Struct
+      controller.visuRenderer.hudRenderer.enabled = Struct
         .get(data, "view-config_render-HUD")
     }
   },

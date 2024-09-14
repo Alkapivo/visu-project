@@ -1,7 +1,8 @@
 ///@package io.alkapivo.core.service.file
 
 #macro BeanFileService "FileService"
-function FileService(): Service() constructor {
+///@param {Struct} config
+function FileService(config = {}): Service() constructor {
 
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
@@ -41,7 +42,7 @@ function FileService(): Service() constructor {
     "save-file-sync": function(event) {
       FileUtil.writeFileSync(Assert.isType(event.data, File))
     },
-  }))
+  }), Core.isType(Struct.get(config, "dispatcher"), Struct) ? config.dispatcher : {})
 
   ///@type {TaskExecutor}
   executor = new TaskExecutor(this)

@@ -800,7 +800,6 @@ function VisuNewProjectForm(json = null) constructor {
   ///@return {VisuNewProjectForm}
   save = function(manifestPath) {
     var json = this.serialize()
-    Core.print("JSON_", JSON.stringify(json, { pretty: true }))
     var controller = Beans.get(BeanVisuController)
 
     var path = Assert.isType(FileUtil.getDirectoryFromPath(manifestPath), String)
@@ -808,8 +807,9 @@ function VisuNewProjectForm(json = null) constructor {
       "model": "io.alkapivo.visu.controller.VisuTrack",
       "version": "1",
       "data": {  
-        "bpm": Beans.get(BeanVisuEditor).store.getValue("bpm"),
-        "bpm-sub": Beans.get(BeanVisuEditor).store.getValue("bpm-sub"),
+        "bpm": Beans.get(BeanVisuEditorController).store.getValue("bpm"),
+        "bpm-count": Beans.get(BeanVisuEditorController).store.getValue("bpm-count"),
+        "bpm-sub": Beans.get(BeanVisuEditorController).store.getValue("bpm-sub"),
         "bullet": "template/bullet.json",
         "coin": "template/coin.json",
         "editor": [],
@@ -1523,7 +1523,7 @@ function VisuNewProjectForm(json = null) constructor {
       FileUtil.copyFile(json.texture, $"{path}{manifest.data.texture}")
     }
 
-    var visuTrack = global.__VisuTrack
+    var visuTrack = controller.track
     if (json.includeBrushes && Core.isType(visuTrack, VisuTrack)) {
       visuTrack.editor.forEach(function(brush, index, acc) {
         acc.manifest.data.editor = GMArray.add(acc.manifest.data.editor, brush)
@@ -1653,7 +1653,7 @@ function VisuNewProjectModal(_config = null) constructor {
           container: container,
           replace: true,
         }))
-      }, Beans.get(BeanVisuController).uiService)
+      }, Beans.get(BeanVisuEditorController).uiService)
     },
     "close": function(event) {
       var context = this
@@ -1662,7 +1662,7 @@ function VisuNewProjectModal(_config = null) constructor {
           name: key, 
           quiet: true,
         }))
-      }, Beans.get(BeanVisuController).uiService).clear()
+      }, Beans.get(BeanVisuEditorController).uiService).clear()
     },
   }))
 

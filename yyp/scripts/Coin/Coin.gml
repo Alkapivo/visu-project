@@ -91,6 +91,13 @@ function Coin(config) constructor {
     ? config.speed 
     : { value: -3.0, target: 1.0, factor: 0.1, increase: 0.0 })
 
+  ///@type {Number}
+  angle = Core.isType(Struct.get(config, "angle"), Number) ? config.angle : 90.0
+
+  ///@private
+  ///@type {Boolean}
+  simpleAngle = this.angle == 90.0
+
   ///@param {Player} target
   ///@return {Boolean}
   static collide = function(target) { 
@@ -111,9 +118,33 @@ function Coin(config) constructor {
     )
   }
 
+  ///@private
+  ///@type {Boolean}
+  magnet = false
+
+  ///@private
+  ///@type {Number}
+  magnetSpeed = 0.0
+
+  ///@param {?Player} player
   ///@return {Coin}
-  static move = function() {
-    this.y = this.y + (this.speed.update().value / 100.0)
+  static move = function(player = null) {
+    var value = (this.speed.update().value / 100.0) 
+    if (player != null && Math.fetchLength(this.x, this.y, player.x, player.y) < 0.4) {
+      var to = Math.fetchAngle(this.x, this.y, player.x, player.y)
+      this.magnet = true
+      this.magnetSpeed = clamp(this.magnetSpeed + DeltaTime.apply(0.000004), 0.0, 0.005)
+      this.speed.value = (abs(value) * 100.0)
+      this.angle = Math.lerpAngle(this.angle, to, 0.1)
+    } else {
+      var dir = value < 0.0 ? 90.0 : 270.0
+      this.magnetSpeed = clamp(this.magnetSpeed - DeltaTime.apply(0.0005), 0.0, 0.005)
+      this.angle = this.simpleAngle && !this.magnet ? dir : Math.lerpAngle(this.angle, dir, 0.05)
+    }
+
+    value = abs(value) + this.magnetSpeed
+    this.x += Math.fetchCircleX(value, this.angle)
+    this.y += Math.fetchCircleY(value, this.angle)
     return this
   }
 }

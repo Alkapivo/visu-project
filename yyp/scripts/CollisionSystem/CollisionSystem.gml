@@ -2,11 +2,11 @@
 
   
 
-///@param {GridSystem} _system
+///@param {GridECS} _system
 function CollisionSystem(_system) constructor {
 
-  ///@type {GridSystem}
-  system = Assert.isType(_system, GridSystem)
+  ///@type {GridECS}
+  system = Assert.isType(_system, GridECS)
 
   ///@param {GridEntity} source
   ///@param {GridEntity} target

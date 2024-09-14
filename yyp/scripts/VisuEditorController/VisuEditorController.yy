@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"VisuEditorController",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"VisuEditorController",
+  "parent":{
+    "name":"editor",
+    "path":"folders/visu/src/editor.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

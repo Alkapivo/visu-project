@@ -101,7 +101,9 @@ function TextureTemplate(_name, json) constructor {
       
       var value = Struct.get(acc.template, field)
       if (Optional.is(value)) {
-        value = field == "file" ? FileUtil.getFilenameFromPath(value) : value
+        value = field == "file" 
+          ? (value == "" ? value : FileUtil.getFilenameFromPath(value)) 
+          : value
         Struct.set(acc.json, field, value)
       }
     }, acc)
@@ -159,8 +161,8 @@ function _TextureUtil() constructor {
     }
 
     var textureService = Beans.get(BeanTextureService)
-    if (Optional.is(textureService)) {
-      var template = textureService.templates.get(name)
+    if (Optional.is(textureService) && !Struct.getDefault(config, "disableTextureService", false)) {
+      var template = textureService.getTemplate(name)
       if (Optional.is(template)) {
         return new Texture(template.asset, 
           Optional.is(config) ? config : template)

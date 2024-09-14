@@ -1,10 +1,27 @@
 ///@package io.alkapivo.core.service.texture
 
 #macro BeanTextureService "TextureService"
-function TextureService(): Service() constructor {
+///@param {Struct} [config]
+function TextureService(config = {}): Service() constructor {
 
   ///@type {Map<String, TextureTemplate>}
   templates = new Map(String, TextureTemplate)
+
+  ///@return {Map<String, TextureTemplate>}
+  getStaticTemplates = method(this, Core.isType(Struct.get(config, "getStaticTemplates"), Callable)
+    ? config.getStaticTemplates
+    : function() {
+      return this.templates
+    })
+
+  ///@param {String} name
+  ///@return {?TextureTemplate}
+  getTemplate = function(name) {
+    var template = this.templates.get(name)
+    return template == null
+      ? this.getStaticTemplates().get(name)
+      : template
+  }
 
   ///@private
   ///@type {EventPump}
