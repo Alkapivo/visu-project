@@ -1,0 +1,12 @@
+{
+  "$GMShader":"",
+  "%Name":"shader_wasm",
+  "name":"shader_wasm",
+  "parent":{
+    "name":"shader",
+    "path":"folders/core/resource/shader.yy",
+  },
+  "resourceType":"GMShader",
+  "resourceVersion":"2.0",
+  "type":1,
+}

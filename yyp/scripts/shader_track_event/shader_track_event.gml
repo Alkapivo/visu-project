@@ -23,6 +23,24 @@ global.__shader_track_event = {
       Struct.set(eventData, "alphaMax", Struct
         .get(data, "shader-spawn_alpha-max"))
     }
+    
+    var denyList = new Map(String, Boolean, {
+      "shader_lighting_with_glow": false,
+      "shader_002_blue": false,
+      "shader_sincos_3d": false,
+      "shader_flame": false,
+      "shader_whirlpool": false,
+      "shader_warp_speed_2": false,
+      "shader_colors_embody": false,
+      "shader_wasm": false,
+    })
+    
+    var shaderTemplate = Beans.get(BeanVisuController).shaderPipeline.getTemplate(eventData.template)
+    
+    if (denyList.contains(shaderTemplate.shader)) {
+      Logger.warn("shader_track_event", $"Skip event, because shader is not supported: {shaderTemplate.shader}")
+      return
+    }
 
     var event = new Event("spawn-shader", JSON.clone(eventData))
     var controller = Beans.get(BeanVisuController)

@@ -9,7 +9,7 @@
   "bitRate":128,
   "compression":0,
   "conversionMode":0,
-  "duration":129.70934,
+  "duration":245.51492,
   "name":"sound_visu_wasm",
   "parent":{
     "name":"sound",

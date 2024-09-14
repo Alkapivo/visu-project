@@ -318,6 +318,14 @@ global.__shaders = {
       "iFactor": "FLOAT",
       "iSeed": "VECTOR3"
     }
+  },
+   "shader_wasm": {
+    "type": "GLSL_ES",
+    "uniforms": {
+      "iTime": "FLOAT",
+      "iResolution": "VECTOR2",
+      "iIterations": "FLOAT"
+    }
   }
 }
 #macro SHADERS global.__shaders
@@ -337,10 +345,10 @@ global.__ShaderType = new _ShaderType()
 function Shader(_asset, json) constructor {
 
   ///@type {GMShader}
-  asset = Assert.isType(_asset, GMShader)
+  asset = Core.isType(_asset, GMShader) ? _asset : shader_wasm
 
   ///@type {String}
-  name = Assert.isType(shader_get_name(_asset), String)
+  name = Core.isType(shader_get_name(_asset), String)
 
   ///@type {String}
   //type = Assert.isEnum(json.type, ShaderType)

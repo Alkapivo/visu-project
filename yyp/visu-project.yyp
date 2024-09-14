@@ -516,6 +516,7 @@
     {"id":{"name":"shader_ui_noise_halo","path":"shaders/shader_ui_noise_halo/shader_ui_noise_halo.yy",},},
     {"id":{"name":"shader_warp_speed_2","path":"shaders/shader_warp_speed_2/shader_warp_speed_2.yy",},},
     {"id":{"name":"shader_warp","path":"shaders/shader_warp/shader_warp.yy",},},
+    {"id":{"name":"shader_wasm","path":"shaders/shader_wasm/shader_wasm.yy",},},
     {"id":{"name":"shader_wave","path":"shaders/shader_wave/shader_wave.yy",},},
     {"id":{"name":"shader_whirlpool","path":"shaders/shader_whirlpool/shader_whirlpool.yy",},},
     {"id":{"name":"sound_sfx_player_collect_bomb","path":"sounds/sound_sfx_player_collect_bomb/sound_sfx_player_collect_bomb.yy",},},

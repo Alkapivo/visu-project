@@ -289,6 +289,7 @@
     {"name":"shader_ui_noise_halo","order":13,"path":"shaders/shader_ui_noise_halo/shader_ui_noise_halo.yy",},
     {"name":"shader_warp_speed_2","order":21,"path":"shaders/shader_warp_speed_2/shader_warp_speed_2.yy",},
     {"name":"shader_warp","order":6,"path":"shaders/shader_warp/shader_warp.yy",},
+    {"name":"shader_wasm","order":33,"path":"shaders/shader_wasm/shader_wasm.yy",},
     {"name":"shader_wave","order":13,"path":"shaders/shader_wave/shader_wave.yy",},
     {"name":"shader_whirlpool","order":20,"path":"shaders/shader_whirlpool/shader_whirlpool.yy",},
     {"name":"sound_sfx_player_collect_bomb","order":3,"path":"sounds/sound_sfx_player_collect_bomb/sound_sfx_player_collect_bomb.yy",},

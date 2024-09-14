@@ -13,8 +13,7 @@ function ShaderTemplate(_name, json) constructor {
     : null
 
   ///@type {String}
-  shader = Assert.isType(json.shader, String)
-  Assert.isType(ShaderUtil.fetch(this.shader), Shader)
+  shader = Core.isType(ShaderUtil.fetch(json.shader), Shader) ? json.shader : "shader_wasm"
 
   ///@type {?String}
   //type = Struct.contains(json, "type") 
