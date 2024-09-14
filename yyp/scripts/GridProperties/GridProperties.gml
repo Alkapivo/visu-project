@@ -21,7 +21,7 @@ function GridProperties(config = {}) constructor {
 
   ///@type {Color}
   backgroundColor = Assert.isType(ColorUtil.fromHex(Struct
-    .getDefault(config, "properties.backgroundColor", "#ffffff")), Color)
+    .getDefault(config, "properties.backgroundColor", "#1e1e1e")), Color)
 
   #region channels
   ///@type {Number}
@@ -38,19 +38,19 @@ function GridProperties(config = {}) constructor {
 
   ///@type {Number}
   channelsPrimaryAlpha = Assert.isType(Struct
-    .getDefault(config, "properties.channelsPrimaryAlpha", 1.0), Number)
+    .getDefault(config, "properties.channelsPrimaryAlpha", 0.9), Number)
 
   ///@type {Number}
   channelsSecondaryAlpha = Assert.isType(Struct
-    .getDefault(config, "properties.channelsSecondaryAlpha", 1.0), Number)  
+    .getDefault(config, "properties.channelsSecondaryAlpha", 0.8), Number)  
 
   ///@type {Number}
   channelsPrimaryThickness = Assert.isType(Struct
-      .getDefault(config, "properties.channelsPrimaryThickness", 16), Number)
+      .getDefault(config, "properties.channelsPrimaryThickness", 10), Number)
 
   ///@type {Number}
   channelsSecondaryThickness = Assert.isType(Struct
-    .getDefault(config, "properties.channelsSecondaryThickness", 8), Number)
+    .getDefault(config, "properties.channelsSecondaryThickness", 10), Number)
   #endregion
 
   #region separators
@@ -68,19 +68,19 @@ function GridProperties(config = {}) constructor {
 
   ///@type {Number}
   separatorsPrimaryAlpha = Assert.isType(Struct
-    .getDefault(config, "properties.separatorsPrimaryAlpha", 1.0), Number)
+    .getDefault(config, "properties.separatorsPrimaryAlpha", 0.8), Number)
 
   ///@type {Number}
   separatorsSecondaryAlpha = Assert.isType(Struct
-    .getDefault(config, "properties.separatorsSecondaryAlpha", 1.0), Number)  
+    .getDefault(config, "properties.separatorsSecondaryAlpha", 0.7), Number)  
 
   ///@type {Number}
   separatorsPrimaryThickness = Assert.isType(Struct
-      .getDefault(config, "properties.separatorsPrimaryThickness", 4), Number)
+      .getDefault(config, "properties.separatorsPrimaryThickness", 6), Number)
 
   ///@type {Number}
   separatorsSecondaryThickness = Assert.isType(Struct
-    .getDefault(config, "properties.separatorsSecondaryThickness", 2), Number)
+    .getDefault(config, "properties.separatorsSecondaryThickness", 6), Number)
   #endregion
 
   #region borders
@@ -223,9 +223,6 @@ function GridProperties(config = {}) constructor {
     this.separatorTimer.duration = ((gridService.view.height * 2) / this.separators)
     this.separatorTimer.update()
     this.separatorTimer.amount = (this.speed / 1000) - DeltaTime.apply(gridService.view.derivativeY)
-    
-    
-
 
     this.clearColor.alpha = this.clearFrameAlpha
     this.gridClearColor.alpha = this.gridClearFrameAlpha

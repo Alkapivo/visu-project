@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"SFX",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"SFX",
+  "parent":{
+    "name":"sfx",
+    "path":"folders/core/src/service/sound/sfx.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

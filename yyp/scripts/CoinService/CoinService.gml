@@ -11,14 +11,27 @@ function CoinService(config = {}): Service() constructor {
   ///@type {Stack<Number>}
   gc = new Stack(Number)
 
+  ///@param {String} name
+  ///@return {?CoinTemplate}
+  getTemplate = function(name) {
+    var template = this.templates.get(name)
+    return template == null
+      ? Visu.assets().coinTemplates.get(name)
+      : template
+  }
+
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "spawn-coin": function(event) {
-      var template = new CoinTemplate(event.data.template, this.templates
-        .get(event.data.template)
+      var template = new CoinTemplate(event.data.template, this
+        .getTemplate(event.data.template)
         .serialize())
       Struct.set(template, "x", Assert.isType(event.data.x, Number))
       Struct.set(template, "y", Assert.isType(event.data.y, Number))
+      Struct.set(template, "angle", Struct.get(event.data, "angle"))
+      if (Optional.is(Struct.get(event.data, "speed"))) {
+        Struct.append(template.speed, event.data.speed)
+      }
       
       this.coins.add(new Coin(template))
     },
@@ -26,10 +39,7 @@ function CoinService(config = {}): Service() constructor {
       this.coins.clear()
     },
     "reset-templates": function(event) {
-      this.templates.clear().set("coin-default", new CoinTemplate("coin-default", {
-        "sprite": { "name": "texture_baron" },
-        "category": CoinCategory.POINT,
-      }))
+      this.templates.clear()
     },
   }))
 
@@ -44,7 +54,7 @@ function CoinService(config = {}): Service() constructor {
   ///@param {Number} index
   ///@param {Struct} acc
   updateCoin = function(coin, index, acc) {
-    coin.move()
+    coin.move(acc.player)
     if (acc.player != null && coin.collide(acc.player)) {
       acc.player.stats.dispatchCoin(coin)
       acc.gc.push(index)
@@ -66,7 +76,6 @@ function CoinService(config = {}): Service() constructor {
   ///@return {CoinService}
   update = function() { 
     this.dispatcher.update()
-
     var controller = Beans.get(BeanVisuController)
     this.coins.forEach(this.updateCoin, {
       player: controller.playerService.player,

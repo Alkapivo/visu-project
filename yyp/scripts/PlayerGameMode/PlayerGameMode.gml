@@ -161,7 +161,7 @@ function PlayerBulletHellGameMode(json) {
       static calcSpeed = function(config, player, keyA, keyB, keyFocus) {
         var speedMax = config.speedMax
         if (keyFocus) {
-          var factor = abs(config.speedMax - config.speedMaxFocus) / GAME_FPS
+          var factor = abs(config.speedMax - config.speedMaxFocus) / 15.0
           speedMax = clamp(abs(config.speed) - DeltaTime.apply(factor), 
             config.speedMaxFocus, config.speedMax)
         }
@@ -178,11 +178,11 @@ function PlayerBulletHellGameMode(json) {
       
       var keys = player.keyboard.keys
       if (GMTFContext.isFocused()) {
-        keys.left.on = false
-        keys.right.on = false
-        keys.up.on = false
-        keys.down.on = false
-        keys.action.on = false
+        Struct.forEach(keys, function(key) {
+          key.on = false
+          key.pressed = false
+          key.released = false
+        })
       }
 
       if (keys.action.on) {
@@ -192,9 +192,9 @@ function PlayerBulletHellGameMode(json) {
             return
           }
 
-          var force = acc.player.stats.force.get()
-          if (force < gun.minForce 
-            || (gun.maxForce != null && force > gun.maxForce)) {
+          var forceLevel = acc.player.stats.forceLevel.get()
+          if (forceLevel < gun.minForce 
+            || (gun.maxForce != null && forceLevel > gun.maxForce)) {
             return
           }
 
@@ -207,6 +207,8 @@ function PlayerBulletHellGameMode(json) {
             speed: gun.speed,
             template: gun.bullet,
           }))
+
+          acc.controller.sfxService.play("player-shoot")
         }, {
           controller: controller,
           player: player,
@@ -225,6 +227,8 @@ function PlayerBulletHellGameMode(json) {
 
       if (Optional.is(player.signals.shroomCollision) 
         || Optional.is(player.signals.bulletCollision)) {
+        this.x.speed = 0.0
+        this.y.speed = 0.0
         player.stats.dispatchDeath()
       }
 

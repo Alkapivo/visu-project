@@ -4,37 +4,14 @@
 function VisuIO() constructor {
 
   ///@type {Keyboard}
-  keyboard = new Keyboard(
-    { 
-      controlTrack: KeyboardKeyType.SPACE,
-      renderLeftPane: KeyboardKeyType.F1,
-      renderBottomPane: KeyboardKeyType.F2,
-      renderRightPane: KeyboardKeyType.F3,
-      renderTrackControl: KeyboardKeyType.F4,
-      renderUI: KeyboardKeyType.F5,
-      cameraKeyboardLook: KeyboardKeyType.F6,
-      cameraMouseLook: KeyboardKeyType.F7,
-      fullscreen: KeyboardKeyType.F11,
-      exitModal: KeyboardKeyType.ESC,
-      newProject: "N",
-      openProject: "O",
-      saveProject: "S",
-      saveTemplate: "T",
-      saveBrush: "U",
-      selectTool: "S",
-      eraseTool: "E",
-      brushTool: "B",
-      cloneTool: "C",
-      previewBrush: "P",
-      previewEvent: "I",
-      snapToGrid: "G",
-      zoomIn: KeyboardKeyType.PLUS,
-      zoomOut: KeyboardKeyType.MINUS,
-      numZoomIn: KeyboardKeyType.NUM_PLUS,
-      numZoomOut: KeyboardKeyType.NUM_MINUS,
-      controlLeft: KeyboardKeyType.CONTROL_LEFT,
-    }
-  )
+  keyboard = new Keyboard({ 
+    controlTrack: KeyboardKeyType.SPACE,
+    cameraKeyboardLook: KeyboardKeyType.F6,
+    cameraMouseLook: KeyboardKeyType.F7,
+    fullscreen: KeyboardKeyType.F11,
+    controlLeft: KeyboardKeyType.CONTROL_LEFT,
+    openProject: "O",
+  })
 
   ///@type {Mouse}
   mouse = new Mouse({ 
@@ -57,161 +34,6 @@ function VisuIO() constructor {
         case "play": controller.send(new Event("pause")) break
         case "pause": controller.send(new Event("play")) break
       }
-    }
-
-    var editor = Beans.get(BeanVisuEditor)
-    if (!Core.isType(editor, VisuEditor)) {
-      return this
-    }
-
-    if (this.keyboard.keys.selectTool.pressed) {
-      editor.store.get("tool").set("tool_select")
-    }
-
-    if (this.keyboard.keys.eraseTool.pressed) {
-      editor.store.get("tool").set("tool_erase")
-    }
-
-    if (this.keyboard.keys.brushTool.pressed) {
-      editor.store.get("tool").set("tool_brush")
-    }
-
-    if (this.keyboard.keys.cloneTool.pressed) {
-      editor.store.get("tool").set("tool_clone")
-    }
-
-    if (this.keyboard.keys.zoomIn.pressed 
-      || this.keyboard.keys.numZoomIn.pressed) {
-
-      var item = editor.store.get("timeline-zoom")
-      item.set(clamp(item.get() - 1, 5, 20))
-    }
-
-    if (this.keyboard.keys.zoomOut.pressed 
-      || this.keyboard.keys.numZoomOut.pressed) {
-
-      var item = editor.store.get("timeline-zoom")
-      item.set(clamp(item.get() + 1, 5, 20))
-    }
-
-    if (this.keyboard.keys.snapToGrid.pressed) {
-      var item = editor.store.get("snap")
-      item.set(!item.get())
-    }
-
-    return this
-  }
-
-  ///@private
-  ///@param {VisuController} controller
-  ///@return {VisuIO}
-  fullscreenKeyboardEvent = function(controller) {
-    if (this.keyboard.keys.fullscreen.pressed) {
-      var fullscreen = controller.displayService.getFullscreen()
-      Logger.debug("VisuIO", String.join("Set fullscreen to ", fullscreen ? "'false'" : "'true'", "."))
-      controller.displayService.setFullscreen(!fullscreen)
-    }
-  }
-
-  ///@private
-  ///@param {VisuController} controller
-  ///@return {VisuIO}
-  functionKeyboardEvent = function(controller) {
-    if (this.keyboard.keys.renderUI.pressed) {
-      controller.renderUI = !controller.renderUI
-    }
-
-    if (this.keyboard.keys.cameraKeyboardLook.pressed) {
-      controller.gridRenderer.camera.enableKeyboardLook = !controller.gridRenderer.camera.enableKeyboardLook
-    }
-
-    if (this.keyboard.keys.cameraMouseLook.pressed) {
-      controller.gridRenderer.camera.enableMouseLook = !controller.gridRenderer.camera.enableMouseLook
-    }
-
-    var editor = Beans.get(BeanVisuEditor)
-    if (!Core.isType(editor, VisuEditor)) {
-      return this
-    }
-    
-    if (this.keyboard.keys.renderTrackControl.pressed) {
-      editor.store.get("render-trackControl")
-        .set(!editor.store.getValue("render-trackControl"))
-    }
-
-    if (this.keyboard.keys.renderLeftPane.pressed) {
-      editor.store.get("render-event")
-        .set(!editor.store.getValue("render-event"))
-    }
-
-    if (this.keyboard.keys.renderBottomPane.pressed) {
-      editor.store.get("render-timeline")
-        .set(!editor.store.getValue("render-timeline"))
-    }
-
-    if (this.keyboard.keys.renderRightPane.pressed) {
-      editor.store.get("render-brush")
-        .set(!editor.store.getValue("render-brush"))
-    }
-
-    return this
-  }
-
-  ///@private
-  ///@param {VisuController} controller
-  ///@return {VisuIO}
-  modalKeyboardEvent = function(controller) {
-    var editor = Beans.get(BeanVisuEditor)
-    if (!Core.isType(editor, VisuEditor)) {
-      return this
-    }
-
-    if (!GMTFContext.isFocused() 
-      && this.keyboard.keys.exitModal.pressed) {
-
-      if (Core.isType(controller.uiService.find("visu-new-project-modal"), UI)) {
-        editor.newProjectModal.send(new Event("close"))
-      } else if (Core.isType(controller.uiService.find("visu-modal"), UI)) {
-        editor.exitModal.send(new Event("close"))
-      } else {
-        editor.exitModal.send(new Event("open").setData({
-          layout: new UILayout({
-            name: "display",
-            x: function() { return 0 },
-            y: function() { return 0 },
-            width: function() { return GuiWidth() },
-            height: function() { return GuiHeight() },
-          }),
-        }))
-        controller.gridRenderer.camera.enableMouseLook = false
-        controller.gridRenderer.camera.enableKeyboardLook = false
-      }
-    }
-
-    if (!GMTFContext.isFocused() 
-      && this.keyboard.keys.controlLeft.on 
-      && this.keyboard.keys.newProject.pressed) {
-      
-      editor.newProjectModal.send(new Event("open").setData({
-        layout: new UILayout({
-          name: "display",
-          x: function() { return 0 },
-          y: function() { return 0 },
-          width: function() { return GuiWidth() },
-          height: function() { return GuiHeight() },
-        }),
-      }))
-    }
-
-    return this
-  }
-  
-  ///@private
-  ///@param {VisuController} controller
-  ///@return {VisuIO}
-  titleBarKeyboardEvent = function(controller) {
-    if (GMTFContext.isFocused()) {
-      return
     }
 
     if (this.keyboard.keys.controlLeft.on 
@@ -237,88 +59,30 @@ function VisuIO() constructor {
       }
     }
 
-    if (this.keyboard.keys.controlLeft.on 
-      && this.keyboard.keys.saveProject.pressed) {
-      try {
-        var path = FileUtil.getPathToSaveWithDialog({ 
-          description: "Visu track file",
-          filename: "manifest", 
-          extension: "visu",
-        })
-
-        if (!Core.isType(path, String) || String.isEmpty(path)) {
-          return
-        }
-
-        global.__VisuTrack.saveProject(path)
-
-        controller.send(new Event("spawn-popup", 
-          { message: $"Project '{controller.trackService.track.name}' saved successfully at: '{path}'" }))
-      } catch (exception) {
-        var message = $"Cannot save the project: {exception.message}"
-        controller.send(new Event("spawn-popup", { message: message }))
-        Logger.error("VETitleBar", message)
-      }
-    }
-
     return this
   }
 
   ///@private
   ///@param {VisuController} controller
   ///@return {VisuIO}
-  templateToolbarKeyboardEvent = function(controller) {
-    if (GMTFContext.isFocused()) {
-      return this
+  fullscreenKeyboardEvent = function(controller) {
+    if (this.keyboard.keys.fullscreen.pressed) {
+      var fullscreen = controller.displayService.getFullscreen()
+      Logger.debug("VisuIO", String.join("Set fullscreen to ", fullscreen ? "'false'" : "'true'", "."))
+      controller.displayService.setFullscreen(!fullscreen)
     }
-    
-    var editor = Beans.get(BeanVisuEditor)
-    if (!Core.isType(editor, VisuEditor)) {
-      return this
-    }
-
-    if (this.keyboard.keys.saveTemplate.pressed 
-      && editor.store.getValue("render-event")) {
-      
-      editor.accordion.templateToolbar.send(new Event("save-template"))
-    }
-
-    if (this.keyboard.keys.previewEvent.pressed) {
-      var event = editor.accordion.eventInspector.store.getValue("event")
-      if (Core.isType(event, VEEvent)) {
-        var handler = controller.trackService.handlers.get(event.type)
-        handler(event.toTemplate().event.data)
-      }
-    }
-    return this
   }
 
   ///@private
   ///@param {VisuController} controller
   ///@return {VisuIO}
-  brushToolbarKeyboardEvent = function(controller) {
-    if (GMTFContext.isFocused()) {
-      return this
+  functionKeyboardEvent = function(controller) {
+    if (this.keyboard.keys.cameraKeyboardLook.pressed) {
+      controller.visuRenderer.gridRenderer.camera.enableKeyboardLook = !controller.visuRenderer.gridRenderer.camera.enableKeyboardLook
     }
 
-    var editor = Beans.get(BeanVisuEditor)
-    if (!Core.isType(editor, VisuEditor)) {
-      return this
-    }
-    
-    if (this.keyboard.keys.saveBrush.pressed 
-      && editor.store.getValue("render-brush")) {
-      
-      editor.brushToolbar.send(new Event("save-brush"))
-    }
-
-    if (!this.keyboard.keys.controlLeft.on 
-      && this.keyboard.keys.previewBrush.pressed) {
-      var brush = editor.brushToolbar.store.getValue("brush")
-      if (Core.isType(brush, VEBrush)) {
-        var handler = controller.trackService.handlers.get(brush.type)
-        handler(brush.toTemplate().properties)
-      }
+    if (this.keyboard.keys.cameraMouseLook.pressed) {
+      controller.visuRenderer.gridRenderer.camera.enableMouseLook = !controller.visuRenderer.gridRenderer.camera.enableMouseLook
     }
 
     return this
@@ -333,10 +97,6 @@ function VisuIO() constructor {
         x: MouseUtil.getMouseX(), 
         y: MouseUtil.getMouseY(),
       })
-    }
-
-    if (!controller.renderUI) {
-      return this
     }
 
     if (this.mouse.buttons.left.pressed) {
@@ -394,15 +154,15 @@ function VisuIO() constructor {
       this.controlTrackKeyboardEvent(controller)
       this.fullscreenKeyboardEvent(controller)
       this.functionKeyboardEvent(controller)
-      this.titleBarKeyboardEvent(controller)
-      this.modalKeyboardEvent(controller)
-      this.templateToolbarKeyboardEvent(controller)
-      this.brushToolbarKeyboardEvent(controller)
       this.mouseEvent(controller)
     } catch (exception) {
-      var message = $"'updateIO' fatal error: {exception.message}"
+      var message = $"'VisuIO.update' fatal error: {exception.message}"
       Logger.error(BeanVisuIO, message)
-      this.send(new Event("spawn-popup", { message: message }))
+
+      var controller = Beans.get(BeanVisuController)
+      if (Core.isType(controller, VisuController)) {
+        controller.send(new Event("spawn-popup", { message: message }))
+      }
     }
 
     return this

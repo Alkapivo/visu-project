@@ -14,6 +14,12 @@ function brush_grid_particle(json = null) {
       "grid-particle_template": {
         type: String,
         value: Struct.getDefault(json, "grid-particle_template", "particle-default"),
+        passthrough: function(value) {
+          var particleService = Beans.get(BeanVisuController).particleService
+          return particleService.templates.contains(value) || Visu.assets().particleTemplates.contains(value)
+            ? value
+            : (Core.isType(this.value, String) ? this.value : "particle-default")
+        },
       },
       "grid-particle_beginX": {
         type: Number,

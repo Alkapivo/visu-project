@@ -247,6 +247,32 @@ function _Math() constructor {
     return point_direction(fromX, fromY, toX, toY)
   }
 
+  ///@param {Number} angle
+  ///@return {Number}
+  normalizeAngle = function(angle) {
+    return (angle mod 360 + 360) mod 360;
+  }
+
+  ///@param {Number} from
+  ///@param {Number} to
+  ///@param {Number} factor
+  ///@return {Number}
+  lerpAngle = function(from, to, factor) {
+    var _from = (from mod 360 + 360) mod 360
+    var _to = (to mod 360 + 360) mod 360
+    var diff = _to - _from
+    if (abs(diff) > 180) {
+      if (diff > 0) {
+        diff -= 360
+      } else {
+        diff += 360
+      }
+    }
+
+    var result = _from + diff * factor
+    return (result mod 360 + 360) mod 360
+  }
+
   ///@param {Number} fromX
   ///@param {Number} fromY
   ///@param {Number} toX

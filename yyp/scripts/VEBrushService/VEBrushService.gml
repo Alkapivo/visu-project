@@ -1,10 +1,10 @@
 ///@package io.alkapivo.visu.editor.service.brush
 
-///@param {VisuEditor}
+///@param {VisuEditorController}
 function VEBrushService(_editor) constructor {
 
-  ///@type {VisuEditor}
-  editor = Assert.isType(_editor, VisuEditor)
+  ///@type {VisuEditorController}
+  editor = Assert.isType(_editor, VisuEditorController)
 
   ///@type {Map<String, Array>}
   templates = new Map(String, Array)

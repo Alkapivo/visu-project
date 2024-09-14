@@ -5,6 +5,7 @@ function _GridEntityType(): Enum() constructor {
   BULLET = "bullet"
   ENEMY = "enemy"
   PLAYER = "player"
+  COIN = "coin"
 }
 global.__GridEntityType = new _GridEntityType()
 #macro GridEntityType global.__GridEntityType

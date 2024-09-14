@@ -39,6 +39,9 @@ function Sprite(_texture, config = {}) constructor {
   ///@type {Boolean}
   animate = Struct.getDefault(config, "animate", this.texture.frames > 1)
 
+  ///@type {Boolean}
+  randomFrame = Struct.getDefault(config, "randomFrame", false)
+
   ///@return {String}
   getName = function() {
     return this.texture.name
@@ -92,6 +95,11 @@ function Sprite(_texture, config = {}) constructor {
   ///@return {Boolean}
   getAnimate = function() {
     return this.animate
+  }
+
+  ///@return {Boolean}
+  getRandomFrame = function() {
+    return this.randomFrame
   }
 
   ///@param {Number} frame
@@ -149,6 +157,17 @@ function Sprite(_texture, config = {}) constructor {
     this.animate = animate
     return this
   }
+
+  ///@param {Boolean} randomFrame
+  ///@return {Sprite}
+  setRandomFrame = function(randomFrame) {
+    this.randomFrame = randomFrame
+    if (this.randomFrame) {
+      this.setFrame(irandom(this.texture.frames))
+    }
+    
+    return this
+  }
   
   ///@param {Number} x
   ///@param {Number} y
@@ -156,6 +175,25 @@ function Sprite(_texture, config = {}) constructor {
   render = function(x, y) {
     draw_sprite_ext(this.texture.asset, this.frame, x, y, this.scaleX, this.scaleY, 
       this.angle, this.blend, this.alpha)
+    
+    if (!this.animate) {
+      return this
+    }
+
+    this.frame += DeltaTime.apply(this.speed / GAME_FPS)
+    if (this.frame > this.texture.frames) {
+      this.frame = this.frame - (this.texture.frames 
+        * floor(this.frame / this.texture.frames))
+    }
+    return this
+  }
+
+  ///@param {Number} x
+  ///@param {Number} y
+  ///@return {Sprite}
+  renderTiled = function(x, y) {
+    draw_sprite_tiled_ext(this.texture.asset, this.frame, x, y, this.scaleX, this.scaleY, 
+      this.blend, this.alpha)
     
     if (!this.animate) {
       return this
@@ -218,6 +256,7 @@ function Sprite(_texture, config = {}) constructor {
       angle: this.getAngle(),
       blend: ColorUtil.fromGMColor(this.getBlend()).toHex(),
       animate: this.getAnimate(),
+      randomFrame: this.getRandomFrame(),
     }
 
     ///@description Shrink json size
@@ -253,9 +292,17 @@ function Sprite(_texture, config = {}) constructor {
       if (json.animate == true) {
         Struct.remove(json, "animate")
       }
+
+      if (json.randomFrame == false) {
+        Struct.remove(json, "randomFrame")
+      }
     }
     
     return json
+  }
+
+  if (this.randomFrame) {
+    this.setFrame(irandom(this.texture.frames))
   }
 }
 
@@ -269,16 +316,14 @@ function _SpriteUtil() constructor {
     var sprite = null
     try {
       var json = JSON.clone(_json)
-      var texture = Assert.isType(TextureUtil.parse(json.name), Texture)
-      if (Struct.contains(json, "frame")) {
-        json.frame = clamp(
-          json.frame == "random" 
-            ? random(texture.frames - 1.0) 
-            : NumberUtil.parse(json.frame, 0.0), 
-          0.0, 
-          texture.frames - 1.0
-        )
-      }
+      var texture = Assert.isType(TextureUtil.parse(json.name, json), Texture)
+      Struct.set(json, "frame", clamp(
+        (Struct.get(json, "randomFrame") == true
+          ? random(texture.frames - 1.0) 
+          : NumberUtil.parse(Struct.get(json, "frame"), 0.0)), 
+        0.0, 
+        texture.frames - 1.0
+      ))
 
       if (Struct.contains(json, "blend")) {
         json.blend = ColorUtil

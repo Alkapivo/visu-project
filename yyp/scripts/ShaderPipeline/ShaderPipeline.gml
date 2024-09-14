@@ -78,11 +78,11 @@ function ShaderPipeline(config = {}): Service() constructor {
         return mergeQueue
       }
 
-      if (!this.templates.contains(inherit)) {
+      if (this.getTemplate(inherit) == null) {
         return mergeQueue
       }
 
-      var parentJson = this.templates.get(inherit)
+      var parentJson = this.getTemplate(inherit)
       return callback(callback, mergeQueue, inherit, parentJson)
     }
 
@@ -91,11 +91,11 @@ function ShaderPipeline(config = {}): Service() constructor {
         mergeQueue: addToMergeQueue(addToMergeQueue, new Array(), _name, json),
         shader: null,
         properties: {},
-        templates: this.templates,
+        getTemplate: this.getTemplate,
       }
 
       IntStream.forEach(acc.mergeQueue.size() - 1, 0, function (index, no, acc) {
-        var template = acc.templates.get(acc.mergeQueue.get(index))
+        var template = acc.getTemplate(acc.mergeQueue.get(index))
         if (!Core.isType(template, Struct)) {
           return
         }
@@ -124,9 +124,17 @@ function ShaderPipeline(config = {}): Service() constructor {
   height = 0
 
   ///@type {Map<String, ShaderTemplate>}
-  templates = Struct.contains(config, "templates")
-     ? Assert.isType(config.templates, Map)
-     : new Map(String, ShaderTemplate)
+  templates = Core.isType(Struct.get(config, "templates"), Map) 
+    ? config.templates : new Map(String, ShaderTemplate)
+
+  ///@param {String} name
+  ///@return {?ShaderTemplate}
+  getTemplate = function(name) {
+    var template = this.templates.get(name)
+    return template == null
+      ? Visu.assets().shaderTemplates.get(name)
+      : template
+  }
 
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
@@ -136,7 +144,7 @@ function ShaderPipeline(config = {}): Service() constructor {
       }
 
       var templateName = Assert.isType(Struct.get(event.data, "template"), String)
-      var json = Assert.isType(this.templates.get(templateName), ShaderTemplate)
+      var json = Assert.isType(this.getTemplate(templateName), ShaderTemplate)
       var duration = Assert.isType(Struct.get(event.data, "duration"), Number)
       var template = Assert.isType(this.factoryShaderPipelineTaskTemplate(
         templateName, json), ShaderPipelineTaskTemplate)
@@ -190,7 +198,7 @@ function ShaderPipeline(config = {}): Service() constructor {
       this.executor.tasks.clear()
     },
     "reset-templates": function(event) {
-      this.templates.clear().set("shader-default", new ShaderTemplate("shader-default", { shader: "shader_revert" }))
+      this.templates.clear()
     },
   }))
 

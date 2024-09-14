@@ -119,8 +119,8 @@
   "maintainGms1Font":false,
   "name":"font_inter_8_regular",
   "parent":{
-    "name":"font",
-    "path":"folders/core/resource/font.yy",
+    "name":"regular",
+    "path":"folders/visu/resource/font/font_inter/regular.yy",
   },
   "pointRounding":0,
   "ranges":[

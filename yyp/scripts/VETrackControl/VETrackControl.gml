@@ -1,10 +1,10 @@
 ///@package io.alkapivo.visu.editor.ui
 
-///@param {VisuEditor} _editor
+///@param {VisuEditorController} _editor
 function VETrackControl(_editor) constructor {
 
-  ///@type {VisuEditor}
-  editor = Assert.isType(_editor, VisuEditor)
+  ///@type {VisuEditorController}
+  editor = Assert.isType(_editor, VisuEditorController)
   
   ///@type {Map<String, Containers>}
   containers = new Map(String, UI)
@@ -167,27 +167,18 @@ function VETrackControl(_editor) constructor {
           state: new Map(String, any),
           updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
           updateCustom: function() {
+            var controller = Beans.get(BeanVisuController)
+            var trackService = controller.trackService
             var mousePromise = MouseUtil.getClipboard()
             var context = Struct.get(Struct.get(mousePromise, "state"), "context")
             if (context != null) {
-              if (context == this) {
-                this.updatePosition(MouseUtil.getMouseX() - this.context.area.getX())
-                return
+              this.updatePosition(MouseUtil.getMouseX() - this.context.area.getX())
+              var ruler = Beans.get(BeanVisuEditorController).timeline.containers.get("ve-timeline-ruler")
+              if (ruler != null) {
+                ruler.state.set("time", this.value * trackService.duration)
+                ruler.state.set("mouseXTime", this.value * trackService.duration)
               }
-
-              var ruler = Beans.get(BeanVisuEditor).timeline.containers.get("ve-timeline-ruler")
-              if (context == ruler) {
-                var trackService = Beans.get(BeanVisuController).trackService
-                var mouseXTime = context.state.get("mouseXTime")
-                if (Core.isType(mouseXTime, Number)) {
-                  this.value = clamp(
-                    mouseXTime / trackService.duration, 
-                    this.minValue, 
-                    this.maxValue
-                  )
-                  return
-                }
-              }
+              return
             }
 
             if (this.state.contains("promise")) {
@@ -197,13 +188,11 @@ function VETrackControl(_editor) constructor {
               }
               this.state.remove("promise")
             }
-
-            var controller = Beans.get(BeanVisuController)
+            
             if (controller.fsm.getStateName() == "rewind") {
               return
             }
 
-            var trackService = controller.trackService
             this.value = clamp(
               trackService.time / trackService.duration, 
               this.minValue, 
@@ -215,12 +204,13 @@ function VETrackControl(_editor) constructor {
             this.value = clamp(mouseX / width, this.minValue, this.maxValue)
 
             var controller = Beans.get(BeanVisuController)
-            var rulerView = controller.uiService.find("ve-timeline-ruler")
+            var editor = Beans.get(BeanVisuController)
+            var rulerView = editor.uiService.find("ve-timeline-ruler")
             if (Core.isType(rulerView, UI)) {
               rulerView.state.set("time", this.value * controller.trackService.duration)
             }
 
-            var eventsView = controller.uiService.find("ve-timeline-events")
+            var eventsView = editor.uiService.find("ve-timeline-events")
             if (Core.isType(eventsView, UI)) {
               eventsView.state.set("time", this.value * controller.trackService.duration)
             }
@@ -392,7 +382,7 @@ function VETrackControl(_editor) constructor {
         state: new Map(String, any, {
           "background-color": ColorUtil.fromHex(VETheme.color.primaryShadow).toGMColor(),
           "background-alpha": 0.8,
-          "store": Beans.get(BeanVisuEditor).store,
+          "store": Beans.get(BeanVisuEditorController).store,
           "tools": new Array(Struct, [
             factoryToolItem({ 
               name: "ve-track-control_tool_brush", 
@@ -562,7 +552,7 @@ function VETrackControl(_editor) constructor {
               layout: layout.nodes.zoomIn,
               updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
               callback: function() { 
-                var item = Beans.get(BeanVisuEditor).store
+                var item = Beans.get(BeanVisuEditorController).store
                   .get("timeline-zoom")
                 item.set(clamp(item.get() - 1, 5, 20))
               },
@@ -629,7 +619,7 @@ function VETrackControl(_editor) constructor {
               layout: layout.nodes.zoomOut,
               updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
               callback: function() { 
-                var item = Beans.get(BeanVisuEditor).store
+                var item = Beans.get(BeanVisuEditorController).store
                   .get("timeline-zoom")
                 item.set(clamp(item.get() + 1, 5, 20))
               },
@@ -706,16 +696,16 @@ function VETrackControl(_editor) constructor {
           container: container,
           replace: true,
         }))
-      }, Beans.get(BeanVisuController).uiService)
+      }, Beans.get(BeanVisuEditorController).uiService)
     },
     "close": function(event) {
       var context = this
       this.containers.forEach(function (container, key, uiService) {
-        uiService.send(new Event("remove", { 
+        uiService.dispatcher.execute(new Event("remove", { 
           name: key, 
           quiet: true,
         }))
-      }, Beans.get(BeanVisuController).uiService).clear()
+      }, Beans.get(BeanVisuEditorController).uiService).clear()
     },
   }), { 
     enableLogger: false, 

@@ -1,10 +1,10 @@
 ///@package io.alkapivo.visu.editor.ui
 
-///@param {VisuEditor} _editor
+///@param {VisuEditorController} _editor
 ///@param {?Struct} [config]
 function VEAccordion(_editor, config = null) constructor {
 
-  ///@type {VisuEditor}
+  ///@type {VisuEditorController}
   editor = _editor
 
   ///@type {?UILayout}
@@ -16,7 +16,7 @@ function VEAccordion(_editor, config = null) constructor {
   ///@type {VETemplateToolbar}
   templateToolbar = new VETemplateToolbar(this.editor)
 
-  ///@type {Map<String, Containers>}
+  ///@type {Map<String, UI>}
   containers = new Map(String, UI)
 
   ///@type {Store}
@@ -38,164 +38,6 @@ function VEAccordion(_editor, config = null) constructor {
     generateSettingsSubscriber("visu.editor.accordion.render-event-inspector"))
   store.get("render-template-toolbar").addSubscriber(
     generateSettingsSubscriber("visu.editor.accordion.render-template-toolbar"))
-  
-  ///@private
-  ///@type {Map<String, Callable>}
-  __containers = new Map(String, Callable, {
-    "_ve-accordion_accordion-items": function(name, accordion, layout) {
-      return {
-        name: name,
-        state: new Map(String, any, {
-          "background-alpha": 1.0,
-          "background-color": ColorUtil.fromHex(VETheme.color.darkShadow).toGMColor(),
-        }),
-        updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
-        accordion: accordion,
-        layout: layout,
-        updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-        updateCustom: function() {
-          var store = this.state.get("store")
-          if (!Core.isType(store, Store)
-            || !Core.isType(this.layout, UILayout)) {
-            return
-          }
-          
-          Struct.set(this.layout.store, "render-event-inspector", store
-            .getValue("render-event-inspector"))
-          Struct.set(this.layout.store, "render-template-toolbar", store
-            .getValue("render-template-toolbar"))
-        },
-        render: Callable.run(UIUtil.renderTemplates.get("renderDefault")),
-        onInit: function() {
-          var context = this
-          this.state.set("store", this.accordion.store)
-          context
-            .add(UIButton(
-              "accordion-item_event-inspector_preview",
-              {
-                updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-                backgroundColor: VETheme.color.accentShadow,
-                font: "font_inter_10_regular",
-                color: VETheme.color.textFocus,
-                sprite: { name: "texture_ve_event_inspector_button_preview" },
-                layout: Struct.get(context.layout.nodes, "bar_event-inspector").nodes.preview,
-                onMousePressedLeft: function(data) {
-                  var eventInspector = this.context.accordion.eventInspector
-                  var event = eventInspector.store.getValue("event")
-                  if (!Core.isType(event, VEEvent)) {
-                    return
-                  }
-                  
-                  var handler = Beans.get(BeanVisuController).trackService.handlers
-                    .get(event.type)
-                  handler(event.toTemplate().event.data)
-                },
-              }
-            ))
-            .add(UIText(
-              "accordion-item_event-inspector_label",
-              {
-                updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-                backgroundColor: VETheme.color.accentShadow,
-                font: "font_inter_10_regular",
-                color: VETheme.color.textFocus,
-                align: { v: VAlign.CENTER, h: HAlign.LEFT },
-                text: "Event inspector",
-                offset: { x: 0 },
-                layout: Struct.get(context.layout.nodes, "bar_event-inspector").nodes.label,
-              }
-            ))
-            .add(UICheckbox(
-              "accordion-item_event-inspector_checkbox",
-              {
-                spriteOn: { name: "visu_texture_checkbox_switch_on" },
-                spriteOff: { name: "visu_texture_checkbox_switch_off" },
-                updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-                backgroundColor: VETheme.color.accentShadow,
-                layout: Struct.get(context.layout.nodes, "bar_event-inspector").nodes.checkbox,
-                store: { key: "render-event-inspector" },
-              }
-            ))
-            add(UIText(
-              "accordion-item_template-toolbar_label",
-              {
-                updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-                backgroundColor: VETheme.color.accentShadow,
-                font: "font_inter_10_regular",
-                color: VETheme.color.textFocus,
-                align: { v: VAlign.CENTER, h: HAlign.LEFT },
-                text: "Templates",
-                offset: { x: 32 },
-                layout: Struct.get(context.layout.nodes, "bar_template-toolbar").nodes.label,
-              }
-            ))
-            .add(UICheckbox(
-              "accordion-item_template-toolbar_checkbox",
-              {
-                spriteOn: { name: "visu_texture_checkbox_switch_on" },
-                spriteOff: { name: "visu_texture_checkbox_switch_off" },
-                updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-                backgroundColor: VETheme.color.accentShadow,
-                layout: Struct.get(context.layout.nodes, "bar_template-toolbar").nodes.checkbox,
-                store: { key: "render-template-toolbar" },
-              }
-            ))
-        },
-        items: {
-          "resize_accordion": {
-            type: UIButton,
-            layout: layout.nodes.resize,
-            backgroundColor: VETheme.color.primary, //resize
-            clipboard: {
-              name: "resize_accordion",
-              drag: function() {
-                Beans.get(BeanVisuController).displayService.setCursor(Cursor.RESIZE_HORIZONTAL)
-              },
-              drop: function() {
-                Beans.get(BeanVisuController).displayService.setCursor(Cursor.DEFAULT)
-              }
-            },
-            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-            updateCustom: function() {
-              if (MouseUtil.getClipboard() == this.clipboard) {
-                this.updateLayout(MouseUtil.getMouseX())
-                this.context.accordion.containers.forEach(function(container) {
-                  if (!Optional.is(container.updateTimer)) {
-                    return
-                  }
-                  
-                  container.surfaceTick.skip()
-                  container.updateTimer.time = container.updateTimer.duration
-                })
-
-                if (!mouse_check_button(mb_left)) {
-                  MouseUtil.clearClipboard()
-                  Beans.get(BeanVisuController).displayService.setCursor(Cursor.DEFAULT)
-                }
-              }
-            },
-            updateLayout: new BindIntent(function(position) {
-              var node = Struct.get(Beans.get(BeanVisuEditor).layout.nodes, "accordion")
-              node.percentageWidth = position / GuiWidth()
-            }),
-            onMousePressedLeft: function(event) {
-              MouseUtil.setClipboard(this.clipboard)
-            },
-            onMouseHoverOver: function(event) {
-              if (!mouse_check_button(mb_left)) {
-                this.clipboard.drag()
-              }
-            },
-            onMouseHoverOut: function(event) {
-              if (!mouse_check_button(mb_left)) {
-                this.clipboard.drop()
-              }
-            },
-          }
-        }
-      }
-    },
-  })
 
   ///@private
   ///@param {UIlayout} parent
@@ -323,48 +165,224 @@ function VEAccordion(_editor, config = null) constructor {
 
   ///@private
   ///@param {UIlayout} parent
-  ///@return {Map<String, UI>}
-  factoryContainers = function(parent) {
-    this.layout = this.factoryLayout(parent)
-    this.eventInspector.containers = this.eventInspector
-      .factoryContainers(Struct.get(this.layout.nodes, "view_event-inspector"))
-    this.templateToolbar.containers = this.templateToolbar
-      .factoryContainers(Struct.get(this.layout.nodes, "view_template-toolbar"))
-    return this.__containers
-      .map(function(item, name, accordion) {
-        var layout = Assert.isType(accordion.layout, UILayout)
-        return new UI(item(name, accordion, layout))
-      }, this, String, UI)
-      .merge(this.eventInspector.containers, this.templateToolbar.containers)
+  ///@return {Task}
+  factoryOpenTask = function(parent) {
+    var accordion = this
+    var layout = this.factoryLayout(parent)
+    this.layout = layout
+
+    eventInspector.send(new Event("open").setData({ 
+      layout: Struct.get(layout.nodes, "view_event-inspector")
+    }))
+    
+    templateToolbar.send(new Event("open").setData({ 
+      layout: Struct.get(layout.nodes, "view_template-toolbar")
+    }))
+
+    var containerIntents = new Map(String, Struct, {
+      "_ve-accordion_accordion-items": {
+        name: "_ve-accordion_accordion-items",
+        state: new Map(String, any, {
+          "background-alpha": 1.0,
+          "background-color": ColorUtil.fromHex(VETheme.color.darkShadow).toGMColor(),
+        }),
+        updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
+        accordion: accordion,
+        layout: layout,
+        updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+        updateCustom: function() {
+          var store = this.state.get("store")
+          if (!Core.isType(store, Store)
+            || !Core.isType(this.layout, UILayout)) {
+            return
+          }
+          
+          Struct.set(this.layout.store, "render-event-inspector", store
+            .getValue("render-event-inspector"))
+          Struct.set(this.layout.store, "render-template-toolbar", store
+            .getValue("render-template-toolbar"))
+        },
+        render: Callable.run(UIUtil.renderTemplates.get("renderDefault")),
+        onInit: function() {
+          var context = this
+          this.state.set("store", this.accordion.store)
+          context
+            .add(UIButton(
+              "accordion-item_event-inspector_preview",
+              {
+                updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+                backgroundColor: VETheme.color.accentShadow,
+                font: "font_inter_10_regular",
+                color: VETheme.color.textFocus,
+                sprite: { name: "texture_ve_event_inspector_button_preview" },
+                layout: Struct.get(context.layout.nodes, "bar_event-inspector").nodes.preview,
+                onMousePressedLeft: function(data) {
+                  var eventInspector = this.context.accordion.eventInspector
+                  var event = eventInspector.store.getValue("event")
+                  if (!Core.isType(event, VEEvent)) {
+                    return
+                  }
+                  
+                  var handler = Beans.get(BeanVisuController).trackService.handlers
+                    .get(event.type)
+                  handler(event.toTemplate().event.data)
+                },
+              }
+            ))
+            .add(UIText(
+              "accordion-item_event-inspector_label",
+              {
+                updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+                backgroundColor: VETheme.color.accentShadow,
+                font: "font_inter_10_regular",
+                color: VETheme.color.textFocus,
+                align: { v: VAlign.CENTER, h: HAlign.LEFT },
+                text: "Event inspector",
+                offset: { x: 0 },
+                layout: Struct.get(context.layout.nodes, "bar_event-inspector").nodes.label,
+              }
+            ))
+            .add(UICheckbox(
+              "accordion-item_event-inspector_checkbox",
+              {
+                spriteOn: { name: "visu_texture_checkbox_switch_on" },
+                spriteOff: { name: "visu_texture_checkbox_switch_off" },
+                updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+                backgroundColor: VETheme.color.accentShadow,
+                layout: Struct.get(context.layout.nodes, "bar_event-inspector").nodes.checkbox,
+                store: { key: "render-event-inspector" },
+              }
+            ))
+            add(UIText(
+              "accordion-item_template-toolbar_label",
+              {
+                updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+                backgroundColor: VETheme.color.accentShadow,
+                font: "font_inter_10_regular",
+                color: VETheme.color.textFocus,
+                align: { v: VAlign.CENTER, h: HAlign.LEFT },
+                text: "Templates",
+                offset: { x: 32 },
+                layout: Struct.get(context.layout.nodes, "bar_template-toolbar").nodes.label,
+              }
+            ))
+            .add(UICheckbox(
+              "accordion-item_template-toolbar_checkbox",
+              {
+                spriteOn: { name: "visu_texture_checkbox_switch_on" },
+                spriteOff: { name: "visu_texture_checkbox_switch_off" },
+                updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+                backgroundColor: VETheme.color.accentShadow,
+                layout: Struct.get(context.layout.nodes, "bar_template-toolbar").nodes.checkbox,
+                store: { key: "render-template-toolbar" },
+              }
+            ))
+        },
+        items: {
+          "resize_accordion": {
+            type: UIButton,
+            layout: layout.nodes.resize,
+            backgroundColor: VETheme.color.primary, //resize
+            clipboard: {
+              name: "resize_accordion",
+              drag: function() {
+                Beans.get(BeanVisuController).displayService.setCursor(Cursor.RESIZE_HORIZONTAL)
+              },
+              drop: function() {
+                Beans.get(BeanVisuController).displayService.setCursor(Cursor.DEFAULT)
+              }
+            },
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            updateCustom: function() {
+              static updateAccordionTimer = function(container) {
+                if (!Optional.is(container.updateTimer)) {
+                  return
+                }
+                
+                container.surfaceTick.skip()
+                container.updateTimer.time = container.updateTimer.duration
+              }
+
+              if (MouseUtil.getClipboard() == this.clipboard) {
+                this.updateLayout(MouseUtil.getMouseX())
+                this.context.accordion.containers.forEach(updateAccordionTimer)
+                this.context.accordion.eventInspector.containers.forEach(updateAccordionTimer)
+                this.context.accordion.templateToolbar.containers.forEach(updateAccordionTimer)
+  
+                if (!mouse_check_button(mb_left)) {
+                  MouseUtil.clearClipboard()
+                  Beans.get(BeanVisuController).displayService.setCursor(Cursor.DEFAULT)
+                }
+              }
+            },
+            updateLayout: new BindIntent(function(position) {
+              var node = Struct.get(Beans.get(BeanVisuEditorController).layout.nodes, "accordion")
+              node.percentageWidth = position / GuiWidth()
+            }),
+            onMousePressedLeft: function(event) {
+              MouseUtil.setClipboard(this.clipboard)
+            },
+            onMouseHoverOver: function(event) {
+              if (!mouse_check_button(mb_left)) {
+                this.clipboard.drag()
+              }
+            },
+            onMouseHoverOut: function(event) {
+              if (!mouse_check_button(mb_left)) {
+                this.clipboard.drop()
+              }
+            },
+          }
+        }
+      }
+    })
+
+    return new Task("init-container")
+      .setState({
+        context: accordion,
+        containers: containerIntents,
+        queue: new Queue(String, GMArray.sort(containerIntents.keys().getContainer())),
+      })
+      .whenUpdate(function() {
+        var key = this.state.queue.pop()
+        if (key == null) {
+          this.fullfill()
+          return
+        }
+        this.state.context.containers.set(key, new UI(this.state.containers.get(key)))
+      })
+      .whenFinish(function() {
+        var containers = this.state.context.containers
+        IntStream.forEach(0, containers.size(), function(iterator, index, acc) {
+          Beans.get(BeanVisuEditorController).uiService.send(new Event("add", {
+            container: acc.containers.get(acc.keys[iterator]),
+            replace: true,
+          }))
+        }, {
+          keys: GMArray.sort(containers.keys().getContainer()),
+          containers: containers,
+        })
+      })
   }
 
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "open": function(event) {
-      var context = this
-      this.containers = this.factoryContainers(event.data.layout)
-      IntStream.forEach(0, this.containers.size(), function(iterator, index, acc) {
-        acc.uiService.send(new Event("add", {
-          container: acc.containers.get(acc.keys[iterator]),
-          replace: true,
-        }))
-      }, {
-        keys: GMArray.sort(this.containers.keys().getContainer()),
-        containers: context.containers,
-        uiService: Beans.get(BeanVisuController).uiService,
-      })
+      this.dispatcher.execute(new Event("close"))
+      Beans.get(BeanVisuEditorController).executor
+        .add(this.factoryOpenTask(event.data.layout))
     },
     "close": function(event) {
       var context = this
       this.containers.forEach(function (container, key, uiService) {
-        uiService.send(new Event("remove", { 
+        uiService.dispatcher.execute(new Event("remove", { 
           name: key, 
           quiet: true,
         }))
-      }, Beans.get(BeanVisuController).uiService).clear()
+      }, Beans.get(BeanVisuEditorController).uiService).clear()
 
-      eventInspector.send(new Event("close"))
-      templateToolbar.send(new Event("close"))
+      this.eventInspector.dispatcher.execute(new Event("close"))
+      this.templateToolbar.dispatcher.execute(new Event("close"))
     },
   }), { 
     enableLogger: false, 
@@ -391,6 +409,7 @@ function VEAccordion(_editor, config = null) constructor {
         }) 
       })
     }
+
     context.enable = enable
     context.update()
   }

@@ -85,7 +85,10 @@ function template_texture(json = null) {
         template: VEComponents.get("image"),
         layout: VELayouts.get("image"),
         config: { 
-          image: { name: json.name },
+          image: { 
+            name: json.name,
+            disableTextureService: json.file == "",
+          },
           resolution: { 
             store: { 
               key: "texture-template",

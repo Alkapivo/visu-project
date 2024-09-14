@@ -1,10 +1,10 @@
 ///@package io.alkapivo.visu.editor.ui
 
-///@param {VisuEditor} _editor
+///@param {VisuEditorController} _editor
 function VETitleBar(_editor) constructor {
 
-  ///@type {VisuEditor}
-  editor = Assert.isType(_editor, VisuEditor)
+  ///@type {VisuEditorController}
+  editor = Assert.isType(_editor, VisuEditorController)
 
   ///@type {Map<String, Containers>}
   containers = new Map(String, UI)
@@ -147,7 +147,7 @@ function VETitleBar(_editor) constructor {
         name: "ve-title-bar",
         state: new Map(String, any, {
           "background-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-          "store": Beans.get(BeanVisuEditor).store,
+          "store": Beans.get(BeanVisuEditorController).store,
         }),
         controller: controller,
         layout: layout,
@@ -159,7 +159,7 @@ function VETitleBar(_editor) constructor {
             layout: layout.nodes.file,
             options: new Array(),
             callback: function() {
-              Beans.get(BeanVisuEditor).newProjectModal
+              Beans.get(BeanVisuEditorController).newProjectModal
                 .send(new Event("open").setData({
                   layout: new UILayout({
                     name: "display",
@@ -213,9 +213,8 @@ function VETitleBar(_editor) constructor {
                   return
                 }
 
-                global.__VisuTrack.saveProject(path)
-
                 var controller = Beans.get(BeanVisuController)
+                controller.track.saveProject(path)
                 controller.send(new Event("spawn-popup", 
                   { message: $"Project '{controller.trackService.track.name}' saved successfully at: '{path}'" }))
               } catch (exception) {
@@ -297,16 +296,16 @@ function VETitleBar(_editor) constructor {
           container: container,
           replace: true,
         }))
-      }, Beans.get(BeanVisuController).uiService)
+      }, Beans.get(BeanVisuEditorController).uiService)
     },
     "close": function(event) {
       var context = this
       this.containers.forEach(function (container, key, uiService) {
-        uiService.send(new Event("remove", { 
+        uiService.dispatcher.execute(new Event("remove", { 
           name: key, 
           quiet: true,
         }))
-      }, Beans.get(BeanVisuController).uiService).clear()
+      }, Beans.get(BeanVisuEditorController).uiService).clear()
     },
   }), { 
     enableLogger: false, 

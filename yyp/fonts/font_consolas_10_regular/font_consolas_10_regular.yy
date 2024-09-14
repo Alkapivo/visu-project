@@ -119,8 +119,8 @@
   "maintainGms1Font":false,
   "name":"font_consolas_10_regular",
   "parent":{
-    "name":"font",
-    "path":"folders/core/resource/font.yy",
+    "name":"regular",
+    "path":"folders/core/resource/font/font_consolas/regular.yy",
   },
   "pointRounding":0,
   "ranges":[

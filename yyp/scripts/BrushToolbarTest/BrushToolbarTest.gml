@@ -18,7 +18,7 @@ function TestEvent_BrushToolbar_save(json = {}) {
         },
         setup: function(task) {
           Beans.get(BeanVisuTestRunner).exceptions.clear()
-          var editor = Beans.get(BeanVisuEditor)
+          var editor = Beans.get(BeanVisuEditorController)
           var acc = {
             currentCategory: null,
             types: new Stack(Struct)
@@ -38,7 +38,7 @@ function TestEvent_BrushToolbar_save(json = {}) {
           task.state.stage = "selectType"
         },
         selectType: function(task) {
-          var editor = Beans.get(BeanVisuEditor)
+          var editor = Beans.get(BeanVisuEditorController)
           var entry = task.state.types.pop()
           if (Core.isType(entry, Struct)) {
             Logger.test("TestEvent_BrushToolbar_save", $"Select brush from category '{entry.category}' of type '{entry.type}'")
@@ -50,7 +50,7 @@ function TestEvent_BrushToolbar_save(json = {}) {
           }
         },
         selectTemplate: function(task) {
-          var editor = Beans.get(BeanVisuEditor)
+          var editor = Beans.get(BeanVisuEditorController)
           if (task.state.cooldown.update().finished) {
             task.state.stage = "saveBrush"
             task.state.cooldown.reset()
@@ -61,7 +61,7 @@ function TestEvent_BrushToolbar_save(json = {}) {
               return item.type == UIText
             })
 
-            var brushService = Beans.get(BeanVisuEditor).brushService
+            var brushService = Beans.get(BeanVisuEditorController).brushService
             var templates = brushService.templates.get(editor.brushToolbar.store.getValue("type"))
             var template = templates.find(function(template, index, acc) {
               return template.name == acc
@@ -70,7 +70,7 @@ function TestEvent_BrushToolbar_save(json = {}) {
           }
         },
         saveBrush: function(task) {
-          var editor = Beans.get(BeanVisuEditor)
+          var editor = Beans.get(BeanVisuEditorController)
           if (task.state.cooldown.update().finished) {
             task.state.stage = "cooldownAfter"
             task.state.cooldown.reset()
@@ -80,7 +80,7 @@ function TestEvent_BrushToolbar_save(json = {}) {
               .get("brush")
 
             var template = brush.toTemplate()
-            var brushService = Beans.get(BeanVisuEditor).brushService
+            var brushService = Beans.get(BeanVisuEditorController).brushService
             brushService.saveTemplate(template)
 
             var handler = Beans.get(BeanVisuController).trackService.handlers.get(brush.type)
@@ -108,17 +108,17 @@ function TestEvent_BrushToolbar_save(json = {}) {
     .whenStart(function(executor) {
       Logger.test("BrushToolbarTest", "Start TestEvent_BrushToolbar_save")
       Beans.get(BeanVisuTestRunner).installHooks()
-      Beans.get(BeanVisuEditor).store.get("render-brush").set(true)
+      Beans.get(BeanVisuEditorController).store.get("render-brush").set(true)
     })
     .whenFinish(function(data) {
       Logger.test("BrushToolbarTest", $"TestEvent_BrushToolbar_save: {data}")
       Beans.get(BeanVisuTestRunner).uninstallHooks()
-      Beans.get(BeanVisuEditor).store.get("render-brush").set(false)
+      Beans.get(BeanVisuEditorController).store.get("render-brush").set(false)
     })
     .whenTimeout(function() {
       Logger.test("BrushToolbarTest", "TestEvent_BrushToolbar_save: Timeout")
       this.reject("failure")
       Beans.get(BeanVisuTestRunner).uninstallHooks()
-      Beans.get(BeanVisuEditor).store.get("render-brush").set(false)
+      Beans.get(BeanVisuEditorController).store.get("render-brush").set(false)
     })
 }

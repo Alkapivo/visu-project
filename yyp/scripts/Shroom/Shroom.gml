@@ -47,15 +47,20 @@ function Shroom(template): GridItem(template) constructor {
   ///@type {Map<String, any>}
   state = Struct.getDefault(template, "state", new Map(String, any))
 
-  ///@private
-  ///@param {VisuController} controller
-  ///@type {Callable}
-  _update = method(this, this.update)
+  ///@type {?String}
+  shroomGridKey = null
 
   ///@param {VisuController} controller
   ///@return {Shroom}
-  update = function(controller) {
-    this._update(controller)    
+  static update = function(controller) {
+    if (Optional.is(this.gameMode)) {
+      gameMode.update(this, controller)
+    }
+
+    if (this.fadeIn < 1.0) {
+      this.fadeIn = clamp(this.fadeIn + this.fadeInFactor, 0.0, 1.0)
+    }
+
     return this
   }
 

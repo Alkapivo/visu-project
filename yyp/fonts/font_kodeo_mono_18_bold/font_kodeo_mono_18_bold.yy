@@ -119,8 +119,8 @@
   "maintainGms1Font":false,
   "name":"font_kodeo_mono_18_bold",
   "parent":{
-    "name":"font",
-    "path":"folders/core/resource/font.yy",
+    "name":"bold",
+    "path":"folders/visu/resource/font/font_kodeo/bold.yy",
   },
   "pointRounding":0,
   "ranges":[

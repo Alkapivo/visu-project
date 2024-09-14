@@ -1,10 +1,10 @@
 ///@package io.alkapivo.visu.editor.ui
 
-///@param {VisuEditor} _editor
+///@param {VisuEditorController} _editor
 function VEStatusBar(_editor) constructor {
 
-  ///@type {VisuEditor}
-  editor = Assert.isType(_editor, VisuEditor)
+  ///@type {VisuEditorController}
+  editor = Assert.isType(_editor, VisuEditorController)
 
   ///@type {Map<String, Containers>}
   containers = new Map(String, UI)
@@ -72,9 +72,23 @@ function VEStatusBar(_editor) constructor {
             margin: { left: 2 },
             width: function() { return 40 },
           },
+          bpmCountLabel: {
+            name: "status-bar.bpmCountLabel",
+            x: function() { return this.context.nodes.bpmValue.right()
+              + this.margin.left },
+            y: function() { return 0 },
+            width: function() { return 44 },
+          },
+          bpmCountValue: {
+            name: "status-bar.bpmCountValue",
+            x: function() { return this.context.nodes.bpmCountLabel.right() + this.margin.left },
+            y: function() { return 0 },
+            margin: { left: 2 },
+            width: function() { return 40 },
+          },
           bpmSubLabel: {
             name: "status-bar.bpmSubLabel",
-            x: function() { return this.context.nodes.bpmValue.right()
+            x: function() { return this.context.nodes.bpmCountValue.right()
               + this.margin.left },
             y: function() { return 0 },
             width: function() { return 30 },
@@ -112,6 +126,20 @@ function VEStatusBar(_editor) constructor {
             x: function() { return this.context.nodes.autosaveLabel.right() + this.margin.left },
             y: function() { return 0 },
             width: function() { return 24 },
+          },
+          shaderQualityLabel: {
+            name: "status-bar.shaderQualityLabel",
+            x: function() { return this.context.nodes.autosaveCheckbox.right()
+              + this.margin.left },
+            y: function() { return 0 },
+            width: function() { return 50 },
+          },
+          shaderQualityValue: {
+            name: "status-bar.shaderQualityValue",
+            x: function() { return this.context.nodes.shaderQualityLabel.right() + this.margin.left },
+            y: function() { return 0 },
+            margin: { left: 2 },
+            width: function() { return 40 },
           },
           stateLabel: {
             name: "status-bar.stateLabel",
@@ -235,7 +263,52 @@ function VEStatusBar(_editor) constructor {
             }
             item.set(parsedValue)
 
-            Struct.set(global.__VisuTrack, "bpm", parsedValue)
+            Struct.set(Beans.get(BeanVisuController).track, "bpm", parsedValue)
+          },
+        },
+      }
+
+      return Struct.appendRecursiveUnique(
+        struct,
+        VEStyles.get("text-field"),
+        false
+      )
+    }
+
+    static factoryCountField = function(json) {
+      var struct = {
+        type: UITextField,
+        layout: json.layout,
+        text: 0,
+        updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+        config: { key: "bpm-count" },
+        store: {
+          key: "bpm-count",
+          callback: function(value, data) { 
+            var item = data.store.get("bpm-count")
+            if (item == null) {
+              return 
+            }
+
+            var bpmCount = item.get()
+            if (!Core.isType(bpmCount, Number)) {
+              return 
+            }
+            data.textField.setText(string(bpmCount))
+          },
+          set: function(value) {
+            var item = this.get()
+            if (item == null) {
+              return 
+            }
+
+            var parsedValue = NumberUtil.parse(value, null)
+            if (parsedValue == null) {
+              return
+            }
+            item.set(parsedValue)
+
+            Struct.set(Beans.get(BeanVisuController).track, "bpmCount", parsedValue)
           },
         },
       }
@@ -251,7 +324,7 @@ function VEStatusBar(_editor) constructor {
       var struct = {
         type: UITextField,
         layout: json.layout,
-        text: "0",
+        text: 0,
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
         config: { key: "bpm-sub" },
         store: {
@@ -280,7 +353,52 @@ function VEStatusBar(_editor) constructor {
             }
             item.set(parsedValue)
 
-            Struct.set(global.__VisuTrack, "bpmSub", parsedValue)
+            Struct.set(Beans.get(BeanVisuController).track, "bpmSub", parsedValue)
+          },
+        },
+      }
+
+      return Struct.appendRecursiveUnique(
+        struct,
+        VEStyles.get("text-field"),
+        false
+      )
+    }
+
+    static factoryShaderQualityField = function(json) {
+      var struct = {
+        type: UITextField,
+        layout: json.layout,
+        text: 1.0,
+        updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+        config: { key: "shader-quality" },
+        store: {
+          key: "shader-quality",
+          callback: function(value, data) { 
+            var item = data.store.get("shader-quality")
+            if (item == null) {
+              return 
+            }
+
+            var shaderQuality = item.get()
+            if (!Core.isType(shaderQuality, Number)) {
+              return 
+            }
+            data.textField.setText(string(shaderQuality))
+          },
+          set: function(value) {
+            var item = this.get()
+            if (item == null) {
+              return 
+            }
+
+            var parsedValue = NumberUtil.parse(value, null)
+            if (parsedValue == null) {
+              return
+            }
+            item.set(parsedValue)
+
+            Visu.settings.setValue("visu.shader.quality", parsedValue).save()
           },
         },
       }
@@ -316,13 +434,13 @@ function VEStatusBar(_editor) constructor {
 
     var controller = this
     var layout = this.factoryLayout(parent)
-    var autosaveEnabled = Beans.get(BeanVisuController).autosaveEnabled
+    var autosaveEnabled = Beans.get(BeanVisuEditorController).autosave.value
     return new Map(String, UI, {
       "ve-status-bar": new UI({
         name: "ve-status-bar",
         state: new Map(String, any, {
           "background-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
-          "store": Beans.get(BeanVisuEditor).store,
+          "store": Beans.get(BeanVisuEditorController).store,
         }),
         controller: controller,
         layout: layout,
@@ -381,6 +499,13 @@ function VEStatusBar(_editor) constructor {
           "text_ve-status-bar_bpmValue": factoryBPMField({
             layout: layout.nodes.bpmValue,
           }),
+          "text_ve-status-bar_bpmCountLabel": factoryLabel({
+            text: "Count:",
+            layout: layout.nodes.bpmCountLabel,
+          }),
+          "text_ve-status-bar_bpmCountValue": factoryCountField({
+            layout: layout.nodes.bpmCountValue,
+          }),
           "text_ve-status-bar_bpmSubLabel": factoryLabel({
             text: "Sub:",
             layout: layout.nodes.bpmSubLabel,
@@ -438,13 +563,20 @@ function VEStatusBar(_editor) constructor {
             layout: layout.nodes.autosaveCheckbox,
             value: autosaveEnabled,
             callback: function() {
-              var controller = Beans.get(BeanVisuController)
-              controller.autosaveEnabled = this.value
-              Visu.settings.setValue("visu.autosave", this.value).save()
-              if (!controller.autosaveEnabled) {
-                controller.autosaveTimer.time = 0
+              var editor = Beans.get(BeanVisuEditorController)
+              editor.autosave.value = this.value
+              Visu.settings.setValue("visu.editor.autosave", this.value).save()
+              if (!editor.autosave.value) {
+                editor.autosave.timer.time = 0
               }
             },
+          }),
+          "text_ve-status-bar_shaderQualityLabel": factoryLabel({
+            text: "Quality:",
+            layout: layout.nodes.shaderQualityLabel,
+          }),
+          "text_ve-status-bar_shaderQualityField": factoryShaderQualityField({
+            layout: layout.nodes.shaderQualityValue,
           }),
           "text_ve-status-bar_stateLabel": factoryLabel({
             text: "State:",
@@ -493,16 +625,16 @@ function VEStatusBar(_editor) constructor {
           container: container,
           replace: true,
         }))
-      }, Beans.get(BeanVisuController).uiService)
+      }, Beans.get(BeanVisuEditorController).uiService)
     },
     "close": function(event) {
       var context = this
       this.containers.forEach(function (container, key, uiService) {
-        uiService.send(new Event("remove", { 
+        uiService.dispatcher.execute(new Event("remove", { 
           name: key, 
           quiet: true,
         }))
-      }, Beans.get(BeanVisuController).uiService).clear()
+      }, Beans.get(BeanVisuEditorController).uiService).clear()
     },
   }), { 
     enableLogger: false, 

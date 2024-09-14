@@ -1,10 +1,10 @@
 ///@package io.alkapivo.visu.editor.ui
 
-///@param {VisuEditor} _editor
+///@param {VisuEditorController} _editor
 function VEEventInspector(_editor) constructor {
 
-  ///@type {VisuEditor}
-  editor = Assert.isType(_editor, VisuEditor)
+  ///@type {VisuEditorController}
+  editor = Assert.isType(_editor, VisuEditorController)
 
   ///@type {Map<String, Containers>}
   containers = new Map(String, UI)
@@ -33,12 +33,12 @@ function VEEventInspector(_editor) constructor {
 
   ///@private
   ///@param {UIlayout} parent
-  ///@return {Map<String, UI>}
-  factoryContainers = function(parent) {
+  ///@return {Task}
+  factoryOpenTask = function(parent) {
     var eventInspector = this
     this.layout = this.factoryLayout(parent)
-    return new Map(String, UI, {
-      "ve-event-inspector-properties": new UI({
+    var containerIntents = new Map(String, Struct, {
+      "ve-event-inspector-properties": {
         name: "ve-event-inspector-properties",
         state: new Map(String, any, {
           "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
@@ -60,7 +60,7 @@ function VEEventInspector(_editor) constructor {
           }
 
           this.state.set("updateTrackEvent", false)
-          var selectedEvent = Beans.get(BeanVisuEditor).store
+          var selectedEvent = Beans.get(BeanVisuEditorController).store
             .getValue("selected-event")
           if (!Core.isType(selectedEvent, Struct)) {
             return
@@ -76,7 +76,7 @@ function VEEventInspector(_editor) constructor {
           selectedEvent.data.data = template.event.data
           selectedEvent.channel = template.channel
 
-          var container = Beans.get(BeanVisuController).uiService
+          var container = Beans.get(BeanVisuEditorController).uiService
             .find("ve-timeline-events")
           if (!Core.isType(container, UI)) {
             return
@@ -108,7 +108,7 @@ function VEEventInspector(_editor) constructor {
         onInit: function() {
           var container = this
           this.collection = new UICollection(this, { layout: container.layout })
-          Beans.get(BeanVisuEditor).store
+          Beans.get(BeanVisuEditorController).store
             .get("selected-event")
             .addSubscriber({ 
               name: container.name,
@@ -165,35 +165,58 @@ function VEEventInspector(_editor) constructor {
             })
         },
         onDestroy: function() {
-          if (Core.isType(this.eventInspector.editor, VisuEditor)) {
+          if (Core.isType(this.eventInspector.editor, VisuEditorController)) {
             this.eventInspector.editor.store
               .get("selected-event")
               .removeSubscriber(this.name)
           }
         },
-      }),
+      },
     })
+
+    return new Task("init-container")
+      .setState({
+        context: eventInspector,
+        containers: containerIntents,
+        queue: new Queue(String, GMArray.sort(containerIntents.keys().getContainer())),
+      })
+      .whenUpdate(function() {
+        var key = this.state.queue.pop()
+        if (key == null) {
+          this.fullfill()
+          return
+        }
+        this.state.context.containers.set(key, new UI(this.state.containers.get(key)))
+      })
+      .whenFinish(function() {
+        var containers = this.state.context.containers
+        IntStream.forEach(0, containers.size(), function(iterator, index, acc) {
+          Beans.get(BeanVisuEditorController).uiService.send(new Event("add", {
+            container: acc.containers.get(acc.keys[iterator]),
+            replace: true,
+          }))
+        }, {
+          keys: GMArray.sort(containers.keys().getContainer()),
+          containers: containers,
+        })
+      })
   }
 
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "open": function(event) {
-      this.containers = this.factoryContainers(event.data.layout)
-      containers.forEach(function(container, key, uiService) {
-        uiService.send(new Event("add", {
-          container: container,
-          replace: true,
-        }))
-      }, Beans.get(BeanVisuController).uiService)
+      this.dispatcher.execute(new Event("close"))
+      Beans.get(BeanVisuEditorController).executor
+        .add(this.factoryOpenTask(event.data.layout))
     },
     "close": function(event) {
       var context = this
       this.containers.forEach(function (container, key, uiService) {
-        uiService.send(new Event("remove", { 
+        uiService.dispatcher.execute(new Event("remove", { 
           name: key, 
           quiet: true,
         }))
-      }, Beans.get(BeanVisuController).uiService).clear()
+      }, Beans.get(BeanVisuEditorController).uiService).clear()
 
       this.store.get("event").set(null)
     },

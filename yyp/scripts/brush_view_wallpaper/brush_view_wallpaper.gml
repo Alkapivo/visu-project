@@ -82,6 +82,20 @@ function brush_view_wallpaper(json = null) {
         type: Boolean,
         value: Struct.getDefault(json, "view-wallpaper_clear-texture", false),
       },
+      "view-wallpaper_angle": {
+        type: Number,
+        value: Struct.getDefault(json, "view-wallpaper_angle", 0.0),
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), 0.0, 360.0) 
+        },
+      },
+      "view-wallpaper_speed": {
+        type: Number,
+        value: Struct.getDefault(json, "view-wallpaper_speed", 0.0),
+        passthrough: function(value) {
+          return abs(NumberUtil.parse(value, this.value)) 
+        },
+      },
     }),
     components: new Array(Struct, [
       {
@@ -98,7 +112,6 @@ function brush_view_wallpaper(json = null) {
           next: { store: { key: "view-wallpaper_type" } },
         },
       },
-      
       {
         name: "view-wallpaper_fade-in-duration",  
         template: VEComponents.get("text-field"),
@@ -423,6 +436,86 @@ function brush_view_wallpaper(json = null) {
               enable: { key: "view-wallpaper_use-texture-blend" },
             },
           },
+        },
+      },
+      {
+        name: "view-wallpaper_tiled",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Move",
+          },
+          input: {
+            store: { 
+              key: "view-wallpaper_angle",
+              callback: function(value, data) { 
+                var sprite = Struct.get(data, "sprite")
+                if (!Core.isType(sprite, Sprite)) {
+                  sprite = SpriteUtil.parse({ name: "visu_texture_ui_spawn_arrow" })
+                  Struct.set(data, "sprite", sprite)
+                }
+                sprite.setAngle(value)
+              },
+              set: function(value) { return },
+            },
+            render: function() {
+              if (this.backgroundColor != null) {
+                var _x = this.context.area.getX() + this.area.getX()
+                var _y = this.context.area.getY() + this.area.getY()
+                var color = this.backgroundColor
+                draw_rectangle_color(
+                  _x, _y, 
+                  _x + this.area.getWidth(), _y + this.area.getHeight(),
+                  color, color, color, color,
+                  false
+                )
+              }
+
+              var sprite = Struct.get(this, "sprite")
+              if (!Core.isType(sprite, Sprite)) {
+                sprite = SpriteUtil.parse({ name: "visu_texture_ui_spawn_arrow" })
+                Struct.set(this, "sprite", sprite)
+              }
+              sprite.scaleToFit(this.area.getWidth(), this.area.getHeight())
+                .render(
+                  this.context.area.getX() + this.area.getX() + sprite.texture.offsetX * sprite.getScaleX(),
+                  this.context.area.getY() + this.area.getY() + sprite.texture.offsetY * sprite.getScaleY()
+                )
+              
+              return this
+            },
+          }
+        },
+      },
+      {
+        name: "view-wallpaper_angle",  
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Angle",
+          },
+          field: { 
+            store: { key: "view-wallpaper_angle" },
+          },
+          slider: { 
+            minValue: 0.0,
+            maxValue: 360.0,
+            store: { key: "view-wallpaper_angle" },
+          },
+        },
+      },
+      {
+        name: "view-wallpaper_speed",  
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "Speed" },
+          field: { store: { key: "view-wallpaper_speed" } },
         },
       },
       {

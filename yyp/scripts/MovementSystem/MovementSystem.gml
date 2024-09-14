@@ -1,14 +1,14 @@
 ///@package io.alkapivo.visu.
 
-///@param {GridSystem} _system
+///@param {GridECS} _system
 function MovementSystem(_system) constructor {
 
-  ///@type {GridSystem}
-  system = Assert.isType(_system, GridSystem)
+  ///@type {GridECS}
+  system = Assert.isType(_system, GridECS)
 
   ///@params {GridEntity} entity
   ///@params {String} key
-  ///@params {GridSystem} system
+  ///@params {GridECS} system
   static moveEntity = function(entity, key, system) {
     entity.signals.reset()
     entity.position.x += Math.fetchCircleX(entity.velocity.speed, entity.velocity.angle)

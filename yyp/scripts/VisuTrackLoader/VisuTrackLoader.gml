@@ -1,6 +1,5 @@
 ///@package io.alkapivo.visu
 
-global.__VisuTrack = null
 ///@param {VisuController} _controller
 function VisuTrackLoader(_controller): Service() constructor {
 
@@ -36,8 +35,8 @@ function VisuTrackLoader(_controller): Service() constructor {
       "idle": {
         actions: {
           onStart: function(fsm, fsmState, data) {
-            var editor = Beans.get(BeanVisuEditor)
-            if (Core.isType(editor, VisuEditor)) {
+            var editor = Beans.get(BeanVisuEditorController)
+            if (Core.isType(editor, VisuEditorController)) {
               editor.send(new Event("open"))
             }
             
@@ -55,16 +54,16 @@ function VisuTrackLoader(_controller): Service() constructor {
         actions: {
           onStart: function(fsm, fsmState, path) {
             window_set_caption($"{game_display_name}")
-            audio_master_gain(0.0)
-
             var controller = Beans.get(BeanVisuController)
-            controller.gridRenderer.clear()
-            var editor = Beans.get(BeanVisuEditor)
-            if (Core.isType(editor, VisuEditor)) {
+
+            controller.visuRenderer.gridRenderer.clear()
+            var editor = Beans.get(BeanVisuEditorController)
+            if (Core.isType(editor, VisuEditorController)) {
               editor.popupQueue.dispatcher.execute(new Event("clear"))
               editor.dispatcher.execute(new Event("close"))
               editor.brushService.clearTemplates()
             }
+
             controller.trackService.dispatcher.execute(new Event("close-track"))
             controller.videoService.dispatcher.execute(new Event("close-video"))
             controller.gridService.dispatcher.execute(new Event("clear-grid"))
@@ -75,7 +74,7 @@ function VisuTrackLoader(_controller): Service() constructor {
             controller.coinService.dispatcher.execute(new Event("clear-coins")).execute(new Event("reset-templates"))
             controller.lyricsService.dispatcher.execute(new Event("clear-lyrics")).execute(new Event("reset-templates"))
             controller.particleService.dispatcher.execute(new Event("clear-particles")).execute(new Event("reset-templates"))
-            
+
             Beans.get(BeanTextureService).dispatcher.execute(new Event("free"))
 
             fsmState.state.set("promise", Beans.get(BeanFileService).send(
@@ -94,11 +93,14 @@ function VisuTrackLoader(_controller): Service() constructor {
                       },
                     }).update()
                     
-                    var editor = Beans.get(BeanVisuEditor)
-                    if (Core.isType(editor, VisuEditor)) {
+                    var editor = Beans.get(BeanVisuEditorController)
+                    if (Core.isType(editor, VisuEditorController)) {
                       var item = editor.store.get("bpm")
                       item.set(this.response.bpm)
   
+                      item = editor.store.get("bpm-count")
+                      item.set(this.response.bpmCount)
+
                       item = editor.store.get("bpm-sub")
                       item.set(this.response.bpmSub)
                     }
@@ -142,7 +144,7 @@ function VisuTrackLoader(_controller): Service() constructor {
         actions: {
           onStart: function(fsm, fsmState, data) {
             var controller = fsm.context.controller
-            global.__VisuTrack = data.manifest
+            controller.track = data.manifest
             var promises = new Map(String, Promise, {
               "texture": Beans.get(BeanFileService).send(
                 new Event("fetch-file")
@@ -168,7 +170,7 @@ function VisuTrackLoader(_controller): Service() constructor {
                       acc: {
                         service: Beans.get(BeanTextureService),
                         promises: new Map(String, Promise),
-                        path: global.__VisuTrack.path,
+                        path: controller.track.path,
                       },
                       steps: 2,
                     })
@@ -193,14 +195,16 @@ function VisuTrackLoader(_controller): Service() constructor {
                         var path = FileUtil.get($"{acc.path}{soundIntent.file}")
                         Assert.fileExists(path)
                         Assert.isFalse(soundService.sounds.contains(key), "GMSound already loaded")
-                        soundService.sounds.add(audio_create_stream(path), key)
+
+                        var stream = audio_create_stream(path)
+                        soundService.sounds.add(stream, key)
                         soundService.intents.add(soundIntent, key)
                       },
                       acc: {
                         soundService: Beans.get(BeanSoundService),
-                        path: global.__VisuTrack.path,
+                        path: controller.track.path,
                       },
-                      steps: MAGIC_NUMBER_TASK,
+                      steps: 1,
                     })
                     .whenSuccess(function(result) {
                       return Assert.isType(JSON.parserTask(result.data, this.state), Task)
@@ -348,7 +352,7 @@ function VisuTrackLoader(_controller): Service() constructor {
               ))
             }
             
-            if (Core.isType(Beans.get(BeanVisuEditor), VisuEditor)) {
+            if (Core.isType(Beans.get(BeanVisuEditorController), VisuEditorController)) {
               data.manifest.editor.forEach(function(file, index, acc) { 
                 var promise = Beans.get(BeanFileService).send(
                   new Event("fetch-file")
@@ -360,7 +364,7 @@ function VisuTrackLoader(_controller): Service() constructor {
                           acc.saveTemplate(new prototype(json))
                         },
                         acc: {
-                          saveTemplate: Beans.get(BeanVisuEditor).brushService.saveTemplate,
+                          saveTemplate: Beans.get(BeanVisuEditorController).brushService.saveTemplate,
                           file: file,
                         },
                         steps: MAGIC_NUMBER_TASK,
@@ -505,14 +509,14 @@ function VisuTrackLoader(_controller): Service() constructor {
       "loaded": {
         actions: {
           onStart: function(fsm, fsmState, tasks) { 
-            window_set_caption($"{game_display_name} | {fsm.context.controller.trackService.track.name} | {global.__VisuTrack.path}")
-            audio_master_gain(1.0)
+            window_set_caption($"{game_display_name} | {fsm.context.controller.trackService.track.name} | {fsm.context.controller.track.path}")
 
-            var editor = Beans.get(BeanVisuEditor)
-            if (Core.isType(editor, VisuEditor)) {
-              Beans.get(BeanVisuEditor).send(new Event("open"))
+            var editor = Beans.get(BeanVisuEditorController)
+            if (Core.isType(editor, VisuEditorController)) {
+              Beans.get(BeanVisuEditorController).send(new Event("open"))
             }
-            
+
+            VisuPreviewEvent()
             Beans.get(BeanVisuController).send(new Event("spawn-popup", 
               { message: $"Project '{Beans.get(BeanVisuController).trackService.track.name}' loaded successfully" }))
           }
@@ -550,4 +554,55 @@ function VisuTrackLoader(_controller): Service() constructor {
     }
     return this
   }
+}
+
+
+function VisuPreviewEvent() {
+  if (!Core.getProperty("visu.preview-mode", false)) {
+    return
+  }
+  
+  var handler = Struct.get(view_track_event, "brush_view_lyrics")
+  var data = {
+    "view-lyrics_use-finish-delay":true,
+    "view-lyrics_finish-delay":8.0,
+    "view-lyrics_use-transform-angle":false,
+    "view-lyrics_transform-angle":{
+      "value":320.0,
+      "factor":0.40000000000000002,
+      "target":280.0,
+      "increase":0.0
+    },
+    "view-lyrics_use-transform-speed":false,
+    "view-lyrics_transform-speed":{
+      "value":0.10000000000000001,
+      "factor":0.002,
+      "target":8.0,
+      "increase":0.0
+    },
+    "view-lyrics_fade-in":0.5,
+    "view-lyrics_fade-out":0.5,
+    "icon":{
+      "blend":"#009EB9",
+      "name":"texture_visu_editor_icon_event_view"
+    },
+    "view-lyrics_template":"lyrics-preview-mode",
+    "view-lyrics_font":"font_kodeo_mono_18_bold",
+    "view-lyrics_font-height":35.0,
+    "view-lyrics_use-timeout":false,
+    "view-lyrics_timeout":1.0,
+    "view-lyrics_color":"#1EFF75",
+    "view-lyrics_use-outline":true,
+    "view-lyrics_outline":"#000000",
+    "view-lyrics_align-v":"TOP",
+    "view-lyrics_align-h":"LEFT",
+    "view-lyrics_x":0.10000000000000001,
+    "view-lyrics_y":0.16000000000000001,
+    "view-lyrics_width":1.0,
+    "view-lyrics_height":1.0,
+    "view-lyrics_char-speed":1.5,
+    "view-lyrics_use-line-delay":false,
+    "view-lyrics_line-delay":0.5
+  }
+  Callable.run(handler, data)
 }

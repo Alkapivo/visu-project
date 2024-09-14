@@ -1,11 +1,7 @@
-///@package com.alkapivo.visu.component.grid.renderer.GridOverlayRenderer
+///@package com.alkapivo.visu.renderer.grid
 
 ///@todo rename to sth that reflects video, background and foreground renderer
-///@param {GridRenderer} _renderer
-function GridOverlayRenderer(_renderer) constructor {
-
-  ///@type {GridRenderer}
-  renderer = Assert.isType(_renderer, GridRenderer)
+function GridOverlayRenderer() constructor {
 
   ///@type {Array<Task>}
   backgrounds = new Array(Task).enableGC()
@@ -42,10 +38,12 @@ function GridOverlayRenderer(_renderer) constructor {
     static renderBackground = function(task, index, acc) {
       var sprite = task.state.get("sprite")
       sprite.scaleToFill(acc.width, acc.height)
-        .render(
-          (sprite.texture.offsetX / sprite.texture.width) * acc.width,
-          (sprite.texture.offsetY / sprite.texture.height) * acc.height
-        )
+      var _x = ceil(((sprite.texture.width * sprite.scaleX) - acc.width) / 2.0) + task.state.get("x")
+      var _y = ceil(((sprite.texture.height * sprite.scaleY) - acc.height) / 2.0) + task.state.get("y")
+      sprite.renderTiled(
+        ((sprite.texture.offsetX / sprite.texture.width) * acc.width) - _x,
+        ((sprite.texture.offsetY / sprite.texture.height) * acc.height) - _y
+      )
     }
 
     this.backgroundColors.forEach(renderBackgroundColor, { width: width, height: height })
@@ -67,10 +65,12 @@ function GridOverlayRenderer(_renderer) constructor {
     static renderForeground = function(task, index, acc) {
       var sprite = task.state.get("sprite")
       sprite.scaleToFill(acc.width, acc.height)
-        .render(
-          (sprite.texture.offsetX / sprite.texture.width) * acc.width,
-          (sprite.texture.offsetY / sprite.texture.height) * acc.height
-        )
+      var _x = ceil(((sprite.texture.width * sprite.scaleX) - acc.width) / 2.0) + task.state.get("x")
+      var _y = ceil(((sprite.texture.height * sprite.scaleY) - acc.height) / 2.0) + task.state.get("y")
+      sprite.renderTiled(
+        ((sprite.texture.offsetX / sprite.texture.width) * acc.width) - _x,
+        ((sprite.texture.offsetY / sprite.texture.height) * acc.height) - _y
+      )
     }
 
     GPU.set.blendMode(BlendMode.ADD)
@@ -84,12 +84,19 @@ function GridOverlayRenderer(_renderer) constructor {
   ///@param {Number} height
   ///@return {GridOverlayRenderer}
   renderVideo = function(width, height) {
-    var video = this.renderer.controller.videoService.getVideo()
+    var videoService = Beans.get(BeanVisuController).videoService
+    var video = videoService.getVideo()
     if (!Core.isType(video, Video) || !video.isLoaded()) {
       return this
     }
 
-    video.surface.update().scaleToFill(width, height).render()    
+    video.surface.update()
+    var scale = max(video.surface.width / width, video.surface.height / height)
+    var _width = ceil(width * scale)
+    var _height = ceil(height * scale)
+    var _x = -1 * ceil((_width - width) / 2.0)
+    var _y = -1 * ceil((_height - height) / 2.0)
+    video.surface.render(_x, _y, _width, _height)    
     return this
   }
 

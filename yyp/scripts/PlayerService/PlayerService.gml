@@ -23,6 +23,7 @@ function PlayerService(_controller, config = {}): Service() constructor {
           animate: true,
         }),
         mask: Struct.get(event.data, "mask"),
+        stats: Struct.get(event.data, "stats"),
         keyboard: {
           up: KeyboardKeyType.ARROW_UP,
           down: KeyboardKeyType.ARROW_DOWN,
@@ -39,9 +40,11 @@ function PlayerService(_controller, config = {}): Service() constructor {
         },
       })
 
-      var view = this.controller.gridService.view
+      var gridService = this.controller.gridService
+      var view = gridService.view
       var _x = view.x + (view.width / 2.0)
-      var _y = view.y + (view.height / 0.5)
+      var _y = gridService.height - (view.height * 0.25)
+
 
       if (Core.isType(this.player, Player)) {
         if (Struct.get(event.data, "reset-position") != true) {
@@ -49,7 +52,9 @@ function PlayerService(_controller, config = {}): Service() constructor {
           _y = this.player.y
         }
 
-        Struct.set(template, "stats", this.player.stats)
+        if (!Optional.is(Struct.get(template, "stats"))) {
+          Struct.set(template, "stats", this.player.stats)
+        }
       }
 
       Struct.set(template, "x", _x)

@@ -87,6 +87,14 @@ function template_coin(json = null) {
               spriteOff: { name: "visu_texture_checkbox_off" },
             },
           },
+          randomFrame: {
+            label: { text: "Random frame" }, 
+            checkbox: { 
+              store: { key: "coin_sprite" },
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+            },
+          },
           frame: {
             label: { text: "Frame" },
             field: { store: { key: "coin_sprite" } },

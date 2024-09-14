@@ -119,8 +119,8 @@
   "maintainGms1Font":false,
   "name":"font_consolas_12_bold",
   "parent":{
-    "name":"font",
-    "path":"folders/core/resource/font.yy",
+    "name":"bold",
+    "path":"folders/core/resource/font/font_consolas/bold.yy",
   },
   "pointRounding":0,
   "ranges":[
