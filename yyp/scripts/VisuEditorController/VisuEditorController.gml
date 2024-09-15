@@ -183,59 +183,7 @@ function VisuEditorController() constructor {
       this.store.get("render-brush").set(this.store.getValue("_render-brush"))
       this.store.get("render-trackControl").set(this.store.getValue("_render-trackControl"))
 
-      var task = new Task("open-editor-ui")
-        .setTimeout(10.0)
-        .setPromise(event.promise) // pass promise to TaskExecutor
-        .setState(new Queue(Struct, [
-          {
-            handler: this.titleBar,
-            event: new Event("open").setData({ 
-              layout: Struct.get(this.layout.nodes, "title-bar")
-            }),
-          },
-          {
-            handler: this.accordion,
-            event: new Event("open").setData({ 
-              layout: Struct.get(this.layout.nodes, "accordion")
-            }),
-          },
-          {
-            handler: this.trackControl,
-            event: new Event("open").setData({ 
-              layout: Struct.get(this.layout.nodes, "track-control")
-            }),
-          },
-          {
-            handler: this.brushToolbar,
-            event: new Event("open").setData({ 
-              layout: Struct.get(this.layout.nodes, "brush-toolbar")
-            }),
-          },
-          {
-            handler: this.timeline,
-            event: new Event("open").setData({ 
-              layout: Struct.get(this.layout.nodes, "timeline")
-            }),
-          },
-          {
-            handler: this.statusBar,
-            event: new Event("open").setData({ 
-              layout: Struct.get(this.layout.nodes, "status-bar")
-            }),
-          }
-        ]))
-        .whenUpdate(function() {
-          var entry = this.state.pop()
-          if (!Optional.is(entry)) {
-            this.fullfill()
-            return
-          }
-
-          entry.handler.send(entry.event)
-        })
-      this.executor.add(task)
-
-      event.setPromise() // disable promise in EventPump, the promise will be resolved within TaskExecutor
+      this.requestOpenUI = true
     },
     "close": function(event) {
       this.store.get("_render-event").set(this.store.getValue("render-event"))
@@ -293,6 +241,110 @@ function VisuEditorController() constructor {
 
   ///@type {Boolean}
   renderUI = Assert.isType(Core.getProperty("visu.editor.renderUI", true), Boolean)
+
+  ///@private
+  ///@type {Boolean}
+  uiInitialized = false
+
+  ///@private
+  ///@type {Boolean}
+  requestOpenUI = false
+
+  ///@private
+  ///@return {Task}
+  factoryInitUITask = function() {
+    return new Task("open-editor-ui")
+      .setTimeout(10.0)
+      .setState(new Queue(Struct, [
+        {
+          handler: this.titleBar,
+          event: new Event("open").setData({ 
+            layout: Struct.get(this.layout.nodes, "title-bar")
+          }),
+        },
+        {
+          handler: this.accordion,
+          event: new Event("open").setData({ 
+            layout: Struct.get(this.layout.nodes, "accordion")
+          }),
+        },
+        {
+          handler: this.trackControl,
+          event: new Event("open").setData({ 
+            layout: Struct.get(this.layout.nodes, "track-control")
+          }),
+        },
+        {
+          handler: this.brushToolbar,
+          event: new Event("open").setData({ 
+            layout: Struct.get(this.layout.nodes, "brush-toolbar")
+          }),
+        },
+        {
+          handler: this.timeline,
+          event: new Event("open").setData({ 
+            layout: Struct.get(this.layout.nodes, "timeline")
+          }),
+        },
+        {
+          handler: this.statusBar,
+          event: new Event("open").setData({ 
+            layout: Struct.get(this.layout.nodes, "status-bar")
+          }),
+        }
+      ]))
+      .whenUpdate(function() {
+        var entry = this.state.pop()
+        if (!Optional.is(entry)) {
+          this.fullfill()
+          return
+        }
+
+        entry.handler.send(entry.event)
+      })
+  }
+
+  ///@private
+  ///@return {Task}
+  factoryOpenUITask = function() {
+    return new Task("open-editor-ui")
+      .setTimeout(10.0)
+      .setState(new Queue(Struct, [
+        {
+          handler: this.accordion,
+          event: new Event("open").setData({ 
+            layout: Struct.get(this.layout.nodes, "accordion")
+          }),
+        },
+        {
+          handler: this.trackControl,
+          event: new Event("open").setData({ 
+            layout: Struct.get(this.layout.nodes, "track-control")
+          }),
+        },
+        {
+          handler: this.brushToolbar,
+          event: new Event("open").setData({ 
+            layout: Struct.get(this.layout.nodes, "brush-toolbar")
+          }),
+        },
+        {
+          handler: this.timeline,
+          event: new Event("open").setData({ 
+            layout: Struct.get(this.layout.nodes, "timeline")
+          }),
+        }
+      ]))
+      .whenUpdate(function() {
+        var entry = this.state.pop()
+        if (!Optional.is(entry)) {
+          this.fullfill()
+          return
+        }
+
+        entry.handler.send(entry.event)
+      })
+  }
 
   ///@private
   ///@return {VisuEditorController}
@@ -503,11 +555,15 @@ function VisuEditorController() constructor {
   ///@private
   ///@return {VisuEditorController}
   updateUIService = function() {
-    if (!this.renderUI) {
+    if (this.renderUI && this.requestOpenUI) {
+      this.executor.add(this.uiInitialized 
+        ? this.factoryOpenUITask()
+        : this.factoryInitUITask())
+      this.uiInitialized = true
+      this.requestOpenUI = false
+    } else if (!this.renderUI) {
       return this
     }
-
-    this.updateExecutor()
 
     try {
       ///@description reset UI timers after resize to avoid ghost effect
@@ -545,6 +601,7 @@ function VisuEditorController() constructor {
   ///@return {VisuEditorController}
   update = function() {
     this.updateDispatcher()
+    this.updateExecutor()
     this.updateUIService()
     this.services.forEach(this.updateService, Beans.get(BeanVisuController))
     this.updateLayout()

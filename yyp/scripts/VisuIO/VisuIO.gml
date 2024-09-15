@@ -39,6 +39,12 @@ function VisuIO() constructor {
     if (this.keyboard.keys.controlLeft.on 
       && this.keyboard.keys.openProject.pressed) {
       try {
+        if (Core.getRuntimeType() == RuntimeType.GXGAMES) {
+          controller.send(new Event("spawn-popup", 
+            { message: $"Feature 'visu.open' is not available on wasm-yyc target" }))
+          return
+        }
+
         var manifest = FileUtil.getPathToOpenWithDialog({ 
           description: "Visu track file",
           filename: "manifest", 

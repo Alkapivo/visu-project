@@ -173,6 +173,12 @@ function VisuEditorIO() constructor {
     if (this.keyboard.keys.controlLeft.on 
       && this.keyboard.keys.saveProject.pressed) {
       try {
+        if (Core.getRuntimeType() == RuntimeType.GXGAMES) {
+          editor.send(new Event("spawn-popup", 
+            { message: $"Feature 'visu.editor.save' is not available on wasm-yyc target" }))
+          return this
+        }
+
         var path = FileUtil.getPathToSaveWithDialog({ 
           description: "Visu track file",
           filename: "manifest", 
@@ -180,7 +186,7 @@ function VisuEditorIO() constructor {
         })
 
         if (!Core.isType(path, String) || String.isEmpty(path)) {
-          return
+          return this
         }
 
         controller.track.saveProject(path)
