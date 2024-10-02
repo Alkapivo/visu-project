@@ -1,4 +1,4 @@
-///@package io.alkapivo.visu.editor.ui
+///@package io.alkapivo.visu.editor.ui.controller
 
 ///@todo move to VEBrushToolbar
 ///@static

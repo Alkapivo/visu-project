@@ -95,6 +95,9 @@ function NumberTransformer(json = null): Transformer(json) constructor {
   factor = Assert.isType(Struct.getDefault(json, "factor", 1), Number)
 
   ///@type {Number}
+  startFactor = this.factor
+
+  ///@type {Number}
   increase = Assert.isType(Struct.getDefault(json, "increase", 0), Number)
   
   ///@override
@@ -120,6 +123,14 @@ function NumberTransformer(json = null): Transformer(json) constructor {
       factor: this.factor,
       increase: this.increase,
     }
+  }
+
+  ///@return {NumberTransformer}
+  reset = function() {
+    this.finished = false 
+    this.value = this.startValue
+    this.factor = this.startFactor
+    return this
   }
 }
 

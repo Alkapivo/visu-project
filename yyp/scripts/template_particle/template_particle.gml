@@ -92,9 +92,7 @@ function template_particle(json = null) {
             callback: function() {
               var template = this.store.get("particle-template").get()
               var keys = ParticleShape.keys()
-              var index = keys.findIndex(function(key, index, acc) { ///@todo move to Lambda util
-                return key == acc
-              }, template.shape)
+              var index = keys.findIndex(Lambda.equal, template.shape)
               index = index - 1 < 0 ? keys.size() - 1 : index - 1
               template.shape = keys.get(index)
               this.store.get("particle-template").set(template)

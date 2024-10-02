@@ -5,8 +5,8 @@
   "isDnD":false,
   "name":"VisuModal",
   "parent":{
-    "name":"ui",
-    "path":"folders/visu/src/ui.yy",
+    "name":"controller",
+    "path":"folders/visu/src/ui/controller.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

@@ -1,5 +1,5 @@
 
-///@package io.alkapivo.visu.editor.ui
+///@package io.alkapivo.visu.ui.controller
 
 ///@param {?Struct} [_config]
 function VisuModal(_config = null) constructor {

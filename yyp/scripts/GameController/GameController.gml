@@ -31,7 +31,7 @@ function GameController() constructor {
           onStart: function(fsm, fsmState, data) {
             SceneContext.setIntent(new NeonBaronState({
               "baron": {
-                "world": "_test-world.ldtk",
+                "world": "world/test-world.ldtk",
                 "level": "level_0",
                 "x": 100,
                 "y": 100
@@ -223,7 +223,6 @@ function GameController() constructor {
                   .setData({ path: $"{working_directory}{gameController.world.state.baron.world}"})
                   .setPromise(new Promise()
                     .whenSuccess(function(result) {
-                      Core.print("wtf?")
                       return new LDTKWorld(JSON.parse(result.data))
                     }))
               )

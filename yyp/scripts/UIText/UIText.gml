@@ -12,11 +12,6 @@ function UIText(name, json = null) {
     ///@type {UILabel}
     label: new UILabel(json),
 
-    ///@type {?GMColor}
-    backgroundColor: Struct.contains(json, "backgroundColor")
-      ? Assert.isType(ColorUtil.fromHex(json.backgroundColor).toGMColor(), GMColor)
-      : null,
-
     ///@type {Boolean}
     value: Struct.contains(json, "value") ? Assert.isType(json.value, Boolean) : true,
 

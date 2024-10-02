@@ -31,6 +31,7 @@ function VisuTrackLoader(_controller): Service() constructor {
   ///@type {FSM}
   fsm = new FSM(this, {
     initialState: { name: "idle" },
+    displayName: "VisuTrackLoader",
     states: {
       "idle": {
         actions: {
@@ -188,7 +189,8 @@ function VisuTrackLoader(_controller): Service() constructor {
                         var soundIntent = new prototype(json)
                         var soundService = acc.soundService
                         if (Core.getRuntimeType() == RuntimeType.GXGAMES) {
-                          soundService.sounds.add(sound_visu_wasm, key)
+                          var sound = sound_visu_wasm
+                          soundService.sounds.add(sound, key)
                           return
                         }
 
@@ -513,7 +515,7 @@ function VisuTrackLoader(_controller): Service() constructor {
 
             var editor = Beans.get(BeanVisuEditorController)
             if (Core.isType(editor, VisuEditorController)) {
-              Beans.get(BeanVisuEditorController).send(new Event("open"))
+              editor.send(new Event("open"))
             }
 
             VisuPreviewEvent()

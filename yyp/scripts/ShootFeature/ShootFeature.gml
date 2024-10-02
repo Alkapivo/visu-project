@@ -6,7 +6,8 @@ function ShootFeature(json) {
   var data = Struct.map(Assert.isType(Struct
     .getDefault(json, "data", {}), Struct), GMArray
     .resolveRandom)
-  
+
+  var amount = Core.isType(Struct.get(data, "amount"), Number) ? data.amount : 1.0,
   return new GridItemFeature(Struct.append(json, {
 
     ///@param {Callable}
@@ -30,13 +31,24 @@ function ShootFeature(json) {
 
     ///@private
     ///@type {Number}
+    amount: amount,
+
+    ///@private
+    ///@type {Number}
     angle: Core.isType(Struct.get(data, "angle"), Number) ? data.angle : 0.0,
+
+    ///@private
+    ///@type {Number}
+    angleStep: Core.isType(Struct.get(data, "angleStep"), Number) ? data.angleStep : (360.0 / amount),
 
     ///@type {Boolean}
     targetPlayer: Core.isType(Struct.get(data, "targetPlayer"), Boolean) ? data.targetPlayer : false,
 
     ///@type {Number}
-    randomRange: Core.isType(Struct.get(data, "randomRange"), Number) ? data.randomRange : 0,
+    randomAngle: Core.isType(Struct.get(data, "randomRange"), Number) ? data.randomRange : 0.0,
+
+    ///@type {Number}
+    randomSpeed: Core.isType(Struct.get(data, "randomSpeed"), Number) ? data.randomSpeed : 0.0,
 
     ///@override
     ///@param {GridItem} item
@@ -47,24 +59,28 @@ function ShootFeature(json) {
         return
       }
 
-      var randomAngle = random(this.randomRange) * choose(1, -1)
-      var angle = item.angle + this.angle + randomAngle
+      var angle = item.angle + this.angle
       if (this.targetPlayer) {
         var player = Beans.get(BeanVisuController).playerService.player
         if (Core.isType(player, Player)) {
           angle = Math.fetchAngle(item.x, item.y, player.x, player.y) 
-            + randomAngle
+            + this.angle
         }
       }
 
-      controller.bulletService.send(new Event("spawn-bullet", {
-        x: item.x,
-        y: item.y,
-        angle: angle,
-        speed: this.speed,
-        producer: Shroom,
-        template: this.bullet,
-      }))
+      for (var index = 0; index < amount; index++) {
+        controller.bulletService.send(new Event("spawn-bullet", {
+          x: item.x,
+          y: item.y,
+          angle: angle 
+            + (index * this.angleStep) 
+            + (random(this.randomAngle) * choose(1, -1)),
+          speed: this.speed
+            + (random(this.randomSpeed) * choose(1, -1)),
+          producer: Shroom,
+          template: this.bullet,
+        }))
+      }
     },
   }))
 }

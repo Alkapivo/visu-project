@@ -10,22 +10,13 @@ global.__DDNodeType = new _DDNodeType()
 #macro DDNodeType global.__DDNodeType
 
 
-///@enum
-function _DDActionType(): Enum() constructor {
-  QUIT = "QUIT"
-  LOAD_VISU_TRACK = "LOAD_VISU_TRACK"
-}
-global.__DDActionType = new _DDActionType()
-#macro DDActionType global.__DDActionType
-
-
 ///@param {Array} array
 function DDDialogue(array) constructor {
 
   ///@type {Struct}
   var json = Assert.isType(array.get(0), Struct)
 
-  ///@type {DDNode}
+  ///@type {Array<DDNode>}
   nodes = new Array(DDNode, GMArray.map(json.nodes, function(node) {
     switch (node.node_type) {
       case DDNodeType.START: return new DDNode(node)
@@ -65,7 +56,7 @@ function DDDialogue(array) constructor {
         if (Core.isType(node, DDNode)) {
           this.current = node
         } else {
-          Logger.error(BeanDialogueService, $"node does not exists. index: {index}, next: {this.current.next}")
+          Logger.error(BeanDialogueDesignerService , $"node does not exists. index: {index}, next: {this.current.next}")
         }
       }
     } else {
@@ -74,7 +65,7 @@ function DDDialogue(array) constructor {
         if (Core.isType(node, DDNode)) {
           this.current = node
         } else {
-          Logger.error(BeanDialogueService, $"node does not exists. index: {index}, next: {this.current.next}")
+          Logger.error(BeanDialogueDesignerService , $"node does not exists. index: {index}, next: {this.current.next}")
         }
       }
     }
@@ -82,8 +73,9 @@ function DDDialogue(array) constructor {
     return this
   }
   
+  ///@param {Map<String, Callable>} handlers
   ///@return {DDDialogue}
-  update = function() {
+  update = function(handlers) {
     switch (this.current.type) {
       case DDNodeType.START:
         var node = this.get(this.current.next)
@@ -94,7 +86,7 @@ function DDDialogue(array) constructor {
       case DDNodeType.MESSAGE:
         break
       case DDNodeType.EXECUTE:
-        this.current.action.run()
+        this.current.action.run(handlers)
         var node = this.get(this.current.next)
         if (Core.isType(node, DDNode)) {
           this.current = node
@@ -214,28 +206,24 @@ function DDChoice(json) constructor {
 ///@param {Struct} json
 function DDAction(json) constructor {
 
-  ///@type {DDActionType}
-  action = Assert.isEnum(json.action, DDActionType)
+  ///@type {String}
+  action = Assert.isType(json.action, String)
 
   ///@type {?Struct}
   data = Core.isType(Struct.get(json, "data"), Struct) 
     ? json.data 
     : null
 
+  ///@param {Map<String, Callable>} handlers
+  ///@throws {Exception}
   ///@return {DDAction}
-  run = function() {
-    switch (this.action) {
-      case DDActionType.QUIT:
-        Beans.get(BeanDialogueService).close()
-        break
-      case DDActionType.LOAD_VISU_TRACK:
-        Beans.get(BeanVisuController).send(new Event("load", {
-          manifest: FileUtil.get(this.data.path),
-          autoplay: true,
-        }))
-        break
-      default: throw new Exception($"Invalid DDActionType {this.action}")
+  run = function(handlers) {
+    var handler = handlers.get(this.action)
+    if (!Core.isType(handler, Callable)) {
+      throw new Exception($"Handler for action '{this.action}' was not found")
     }
+
+    handler(this.data)
     return this
   }
 }

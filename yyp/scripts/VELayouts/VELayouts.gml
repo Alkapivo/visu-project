@@ -1,4 +1,4 @@
-//@package io.alkapivo.visu.editor
+///@package io.alkapivo.visu.editor.ui
 
 ///@static
 ///@type {Map<String, Callable>}
@@ -598,6 +598,97 @@ global.__VELayouts = new Map(String, Callable, {
             - this.margin.left - this.margin.right },
           margin: { top: 5, bottom: 5, right: 15, left: 10 },
         }
+      }
+    }
+  },
+
+  ///@param {?Struct} [config]
+  ///@return {Struct}
+  "numeric-slider-field-button": function(config = null) {
+    return {
+      name: "numeric-slider-field-button",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      height: function() { return 32 },
+      nodes: {
+        label: {
+          name: "numeric-slider-field-button.label",
+          width: function() { return 70 - this.margin.left - this.margin.right },
+          margin: { top: 5, bottom: 5, left: 5 },
+        },
+        field: {
+          name: "numeric-slider-field-button.field",
+          x: function() { return this.context.nodes.label.right() + this.margin.left },
+          width: function() { return ((this.context.width() - this.context.nodes.label.right()) / 2.0)
+            - this.margin.left - this.margin.right },
+          margin: { top: 5, bottom: 5, right: 5, left: 5 },
+        },
+        decrease: {
+          name: "numeric-slider-field-button.decrease",
+          x: function() { return this.context.nodes.field.right() + this.margin.left },
+          width: function() { return 14 },
+          margin: { top: 5, bottom: 5, right: 0, left: 5 },
+        },
+        slider: {
+          name: "numeric-slider-field-button.slider",
+          x: function() { return this.context.nodes.decrease.right() + this.margin.left },
+          width: function() { return ((this.context.width() - this.context.nodes.label.right()) / 2.0)
+            - this.margin.left 
+            - this.margin.right 
+            - this.context.nodes.decrease.margin.left
+            - this.context.nodes.decrease.margin.right
+            - this.context.nodes.decrease.width() 
+            - this.context.nodes.increase.margin.left
+            - this.context.nodes.increase.margin.right
+            - this.context.nodes.increase.width() },
+          margin: { top: 5, bottom: 5, right: 13, left: 10 },
+        },
+        increase: {
+          name: "numeric-slider-field-button.increase",
+          x: function() { return this.context.width() - this.margin.right - this.width() },
+          width: function() { return 14 },
+          margin: { top: 5, bottom: 5, right: 14, left: 0 },
+        },
+      }
+    }
+  },
+
+  ///@param {?Struct} [config]
+  ///@return {Struct}
+  "numeric-slider-button": function(config = null) {
+    return {
+      name: "numeric-slider-button",
+      type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
+      height: function() { return 32 },
+      nodes: {
+        label: {
+          name: "numeric-slider-button.label",
+          width: function() { return 70 - this.margin.left - this.margin.right },
+          margin: { top: 5, bottom: 5, left: 5 },
+        },
+        decrease: {
+          name: "numeric-slider-button.decrease",
+          x: function() { return this.context.nodes.label.right() + this.margin.left },
+          width: function() { return 14 },
+          margin: { top: 5, bottom: 5, right: 0, left: 5 },
+        },
+        slider: {
+          name: "numeric-slider-button.slider",
+          x: function() { return this.context.nodes.decrease.right() + this.margin.left },
+          width: function() { return this.context.width()
+            - this.margin.left 
+            - this.margin.right 
+            - this.context.nodes.decrease.right() 
+            - this.context.nodes.increase.margin.left
+            - this.context.nodes.increase.margin.right
+            - this.context.nodes.increase.width() },
+          margin: { top: 5, bottom: 5, right: 13, left: 10 },
+        },
+        increase: {
+          name: "numeric-slider-button.increase",
+          x: function() { return this.context.width() - this.margin.right - this.width() },
+          width: function() { return 14 },
+          margin: { top: 5, bottom: 5, right: 14, left: 0 },
+        },
       }
     }
   },

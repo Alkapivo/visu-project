@@ -1,4 +1,4 @@
-///@package io.alkapivo.visu.editor.ui
+///@package io.alkapivo.visu.editor.ui.controller
 
 ///@param {VisuEditorController} _editor
 ///@param {?Struct} [config]
@@ -33,11 +33,10 @@ function VEAccordion(_editor, config = null) constructor {
     },
   })
 
-  var generateSettingsSubscriber = Visu.settings.generateSettingsSubscriber
-  store.get("render-event-inspector").addSubscriber(
-    generateSettingsSubscriber("visu.editor.accordion.render-event-inspector"))
-  store.get("render-template-toolbar").addSubscriber(
-    generateSettingsSubscriber("visu.editor.accordion.render-template-toolbar"))
+  this.store.get("render-event-inspector").addSubscriber(Visu
+    .generateSettingsSubscriber("visu.editor.accordion.render-event-inspector"))
+  this.store.get("render-template-toolbar").addSubscriber(Visu
+    .generateSettingsSubscriber("visu.editor.accordion.render-template-toolbar"))
 
   ///@private
   ///@param {UIlayout} parent

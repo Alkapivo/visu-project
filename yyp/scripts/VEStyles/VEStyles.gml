@@ -1,4 +1,4 @@
-//@package io.alkapivo.visu.editor
+///@package io.alkapivo.visu.editor.ui
 
 ///@static
 ///@type {Struct}
@@ -19,6 +19,7 @@ global.__VETheme = {
     deny: "#A84545",
     denyShadow: "#823d3d",
     ruler: "#E64B3D",
+    header: "#963271",
   }
 }
 #macro VETheme global.__VETheme

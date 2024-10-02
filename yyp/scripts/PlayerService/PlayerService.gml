@@ -1,11 +1,11 @@
 ///@package io.alkapivo.visu.service.player
 
-///@param {Controller} _controller
+///@param {VisuController} _controller
 ///@param {Struct} [config]
 function PlayerService(_controller, config = {}): Service() constructor {
 
-  ///@type {Controller}
-  controller = Assert.isType(_controller, Struct)
+  ///@type {VisuController}
+  controller = Assert.isType(_controller, VisuController)
 
   ///@type {?Player}
   player = null
@@ -24,15 +24,16 @@ function PlayerService(_controller, config = {}): Service() constructor {
         }),
         mask: Struct.get(event.data, "mask"),
         stats: Struct.get(event.data, "stats"),
-        keyboard: {
-          up: KeyboardKeyType.ARROW_UP,
-          down: KeyboardKeyType.ARROW_DOWN,
-          left: KeyboardKeyType.ARROW_LEFT,
-          right: KeyboardKeyType.ARROW_RIGHT,
-          action: "Z",
-          bomb: "X",
-          focus: KeyboardKeyType.SHIFT,
-        },
+        //keyboard: {
+        //  up: KeyboardKeyType.ARROW_UP,
+        //  down: KeyboardKeyType.ARROW_DOWN,
+        //  left: KeyboardKeyType.ARROW_LEFT,
+        //  right: KeyboardKeyType.ARROW_RIGHT,
+        //  action: "Z",
+        //  bomb: "X",
+        //  focus: KeyboardKeyType.SHIFT,
+        //},
+        keyboard: Beans.get(BeanVisuIO).keyboards.get("player"),
         gameModes: {
           racing: JSON.clone(Struct.getDefault(event.data, "racing", {})),
           bulletHell: JSON.clone(Struct.getDefault(event.data, "bulletHell", {})),
@@ -59,6 +60,7 @@ function PlayerService(_controller, config = {}): Service() constructor {
 
       Struct.set(template, "x", _x)
       Struct.set(template, "y", _y)
+      Struct.set(template, "uid", this.controller.gridService.generateUID())
 
       this.set(new Player(template))
       this.player.updateGameMode(this.controller.gameMode)

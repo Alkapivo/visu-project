@@ -19,13 +19,8 @@ function UIButton(name, json = null) {
       ? new UILabel(json.label)
       : null,
 
-    ///@type {?GMColor}
-    backgroundColor: Struct.contains(json, "backgroundColor")
-      ? Assert.isType(ColorUtil.fromHex(json.backgroundColor).toGMColor(), GMColor)
-      : null,
-
     ///@type {?Margin}
-    backgroundMargin: Struct.contains(json, "backgroundColor")
+    backgroundMargin: Struct.contains(json, "backgroundMargin")
       ? new Margin(Struct.get(json, "backgroundMargin"))
       : null,
 
@@ -47,6 +42,7 @@ function UIButton(name, json = null) {
       if (Optional.is(this.preRender)) {
         this.preRender()
       }
+
       this.renderBackgroundColor()
 
       if (this.sprite != null) {

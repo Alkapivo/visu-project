@@ -1,0 +1,48 @@
+{
+  "version": "1",
+  "model": "io.alkapivo.core.test.TestSuite",
+  "data":{
+    "name": "Test visu tracks",
+    "stopAfterFailure": true,
+    "tests": [
+      {
+        "handler": "TestEvent_VisuController_load",
+        "description": "Load kedy_selma - Just To Create Something",
+        "data": {
+          "trackName": "kedy_selma - Just To Create Something",
+          "timeout": 10.0,
+          "cooldown": 1.5,
+          "path": "track/kedy_selma/2024-Just-To-Create-Something/4-Just-To-Create-Something/manifest.visu"
+        }
+      },
+      {
+        "handler": "TestEvent_VisuController_playback",
+        "description": "Play whole kedy_selma - Just To Create Something (4:05)",
+        "data": {
+          "timeout": 265.0,
+          "duration": 245.0,
+          "cooldown": 1.5
+        }
+      },
+      {
+        "handler": "TestEvent_VisuController_rewind",
+        "description": "Rewind on kedy_selma - Just To Create Something (15 times)",
+        "data": {
+          "timeout": 40.0,
+          "amount": 15.0,
+          "cooldown": 1.0,
+          "minDuration": 0.3,
+          "maxDuration": 1.4
+        }
+      },
+      {
+        "handler": "TestEvent_BrushToolbar_save",
+        "description": "Save one brush in every category and type on kedy_selma - Just To Create Something",
+        "data": {
+          "timeout": 60.0,
+          "cooldown": 0.5
+        }
+      }
+    ]
+  }
+}

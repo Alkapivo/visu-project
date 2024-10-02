@@ -14,6 +14,11 @@ function ShroomTemplate(_name, json) constructor {
   mask = Struct.contains(json, "mask")
     ? Assert.isType(json.mask, Struct)
     : null
+
+  ///@type {?Number}
+  healthPoints = Core.isType(Struct.get(json, "healthPoints"), Number) 
+    ? json.healthPoints 
+    : null
   
   ///@type {Struct}
   gameModes = Struct.appendUnique(
@@ -35,6 +40,10 @@ function ShroomTemplate(_name, json) constructor {
       Struct.set(json, "mask", this.mask)
     }
 
+    if (Optional.is(this.healthPoints)) {
+      Struct.set(json, "healthPoints", this.healthPoints)
+    }
+
     return JSON.clone(json)
   }
 }
@@ -47,8 +56,10 @@ function Shroom(template): GridItem(template) constructor {
   ///@type {Map<String, any>}
   state = Struct.getDefault(template, "state", new Map(String, any))
 
-  ///@type {?String}
-  shroomGridKey = null
+  ///@type {Number}
+  healthPoints = Core.isType(Struct.get(template, "healthPoints"), Number) 
+    ? template.healthPoints 
+    : 1
 
   ///@param {VisuController} controller
   ///@return {Shroom}

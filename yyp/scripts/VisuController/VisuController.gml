@@ -12,6 +12,7 @@ function VisuController(layerName) constructor {
   
   ///@type {FSM}
   fsm = new FSM(this, {
+    displayName: BeanVisuController,
     initialState: { name: "idle" },
     states: {
       "idle": {
@@ -19,25 +20,57 @@ function VisuController(layerName) constructor {
           onStart: function(fsm, fsmState, data) {
             if (Core.isType(data, Event)) {
               fsm.context.send(data)
-            }
+            }            
           },
         },
+        update: function(fsm) { },
         transitions: { 
           "idle": null, 
+          "game-over": null,
           "load": null, 
           "play": null, 
           "pause": null, 
+          "paused": null,
+          "quit": null,
+        },
+      },
+      "game-over": {
+        actions: {
+          onStart: function(fsm, fsmState, data) {
+            fsm.context.menu.send(fsm.context.menu
+              .factoryOpenMainMenuEvent({ 
+                titleLabel: "Game over"
+              }))
+          },
+        },
+        update: function(fsm) {
+          if (fsm.context.menu.containers.size() == 0) {
+            fsm.context.menu.send(fsm.context.menu
+              .factoryOpenMainMenuEvent({ 
+                titleLabel: "Game over"
+              }))
+          }
+        },
+        transitions: { 
+          "idle": null, 
+          "game-over": null,
+          "load": null, 
+          "play": null, 
+          "pause": null, 
+          "paused": null,
           "quit": null,
         },
       },
       "load": {
         actions: {
           onStart: function(fsm, fsmState, data) {
-            fsmState.state.set("autoplay", Struct.getDefault(data, "autoplay", false))
-            fsm.context.loader.fsm.dispatcher.send(new Event("transition", {
+            var controller = Beans.get(BeanVisuController)
+            controller.menu.send(new Event("close"))
+            controller.loader.fsm.dispatcher.send(new Event("transition", {
               name: "parse-manifest",
               data: data.manifest,
             }))
+            fsmState.state.set("autoplay", Struct.getDefault(data, "autoplay", false))
             
             audio_stop_all()
             Beans.get(BeanSoundService).free()
@@ -70,6 +103,8 @@ function VisuController(layerName) constructor {
       "play": {
         actions: {
           onStart: function(fsm, fsmState, data) {
+            Beans.get(BeanVisuController).menu.send(new Event("close"))
+
             var promises = new Map(String, Promise, {})
 
             if (Optional.is(fsm.context.videoService.video)) {
@@ -117,6 +152,7 @@ function VisuController(layerName) constructor {
         },
         transitions: { 
           "idle": null, 
+          "game-over": null,
           "load": null, 
           "pause": null, 
           "rewind": null, 
@@ -137,6 +173,7 @@ function VisuController(layerName) constructor {
             }
 
             fsmState.state.set("promises", promises)
+            fsmState.state.set("menuEvent", data)
           },
         },
         update: function(fsm) {
@@ -150,6 +187,10 @@ function VisuController(layerName) constructor {
               this.state.set("promises-resolved", "success")
             }
 
+            fsm.dispatcher.send(new Event("transition", { 
+              name: "paused", 
+              data: this.state.get("menuEvent"),
+            }))
             //Assert.areEqual(fsm.context.videoService.video.getStatus(), VideoStatus.PAUSED)
             //Assert.areEqual(fsm.context.trackService.track.getStatus(), TrackStatus.PAUSED)
           } catch (exception) {
@@ -163,9 +204,31 @@ function VisuController(layerName) constructor {
           "idle": null, 
           "load": null, 
           "play": null, 
+          "paused": null,
           "rewind": null, 
           "quit": null,
         },
+      },
+      "paused": {
+        actions: {
+          onStart: function(fsm, fsmState, data) {
+            if (Core.isType(data, Event)) {
+              Beans.get(BeanVisuController).menu.send(data)
+            }
+          },
+          onFinish: function(fsm, fsmState, data) {
+            Beans.get(BeanVisuController).menu.send(new Event("close"))
+          },
+        },
+        update: function(fsm) { },
+        transitions: {
+          "idle": null, 
+          "load": null,
+          "play": null, 
+          "pause": null, 
+          "rewind": null, 
+          "quit": null,
+        }
       },
       "rewind": {
         actions: {
@@ -270,17 +333,45 @@ function VisuController(layerName) constructor {
   ///@type {VisuTrackLoader}
   loader = new VisuTrackLoader(this)
 
-  ///@type {ShaderPipeline}
-  shaderPipeline = new ShaderPipeline()
+  ///@type {TaskExecutor}
+  executor = new TaskExecutor(this, {
+    enableLogger: true,
+    catchException: false,
+  })
 
   ///@type {ShaderPipeline}
-  shaderBackgroundPipeline = new ShaderPipeline(this.shaderPipeline)
+  shaderPipeline = new ShaderPipeline({
+    getLimit: function() {
+      return Visu.settings.getValue("visu.graphics.shaders-limit")
+    },
+    getTemplate: function(name) {
+      var template = this.templates.get(name)
+      return template == null
+        ? Visu.assets().shaderTemplates.get(name)
+        : template
+    },
+  })
+
+  ///@type {ShaderPipeline}
+  shaderBackgroundPipeline = new ShaderPipeline({
+    templates: this.shaderPipeline.templates,
+    getLimit: function() {
+      return Beans.get(BeanVisuController).shaderPipeline.getLimit()
+    },
+    getTemplate: function(name) {
+      return Beans.get(BeanVisuController).shaderPipeline.getTemplate(name)
+    },
+  })
 
   ///@type {UIService}
   uiService = new UIService(this)
 
   ///@type {DisplayService}
-  displayService = new DisplayService(this, { minWidth: 800, minHeight: 480 })
+  displayService = new DisplayService(this, { 
+    minWidth: 800, 
+    minHeight: 480,
+    scale: Visu.settings.getValue("visu.interface.scale"),
+  })
 
   ///@type {ParticleService}
   particleService = new ParticleService(this, { 
@@ -302,8 +393,10 @@ function VisuController(layerName) constructor {
       ),
     isTrackLoaded: function() {
       var stateName = this.context.fsm.getStateName()
-      return (stateName == "play" || stateName == "pause") 
-        && Core.isType(this.track, Track)
+      return Core.isType(this.track, Track) 
+        && (stateName == "play" 
+        || stateName == "pause" 
+        || stateName == "paused") 
     },
   })
 
@@ -337,6 +430,9 @@ function VisuController(layerName) constructor {
   ///@type {GridECS}
   //gridECS = new GridECS(this) ///@ecs
 
+  ///@type {VisuMenu}
+  menu = new VisuMenu()
+
   ///@private
   ///@type {Boolean}
   renderEnabled = true
@@ -355,13 +451,13 @@ function VisuController(layerName) constructor {
     try {
       if (this.trackService.isTrackLoaded()) {
         var ost = this.trackService.track.audio
-        var ostVolume = Visu.settings.getValue("visu.audio.ost.volume")
+        var ostVolume = Visu.settings.getValue("visu.audio.ost-volume")
         if (ost.isPlaying() && ost.getVolume() != ostVolume) {
           ost.setVolume(ostVolume)
         }
       }
 
-      var sfxVolume = Visu.settings.getValue("visu.audio.sfx.volume")
+      var sfxVolume = Visu.settings.getValue("visu.audio.sfx-volume")
       if (this.sfxService.getVolume() != sfxVolume) {
         this.sfxService.setVolume(sfxVolume)
       }
@@ -381,6 +477,7 @@ function VisuController(layerName) constructor {
         
         Logger.info("VisuController", $"Track finished at {this.trackService.time}")
         this.watchdogPromise = this.send(new Event("pause").setPromise(new Promise()))
+        this.menu.send(this.menu.factoryOpenMainMenuEvent())
       }
     } catch (exception) {
       var message = $"Watchdog throwed an exception: {exception.message}"
@@ -410,6 +507,9 @@ function VisuController(layerName) constructor {
     "change-gamemode": function(event) {
       this.gameMode = Assert.isEnum(event.data, GameMode)
     },
+    "game-over": function(event) {
+      this.fsm.dispatcher.send(new Event("transition", { name: "game-over" }))
+    },
     "load": function(event) {
       this.fsm.dispatcher.send(new Event("transition", { 
         name: "load", 
@@ -420,7 +520,8 @@ function VisuController(layerName) constructor {
       this.fsm.dispatcher.send(new Event("transition", { name: "play" }))
     },
     "pause": function(event) {
-      this.fsm.dispatcher.send(new Event("transition", { name: "pause" }))
+      this.fsm.dispatcher.send(new Event("transition", Struct
+        .appendUnique({ name: "pause" }, event.data)))
     },
     "rewind": function(event) {
       var fsmEvent = new Event("transition", { 
@@ -451,17 +552,12 @@ function VisuController(layerName) constructor {
       if (Core.isType(_editor, VisuEditorController)) {
         _editor.popupQueue.send(new Event("push", event.data))
       }
-    }
+    },
+    "fade-sprite": Callable.run(Struct.get(EVENT_DISPATCHERS, "fade-sprite")),
   }, {
     enableLogger: true,
     catchException: false,
   }))
-
-  ///@type {TaskExecutor}
-  executor = new TaskExecutor(this, {
-    enableLogger: true,
-    catchException: false,
-  })
 
   ///@private
   ///@type {Array<Struct>}
@@ -471,18 +567,30 @@ function VisuController(layerName) constructor {
     "displayService",
     "dispatcher",
     "executor",
-    "particleService",
+    "videoService",
+    "sfxService",
+    "menu"
+  ], function(name, index, controller) {
+    Logger.debug(BeanVisuController, $"Load service '{name}'")
+    return {
+      name: name,
+      struct: Assert.isType(Struct.get(controller, name), Struct),
+    }
+  }, this))
+
+  ///@private
+  ///@type {Array<Struct>}
+  gameplayServices = new Array(Struct, GMArray.map([
     "shaderPipeline",
     "shaderBackgroundPipeline",
+    "particleService",
     "trackService",
     "gridService",
     //"gridECS", ///@ecs
     "lyricsService",
     "coinService",
-    "videoService",
-    "sfxService",
   ], function(name, index, controller) {
-    Logger.debug("VisuController", $"Load service '{name}'")
+    Logger.debug(BeanVisuController, $"Load gameplay service '{name}'")
     return {
       name: name,
       struct: Assert.isType(Struct.get(controller, name), Struct),
@@ -509,11 +617,16 @@ function VisuController(layerName) constructor {
       .set("player-collect-point-or-force", new SFX("sound_sfx_player_collect_point_or_force"))
       .set("player-die", new SFX("sound_sfx_player_die"))
       .set("player-force-level-up", new SFX("sound_sfx_player_force_level_up"))
-      .set("player-shoot", new SFX("sound_sfx_player_shoot", 2))
+      .set("player-shoot", new SFX("sound_sfx_player_shoot", 3))
       .set("player-use-bomb", new SFX("sound_sfx_player_use_bomb"))
-      .set("shroom-die", new SFX("sound_sfx_shroom_die", 2))
-      .set("shroom-shoot", new SFX("sound_sfx_shroom_shoot", 2))
+      .set("shroom-die", new SFX("sound_sfx_shroom_die", 3))
+      .set("shroom-damage", new SFX("sound_sfx_shroom_damage", 3))
+      .set("shroom-shoot", new SFX("sound_sfx_shroom_shoot", 3))
+      .set("menu-move-cursor", new SFX("sound_sfx_player_collect_point_or_force"), 1)
+      .set("menu-select-entry", new SFX("sound_sfx_player_shoot"), 1)
+      .set("menu-use-entry", new SFX("sound_sfx_shroom_damage"), 1)
 
+    //Beans.get(BeanDialogueDesignerService).open("menu")
     return this
   }
 
@@ -581,14 +694,23 @@ function VisuController(layerName) constructor {
   update = function() {
     this.updateUIService()
     this.services.forEach(this.updateService, this)
+    var editor = Beans.get(BeanVisuEditorController)
+    var state = this.fsm.getStateName()
+    if ((this.menu.containers.size() == 0) 
+      && (state != "game-over")
+      && (state != "paused" 
+      || (Optional.is(editor) && editor.renderUI))) {
+      this.gameplayServices.forEach(this.updateService, this)
+    }
     this.visuRenderer.update()
     this.watchdog()
-
+  
     return this
   }
 
   ///@return {VisuController}
   render = function() {
+    gpu_set_colorwriteenable(true, true, true, true)
     if (!this.renderEnabled) {
       return this
     }
@@ -652,6 +774,8 @@ function VisuController(layerName) constructor {
         })
       
       this.executor.add(task)
+    } else {
+      this.menu.send(this.menu.factoryOpenMainMenuEvent())
     }
     
     return this

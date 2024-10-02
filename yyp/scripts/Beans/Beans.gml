@@ -76,6 +76,17 @@ function _Beans() constructor {
     return null
   }
 
+  ///@param {String} name
+  ///@return {?Bean}
+  static getBean = function(name) {
+    if (this.exists(name)) {
+      return this.beans.get(name)
+    }
+    
+    //Logger.debug("Beans", $"Trying to get non-existing bean '{name}'")
+    return null
+  }
+
   ///@param {Bean} bean
   ///@return {Beans}
   ///@throws {BeanAlreadyExistsException}

@@ -1,0 +1,12 @@
+{
+  "$GMShader":"",
+  "%Name":"shader_art_wasm",
+  "name":"shader_art_wasm",
+  "parent":{
+    "name":"shadertoy",
+    "path":"folders/core/resource/shader/shadertoy.yy",
+  },
+  "resourceType":"GMShader",
+  "resourceVersion":"2.0",
+  "type":1,
+}

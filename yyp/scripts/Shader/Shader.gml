@@ -23,6 +23,14 @@ global.__shaders = {
       "iIterations": "FLOAT"
     }
   },
+  "shader_art_wasm": {
+    "type": "GLSL_ES",
+    "uniforms": {
+      "iTime": "FLOAT",
+      "iResolution": "VECTOR2",
+      "iIterations": "FLOAT"
+    }
+  },
   "shader_octagrams": {
     "type": "GLSL_ES",
     "uniforms": {
@@ -318,7 +326,7 @@ global.__shaders = {
       "iFactor": "FLOAT",
       "iSeed": "VECTOR3"
     }
-  }
+  },
 }
 #macro SHADERS global.__shaders
 
@@ -336,11 +344,15 @@ global.__ShaderType = new _ShaderType()
 ///@param {Struct} json
 function Shader(_asset, json) constructor {
 
-  ///@type {GMShader}
-  asset = Assert.isType(_asset, GMShader)
+  ///@type {GMShader} 
+  asset = Core.getRuntimeType() == RuntimeType.GXGAMES 
+    ? _asset 
+    : Assert.isType(_asset, GMShader)
 
   ///@type {String}
-  name = Assert.isType(shader_get_name(_asset), String)
+  name = Assert.isType(Core.getRuntimeType() == RuntimeType.GXGAMES 
+    ? Struct.get(json, "name") 
+    : shader_get_name(_asset), String) 
 
   ///@type {String}
   //type = Assert.isEnum(json.type, ShaderType)
@@ -363,9 +375,10 @@ function Shader(_asset, json) constructor {
 ///@static
 function _ShaderUtil() constructor {
 
-  ///@param {String} name
+  ///@param {String} _name
   ///@return {?Shader}
-  static fetch = function(name) {
+  static fetch = function(_name) {
+    var name = Core.getRuntimeType() == RuntimeType.GXGAMES && _name == "shader_art" ? "shader_art_wasm" : _name
     var asset = asset_get_index(name)
     if (asset == -1) {
       Logger.warn("ShaderUtil", String.template("{0} does not exist: { \"name\": \"{1}\" }", GMShader, name))
@@ -383,6 +396,7 @@ function _ShaderUtil() constructor {
 
       return null
     }
+    Struct.set(config, "name", name)
 
     try {
       return new Shader(asset, config)

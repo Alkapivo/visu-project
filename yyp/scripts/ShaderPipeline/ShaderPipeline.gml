@@ -1,5 +1,10 @@
 ///@package io.alkapivo.core.renderer.shader
 
+///@type {Number}
+global.__DEFAULT_SHADER_PIPELINE_LIMIT = 32
+#macro DEFAULT_SHADER_PIPELINE_LIMIT global.__DEFAULT_SHADER_PIPELINE_LIMIT
+
+
 ///@enum
 function _ShaderPipelineTaskTransformerType(): Enum() constructor {
   COLOR = ColorTransformer
@@ -57,9 +62,8 @@ function ShaderPipelineTaskProperty(_uniform, _transformer) constructor {
 }
 
 
-///@param {Controller} controller
 ///@param {Struct} [config]
-function ShaderPipeline(config = {}): Service() constructor {
+function ShaderPipeline(config = {}) constructor {
 
   static factoryShaderPipelineTaskTemplate = function(_name, json) {
     static addToMergeQueue = function(callback, mergeQueue, name, json) {
@@ -129,18 +133,47 @@ function ShaderPipeline(config = {}): Service() constructor {
 
   ///@param {String} name
   ///@return {?ShaderTemplate}
-  getTemplate = function(name) {
-    var template = this.templates.get(name)
-    return template == null
-      ? Visu.assets().shaderTemplates.get(name)
-      : template
-  }
+  getTemplate = Core.isType(Struct.get(config, "getTemplate"), Callable) 
+    ? method(this, config.getTemplate)
+    : function(name) {
+      return this.templates.get(name)
+    }
+
+  ///@return {Number}
+  getLimit = Core.isType(Struct.get(config, "getLimit"), Callable)
+    ? method(this, config.getLimit)
+    : function() {
+      return DEFAULT_SHADER_PIPELINE_LIMIT
+    }
 
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "spawn-shader": function (event) {
       static mapProperties = function (property, name, uniforms) {
         return new ShaderPipelineTaskProperty(uniforms.get(name), property)
+      }
+
+      var limit = this.getLimit()
+      var size = this.executor.tasks.size()
+      var fullfilled = 0
+      if (size >= limit) {
+        for (var index = 0; index < size; index++) {
+          var oldTask = this.executor.tasks.get(index)
+          if (oldTask.status != TaskStatus.FULLFILLED) {
+            oldTask.fullfill()
+            fullfilled++
+          }
+
+          if (size - fullfilled < limit) {
+            Logger.debug("ShaderPipeline", $"Reduced task to match limit {limit}")
+            break
+          }
+        }
+      }
+
+      if (size - fullfilled >= limit) {
+        Logger.warn("ShaderPipeline", $"Unable to match the limit {limit}")
+        return
       }
 
       var templateName = Assert.isType(Struct.get(event.data, "template"), String)

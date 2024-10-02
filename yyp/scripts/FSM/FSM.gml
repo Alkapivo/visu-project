@@ -64,6 +64,11 @@ function FSM(_context, config) constructor {
   initialState = Assert.isType(Struct.get(config, "initialState"), Struct)
   Assert.isType(Struct.get(this.initialState, "name"), String)
 
+  ///@type {String}
+  displayName = Core.isType(Struct.get(config, "displayName"), String)
+    ? $"FSM::{config.displayName}" 
+    : "FSM"
+
   ///@type {?FSMState}
   currentState = null
 
@@ -105,7 +110,7 @@ function FSM(_context, config) constructor {
     var targetState = new FSMState(name, this.states.get(name))
     if (Core.isType(this.currentState, FSMState)) {
       if (!this.currentState.transitions.contains(name)) {
-        Logger.warn("FSM", $"\Transition not allowed: \{ from: \"{this.currentState.name}\" to: \"{name}\" \}")
+        Logger.warn(this.displayName, $"\Transition not allowed: \{ from: \"{this.currentState.name}\" to: \"{name}\" \}")
         return this
       }
       
@@ -122,7 +127,7 @@ function FSM(_context, config) constructor {
       Callable.run(targetState.actions.get("onStart"), 
         this, targetState, data)
     }
-    Logger.debug("FSM", $"Transition to state: \"{name}\"")
+    Logger.debug(this.displayName, $"Transition to state: \"{name}\"")
     return this
   }
 

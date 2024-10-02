@@ -45,6 +45,20 @@ function brush_shroom_spawn(json = null) {
           return round(clamp(NumberUtil.parse(value, this.value), 0, 50))
         },
       },
+      "shroom-spawn_spawn-x-random-from": {
+        type: Number,
+        value: Struct.getDefault(json, "shroom-spawn_spawn-x-random-from", 0.0),
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), -3.5, 4.5) 
+        },
+      },
+      "shroom-spawn_spawn-x-random-size": {
+        type: Number,
+        value: Struct.getDefault(json, "shroom-spawn_spawn-x-random-size", 0.0),
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), 0.0, 8.0) 
+        },
+      },
       "shroom-spawn_use-spawn-y": {
         type: Boolean,
         value: Struct.getDefault(json, "shroom-spawn_use-spawn-y", true),
@@ -61,6 +75,20 @@ function brush_shroom_spawn(json = null) {
         value: Struct.getDefault(json, "shroom-spawn_channels-spawn-y", 0),
         passthrough: function(value) {
           return round(clamp(NumberUtil.parse(value, this.value), 0, 50))
+        },
+      },
+      "shroom-spawn_spawn-y-random-from": {
+        type: Number,
+        value: Struct.getDefault(json, "shroom-spawn_spawn-y-random-from", 0.0),
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), -4.5, 3.5) 
+        },
+      },
+      "shroom-spawn_spawn-y-random-size": {
+        type: Number,
+        value: Struct.getDefault(json, "shroom-spawn_spawn-y-random-size", 1.0),
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), 0.0, 8.0) 
         },
       },
       "shroom-spawn_use-snap-h": {
@@ -136,7 +164,9 @@ function brush_shroom_spawn(json = null) {
 
               var _x = store.getValue("shroom-spawn_spawn-x")
               if (!store.getValue("shroom-spawn_use-spawn-x")) {
-                _x = (sin(this.spawnerXTimer.update().time) * 2.0) + 0.5
+                _x = store.getValue("shroom-spawn_spawn-x-random-from") 
+                  + ((sin(this.spawnerXTimer.update().time) * 0.5 + 0.5) 
+                  * store.getValue("shroom-spawn_spawn-x-random-size"))
               }
 
               if (store.getValue("shroom-spawn_use-snap-h")) {
@@ -149,7 +179,9 @@ function brush_shroom_spawn(json = null) {
 
               var _y = store.getValue("shroom-spawn_spawn-y")
               if (!store.getValue("shroom-spawn_use-spawn-y")) {
-                _y = (sin(this.spawnerYTimer.update().time) * 2.0) - 0.5
+                _y = store.getValue("shroom-spawn_spawn-y-random-from") 
+                  + ((sin(this.spawnerYTimer.update().time) * 0.5 + 0.5) 
+                  * store.getValue("shroom-spawn_spawn-y-random-size"))
               }
 
               if (store.getValue("shroom-spawn_use-snap-v")) {
@@ -226,9 +258,9 @@ function brush_shroom_spawn(json = null) {
         },
       },
       {
-        name: "shroom-spawn_spawn-x",  
-        template: VEComponents.get("numeric-slider-field"),
-        layout: VELayouts.get("numeric-slider-field"),
+        name: "shroom-spawn_spawn-x-field",  
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
@@ -238,6 +270,41 @@ function brush_shroom_spawn(json = null) {
           field: { 
             store: { key: "shroom-spawn_spawn-x" },
             enable: { key: "shroom-spawn_use-spawn-x" },
+          },
+        },
+      },
+      {
+        name: "shroom-spawn_spawn-x",  
+        template: VEComponents.get("numeric-slider-button"),
+        layout: VELayouts.get("numeric-slider-button"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "",
+            enable: { key: "shroom-spawn_use-spawn-x" },
+          },
+          decrease: {
+            store: { key: "shroom-spawn_spawn-x" },
+            enable: { key: "shroom-spawn_use-spawn-x" },
+            label: { text: "-" },
+            backgroundColor: VETheme.color.primary,
+            backgroundColorSelected: VETheme.color.accent,
+            backgroundColorOut: VETheme.color.primary,
+            onMouseHoverOver: function(event) {
+              if (Optional.is(this.enable) && !this.enable.value) {
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+                return
+              }
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
+            },
+            onMouseHoverOut: function(event) {
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+            },
+            callback: function() { 
+              var channels = clamp(this.store.getStore().get("shroom-spawn_channels-spawn-x").get(), 1, 50)
+              var spawnY = this.store.getStore().get("shroom-spawn_spawn-x").get()
+              this.store.set(clamp(spawnY - (8.0 / channels), -3.5, 4.5))
+            },
           },
           slider:{
             minValue: -3.5,
@@ -259,6 +326,29 @@ function brush_shroom_spawn(json = null) {
               }
         
               this.updatePosition(mouseX)
+            },
+          },
+          increase: {
+            store: { key: "shroom-spawn_spawn-x" },
+            enable: { key: "shroom-spawn_use-spawn-x" },
+            label: { text: "+" },
+            backgroundColor: VETheme.color.primary,
+            backgroundColorSelected: VETheme.color.accent,
+            backgroundColorOut: VETheme.color.primary,
+            onMouseHoverOver: function(event) {
+              if (Optional.is(this.enable) && !this.enable.value) {
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+                return
+              }
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
+            },
+            onMouseHoverOut: function(event) {
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+            },
+            callback: function() { 
+              var channels = clamp(this.store.getStore().get("shroom-spawn_channels-spawn-x").get(), 1, 50)
+              var spawnY = this.store.getStore().get("shroom-spawn_spawn-x").get()
+              this.store.set(clamp(spawnY + (8.0 / channels), -3.5, 4.5))
             },
           },
         },
@@ -286,6 +376,50 @@ function brush_shroom_spawn(json = null) {
         },
       },
       {
+        name: "shroom-spawn_spawn-x-random-from",  
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "rng X from",
+            enable: { key: "shroom-spawn_use-spawn-x", negate: true },
+          },
+          field: { 
+            store: { key: "shroom-spawn_spawn-x-random-from" },
+            enable: { key: "shroom-spawn_use-spawn-x", negate: true },
+          },
+          slider: {
+            minValue: -3.5,
+            maxValue: 4.5,
+            store: { key: "shroom-spawn_spawn-x-random-from" },
+            enable: { key: "shroom-spawn_use-spawn-x", negate: true },
+          },
+        },
+      },
+      {
+        name: "shroom-spawn_spawn-x-random-size",  
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "rng X size",
+            enable: { key: "shroom-spawn_use-spawn-x", negate: true },
+          },
+          field: { 
+            store: { key: "shroom-spawn_spawn-x-random-size" },
+            enable: { key: "shroom-spawn_use-spawn-x", negate: true },
+          },
+          slider: {
+            minValue: 0.0,
+            maxValue: 8.0,
+            store: { key: "shroom-spawn_spawn-x-random-size" },
+            enable: { key: "shroom-spawn_use-spawn-x", negate: true },
+          },
+        },
+      },
+      {
         name: "shroom-spawn_use-spawn-y",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
@@ -303,9 +437,9 @@ function brush_shroom_spawn(json = null) {
         },
       },
       {
-        name: "shroom-spawn_spawn-y",  
-        template: VEComponents.get("numeric-slider-field"),
-        layout: VELayouts.get("numeric-slider-field"),
+        name: "shroom-spawn_spawn-y-field",  
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
@@ -315,6 +449,41 @@ function brush_shroom_spawn(json = null) {
           field: { 
             store: { key: "shroom-spawn_spawn-y" },
             enable: { key: "shroom-spawn_use-spawn-y" },
+          },
+        },
+      },
+      {
+        name: "shroom-spawn_spawn-y",  
+        template: VEComponents.get("numeric-slider-button"),
+        layout: VELayouts.get("numeric-slider-button"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "",
+            enable: { key: "shroom-spawn_use-spawn-y" },
+          },
+          decrease: {
+            store: { key: "shroom-spawn_spawn-y" },
+            enable: { key: "shroom-spawn_use-spawn-y" },
+            label: { text: "-" },
+            backgroundColor: VETheme.color.primary,
+            backgroundColorSelected: VETheme.color.accent,
+            backgroundColorOut: VETheme.color.primary,
+            onMouseHoverOver: function(event) {
+              if (Optional.is(this.enable) && !this.enable.value) {
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+                return
+              }
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
+            },
+            onMouseHoverOut: function(event) {
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+            },
+            callback: function() { 
+              var channels = clamp(this.store.getStore().get("shroom-spawn_channels-spawn-y").get(), 1, 50)
+              var spawnY = this.store.getStore().get("shroom-spawn_spawn-y").get()
+              this.store.set(clamp(spawnY - (8.0 / channels), -3.5, 4.5))
+            },
           },
           slider: { 
             minValue: -2.5,
@@ -338,6 +507,29 @@ function brush_shroom_spawn(json = null) {
               this.updatePosition(mouseX)
             },
           },
+          increase: {
+            store: { key: "shroom-spawn_spawn-y" },
+            enable: { key: "shroom-spawn_use-spawn-y" },
+            label: { text: "+" },
+            backgroundColor: VETheme.color.primary,
+            backgroundColorSelected: VETheme.color.accent,
+            backgroundColorOut: VETheme.color.primary,
+            onMouseHoverOver: function(event) {
+              if (Optional.is(this.enable) && !this.enable.value) {
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+                return
+              }
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
+            },
+            onMouseHoverOut: function(event) {
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+            },
+            callback: function() { 
+              var channels = clamp(this.store.getStore().get("shroom-spawn_channels-spawn-y").get(), 1, 50)
+              var spawnY = this.store.getStore().get("shroom-spawn_spawn-y").get()
+              this.store.set(clamp(spawnY + (8.0 / channels), -3.5, 4.5))
+            },
+          },
         },
       },
       {
@@ -359,6 +551,50 @@ function brush_shroom_spawn(json = null) {
             maxValue: 50,
             store: { key: "shroom-spawn_channels-spawn-y" },
             enable: { key: "shroom-spawn_use-spawn-y" },
+          },
+        },
+      },
+      {
+        name: "shroom-spawn_spawn-y-random-from",  
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "rng Y from",
+            enable: { key: "shroom-spawn_use-spawn-y", negate: true },
+          },
+          field: { 
+            store: { key: "shroom-spawn_spawn-y-random-from" },
+            enable: { key: "shroom-spawn_use-spawn-y", negate: true },
+          },
+          slider: {
+            minValue: -3.5,
+            maxValue: 4.5,
+            store: { key: "shroom-spawn_spawn-y-random-from" },
+            enable: { key: "shroom-spawn_use-spawn-y", negate: true },
+          },
+        },
+      },
+      {
+        name: "shroom-spawn_spawn-y-random-size",  
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "rng Y size",
+            enable: { key: "shroom-spawn_use-spawn-y", negate: true },
+          },
+          field: { 
+            store: { key: "shroom-spawn_spawn-y-random-size" },
+            enable: { key: "shroom-spawn_use-spawn-y", negate: true },
+          },
+          slider: {
+            minValue: 0.0,
+            maxValue: 8.0,
+            store: { key: "shroom-spawn_spawn-y-random-size" },
+            enable: { key: "shroom-spawn_use-spawn-y", negate: true },
           },
         },
       },

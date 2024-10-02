@@ -26,12 +26,27 @@ function _NeonBaron() constructor {
     }
 
 
-    if (!Beans.exists(BeanDialogueService)) {
-      Beans.add(BeanDialogueService, new Bean(DialogueService,
+    if (!Beans.exists(BeanDialogueDesignerService)) {
+      Beans.add(BeanDialogueDesignerService , new Bean(DialogueDesignerService,
         GMObjectUtil.factoryGMObject(
           GMServiceInstance, 
           layerId, 0, 0, 
-          new DialogueService()
+          new DialogueDesignerService({
+            handlers: new Map(String, Callable, {
+              "QUIT": function(data) {
+                Beans.get(BeanDialogueDesignerService).close()
+              },
+              "LOAD_VISU_TRACK": function(data) {
+                Beans.get(BeanVisuController).send(new Event("load", {
+                  manifest: FileUtil.get(data.path),
+                  autoplay: true,
+                }))
+              },
+              "GAME_END": function(data) {
+                game_end()
+              },
+            }),
+          })
         )
       ))
     }

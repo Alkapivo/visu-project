@@ -1,4 +1,4 @@
-///@package io.alkapivo.visu.editor.ui
+///@package io.alkapivo.visu.editor.ui.controller
 
 ///@param {VisuEditorController} _editor
 function VETitleBar(_editor) constructor {
@@ -177,6 +177,12 @@ function VETitleBar(_editor) constructor {
             options: new Array(),
             callback: function() {
               try {
+                if (Core.getRuntimeType() == RuntimeType.GXGAMES) {
+                  Beans.get(BeanVisuController).send(new Event("spawn-popup", 
+                    { message: $"Feature 'visu.title-bar.open' is not available on wasm-yyc target" }))
+                  return
+                }
+
                 var manifest = FileUtil.getPathToOpenWithDialog({ 
                   description: "Visu track file",
                   filename: "manifest", 
@@ -203,6 +209,12 @@ function VETitleBar(_editor) constructor {
             options: new Array(),
             callback: function() {
               try {
+                if (Core.getRuntimeType() == RuntimeType.GXGAMES) {
+                  Beans.get(BeanVisuController).send(new Event("spawn-popup", 
+                    { message: $"Feature 'visu.title-bar.save' is not available on wasm-yyc target" }))
+                  return
+                }
+
                 var path = FileUtil.getPathToSaveWithDialog({ 
                   description: "Visu track file",
                   filename: "manifest", 

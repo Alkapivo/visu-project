@@ -11,6 +11,9 @@ function VisuRenderer() constructor {
   ///@type {VisuHUDRenderer}
   hudRenderer = new VisuHUDRenderer()
 
+  ///@type {DialogueRenderer}
+  dialogueRenderer = new DialogueRenderer()
+
   ///@private
   ///@type {UILayout}
   layout = new UILayout({
@@ -45,6 +48,15 @@ function VisuRenderer() constructor {
   ///@private
   ///@type {Timer}
   initTimer = new Timer(0.35)
+
+  ///@private
+  ///@type {NumberTransformer}
+  blur = new NumberTransformer({
+    value: 0.0,
+    target: 32.0,
+    factor: 0.25,
+    increase: 0.005,
+  })
 
   ///@private
   ///@return {VisuRenderer}
@@ -134,15 +146,11 @@ function VisuRenderer() constructor {
 
     var gridCamera = this.gridRenderer.camera
     var gridCameraMessage = ""
-    if (gridCamera.enableMouseLook) {
+    if (gridCamera.enableKeyboardLook || gridCamera.enableMouseLook) {
       gridCameraMessage = gridCameraMessage 
         + $"pitch: {gridCamera.pitch}\n"
         + $"angle: {gridCamera.angle}\n"
         + $"zoom: {gridCamera.zoom}\n"
-    }
-
-    if (gridCamera.enableKeyboardLook) {
-      gridCameraMessage = gridCameraMessage 
         + $"x: {gridCamera.x}\n"
         + $"y: {gridCamera.y}\n"
         + $"z: {gridCamera.z}\n"
@@ -179,6 +187,7 @@ function VisuRenderer() constructor {
 
     this.gridRenderer.update(_layout)
     this.hudRenderer.update(_layout)
+    this.dialogueRenderer.update()
     return this
   }
 
@@ -195,19 +204,39 @@ function VisuRenderer() constructor {
 
   ///@return {VisuRenderer}
   renderGUI = function() {
+    var controller = Beans.get(BeanVisuController)
     var editor = Beans.get(BeanVisuEditorController)
     var _layout = editor == null ? this.layout : editor.layout.nodes.preview
 
     this.renderGUITimer.start()
-    this.gridRenderer.renderGUI(_layout)
-    this.lyricsRenderer.renderGUI(_layout)
-    this.hudRenderer.renderGUI(_layout)
-    this.renderSpinner(_layout)
+    if (controller.menu.containers.size() == 0) {
+      this.blur.reset()
+      this.gridRenderer.renderGUI(_layout)
+      this.lyricsRenderer.renderGUI(_layout)  
+      if (Visu.settings.getValue("visu.interface.render-hud")) {
+        this.hudRenderer.renderGUI(_layout)
+      }
+      this.dialogueRenderer.render()
+    } else {
+      if (!Optional.is(controller.track)) {
+        controller.gridService.properties.update(controller.gridService)
+      }
+      
+      if (shader_is_compiled(shader_gaussian_blur)) {
+        var uniformSize = shader_get_uniform(shader_gaussian_blur, "size")
+        shader_set(shader_gaussian_blur)
+        shader_set_uniform_f(uniformSize, _layout.width(), _layout.height(), this.blur.update().value)
+        this.gridRenderer.renderGlitch(_layout)
+        shader_reset()
+      } else {
+        this.gridRenderer.renderGUI(_layout)
+      }
+    }
     this.renderUI()
+    this.renderSpinner(_layout)
     this.renderGUITimer.finish()
     this.renderDebugGUI()
 
-    var controller = Beans.get(BeanVisuController)
     if (!this.initTimer.finished) {
       GPU.render.clear(ColorUtil.BLACK)
     }

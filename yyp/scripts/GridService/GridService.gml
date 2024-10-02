@@ -15,6 +15,174 @@ global.__GRID_ITEM_FRUSTUM_RANGE = 5
 #macro GRID_ITEM_FRUSTUM_RANGE global.__GRID_ITEM_FRUSTUM_RANGE
 
 
+///@type {Number}
+global.__GRID_ITEM_CHUNK_SERVICE_SIZE = 0.5
+#macro GRID_ITEM_CHUNK_SERVICE_SIZE global.__GRID_ITEM_CHUNK_SERVICE_SIZE
+
+
+///@param {Number} {_size}
+function GridItemChunkService(_size) constructor {
+
+  ///@type {Number}
+  size = Assert.isType(_size, Number)
+
+  ///@type {Map<String, Array<GridItem>>}
+  chunks = new Map(String, Array)
+
+  ///@param {Number} x
+  ///@param {Number} y
+  ///@return {String}
+  getKey = function(x, y) {
+    //return $"{int64(x)}_{int64(y)}"
+    return string(int64(x)) + "_" + string(int64(y))
+  }
+
+  ///@param {String}
+  ///@throws {AssertException}
+  ///@return {Array<GridItem>}
+  get = function(key) {
+    //Assert.isType(key, String, "[GridItemChunkService::get(key)] argument 'key' must be a type of String")
+    if (!this.chunks.contains(key)) {
+      this.chunks.set(key, new Array(GridItem))
+    }
+
+    return this.chunks.get(key)
+  }
+
+  ///@param {GridItem}
+  ///@throws {Exception}
+  ///@return {GridItemChunkService}
+  add = function(item) {
+    Assert.isType(item, GridItem, "[GridItemChunkService::add(item)] argument 'item' must be a type of GridItem")
+    var width = (item.mask.getWidth() * item.sprite.scaleX) / GRID_SERVICE_PIXEL_WIDTH
+    var height = (item.mask.getHeight() * item.sprite.scaleY) / GRID_SERVICE_PIXEL_HEIGHT
+    var position = {
+      start: {
+        x: int64((((item.x) - (width / 2)) / this.size)),
+        y: int64((((item.y) - (height / 2)) / this.size)),
+      },
+      finish: {
+        x: int64((((item.x) + (width / 2)) / this.size)),
+        y: int64((((item.y) + (height / 2)) / this.size)),
+      },
+      keys: new Array(String),
+    }
+
+    for (var row = 0; row <= position.finish.y - position.start.y; row++) {
+      for (var column = 0; column <= position.finish.x - position.start.x; column++) {
+        var key = this.getKey(position.start.x + column, position.start.y + row)
+        var chunk = this.get(key)
+        if (Optional.is(chunk.findIndex(Lambda.equal, item))) {
+          var message = $"GridItem with uid '{item.uid}' was already added to chunk '{key}'"
+          Logger.error("GridItemChunkService::add(item)", message)
+          Core.printStackTrace()
+          throw new Exception(message)
+        }
+
+        chunk.add(item)
+        position.keys.add(key)
+      }
+    }
+
+    item.chunkPosition = position
+    return this
+  }
+
+  ///@param {GridItem} item
+  ///@throws {AssertException|Exception}
+  ///@return {GridItemChunkService}
+  remove = function(item) {
+    Assert.isType(item, GridItem, "[GridItemChunkService::remove(item)] argument 'item' must be a type of GridItem")
+    item.chunkPosition.keys.forEach(function(key, iterator, acc) {
+      var chunk = acc.get(key)
+      var index = chunk.findIndex(Lambda.equal, acc.item)
+      if (!Optional.is(index)) {
+        var message = $"GridItem with uid '{acc.item.uid}' wasn't found in chunk '{key}'"
+        Logger.error("GridItemChunkService::remove(item)", message)
+        Core.printStackTrace()
+        throw new Exception(message)
+      }
+
+      chunk.remove(index)
+    }, {
+      get: this.get,
+      item: item,
+    })
+
+    item.chunkPosition = null
+    return this
+  }
+
+  ///@param {GridItem} item
+  ///@throws {AssertException|Exception}
+  ///@return {GridItemChunkService}
+  update = function(item) {
+    //Assert.isType(item.chunkPosition, Struct, "[GridItemChunkService::update(item)] 'item.chunkPosition' must be a type of Struct")
+    var position = item.chunkPosition
+    var width = (item.mask.getWidth() * item.sprite.scaleX) / GRID_SERVICE_PIXEL_WIDTH
+    var height = (item.mask.getHeight() * item.sprite.scaleY) / GRID_SERVICE_PIXEL_HEIGHT
+    var startX = int64((((item.x) - (width / 2)) / this.size))
+    var startY = int64((((item.y) - (height / 2)) / this.size))
+    var finishX = int64((((item.x) + (width / 2)) / this.size))
+    var finishY = int64((((item.y) + (height / 2)) / this.size))
+    
+    if (position.start.x != startX
+      || position.start.y != startY
+      || position.finish.x != finishX
+      || position.finish.y != finishY) {
+
+      ///this.remove(item) without replacing chunkPosition
+      var array = item.chunkPosition.keys
+      var size = array.size()
+      for (var idx = 0; idx < size; idx++) {
+        var key = array.get(idx)
+        var chunk = this.get(key)
+        var index = chunk.findIndex(Lambda.equal, item)
+        if (!Optional.is(index)) {
+          var message = $"GridItem with uid '{item.uid}' wasn't found in chunk '{key}'"
+          Logger.error("GridItemChunkService::update(item)", message)
+          Core.printStackTrace()
+          throw new Exception(message)
+        }
+        chunk.remove(index)
+      }
+
+      ///this.add(item) without replacing chunkPosition
+      position.start.x = startX
+      position.start.y = startY
+      position.finish.x = finishX
+      position.finish.y = finishY
+      position.keys.clear()
+      for (var row = 0; row <= position.finish.y - position.start.y; row++) {
+        for (var column = 0; column <= position.finish.x - position.start.x; column++) {
+          var key = this.getKey(position.start.x + column, position.start.y + row)
+          var chunk = this.get(key)
+          if (Optional.is(chunk.findIndex(Lambda.equal, item))) {
+            var message = $"GridItem with uid '{item.uid}' was already added to chunk '{key}'"
+            Logger.error("GridItemChunkService::update(item)", message)
+            Core.printStackTrace()
+            throw new Exception(message)
+          }
+  
+          chunk.add(item)
+          position.keys.add(key)
+        }
+      }
+    }
+
+    return this
+  }
+
+  ///@return {GridItemChunkService}
+  clear = function() {
+    this.chunks.forEach(function(chunk, key) {
+      chunk.clear()
+    })
+    return this
+  }
+}
+
+
 ///@param {VisuController} _controller
 ///@param {Struct} [_config]
 function GridService(_controller, _config = {}): Service(_config) constructor {
@@ -26,12 +194,10 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
   config = JSON.clone(_config)
 
   ///@type {Number}
-  width = Assert.isType(Struct
-    .getDefault(this.config, "width", 100000.0), Number)
+  width = Assert.isType(Struct.getDefault(this.config, "width", 2048.0), Number)
 
   ///@type {Number}
-  height = Assert.isType(Struct
-    .getDefault(this.config, "height", 100000.0), Number)
+  height = Assert.isType(Struct.getDefault(this.config, "height", 2048.0), Number)
 
   ///@type {Number}
   pixelWidth = Assert.isType(Struct
@@ -76,7 +242,46 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
   properties = Optional.is(Struct.get(this.config, "properties"))
     ? new GridProperties(this.config.properties)
     : new GridProperties()
-  
+
+  ///@private
+  ///@type {Number}
+  uidPointer = int64(Core.isType(Struct.get(config, "uidPointer"), Number) 
+    ? config.uidPointer 
+    : 0) 
+
+  ///@private
+  ///@return {String}
+  generateUID = function() {
+    if (this.uidPointer >= MAX_INT_64 - 1) {
+      Logger.warn("GridService", $"Reached maximum available value for uidPointer ('{MAX_INT_64}'). Reset uidPointer to '0'")
+      this.uidPointer = int64(0)
+    }
+    this.uidPointer++
+    return md5_string_utf8(string(this.uidPointer))
+  }
+
+  init = function() {
+    var task = new Task("init-foreground")
+      .setTimeout(3.0)
+      .whenUpdate(function(executor) {
+        var controller = Beans.get(BeanVisuController)
+        controller.send(new Event("fade-sprite", {
+          sprite: SpriteUtil.parse({ name: "texture_hechan_3" }),
+          collection: controller.visuRenderer.gridRenderer.overlayRenderer.foregrounds,
+          type: "Foreground",
+          fadeInDuration: 0.5,
+          fadeOutDuration: 0.5,
+          angle: 3,
+          speed: 0.25,
+          executor: executor,
+        }))
+        this.fullfill()
+      })
+    this.controller.executor.add(task)
+    
+    return this
+  }
+
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "transform-property": Callable.run(Struct.get(EVENT_DISPATCHERS, "transform-property")),
@@ -140,22 +345,27 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
   ///@private
   ///@return {GridService}
   moveGridItems = function() {
-    static moveGridItem = function(gridItem, key, view) {
-      gridItem.move()
+    static moveBullet = function(bullet, key, acc) {
+      bullet.move()
+      if (bullet.producer == Player) {
+        acc.chunkService.update(bullet)
+      }
+      
+      var view = acc.view
       var length = Math.fetchLength(
-        gridItem.x, gridItem.y,
+        bullet.x, bullet.y,
         view.x + (view.width / 2.0), 
         view.y + (view.height / 2.0)
       )
 
       if (length > GRID_ITEM_FRUSTUM_RANGE) {
-        gridItem.signal("kill")
+        bullet.signal("kill")
       }
     }
 
     static moveShroom = function(shroom, key, acc) {
       shroom.move()
-      acc.shroomGrid.update(shroom)
+      acc.chunkService.update(shroom)
       
       var view = acc.view
       var length = Math.fetchLength(
@@ -170,11 +380,14 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
     }
 
     var view = this.controller.gridService.view
-    var shroomGrid = this.controller.shroomService.shroomGrid
-    this.controller.bulletService.bullets.forEach(moveGridItem, view)
+    this.controller.bulletService.bullets.forEach(moveBullet, {
+      view: view,
+      chunkService: this.controller.bulletService.chunkService,
+    })
+
     this.controller.shroomService.shrooms.forEach(moveShroom, {
       view: view,
-      shroomGrid: shroomGrid,
+      chunkService: this.controller.shroomService.chunkService,
     })
 
     var player = this.controller.playerService.player
@@ -191,6 +404,8 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
       static playerBullet = function(shroom, index, bullet) {
         if (shroom.collide(bullet)) {
           shroom.signal("bulletCollision", bullet)
+          shroom.signal("damage", true)
+          shroom.healthPoints = clamp(shroom.healthPoints - bullet.damage, 0, 9999.9)
           bullet.signal("shroomCollision", shroom)
         }
       }
@@ -203,16 +418,13 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
 
       switch (bullet.producer) {
         case Player:
-          var shroomGrid = context.controller.shroomService.shroomGrid
-          var column = floor(bullet.x / shroomGrid.size)
-          var row = floor(bullet.y / shroomGrid.size)
-          for (var rowIndex = row - 1; rowIndex <= row + 1; rowIndex++) {
-            for (var columnIndex = column - 1; columnIndex <= column + 1; columnIndex++) {
-              var key = shroomGrid.toKey(column, row)
-              shroomGrid.get(key).forEach(playerBullet, bullet)
-            } 
-          }
-
+          bullet.chunkPosition.keys.forEach(function(key, index, acc) {
+            acc.chunkService.get(key).forEach(acc.playerBullet, acc.bullet)
+          }, {
+            chunkService: context.controller.shroomService.chunkService,
+            playerBullet: playerBullet,
+            bullet: bullet,
+          })
           //context.controller.shroomService.shrooms.forEach(playerBullet, bullet)
           break
         case Shroom:
@@ -239,8 +451,6 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
     
     return this
   }
-
-
 
   ///@private
   ///@return {GridService}
@@ -323,4 +533,6 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
     this.updateGridItems()
     return this
   }
+
+  this.init()
 }

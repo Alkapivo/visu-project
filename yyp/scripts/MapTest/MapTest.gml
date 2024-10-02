@@ -253,15 +253,15 @@ function Test_Map(json = {}) {
     })
     .whenStart(function(executor) {
       Logger.test("LanguageTest", "Start Test_Array")
-      Beans.get(BeanVisuTestRunner).installHooks()
+      Beans.get(BeanTestRunner).installHooks()
     })
     .whenFinish(function(data) {
       Logger.test("LanguageTest", $"Finished Test_Array: {data}")
-      Beans.get(BeanVisuTestRunner).uninstallHooks()
+      Beans.get(BeanTestRunner).uninstallHooks()
     })
     .whenTimeout(function() {
       Logger.test("BrushToolbarTest", "Test_Array: Timeout")
       this.reject("failure")
-      Beans.get(BeanVisuTestRunner).uninstallHooks()
+      Beans.get(BeanTestRunner).uninstallHooks()
     })
 }

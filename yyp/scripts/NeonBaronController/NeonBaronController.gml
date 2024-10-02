@@ -131,7 +131,7 @@ function NeonBaronController() constructor {
   update = function() {
     if (!isLDTKLoaded) {
       this.isLDTKLoaded = true
-      this.ldtkWorld = new LDTKWorld(JSON.parse(FileUtil.readFileSync($"{working_directory}_test-world.ldtk").getData())).setEntities(this.entities)
+      this.ldtkWorld = new LDTKWorld(JSON.parse(FileUtil.readFileSync($"{working_directory}world/test-world.ldtk").getData())).setEntities(this.entities)
       this.ldtkWorld.generate("level_0", -1000)
       var level = this.ldtkWorld.levels.find(function(level, index, name) {
         return level.name == name
@@ -190,7 +190,7 @@ function NeonBaronController() constructor {
     }
 
     if (keyboard_check_pressed(vk_f10)) {
-      Beans.get(BeanDialogueService).open("dd_test")
+      Beans.get(BeanDialogueDesignerService).open("menu")
     }
     
     return this

@@ -141,6 +141,10 @@ function VETemplate(json) constructor {
       }
     }
 
+    if (this.store.getValue("shroom_use-health-points")) {
+      Struct.set(json, "healthPoints", this.store.getValue("shroom_health-points"))
+    }
+
     if (this.store.getValue("use_shroom_mask")) {
       Struct.set(json, "mask", this.store.getValue("shroom_mask").serialize())
     }
@@ -154,17 +158,39 @@ function VETemplate(json) constructor {
     var json = {
       name: Assert.isType(this.store.getValue("template-name"), String),
       sprite: sprite.serialize(),
-      gameModes: {
-        bulletHell: {
-          features: JSON.parse(this.store.getValue("bullet_game-mode_bullet-hell_features")).getContainer()
-        },
-        platformer: {
-          features: JSON.parse(this.store.getValue("bullet_game-mode_platformer_features")).getContainer()
-        },
-        racing: {
-          features: JSON.parse(this.store.getValue("bullet_game-mode_racing_features")).getContainer()
-        },
-      }
+      damage: this.store.getValue("bullet_use-damage")
+        ? this.store.getValue("bullet_damage")
+        : null,
+      lifespawnMax: this.store.getValue("bullet_use-lifespawn")
+        ? this.store.getValue("bullet_lifespawn")
+        : null,
+      bulletTemplateOnDeath: this.store.getValue("bullet_use-template-on-death")
+        ? this.store.getValue("bullet_template-on-death")
+        : null,
+      bulletAmountOnDeath: this.store.getValue("bullet_use-template-on-death")
+        ? this.store.getValue("bullet_template-amount-on-death")
+        : null,
+      bulletSpawnAngleOnDeath: this.store.getValue("bullet_use-template-on-death")
+        ? this.store.getValue("bullet_template-spawn-angle-on-death")
+        : null,
+      bulletAngleStepOnDeath: this.store.getValue("bullet_use-template-on-death")
+        ? this.store.getValue("bullet_template-angle-step-on-death")
+        : null,
+      speedTransformer: this.store.getValue("bullet_use-transform-speed")
+        ? this.store.getValue("bullet_transform-speed").serialize()
+        : null,
+      angleTransformer: this.store.getValue("bullet_use-transform-angle")
+        ? this.store.getValue("bullet_transform-angle").serialize()
+        : null,
+      randomDirection: this.store.getValue("bullet_use-random-direction")
+        ? this.store.getValue("bullet_random-direction")
+        : null,
+      swingAmount: this.store.getValue("bullet_use-transform-swing-amount")
+        ? this.store.getValue("bullet_transform-swing-amount").serialize()
+        : null,
+      swingSize: this.store.getValue("bullet_use-transform-swing-size")
+        ? this.store.getValue("bullet_transform-swing-size").serialize()
+        : null,
     }
 
     if (this.store.getValue("use_bullet_mask")) {
@@ -216,7 +242,7 @@ function VETemplate(json) constructor {
   toParticleTemplate = function() {
     var template = new ParticleTemplate(
       this.store.getValue("template-name"), 
-      this.store.getValue("particle-template")
+      JSON.clone(this.store.getValue("particle-template").serialize())
     )
 
     template.blend = this.store.getValue("particle-blend")

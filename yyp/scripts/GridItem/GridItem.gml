@@ -51,6 +51,9 @@ function GridItemSignals() constructor {
   
   ///@type {Boolean}
   kill = false
+
+  ///@type {Boolean}
+  damage = false
   
   ///@type {?GridItem}
   bulletCollision = null
@@ -78,6 +81,7 @@ function GridItemSignals() constructor {
   ///@return {GridItemSignals}
   reset = function() {
     //this.kill = false
+    this.damage = false
     this.bulletCollision = null
     this.shroomCollision = null
     this.playerCollision = null
@@ -92,6 +96,9 @@ function GridItemSignals() constructor {
 ///@param {Struct} [config]
 ///@return {GridItem}
 function GridItem(config = {}) constructor {
+
+  ///@type {String}
+  uid = Assert.isType(config.uid, String)
 
   ///@type {Number}
   x = Assert.isType(Struct.get(config, "x"), Number)
@@ -138,6 +145,11 @@ function GridItem(config = {}) constructor {
 
   ///@type {Number}
   fadeInFactor = 0.03
+
+  ///@type {?Struct}
+  chunkPosition = Core.isType(Struct.get(config, "chunkPosition"), Struct) 
+    ? config.chunkPosition 
+    : null 
 
   ///@param {Number} angle
   ///@return {GridItem}

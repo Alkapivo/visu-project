@@ -45,7 +45,7 @@ function AngleFeature(json) {
         if (!this.isAngleSet) {
           this.transform.value = item.angle
           this.transform.startValue = item.angle
-          this.transform.target = item.angle + ((this.transform.factor >= 0 ? 1 : -1) * angle_difference(this.transform.target, item.angle))
+          this.transform.target = item.angle + ((this.transform.factor >= 0 ? 1 : -1) * angle_difference(item.angle, item.angle + this.transform.target))
           this.transform.factor = abs(this.transform.factor)
           this.isAngleSet = true
         }

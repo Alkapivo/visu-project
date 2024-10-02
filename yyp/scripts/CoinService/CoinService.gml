@@ -23,6 +23,10 @@ function CoinService(config = {}): Service() constructor {
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "spawn-coin": function(event) {
+      if (event.data.template == "coin-empty") {
+        return
+      }
+      
       var template = new CoinTemplate(event.data.template, this
         .getTemplate(event.data.template)
         .serialize())

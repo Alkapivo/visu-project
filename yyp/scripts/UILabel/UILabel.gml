@@ -36,7 +36,9 @@ function UILabel(json) constructor {
   value = null
 
   ///@type {Boolean}
-  enableColorWrite = Core.getProperty("core.ui-service.use-surface-optimalization", false)
+  enableColorWrite = Core.isType(Struct.get(json, "enableColorWrite"), Boolean) 
+    ? json.enableColorWrite
+    : Core.getProperty("core.ui-service.use-surface-optimalization", false)
 
   ///@param {Number} x
   ///@param {Number} y

@@ -23,7 +23,7 @@ function TestEvent_VisuController_load(json = {}) {
             return
           }
 
-          runner = Beans.get(BeanVisuTestRunner)
+          runner = Beans.get(BeanTestRunner)
           runner.exceptions.clear()
           Beans.get(BeanVisuController).send(new Event("load", {
             manifest: task.state.path,
@@ -33,15 +33,16 @@ function TestEvent_VisuController_load(json = {}) {
           task.state.stage = "verify"
         },
         verify: function(task) {
-          Assert.isTrue(Beans.get(BeanVisuTestRunner).exceptions.size() == 0, "No exceptions can be thrown")
+          Assert.isTrue(Beans.get(BeanTestRunner).exceptions.size() == 0, "No exceptions can be thrown")
           var controller = Beans.get(BeanVisuController)
-          if (controller.loader.fsm.getStateName() == "loaded" && controller.trackService.track.name == task.state.trackName) {
+          if (controller.loader.fsm.getStateName() == "loaded" 
+            && controller.trackService.track.name == task.state.trackName) {
             task.state.stage = "pause" 
           }
         },
         pause: function(task) {
           var controller = Beans.get(BeanVisuController)
-          if (controller.fsm.getStateName() == "pause") {
+          if (controller.fsm.getStateName() == "paused") {
             task.state.stage = "cooldownAfter"
           }
         },
@@ -58,16 +59,16 @@ function TestEvent_VisuController_load(json = {}) {
     })
     .whenStart(function(executor) {
       Logger.test("VisuControllerTest", "Start TestEvent_VisuController_load")
-      Beans.get(BeanVisuTestRunner).installHooks()
+      Beans.get(BeanTestRunner).installHooks()
     })
     .whenFinish(function(data) {
       Logger.test("VisuControllerTest", $"TestEvent_VisuController_load: {data}")
-      Beans.get(BeanVisuTestRunner).uninstallHooks()
+      Beans.get(BeanTestRunner).uninstallHooks()
     })
     .whenTimeout(function() {
       Logger.test("VisuControllerTest", "TestEvent_VisuController_load: Timeout")
       this.reject("failure")
-      Beans.get(BeanVisuTestRunner).uninstallHooks()
+      Beans.get(BeanTestRunner).uninstallHooks()
     })
 }
 
@@ -91,12 +92,12 @@ function TestEvent_VisuController_playback(json = {}) {
           }
         },
         setup: function(task) {
-          Beans.get(BeanVisuTestRunner).exceptions.clear()
+          Beans.get(BeanTestRunner).exceptions.clear()
           Beans.get(BeanVisuController).send(new Event("play"))
           task.state.stage = "playback"
         },
         playback: function(task) {
-          Assert.isTrue(Beans.get(BeanVisuTestRunner).exceptions.size() == 0, "No exceptions can be thrown")
+          Assert.isTrue(Beans.get(BeanTestRunner).exceptions.size() == 0, "No exceptions can be thrown")
           var controller = Beans.get(BeanVisuController)
           if (controller.trackService.time > task.state.duration) {
             controller.send(new Event("pause"))
@@ -129,7 +130,7 @@ function TestEvent_VisuController_playback(json = {}) {
         },
         pause: function(task) {
           var controller = Beans.get(BeanVisuController)
-          if (controller.fsm.getStateName() == "pause") {
+          if (controller.fsm.getStateName() == "paused") {
             task.state.stage = "cooldownAfter"
           }
         },
@@ -146,16 +147,16 @@ function TestEvent_VisuController_playback(json = {}) {
     })
     .whenStart(function(executor) {
       Logger.test("VisuControllerTest", "Start TestEvent_VisuController_playback")
-      Beans.get(BeanVisuTestRunner).installHooks()
+      Beans.get(BeanTestRunner).installHooks()
     })
     .whenFinish(function(data) {
       Logger.test("VisuControllerTest", $"TestEvent_VisuController_playback: {data}")
-      Beans.get(BeanVisuTestRunner).uninstallHooks()
+      Beans.get(BeanTestRunner).uninstallHooks()
     })
     .whenTimeout(function() {
       Logger.test("VisuControllerTest", "TestEvent_VisuController_playback: Timeout")
       this.reject("failure")
-      Beans.get(BeanVisuTestRunner).uninstallHooks()
+      Beans.get(BeanTestRunner).uninstallHooks()
     })
 }
 
@@ -236,15 +237,15 @@ function TestEvent_VisuController_rewind(json = {}) {
     })
     .whenStart(function(executor) {
       Logger.test("VisuControllerTest", "TestEvent_VisuController_rewind started")
-      Beans.get(BeanVisuTestRunner).installHooks()
+      Beans.get(BeanTestRunner).installHooks()
     })
     .whenFinish(function(data) {
       Logger.test("VisuControllerTest", $"TestEvent_VisuController_rewind: {data}")
-      Beans.get(BeanVisuTestRunner).uninstallHooks()
+      Beans.get(BeanTestRunner).uninstallHooks()
     })
     .whenTimeout(function() {
       Logger.test("VisuControllerTest", "TestEvent_VisuController_rewind: Timeout")
       this.reject("failure")
-      Beans.get(BeanVisuTestRunner).uninstallHooks()
+      Beans.get(BeanTestRunner).uninstallHooks()
     })
 }

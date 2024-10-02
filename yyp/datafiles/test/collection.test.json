@@ -1,0 +1,30 @@
+{
+  "version": "1",
+  "model": "io.alkapivo.visu.TestSuite",
+  "data":{
+    "name": "Test package io.alkapivo.core.collection",
+    "stopAfterFailure": false,
+    "tests": [
+      {
+        "handler": "Test_Array",
+        "description": "Verify Array and GMArray methods"
+      },
+      {
+        "handler": "Test_IntStream",
+        "description": "Verify IntStream methods"
+      },
+      {
+        "handler": "Test_Map",
+        "description": "Verify Map methods"
+      },
+      {
+        "handler": "Test_Queue",
+        "description": "Verify Queue methods"
+      },
+      {
+        "handler": "Test_Stack",
+        "description": "Verify Stack methods"
+      }
+    ]
+  }
+}

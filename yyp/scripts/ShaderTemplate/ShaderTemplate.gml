@@ -14,7 +14,11 @@ function ShaderTemplate(_name, json) constructor {
 
   ///@type {String}
   shader = Assert.isType(json.shader, String)
-  Assert.isType(ShaderUtil.fetch(this.shader), Shader)
+  if (Core.getRuntimeType() != RuntimeType.GXGAMES) {
+    Assert.isType(ShaderUtil.fetch(this.shader), Shader)
+  } else {
+    this.shader = this.shader == "shader_art" ? "shader_art_wasm" : this.shader
+  }
 
   ///@type {?String}
   //type = Struct.contains(json, "type") 

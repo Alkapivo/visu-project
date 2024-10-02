@@ -3,6 +3,14 @@
 #macro Number "Number"
 #macro Infinity infinity
 
+///@type {Number}
+global.__MIN_INT_64 = int64(-9223372036854775808)
+#macro MIN_INT_64 global.__MIN_INT_64
+
+///@type {Number}
+global.__MAX_INT_64 = int64(9223372036854775807)
+#macro MAX_INT_64 global.__MAX_INT_64
+
 ///@static
 function _NumberUtil() constructor {
 

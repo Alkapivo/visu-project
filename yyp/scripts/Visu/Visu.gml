@@ -101,7 +101,7 @@ function _Visu() constructor {
       "speed":{
         "value":-2.0,
         "factor":0.040000000000000001,
-        "target":0.69999999999999996,
+        "target":1.5,
         "increase":0.0
       },
       "sprite":{
@@ -123,7 +123,7 @@ function _Visu() constructor {
       "speed":{
         "value":-3.7999999999999998,
         "factor":0.050000000000000003,
-        "target":1.2,
+        "target":1.8,
         "increase":0.0
       },
       "sprite":{
@@ -144,7 +144,7 @@ function _Visu() constructor {
       "speed":{
         "value":-4.0,
         "factor":0.050000000000000003,
-        "target":1.5,
+        "target":1.8,
         "increase":0.0
       },
       "sprite":{
@@ -166,7 +166,7 @@ function _Visu() constructor {
       "speed":{
         "value":-2.5,
         "factor":0.050000000000000003,
-        "target":0.90000000000000002,
+        "target":1.5,
         "increase":0.0
       },
       "sprite":{
@@ -199,8 +199,7 @@ function _Visu() constructor {
         "         Z     - Shoot",
         "         X     - Use bomb",
         "         SHIFT - Focus mode",
-        "         SPACE - Play/pause",
-        "         F5    - Show/hide editor",
+        "         ESC   - Menu",
         "",
         "[SYSTEM] Clear preview-mode message after 8 sec"
       ]
@@ -536,7 +535,7 @@ function _Visu() constructor {
       "asset": texture_white,
       "file": ""
     },
-  }
+  } 
 
   ///@return {Struct}
   static assets = function() {
@@ -582,6 +581,20 @@ function _Visu() constructor {
 
     return this._assets
   }
+  
+  ///@param {String} name
+  ///@return {Struct}
+  static generateSettingsSubscriber = function(name) {
+    return { 
+      name: name,
+      callback: function(value) {
+        if (Visu.settings.getValue(this.name) == value) {
+          return
+        }
+        Visu.settings.setValue(this.name, value).save()
+      },
+    }
+  }
 
   ///@param {String} [layerName]
   ///@param {Number} [layerDefaultDepth]
@@ -598,11 +611,23 @@ function _Visu() constructor {
     this.settings.set(new SettingEntry({ name: "visu.editor.autosave", type: SettingTypes.BOOLEAN, defaultValue: false }))
       .set(new SettingEntry({ name: "visu.language", type: SettingTypes.STRING, defaultValue: LanguageType.en_US }))
       .set(new SettingEntry({ name: "visu.fullscreen", type: SettingTypes.BOOLEAN, defaultValue: false }))
+      .set(new SettingEntry({ name: "visu.god-mode", type: SettingTypes.BOOLEAN, defaultValue: false }))
       .set(new SettingEntry({ name: "visu.window.width", type: SettingTypes.NUMBER, defaultValue: 1400 }))
       .set(new SettingEntry({ name: "visu.window.height", type: SettingTypes.NUMBER, defaultValue: 900 }))
-      .set(new SettingEntry({ name: "visu.shader.quality", type: SettingTypes.NUMBER, defaultValue: 1.0 }))
-      .set(new SettingEntry({ name: "visu.audio.ost.volume", type: SettingTypes.NUMBER, defaultValue: 1.0 }))
-      .set(new SettingEntry({ name: "visu.audio.sfx.volume", type: SettingTypes.NUMBER, defaultValue: 0.5 }))
+      .set(new SettingEntry({ name: "visu.interface.scale", type: SettingTypes.NUMBER, defaultValue: 1 }))
+      .set(new SettingEntry({ name: "visu.interface.render-hud", type: SettingTypes.BOOLEAN, defaultValue: true }))
+      .set(new SettingEntry({ name: "visu.interface.hud-position", type: SettingTypes.STRING, defaultValue: "bottom-left" }))
+      .set(new SettingEntry({ name: "visu.interface.player-hint", type: SettingTypes.BOOLEAN, defaultValue: true }))
+      .set(new SettingEntry({ name: "visu.graphics.auto-resize", type: SettingTypes.BOOLEAN, defaultValue: true }))
+      .set(new SettingEntry({ name: "visu.graphics.resolution", type: SettingTypes.STRING, defaultValue: "1440x900" }))
+      .set(new SettingEntry({ name: "visu.graphics.main-shaders", type: SettingTypes.BOOLEAN, defaultValue: true }))
+      .set(new SettingEntry({ name: "visu.graphics.bkg-shaders", type: SettingTypes.BOOLEAN, defaultValue: true }))
+      .set(new SettingEntry({ name: "visu.graphics.shaders-limit", type: SettingTypes.NUMBER, defaultValue: 10 }))
+      .set(new SettingEntry({ name: "visu.graphics.bkt-glitch", type: SettingTypes.BOOLEAN, defaultValue: true }))
+      .set(new SettingEntry({ name: "visu.graphics.particle", type: SettingTypes.BOOLEAN, defaultValue: true }))
+      .set(new SettingEntry({ name: "visu.graphics.shader-quality", type: SettingTypes.NUMBER, defaultValue: 0.5 }))
+      .set(new SettingEntry({ name: "visu.audio.ost-volume", type: SettingTypes.NUMBER, defaultValue: 1.0 }))
+      .set(new SettingEntry({ name: "visu.audio.sfx-volume", type: SettingTypes.NUMBER, defaultValue: 0.5 }))
       .set(new SettingEntry({ name: "visu.editor.bpm", type: SettingTypes.NUMBER, defaultValue: 120 }))
       .set(new SettingEntry({ name: "visu.editor.bpm-count", type: SettingTypes.NUMBER, defaultValue: 0 }))
       .set(new SettingEntry({ name: "visu.editor.bpm-sub", type: SettingTypes.NUMBER, defaultValue: 2 }))
@@ -614,6 +639,13 @@ function _Visu() constructor {
       .set(new SettingEntry({ name: "visu.editor.accordion.render-event-inspector", type: SettingTypes.BOOLEAN, defaultValue: false }))
       .set(new SettingEntry({ name: "visu.editor.accordion.render-template-toolbar", type: SettingTypes.BOOLEAN, defaultValue: true }))
       .set(new SettingEntry({ name: "visu.editor.timeline-zoom", type: SettingTypes.NUMBER, defaultValue: 10 }))
+      .set(new SettingEntry({ name: "visu.keyboard.player.up", type: SettingTypes.NUMBER, defaultValue: KeyboardKeyType.ARROW_UP }))
+      .set(new SettingEntry({ name: "visu.keyboard.player.down", type: SettingTypes.NUMBER, defaultValue: KeyboardKeyType.ARROW_DOWN }))
+      .set(new SettingEntry({ name: "visu.keyboard.player.left", type: SettingTypes.NUMBER, defaultValue: KeyboardKeyType.ARROW_LEFT }))
+      .set(new SettingEntry({ name: "visu.keyboard.player.right", type: SettingTypes.NUMBER, defaultValue: KeyboardKeyType.ARROW_RIGHT }))
+      .set(new SettingEntry({ name: "visu.keyboard.player.action", type: SettingTypes.NUMBER, defaultValue: ord("Z") }))
+      .set(new SettingEntry({ name: "visu.keyboard.player.bomb", type: SettingTypes.NUMBER, defaultValue: ord("X") }))
+      .set(new SettingEntry({ name: "visu.keyboard.player.focus", type: SettingTypes.NUMBER, defaultValue: KeyboardKeyType.SHIFT }))
       .load()
     
     initLanguage(this.settings.getValue("visu.language", LanguageType.en_US))
@@ -703,12 +735,37 @@ function _Visu() constructor {
       }
     }
 
-    if (!Beans.exists(BeanVisuTestRunner)) {
-      Beans.add(BeanVisuTestRunner, new Bean(VisuTestRunner,
+    if (!Beans.exists(BeanDialogueDesignerService)) {
+      Beans.add(BeanDialogueDesignerService , new Bean(DialogueDesignerService,
         GMObjectUtil.factoryGMObject(
           GMServiceInstance, 
           layerId, 0, 0, 
-          new VisuTestRunner()
+          new DialogueDesignerService({
+            handlers: new Map(String, Callable, {
+              "QUIT": function(data) {
+                Beans.get(BeanDialogueDesignerService).close()
+              },
+              "LOAD_VISU_TRACK": function(data) {
+                Beans.get(BeanVisuController).send(new Event("load", {
+                  manifest: FileUtil.get(data.path),
+                  autoplay: true,
+                }))
+              },
+              "GAME_END": function(data) {
+                game_end()
+              },
+            }),
+          })
+        )
+      ))
+    }
+
+    if (!Beans.exists(BeanTestRunner)) {
+      Beans.add(BeanTestRunner, new Bean(TestRunner,
+        GMObjectUtil.factoryGMObject(
+          GMServiceInstance, 
+          layerId, 0, 0, 
+          new TestRunner()
         )
       ))
     }
@@ -736,7 +793,7 @@ function _Visu() constructor {
           ],
           handler: function(args) {
             Logger.debug("CLIParamParser", $"Run --test {args.get(0)}")
-            Beans.get(BeanVisuTestRunner).start(args.get(0))
+            Beans.get(BeanTestRunner).push(args.get(0))
             Core.setProperty("visu.manifest.load-on-start", false)
           },
         }),

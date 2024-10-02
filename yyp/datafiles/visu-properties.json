@@ -3,13 +3,14 @@
   "visu.files-service.dispatcher.limit": 2,
   "visu.editor.enable": true,
   "visu.editor.renderUI": false,
+  "visu.editor.controlTrack.alwaysEnabled": false,
   "visu.editor.autosave.interval": 3.0,
   "visu.editor.status-bar.render-average-fps": true,
-  "visu.manifest.load-on-start": true,
+  "visu.manifest.load-on-start": false,
   "visu.manifest.play-on-start": false,
-  "visu.manifest.path": "track/kedy_selma/Just To Create Something/manifest.visu",
+  "visu.manifest.path": "track/kedy_selma/2024-Just-To-Create-Something/4-Just-To-Create-Something/manifest.visu",
   "visu.player.force.tresholds": [ 0, 50, 125, 250 ],
   "visu.player.point.tresholds": [ 0, 50, 125, 250 ],
-  "visu.preview-mode": true,
+  "visu.preview-mode": false,
   "end-property": null
 }

@@ -37,11 +37,6 @@ function UISliderHorizontal(name, json = null) {
       blend: "#000000",
     })),
 
-    ///@type {?GMColor}
-    backgroundColor: Struct.contains(json, "backgroundColor")
-      ? Assert.isType(ColorUtil.fromHex(json.backgroundColor).toGMColor(), GMColor)
-      : null,
-
     ///@type {?Struct}
     enable: Struct.contains(json, "enable") ? Assert.isType(json.enable, Struct) : null,
 

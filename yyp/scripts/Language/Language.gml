@@ -92,7 +92,6 @@ function initLanguage(code) {
   var json = FileUtil.readFileSync(FileUtil.get(path)).getData()
   JSON.parserTask(json, {
     callback: function(prototype, json, index, acc) {
-      Core.print("json", json)
       Language.apply(new prototype(json)) 
     },
     acc: this,

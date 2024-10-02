@@ -24,6 +24,28 @@ global.__shader_track_event = {
         .get(data, "shader-spawn_alpha-max"))
     }
 
+    if (Core.getRuntimeType() == RuntimeType.GXGAMES) {
+      var denyMap = new Map(String, Boolean, {
+        "shader_lighting_with_glow": true,
+        "shader_002_blue": true,
+        "shader_sincos_3d": true,
+        "shader_flame": true,
+        "shader_whirlpool": true,
+        "shader_warp_speed_2": true,
+        "shader_colors_embody": true,
+      })
+  
+      var shaderTemplate = Beans.get(BeanVisuController).shaderPipeline.getTemplate(eventData.template)
+      if (denyMap.contains(shaderTemplate.shader)) {
+        Logger.warn("shader_track_event", $"Skip event, because shader is not supported: {shaderTemplate.shader}")
+        return
+      }
+
+      eventData.template = eventData.template == "shader_art"
+        ? "shader_art_wasm" 
+        : eventData.template
+    }
+
     var event = new Event("spawn-shader", JSON.clone(eventData))
     var controller = Beans.get(BeanVisuController)
     var pipeline = Struct.getDefault(data, "shader-spawn_pipeline", "Grid")

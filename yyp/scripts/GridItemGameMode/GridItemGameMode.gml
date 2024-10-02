@@ -1,6 +1,7 @@
 ///@package io.alkapivo.visu.service.grid
 
 ///@interface
+///@param {Struct} [json]
 function GridItemGameMode(json = {}) constructor {
 
   ///@type {Array<GridItemFeature>}

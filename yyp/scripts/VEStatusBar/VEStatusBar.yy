@@ -5,8 +5,8 @@
   "isDnD":false,
   "name":"VEStatusBar",
   "parent":{
-    "name":"ui",
-    "path":"folders/visu/src/editor/ui.yy",
+    "name":"controller",
+    "path":"folders/visu/src/editor/ui/controller.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

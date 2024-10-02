@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"Lambda",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"Lambda",
+  "parent":{
+    "name":"lang",
+    "path":"folders/core/src/lang.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

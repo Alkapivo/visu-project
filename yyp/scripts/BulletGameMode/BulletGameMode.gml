@@ -36,7 +36,7 @@ function BulletBulletHellGameMode(json) {
     ///@override
     ///@param {Bullet} bullet
     ///@param {VisuController} controller
-    update: function(bullet, controller) {
+    update: function(bullet, controller) {  
       if (Optional.is(bullet.signals.shroomCollision)) {
         bullet.signal("kill")
       }

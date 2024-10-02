@@ -1,4 +1,4 @@
-  ///@package io.alkapivo.visu.editor.ui
+///@package io.alkapivo.visu.editor.ui.controller
 
 ///@param {VisuEditorController} _editor
 function VEPopupQueue(_editor) constructor {
@@ -104,9 +104,7 @@ function VEPopupQueue(_editor) constructor {
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
       updateCustom: function() {
         var index = this.controller.containers
-          .findIndex(function(key, index, target) { ///@todo move to Lambda util
-            return key == target
-          }, this.name)
+          .findIndex(Lambda.equal, this.name)
         
         if (Core.isType(index, Number)) {
           this.layout.index = index
@@ -208,7 +206,7 @@ function VEPopupQueue(_editor) constructor {
             this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
           },
           onMousePressedLeft: function(event) {
-            this.context.controller.dispatcher.send(new Event("remove", this.context.name))
+            this.context.dispatcher.send(new Event("remove", this.context.name))
           },
         },
       }
@@ -249,7 +247,7 @@ function VEPopupQueue(_editor) constructor {
         .clear()
     },
     "remove": function(event) {
-      var index = this.containers.findIndex(function(container, index, target) { ///@todo move to Lambda util
+      var index = this.containers.findIndex(function(container, index, target) {
         return container.name == target
       }, event.data)
 

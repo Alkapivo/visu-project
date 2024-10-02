@@ -1,4 +1,4 @@
-///@package io.alkapivo.visu.editor.ui
+///@package io.alkapivo.visu.editor.ui.controller
 
 ///@param {VisuEditorController} _editor
 function VETrackControl(_editor) constructor {
@@ -171,14 +171,20 @@ function VETrackControl(_editor) constructor {
             var trackService = controller.trackService
             var mousePromise = MouseUtil.getClipboard()
             var context = Struct.get(Struct.get(mousePromise, "state"), "context")
-            if (context != null) {
+            var ruler = Beans.get(BeanVisuEditorController).timeline.containers.get("ve-timeline-ruler")
+            if (context == this) {
               this.updatePosition(MouseUtil.getMouseX() - this.context.area.getX())
-              var ruler = Beans.get(BeanVisuEditorController).timeline.containers.get("ve-timeline-ruler")
-              if (ruler != null) {
-                ruler.state.set("time", this.value * trackService.duration)
-                ruler.state.set("mouseXTime", this.value * trackService.duration)
-              }
               return
+            } else if (context != null && context == ruler) {
+              var mouseXTime = ruler.state.get("mouseXTime")
+              if (Core.isType(mouseXTime, Number)) {
+                this.value = clamp(
+                  mouseXTime / trackService.duration, 
+                  this.minValue, 
+                  this.maxValue
+                )
+                return
+              }
             }
 
             if (this.state.contains("promise")) {
@@ -204,15 +210,15 @@ function VETrackControl(_editor) constructor {
             this.value = clamp(mouseX / width, this.minValue, this.maxValue)
 
             var controller = Beans.get(BeanVisuController)
-            var editor = Beans.get(BeanVisuController)
-            var rulerView = editor.uiService.find("ve-timeline-ruler")
-            if (Core.isType(rulerView, UI)) {
-              rulerView.state.set("time", this.value * controller.trackService.duration)
+            var editor = Beans.get(BeanVisuEditorController)
+            var ruler = editor.uiService.find("ve-timeline-ruler")
+            if (Optional.is(ruler)) {
+              ruler.state.set("time", this.value * controller.trackService.duration)
             }
 
-            var eventsView = editor.uiService.find("ve-timeline-events")
-            if (Core.isType(eventsView, UI)) {
-              eventsView.state.set("time", this.value * controller.trackService.duration)
+            var events = editor.uiService.find("ve-timeline-events")
+            if (Optional.is(events)) {
+              events.state.set("time", this.value * controller.trackService.duration)
             }
           },
           onMousePressedLeft: function(event) {

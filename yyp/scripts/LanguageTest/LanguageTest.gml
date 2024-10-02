@@ -17,7 +17,7 @@ function Test_Language(json = {}) {
       stages: {
         cooldownBefore: function(task) {
           if (task.state.cooldown.update().finished) {
-            Beans.get(BeanVisuTestRunner).exceptions.clear()
+            Beans.get(BeanTestRunner).exceptions.clear()
             task.state.stage = "init"
             task.state.cooldown.reset()
           }
@@ -42,7 +42,7 @@ function Test_Language(json = {}) {
         },
         cooldownAfter: function(task) {
           if (task.state.cooldown.update().finished) {
-            Assert.isTrue(Beans.get(BeanVisuTestRunner).exceptions.size() == 0, "No exceptions can be thrown")
+            Assert.isTrue(Beans.get(BeanTestRunner).exceptions.size() == 0, "No exceptions can be thrown")
             task.fullfill("success")
           }
         }
@@ -54,15 +54,15 @@ function Test_Language(json = {}) {
     })
     .whenStart(function(executor) {
       Logger.test("LanguageTest", "Start Test_Language")
-      Beans.get(BeanVisuTestRunner).installHooks()
+      Beans.get(BeanTestRunner).installHooks()
     })
     .whenFinish(function(data) {
       Logger.test("LanguageTest", $"Finished Test_Language: {data}")
-      Beans.get(BeanVisuTestRunner).uninstallHooks()
+      Beans.get(BeanTestRunner).uninstallHooks()
     })
     .whenTimeout(function() {
       Logger.test("BrushToolbarTest", "Test_Language: Timeout")
       this.reject("failure")
-      Beans.get(BeanVisuTestRunner).uninstallHooks()
+      Beans.get(BeanTestRunner).uninstallHooks()
     })
 }

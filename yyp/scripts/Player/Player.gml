@@ -13,7 +13,7 @@ function PlayerTemplate(json) constructor {
   mask = Core.isType(Struct.get(json, "mask"), Struct) ? json.mask : null
 
   ///@type {Keyboard}
-  keyboard = new Keyboard(json.keyboard)
+  keyboard = Assert.isType(json.keyboard, Keyboard)
 
   ///@type {Struct}
   gameModes = Struct.appendUnique(
@@ -457,8 +457,17 @@ function PlayerStats(_player, json) constructor {
       return this
     },
     onMinValueExceed: function() { 
-      this.value = 3
-      Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: "Player life < 0. Respawn player with life: 3" }))
+      if (Visu.settings.getValue("visu.god-mode")) {
+        this.value = 3
+        Beans.get(BeanVisuController)
+          .send(new Event("spawn-popup", { 
+            message: "God-mode is active, respawning player"
+          }))
+      } else {
+        var controller = Beans.get(BeanVisuController)
+        controller.send(new Event("game-over"))
+      }
+      
       //Core.print("Die!")
       //var controller = Beans.get(BeanVisuController)
       //controller.send(new Event("rewind", { timestamp: 0.0, resume: false }))
@@ -570,7 +579,6 @@ function Player(template): GridItem(template) constructor {
     if (this.fadeIn < 1.0) {
       this.fadeIn = clamp(this.fadeIn + this.fadeInFactor, 0.0, 1.0)
     }
-
 
     this.stats.update()
 

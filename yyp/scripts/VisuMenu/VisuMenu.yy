@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"VisuMenu",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"VisuMenu",
+  "parent":{
+    "name":"controller",
+    "path":"folders/visu/src/ui/controller.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

@@ -30,8 +30,8 @@ function VisuEditorController() constructor {
   ///@type {VEBrushService}
   brushService = new VEBrushService(this)
 
-  ///@type {VisuNewProjectModal}
-  newProjectModal = new VisuNewProjectModal()
+  ///@type {VENewProjectModal}
+  newProjectModal = new VENewProjectModal()
 
   ///@type {VisuModal}
   exitModal = new VisuModal({
@@ -133,9 +133,9 @@ function VisuEditorController() constructor {
     },
     "shader-quality": {
       type: Number,
-      value: Assert.isType(Visu.settings.getValue("visu.shader.quality", 1.0), Number),
+      value: Assert.isType(Visu.settings.getValue("visu.graphics.shader-quality", 0.5), Number),
       passthrough: function(value) {
-        return clamp(value, 0.25, 1.0)
+        return clamp(value, 0.2, 1.0)
       }
     },
   })
@@ -146,7 +146,8 @@ function VisuEditorController() constructor {
     timer: new Timer(Core.getProperty("visu.editor.autosave.interval", 1) * 60, { loop: Infinity }),
     update: function() {
       var controller = Beans.get(BeanVisuController)
-      if (!this.value || controller.fsm.getStateName() != "pause") {
+      var stateName = controller.fsm.getStateName()
+      if (!this.value || stateName != "paused") {
         return
       }
       
@@ -183,59 +184,7 @@ function VisuEditorController() constructor {
       this.store.get("render-brush").set(this.store.getValue("_render-brush"))
       this.store.get("render-trackControl").set(this.store.getValue("_render-trackControl"))
 
-      var task = new Task("open-editor-ui")
-        .setTimeout(10.0)
-        .setPromise(event.promise) // pass promise to TaskExecutor
-        .setState(new Queue(Struct, [
-          {
-            handler: this.titleBar,
-            event: new Event("open").setData({ 
-              layout: Struct.get(this.layout.nodes, "title-bar")
-            }),
-          },
-          {
-            handler: this.accordion,
-            event: new Event("open").setData({ 
-              layout: Struct.get(this.layout.nodes, "accordion")
-            }),
-          },
-          {
-            handler: this.trackControl,
-            event: new Event("open").setData({ 
-              layout: Struct.get(this.layout.nodes, "track-control")
-            }),
-          },
-          {
-            handler: this.brushToolbar,
-            event: new Event("open").setData({ 
-              layout: Struct.get(this.layout.nodes, "brush-toolbar")
-            }),
-          },
-          {
-            handler: this.timeline,
-            event: new Event("open").setData({ 
-              layout: Struct.get(this.layout.nodes, "timeline")
-            }),
-          },
-          {
-            handler: this.statusBar,
-            event: new Event("open").setData({ 
-              layout: Struct.get(this.layout.nodes, "status-bar")
-            }),
-          }
-        ]))
-        .whenUpdate(function() {
-          var entry = this.state.pop()
-          if (!Optional.is(entry)) {
-            this.fullfill()
-            return
-          }
-
-          entry.handler.send(entry.event)
-        })
-      this.executor.add(task)
-
-      event.setPromise() // disable promise in EventPump, the promise will be resolved within TaskExecutor
+      this.requestOpenUI = true
     },
     "close": function(event) {
       this.store.get("_render-event").set(this.store.getValue("render-event"))
@@ -271,11 +220,11 @@ function VisuEditorController() constructor {
   ///@type {Array<Struct>}
   services = new Array(Struct, GMArray.map([
     "titleBar",
+    "statusBar",
     "accordion",
     "trackControl",
     "brushToolbar",
     "timeline",
-    "statusBar",
     "popupQueue",
     "exitModal",
     "newProjectModal",
@@ -295,18 +244,130 @@ function VisuEditorController() constructor {
   renderUI = Assert.isType(Core.getProperty("visu.editor.renderUI", true), Boolean)
 
   ///@private
+  ///@type {Boolean}
+  uiInitialized = false
+
+  ///@private
+  ///@type {Boolean}
+  requestOpenUI = false
+
+  ///@private
+  ///@return {Task}
+  factoryInitUITask = function() {
+    return new Task("open-editor-ui")
+      .setTimeout(10.0)
+      .setState(new Queue(Struct, [
+        {
+          handler: this.titleBar,
+          event: new Event("open").setData({ 
+            layout: Struct.get(this.layout.nodes, "title-bar")
+          }),
+        },
+        {
+          handler: this.statusBar,
+          event: new Event("open").setData({ 
+            layout: Struct.get(this.layout.nodes, "status-bar")
+          }),
+        },
+        {
+          handler: this.accordion,
+          event: new Event("open").setData({ 
+            layout: Struct.get(this.layout.nodes, "accordion")
+          }),
+        },
+        {
+          handler: this.trackControl,
+          event: new Event("open").setData({ 
+            layout: Struct.get(this.layout.nodes, "track-control")
+          }),
+        },
+        {
+          handler: this.brushToolbar,
+          event: new Event("open").setData({ 
+            layout: Struct.get(this.layout.nodes, "brush-toolbar")
+          }),
+        },
+        {
+          handler: this.timeline,
+          event: new Event("open").setData({ 
+            layout: Struct.get(this.layout.nodes, "timeline")
+          }),
+        }
+      ]))
+      .whenUpdate(function() {
+        var entry = this.state.pop()
+        if (!Optional.is(entry)) {
+          this.fullfill()
+          return
+        }
+
+        entry.handler.send(entry.event)
+      })
+  }
+
+  ///@private
+  ///@return {Task}
+  factoryOpenUITask = function() {
+    return new Task("open-editor-ui")
+      .setTimeout(10.0)
+      .setState(new Queue(Struct, [
+        {
+          handler: this.accordion,
+          event: new Event("open").setData({ 
+            layout: Struct.get(this.layout.nodes, "accordion")
+          }),
+        },
+        {
+          handler: this.trackControl,
+          event: new Event("open").setData({ 
+            layout: Struct.get(this.layout.nodes, "track-control")
+          }),
+        },
+        {
+          handler: this.brushToolbar,
+          event: new Event("open").setData({ 
+            layout: Struct.get(this.layout.nodes, "brush-toolbar")
+          }),
+        },
+        {
+          handler: this.timeline,
+          event: new Event("open").setData({ 
+            layout: Struct.get(this.layout.nodes, "timeline")
+          }),
+        }
+      ]))
+      .whenUpdate(function() {
+        var entry = this.state.pop()
+        if (!Optional.is(entry)) {
+          this.fullfill()
+          return
+        }
+
+        entry.handler.send(entry.event)
+      })
+  }
+
+  ///@private
   ///@return {VisuEditorController}
   init = function() {
-    var generateSettingsSubscriber = Visu.settings.generateSettingsSubscriber
-    store.get("bpm").addSubscriber(generateSettingsSubscriber("visu.editor.bpm"))
-    store.get("bpm-count").addSubscriber(generateSettingsSubscriber("visu.editor.bpm-count"))
-    store.get("bpm-sub").addSubscriber(generateSettingsSubscriber("visu.editor.bpm-sub"))
-    store.get("snap").addSubscriber(generateSettingsSubscriber("visu.editor.snap"))
-    store.get("render-event").addSubscriber(generateSettingsSubscriber("visu.editor.render-event"))
-    store.get("render-timeline").addSubscriber(generateSettingsSubscriber("visu.editor.render-timeline"))
-    store.get("render-trackControl").addSubscriber(generateSettingsSubscriber("visu.editor.render-track-control"))
-    store.get("render-brush").addSubscriber(generateSettingsSubscriber("visu.editor.render-brush"))
-    store.get("timeline-zoom").addSubscriber(generateSettingsSubscriber("visu.editor.timeline-zoom"))
+    this.store.get("bpm").addSubscriber(Visu
+      .generateSettingsSubscriber("visu.editor.bpm"))
+    this.store.get("bpm-count").addSubscriber(Visu
+      .generateSettingsSubscriber("visu.editor.bpm-count"))
+    this.store.get("bpm-sub").addSubscriber(Visu
+      .generateSettingsSubscriber("visu.editor.bpm-sub"))
+    this.store.get("snap").addSubscriber(Visu
+      .generateSettingsSubscriber("visu.editor.snap"))
+    this.store.get("render-event").addSubscriber(Visu
+      .generateSettingsSubscriber("visu.editor.render-event"))
+    this.store.get("render-timeline").addSubscriber(Visu
+      .generateSettingsSubscriber("visu.editor.render-timeline"))
+    this.store.get("render-trackControl").addSubscriber(Visu
+      .generateSettingsSubscriber("visu.editor.render-track-control"))
+    this.store.get("render-brush").addSubscriber(Visu
+      .generateSettingsSubscriber("visu.editor.render-brush"))
+    this.store.get("timeline-zoom").addSubscriber(Visu
+      .generateSettingsSubscriber("visu.editor.timeline-zoom"))
 
     this.layout = this.factoryLayout()
     return this
@@ -445,6 +506,9 @@ function VisuEditorController() constructor {
     var renderTrackControl = this.store.getValue("render-trackControl")
     var trackControlNode = Struct.get(this.layout.nodes, "track-control")
     trackControlNode.percentageHeight = renderTrackControl ? 1.0 : 0.0
+    this.trackControl.containers.forEach(function(container, key, enable) {
+      container.enable = enable
+    }, renderTrackControl)
     
     Struct.set(
       this.layout.nodes, 
@@ -503,11 +567,15 @@ function VisuEditorController() constructor {
   ///@private
   ///@return {VisuEditorController}
   updateUIService = function() {
-    if (!this.renderUI) {
+    if (this.renderUI && this.requestOpenUI) {
+      this.executor.add(this.uiInitialized 
+        ? this.factoryOpenUITask()
+        : this.factoryInitUITask())
+      this.uiInitialized = true
+      this.requestOpenUI = false
+    } else if (!this.renderUI) {
       return this
     }
-
-    this.updateExecutor()
 
     try {
       ///@description reset UI timers after resize to avoid ghost effect
@@ -545,6 +613,7 @@ function VisuEditorController() constructor {
   ///@return {VisuEditorController}
   update = function() {
     this.updateDispatcher()
+    this.updateExecutor()
     this.updateUIService()
     this.services.forEach(this.updateService, Beans.get(BeanVisuController))
     this.updateLayout()

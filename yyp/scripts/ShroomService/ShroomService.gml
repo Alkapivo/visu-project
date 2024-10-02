@@ -1,136 +1,5 @@
 ///@package io.alkapivo.visu.service.shroom
 
-
-///@param {Number} _size
-function ShroomGrid(_size) constructor {
-
-  ///@type {Number}
-  size = Assert.isType(_size, Number)
-
-  ///@type {Map<String, Array>}
-  map = new Map(String, Array)
-
-  ///@param {Number} x
-  ///@param {Number} y
-  ///@return {String}
-  toKey = function(x, y) {
-    var key = "x" + string(int64(x)) + "y" + string(int64(y))
-    return key 
-    //return $"x{int64(x)}y{int64(y)}"
-  }
-
-  ///@param {String}
-  ///@throws {AssertException}
-  ///@return {Array}
-  get = function(key) {
-    Assert.isType(key, String, "Key must be type of string")
-    if (!this.map.contains(key)) {
-      this.map.set(key, new Array(Shroom))
-    }
-
-    return this.map.get(key)
-  }
-
-  ///@param {Shroom} shroom
-  ///@throws {Exception}
-  ///@return {ShroomGrid}
-  add = function(shroom) {
-    shroom.shroomGridKey = this.toKey(
-      floor(shroom.x / this.size),
-      floor(shroom.y / this.size)
-    )
-    
-    var cell = this.get(shroom.shroomGridKey)
-    var index = cell.findIndex(function(shroom, index, target) {
-      return shroom == target
-    }, shroom)
-
-    if (Optional.is(index)) {
-      var message = $"Shroom was already added to cell '{shroom.shroomGridKey}'"
-      Logger.error("ShroomGrid", message)
-      Core.printStackTrace()
-      throw new Exception(message)
-    }
-
-    cell.add(shroom)
-    //Logger.debug("ShroomGrid", $"Added shroom to cell '{shroom.shroomGridKey}'")
-    return this
-  }
-
-  ///@param {Shroom} shroom
-  ///@throws {Exception}
-  ///@return {ShroomGrid}
-  update = function(shroom) {
-    var newKey = this.toKey(
-      floor(shroom.x / this.size),
-      floor(shroom.y / this.size)
-    )
-    
-    if (newKey == shroom.shroomGridKey) {
-      return this
-    }
-
-    this.remove(shroom).add(shroom)
-    return this
-
-    /*
-    var oldKey = shroom.shroomGridKey
-    var from = this.get(oldKey)
-    var index = from.findIndex(function(shroom, index, target) {
-      return shroom == target
-    }, shroom)
-    if (Optional.is(index)) {
-      from.remove(index)
-      shroom.shroomGridKey = newKey
-      Logger.debug("ShroomGrid", $"Remove shroom at index {index} from cell '{oldKey}'")
-    } else {
-      var message = $"Shroom was not found in cell '{oldKey}'"
-      Logger.error("ShroomGrid", message)
-      Core.printStackTrace()
-      throw new Exception(message)
-    }
-
-    var to = this.get(newKey)
-    index = to.findIndex(function(shroom, index, target) {
-      return shroom == target
-    }, shroom)
-    if (!Optional.is(index)) {
-      to.add(shroom)
-      Logger.debug("ShroomGrid", $"Shroom at index {index} moved from '{oldKey}' to '{newKey}'")
-    } else {
-      var message = $"Shroom from cell '{oldKey}' was already found in cell '{newKey}'"
-      Logger.error("ShroomGrid", message)
-      Core.printStackTrace()
-      throw new Exception(message)
-    }
-
-    return this
-    */
-  }
-
-  ///@param {Shroom} shroom
-  ///@throws {Exception}
-  ///@return {ShroomGrid}
-  remove = function(shroom) {
-    var cell = this.get(shroom.shroomGridKey)
-    var index = cell.findIndex(function(shroom, index, target) {
-      return shroom == target
-    }, shroom)
-
-    if (!Optional.is(index)) {
-      var message = $"Shroom was already removed from cell '{shroom.shroomGridKey}'"
-      Logger.error("ShroomGrid", message)
-      Core.printStackTrace()
-      throw new Exception(message)
-    }
-      
-    cell.remove(index)
-    //Logger.debug("ShroomGrid", $"Removed shroom at index {index} from cell '{shroom.shroomGridKey}'")
-    shroom.shroomGridKey = null
-    return this
-  }
-}
-
 ///@param {VisuController} _controller
 ///@param {Struct} [config]
 function ShroomService(_controller, config = {}): Service() constructor {
@@ -141,8 +10,8 @@ function ShroomService(_controller, config = {}): Service() constructor {
   ///@type {Array<Shroom>} 
   shrooms = new Array(Shroom)
 
-  ///@type {ShroomGrid}
-  shroomGrid = new ShroomGrid(0.3)
+  ///@type {GridItemChunkService}
+  chunkService = new GridItemChunkService(GRID_ITEM_CHUNK_SERVICE_SIZE)
 
   ///@type {Map<String, ShroomTemplate>}
   templates = new Map(String, ShroomTemplate)
@@ -223,15 +92,17 @@ function ShroomService(_controller, config = {}): Service() constructor {
       Struct.set(template, "y", viewY + spawnY)
       Struct.set(template, "speed", spd / 1000.0)
       Struct.set(template, "angle", angle)
-
+      Struct.set(template, "uid", this.controller.gridService.generateUID())
+      
       var shroom = new Shroom(template)
       shroom.updateGameMode(this.controller.gameMode)
 
       this.shrooms.add(shroom)
-      this.shroomGrid.add(shroom)
+      this.chunkService.add(shroom)
     },
     "clear-shrooms": function(event) {
       this.shrooms.clear()
+      this.chunkService.clear()
     },
     "reset-templates": function(event) {
       this.templates.clear()
@@ -254,7 +125,7 @@ function ShroomService(_controller, config = {}): Service() constructor {
       shroom.update(context.controller)
       if (shroom.signals.kill) {
         context.gc.push(index)
-        context.shroomGrid.remove(shroom)
+        context.chunkService.remove(shroom)
       }
     }
 

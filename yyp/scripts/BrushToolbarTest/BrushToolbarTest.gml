@@ -17,7 +17,7 @@ function TestEvent_BrushToolbar_save(json = {}) {
           }
         },
         setup: function(task) {
-          Beans.get(BeanVisuTestRunner).exceptions.clear()
+          Beans.get(BeanTestRunner).exceptions.clear()
           var editor = Beans.get(BeanVisuEditorController)
           var acc = {
             currentCategory: null,
@@ -95,7 +95,7 @@ function TestEvent_BrushToolbar_save(json = {}) {
         },
         verify: function(task) {
           if (task.state.cooldown.update().finished) {
-            Assert.isTrue(Beans.get(BeanVisuTestRunner).exceptions.size() == 0, "No exceptions can be thrown")
+            Assert.isTrue(Beans.get(BeanTestRunner).exceptions.size() == 0, "No exceptions can be thrown")
             task.fullfill("success")
           }
         },
@@ -107,18 +107,18 @@ function TestEvent_BrushToolbar_save(json = {}) {
     })
     .whenStart(function(executor) {
       Logger.test("BrushToolbarTest", "Start TestEvent_BrushToolbar_save")
-      Beans.get(BeanVisuTestRunner).installHooks()
+      Beans.get(BeanTestRunner).installHooks()
       Beans.get(BeanVisuEditorController).store.get("render-brush").set(true)
     })
     .whenFinish(function(data) {
       Logger.test("BrushToolbarTest", $"TestEvent_BrushToolbar_save: {data}")
-      Beans.get(BeanVisuTestRunner).uninstallHooks()
+      Beans.get(BeanTestRunner).uninstallHooks()
       Beans.get(BeanVisuEditorController).store.get("render-brush").set(false)
     })
     .whenTimeout(function() {
       Logger.test("BrushToolbarTest", "TestEvent_BrushToolbar_save: Timeout")
       this.reject("failure")
-      Beans.get(BeanVisuTestRunner).uninstallHooks()
+      Beans.get(BeanTestRunner).uninstallHooks()
       Beans.get(BeanVisuEditorController).store.get("render-brush").set(false)
     })
 }

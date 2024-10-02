@@ -118,6 +118,44 @@ function Surface(config = null) constructor {
     return this
   }
 
+  ///@param {Number} [x]
+  ///@param {Number} [y]
+  ///@param {Number} [angle]
+  ///@param {Number} [alpha]
+  ///@param {Number} [xOrigin]
+  ///@param {Number} [yOrigin]
+  ///@param {Number} [xScale]
+  ///@param {Number} [yScale]
+  ///@return {Surface}
+  static renderScaledAndRotated = function(x = 0, y = 0, angle = 0.0, alpha = 1.0, xOrigin = 0.5, yOrigin = 0.5, xScale = 1.0, yScale = 1.0) {
+    var surfaceXOrigin = this.width * xOrigin
+    var surfaceYOrigin = this.height * yOrigin
+    var surfaceXOriginBegin = 0
+    var surfaceYOriginBegin = 0
+    var surfaceXOriginEnd = this.width
+    var surfaceYOriginEnd = this.height
+    var xPoint = x + ((this.width * xOrigin) - (dcos(angle) * (surfaceXOrigin * xScale)) - (dsin(angle) * (surfaceYOrigin * yScale)));
+    var yPoint = y + ((this.height * yOrigin) - (dcos(angle) * (surfaceYOrigin * yScale)) + (dsin(angle) * (surfaceXOrigin * xScale)));
+    draw_surface_general(
+			this.asset,
+			surfaceXOriginBegin,
+			surfaceYOriginBegin,
+			surfaceXOriginEnd,
+			surfaceYOriginEnd,
+			xPoint,
+			yPoint,
+			xScale,
+			yScale,
+			angle,
+			c_white,
+			c_white,
+			c_white,
+			c_white,
+			alpha
+    )
+    return this
+  }
+
   ///@param {Number} width
   ///@param {Number} height
   ///@return {Surface}

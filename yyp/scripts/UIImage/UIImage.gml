@@ -17,11 +17,6 @@ function UIImage(name, json = null) {
     ///@type {?UILabel}
     label: Struct.contains(json, "label") ? new UILabel(json.label) : null,
 
-    ///@type {?GMColor}
-    backgroundColor: Struct.contains(json, "backgroundColor")
-      ? Assert.isType(ColorUtil.fromHex(json.backgroundColor).toGMColor(), GMColor)
-      : null,
-
     ///@type {?Struct}
     enable: Struct.contains(json, "enable") ? Assert.isType(json.enable, Struct) : null,
 

@@ -60,7 +60,6 @@ function TrackService(_context, config = {}): Service() constructor {
   ///@return {TrackService}
   ///@throws {InvalidAssertException}
   openTrack = function(track) {
-    this.stop()
     this.track = Assert.isType(track, Track)
     this.duration = this.track.audio.getLength()
     return this
@@ -99,6 +98,7 @@ function TrackService(_context, config = {}): Service() constructor {
     if (this.isTrackLoaded()) {
       this.track.audio.stop()
     }
+    this.time = 0.0
     return this
   }
 

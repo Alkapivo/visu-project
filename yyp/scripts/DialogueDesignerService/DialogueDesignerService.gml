@@ -1,17 +1,23 @@
 ///@package io.alkapivo.core.service.dialogue-designer
 
-#macro BeanDialogueService "DialogueService"
-function DialogueService() constructor {
+#macro BeanDialogueDesignerService "DialogueDesignerService"
+///@param {Struct} [config]
+function DialogueDesignerService(config = {}) constructor {
 
   ///@type {Map<String, String>}
   templates = new Map(String, String)
-  templates.set("dd_test", FileUtil.readFileSync("_dd_test.json").getData())
+  templates.set("menu", FileUtil.readFileSync("dialogue-designer/menu.json").getData()) ///@mockup
 
-  ///@type {DDDialogue}
+  ///@type {?DDDialogue}
   dialog = null
 
+  ///@type {Map<String, Callable>}
+  handlers = Core.isType(Struct.get(config, "handlers"), Map)
+    ? config.handlers
+    : new Map(String, Callable)
+
   ///@param {String} name
-  ///@return {DialogueService}
+  ///@return {DialogueDesignerService}
   open = function(name) {
     Core.print($"open dialog {name}")
     var template = templates.get(name)
@@ -21,17 +27,17 @@ function DialogueService() constructor {
     return this
   }
 
-  ///@return {DialogueService}
+  ///@return {DialogueDesignerService}
   close = function() {
     Core.print($"close dialog")
     this.dialog = null
     return this
   }
 
-  ///@return {DialogueService}
+  ///@return {DialogueDesignerService}
   update = function() {
     if (Core.isType(this.dialog, DDDialogue)) {
-      this.dialog.update()
+      this.dialog.update(this.handlers)
     }
     
     return this

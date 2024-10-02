@@ -6,7 +6,7 @@
   "name":"VEComponents",
   "parent":{
     "name":"ui",
-    "path":"folders/visu/src/ui.yy",
+    "path":"folders/visu/src/editor/ui.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

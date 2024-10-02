@@ -26,12 +26,12 @@ global.BULLET_TEMPLATE = {
 }
 
 
-///@param {Controller} _controller
+///@param {VisuController} _controller
 ///@param {Struct} [config]
 function BulletService(_controller, config = {}): Service() constructor {
 
-  ///@type {Controller}
-  controller = Assert.isType(_controller, Struct)
+  ///@type {VisuController}
+  controller = Assert.isType(_controller, VisuController)
 
   ///@type {Array<Bullet>}
   bullets = new Array(Bullet)
@@ -45,6 +45,9 @@ function BulletService(_controller, config = {}): Service() constructor {
   ///@type {?GameMode}
   gameMode = null
 
+  ///@type {GridItemChunkService}
+  chunkService = new GridItemChunkService(GRID_ITEM_CHUNK_SERVICE_SIZE)
+
   ///@param {String} name
   ///@return {?BulletTemplate}
   getTemplate = function(name) {
@@ -57,33 +60,34 @@ function BulletService(_controller, config = {}): Service() constructor {
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "spawn-bullet": function (event, dispatcher) {
-      var bulletTemplate = new BulletTemplate(event.data.template, this
+      var template = new BulletTemplate(event.data.template, this
         .getTemplate(event.data.template)
         .serialize())
         
-      Struct.set(bulletTemplate, "x", event.data.x)
-      Struct.set(bulletTemplate, "y", event.data.y)
-      Struct.set(bulletTemplate, "angle", event.data.angle)
-      Struct.set(bulletTemplate, "speed", event.data.speed / 1000)
-      Struct.set(bulletTemplate, "producer", event.data.producer)
-      if (Struct.contains(event.data, "template")) {
-        var template = this.getTemplate(event.data.template)
-        if (Struct.contains(template, "mask")) {
-          Struct.set(bulletTemplate, "mask", template.mask)
-        }
-      }
+      Struct.set(template, "x", event.data.x)
+      Struct.set(template, "y", event.data.y)
+      Struct.set(template, "angle", event.data.angle)
+      Struct.set(template, "speed", event.data.speed / 1000)
+      Struct.set(template, "producer", event.data.producer)
+      Struct.set(template, "uid", this.controller.gridService.generateUID())
 
       if (event.data.producer == Shroom) {
-        Beans.get(BeanVisuController).sfxService.play("shroom-shoot")
+        controller.sfxService.play("shroom-shoot")
       }
       
-      var bullet = new Bullet(bulletTemplate)
-      bullet.updateGameMode(this.controller.gameMode)
+      var bullet = new Bullet(template)
+      if (event.data.producer == Player) {
+        this.chunkService.add(bullet)
+      }
+      //bullet.updateGameMode(this.controller.gameMode)
 
       this.bullets.add(bullet)
+
+      
     },
     "clear-bullets": function(event) {
       this.bullets.clear()
+      this.chunkService.clear()
     },
     "reset-templates": function(event) {
       this.templates.clear()
@@ -107,13 +111,29 @@ function BulletService(_controller, config = {}): Service() constructor {
       bullet.update(context.controller)
       if (bullet.signals.kill) {
         context.gc.push(index)
+        if (bullet.producer == Player) {
+          context.chunkService.remove(bullet)
+        }
+
+        if (Optional.is(bullet.bulletTemplateOnDeath)) {
+          for (var idx = 0; idx < bullet.bulletAmountOnDeath; idx++) {
+            context.send(new Event("spawn-bullet", {
+              x: bullet.x,
+              y: bullet.y,
+              angle: bullet.angle + bullet.bulletSpawnAngleOnDeath + (idx * bullet.bulletAngleStepOnDeath),
+              speed: bullet.speed * 1000.0,
+              producer: bullet.producer,
+              template: bullet.bulletTemplateOnDeath,
+            }))
+          }
+        }
       }
     }
 
-    if (controller.gameMode != this.gameMode) {
-      this.gameMode = this.controller.gameMode
-      this.bullets.forEach(updateGameMode, this.gameMode)
-    }
+    //if (controller.gameMode != this.gameMode) {
+    //  this.gameMode = this.controller.gameMode
+    //  this.bullets.forEach(updateGameMode, this.gameMode)
+    //}
 
     this.dispatcher.update()
     this.bullets.forEach(updateBullet, this)

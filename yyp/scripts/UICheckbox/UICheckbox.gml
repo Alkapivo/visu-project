@@ -22,11 +22,6 @@ function UICheckbox(name, json = null) {
       ? Assert.isType(SpriteUtil.parse(json.spriteOff), Sprite)
       : null,
 
-    ///@type {?GMColor}
-    backgroundColor: Struct.contains(json, "backgroundColor")
-      ? Assert.isType(ColorUtil.fromHex(json.backgroundColor).toGMColor(), GMColor)
-      : null,
-
     ///@type {?Struct}
     enable: Struct.contains(json, "enable")
       ? Assert.isType(json.enable, Struct)

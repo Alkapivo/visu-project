@@ -8,6 +8,17 @@ function template_shroom(json = null) {
   var template = {
     name: Assert.isType(json.name, String),
     store: new Map(String, Struct, {
+      "shroom_use-health-points": {
+        type: Boolean,
+        value: Core.isType(Struct.get(json, "healthPoints"), Number),
+      },
+      "shroom_health-points": {
+        type: Number,
+        value: Core.isType(Struct.get(json, "healthPoints"), Number) ? json.healthPoints : 1.0,
+        passthrough: function(value) {
+          return round(clamp(NumberUtil.parse(value, this.value), 0, 9999.9))
+        },
+      },
       "shroom_texture": {
         type: Sprite,
         value: SpriteUtil.parse(json.sprite, { name: "texture_missing" }),
@@ -34,6 +45,39 @@ function template_shroom(json = null) {
       },
     }),
     components: new Array(Struct, [
+      {
+        name: "shroom_use-health-points",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Set health points",
+            enable: { key: "shroom_use-health-points" },
+          },  
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "shroom_use-health-points" },
+          },
+        },
+      },
+      {
+        name: "shroom_health-points",
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "HP",
+            enable: { key: "shroom_use-health-points" },
+          },  
+          field: { 
+            store: { key: "shroom_health-points" },
+            enable: { key: "shroom_use-health-points" },
+          },
+        },
+      },
       {
         name: "shroom_texture",
         template: VEComponents.get("texture-field-ext"),

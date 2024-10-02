@@ -373,7 +373,7 @@ function _Math() constructor {
     var _x = 0
     var _y = 0
     if (projection[15] == 0) {
-      // perspective projection
+      /// perspective projection
       var _width = view[2] * x + view[6] * y + view[10] * z + view[14];
       if (_width == 0) {
         return { 
@@ -393,6 +393,41 @@ function _Math() constructor {
     return { 
       x: (0.5 + 0.5 * _x) * width,
       y: (0.5 + 0.5 * _y) * height,
+    }
+  }
+
+  ///@param {Number} x
+  ///@param {Number} y
+  ///@param {Matrix} view
+  ///@param {Matrix} projection
+  ///@param {Number} width
+  ///@param {Number} width
+  project2DCoordsOn3D = function(x, y, view, projection, width, height) {
+    var mx = 2 * (x / width - 0.5) / projection[0]
+    var my = 2 * (y / height - 0.5) / projection[5]
+    var camX = -1 * (view[12] * view[0] + view[13] * view[1] + view[14] * view[2])
+    var camY = -1 * (view[12] * view[4] + view[13] * view[5] + view[14] * view[6])
+    var camZ = -1 * (view[12] * view[8] + view[13] * view[9] + view[14] * view[10])
+    if (projection[15] == 0) {    
+      /// perspective projection
+      return [
+        view[2]  + mx * view[0] + my * view[1],
+        view[6]  + mx * view[4] + my * view[5],
+        view[10] + mx * view[8] + my * view[9],
+        camX,
+        camY,
+        camZ
+      ]
+    } else {
+      /// ortho projection
+      return [ 
+        view[2], 
+        view[6],
+        view[10],
+        camX + mx * view[0] + my * view[1],
+        camY + mx * view[4] + my * view[5],
+        camZ + mx * view[8] + my * view[9]
+      ]
     }
   }
 }

@@ -102,7 +102,7 @@ global.__view_track_event = {
       controller.gridService.send(new Event("transform-property", {
         key: "x",
         container: controller.visuRenderer.gridRenderer.camera,
-        executor: controller.visuRenderer.gridRenderer.camera.executor,
+        executor: controller.gridService.executor, // controller.visuRenderer.gridRenderer.camera.executor,
         transformer: new NumberTransformer({
           value: controller.visuRenderer.gridRenderer.camera.x,
           target: transformer.target,
@@ -117,7 +117,7 @@ global.__view_track_event = {
       controller.gridService.send(new Event("transform-property", {
         key: "y",
         container: controller.visuRenderer.gridRenderer.camera,
-        executor: controller.visuRenderer.gridRenderer.camera.executor,
+        executor: controller.gridService.executor, // controller.visuRenderer.gridRenderer.camera.executor,
         transformer: new NumberTransformer({
           value: controller.visuRenderer.gridRenderer.camera.y,
           target: transformer.target,
@@ -132,7 +132,7 @@ global.__view_track_event = {
       controller.gridService.send(new Event("transform-property", {
         key: "z",
         container: controller.visuRenderer.gridRenderer.camera,
-        executor: controller.visuRenderer.gridRenderer.camera.executor,
+        executor: controller.gridService.executor, // controller.visuRenderer.gridRenderer.camera.executor,
         transformer: new NumberTransformer({
           value: controller.visuRenderer.gridRenderer.camera.z,
           target: transformer.target,
@@ -147,7 +147,7 @@ global.__view_track_event = {
       controller.gridService.send(new Event("transform-property", {
         key: "zoom",
         container: controller.visuRenderer.gridRenderer.camera,
-        executor: controller.visuRenderer.gridRenderer.camera.executor,
+        executor: controller.gridService.executor, // controller.visuRenderer.gridRenderer.camera.executor,
         transformer: new NumberTransformer({
           value: controller.visuRenderer.gridRenderer.camera.zoom,
           target: transformer.target,
@@ -163,7 +163,7 @@ global.__view_track_event = {
       controller.gridService.send(new Event("transform-property", {
         key: "angle",
         container: controller.visuRenderer.gridRenderer.camera,
-        executor: controller.visuRenderer.gridRenderer.camera.executor,
+        executor: controller.gridService.executor, // controller.visuRenderer.gridRenderer.camera.executor,
         transformer: new NumberTransformer({
           value: controller.visuRenderer.gridRenderer.camera.angle,
           target: controller.visuRenderer.gridRenderer.camera.angle + angleDifference,
@@ -178,7 +178,7 @@ global.__view_track_event = {
       controller.gridService.send(new Event("transform-property", {
         key: "pitch",
         container: controller.visuRenderer.gridRenderer.camera,
-        executor: controller.visuRenderer.gridRenderer.camera.executor,
+        executor: controller.gridService.executor, // controller.visuRenderer.gridRenderer.camera.executor,
         transformer: new NumberTransformer({
           value: controller.visuRenderer.gridRenderer.camera.pitch,
           target: transformer.target,

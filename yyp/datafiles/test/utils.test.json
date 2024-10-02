@@ -1,0 +1,23 @@
+{
+  "version": "1",
+  "model": "io.alkapivo.visu.TestSuite",
+  "data":{
+    "name": "Test package io.alkapivo.core.utils",
+    "stopAfterFailure": false,
+    "tests": [
+      {
+        "handler": "Test_Language",
+        "description": "Verify Language utils with language.en_US.json",
+        "data": {
+          "timeout": 5.0,
+          "cooldown": 0.5,
+          "code": "en_US",
+          "key": "test.language",
+          "param1": "lorem",
+          "param2": "ipsum",
+          "expected": "Test language with params: lorem, ipsum"
+        }
+      }
+    ]
+  }
+}

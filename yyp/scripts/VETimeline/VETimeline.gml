@@ -1,4 +1,4 @@
-///@package io.alkapivo.visu.editor.ui
+///@package io.alkapivo.visu.editor.ui.controller
 
 ///@enum
 function _ToolType(): Enum() constructor {
@@ -1402,10 +1402,9 @@ function VETimeline(_editor) constructor {
           this.state.set("time", null)
           this.offset.x = -1 * camera
 
-          if (camera != cameraPrevious) {
-            var events = this.controller.containers.get("ve-timeline-events")
-            if (Core.isType(events, UI) 
-              && Core.isType(events.updateTimer, Timer)) {
+          var events = this.controller.containers.get("ve-timeline-events")
+          if (Core.isType(events, UI)) {
+            if (camera != cameraPrevious && Core.isType(events.updateTimer, Timer)) {
               events.updateTimer.finish()
             }
           }

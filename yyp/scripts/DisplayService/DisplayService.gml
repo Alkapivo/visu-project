@@ -37,9 +37,12 @@ function DisplayService(_controller, config = {}): Service() constructor {
   ///@type {Number}
   minHeight = Core.isType(Struct.get(config, "minHeight"), Number) ? config.minHeight : 240
 
+  ///@type {Number}
+  scale = Core.isType(Struct.get(config, "scale"), Number) ? config.scale : 1
+
   ///@private
   ///@type {String}
-	state = "idle"
+	state = "required"
 
   ///@private
   ///@type {Timer}
@@ -126,9 +129,9 @@ function DisplayService(_controller, config = {}): Service() constructor {
     var height = max(this.minHeight, _height)
     try {
       Logger.debug("DisplayService", $"Resize from {this.previousWidth}x{this.previousHeight} to {width}x{height}")
-      display_set_gui_size(width, height)
+      display_set_gui_size(width / this.scale, height / this.scale)
       window_set_size(width, height)
-      surface_resize(application_surface, width, height)
+      surface_resize(application_surface, width / this.scale, height / this.scale)
       if (!this.getFullscreen()) {
         this.windowWidth = this.getWidth()
         this.windowHeight = this.getHeight()

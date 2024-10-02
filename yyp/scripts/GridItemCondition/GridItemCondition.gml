@@ -8,6 +8,11 @@ global.__VISU_GRID_CONDITIONS = {
       return shroom.signals.kill
     }
   },
+  "damage": function() {
+    return function(shroom, controller) {
+      return shroom.signals.damage
+    }
+  },
   "boolean": function() {
     return function(item, controller) {
       return Struct.inject(item, this.data.field, false) == this.data.value

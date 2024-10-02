@@ -1,4 +1,4 @@
-//@package io.alkapivo.visu.editor
+///@package io.alkapivo.visu.editor.ui
 
 ///@static
 ///@type {Map<String, Callable>}
@@ -1482,6 +1482,159 @@ global.__VEComponents = new Map(String, Callable, {
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
   ///@return {Array<UIItem>}
+  "numeric-slider-field-button": function(name, layout, config = null) {
+    return new Array(UIItem, [
+      UIText(
+        $"label_{name}", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.label,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            }, 
+            VEStyles.get("text-field_label"),
+            false
+          ),
+          Struct.get(config, "label"),
+          false
+        )
+      ),
+      UITextField(
+        $"field_{name}",
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.field,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayoutTextField")),
+            },
+            VEStyles.get("text-field"),
+            false
+          ),
+          Struct.get(config, "field"),
+          false
+        )
+      ),
+      UIButton(
+        $"decrease_{name}", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.decrease,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            }, 
+            VEStyles.get("text-field-button").button,
+            false
+          ),
+          Struct.get(config, "decrease"),
+          false
+        )
+      ),
+      UISliderHorizontal(
+        $"slider_{name}",
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.slider,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            },
+            VEStyles.get("slider-horizontal"),
+            false
+          ),
+          Struct.get(config, "slider"),
+          false
+        )
+      ),
+      UIButton(
+        $"increase_{name}", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.increase,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            }, 
+            VEStyles.get("text-field-button").button,
+            false
+          ),
+          Struct.get(config, "increase"),
+          false
+        )
+      ),
+    ])
+  },
+
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "numeric-slider-button": function(name, layout, config = null) {
+    return new Array(UIItem, [
+      UIText(
+        $"label_{name}", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.label,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            }, 
+            VEStyles.get("text-field_label"),
+            false
+          ),
+          Struct.get(config, "label"),
+          false
+        )
+      ),
+      UIButton(
+        $"decrease_{name}", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.decrease,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            }, 
+            VEStyles.get("text-field-button").button,
+            false
+          ),
+          Struct.get(config, "decrease"),
+          false
+        )
+      ),
+      UISliderHorizontal(
+        $"slider_{name}",
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.slider,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            },
+            VEStyles.get("slider-horizontal"),
+            false
+          ),
+          Struct.get(config, "slider"),
+          false
+        )
+      ),
+      UIButton(
+        $"increase_{name}", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.increase,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            }, 
+            VEStyles.get("text-field-button").button,
+            false
+          ),
+          Struct.get(config, "increase"),
+          false
+        )
+      ),
+    ])
+  },
+
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
   "color-picker": function(name, layout, config = null) {
     ///@todo move to Lambda util
     static addItem = function(item, index, items) {
@@ -1686,11 +1839,6 @@ global.__VEComponents = new Map(String, Callable, {
             layout: layout,
             updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
             callback: function() {
-              ///@todo move to Lambda util
-              static findEqual = function(source, iterator, target) {
-                return source == target
-              }
-
               var increment = Struct.get(this, "increment")
               if (!Optional.is(this.store) || !Core.isType(increment, Number)) {
                 return
@@ -1706,7 +1854,7 @@ global.__VEComponents = new Map(String, Callable, {
                 return
               }
 
-              var index = data.findIndex(findEqual, item.get())
+              var index = data.findIndex(Lambda.equal, item.get())
               index = (index == null ? 0 : index) + increment
               if (index < 0) {
                 index = data.size() - 1
@@ -1823,11 +1971,6 @@ global.__VEComponents = new Map(String, Callable, {
 
       if (Struct.get(_config, "callback") == null) {
         Struct.set(_config, method(_config, function() {
-          ///@todo move to Lambda util
-          static findEqual = function(source, iterator, target) {
-            return source == target
-          }
-
           var increment = Struct.get(this, "increment")
           if (!Optional.is(this.store) || !Core.isType(increment, Number)) {
             return
@@ -1843,7 +1986,7 @@ global.__VEComponents = new Map(String, Callable, {
             return
           }
 
-          var index = data.findIndex(findEqual, item.get())
+          var index = data.findIndex(Lambda.equal, item.get())
           index = (index == null ? 0 : index) + increment
           if (index < 0) {
             index = data.size() - 1

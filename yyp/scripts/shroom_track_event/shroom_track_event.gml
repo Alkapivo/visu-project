@@ -9,17 +9,19 @@ global.__shroom_track_event = {
       template: Struct.get(data, "shroom-spawn_template"),
       spawnX: Struct.get(data, "shroom-spawn_use-spawn-x")
         ? Struct.get(data, "shroom-spawn_spawn-x")
-        : -1.5 + random(4),
+        : Struct.getDefault(data, "shroom-spawn_spawn-x-random-from", -1.5) 
+          + random(Struct.getDefault(data, "shroom-spawn_spawn-x-random-size", 3.0)),
       spawnY: Struct.get(data, "shroom-spawn_use-spawn-y")
         ? Struct.get(data, "shroom-spawn_spawn-y")
-        : -2.5 + random(4),
+        : Struct.getDefault(data, "shroom-spawn_spawn-y-random-from", -2.5) 
+          + random(Struct.getDefault(data, "shroom-spawn_spawn-y-random-size", 4.0)),
       angle: Struct.get(data, "shroom-spawn_angle"),
       speed: Struct.get(data, "shroom-spawn_speed"),
       snapH: Struct.getDefault(data, "shroom-spawn_use-snap-h", false),
       snapV: Struct.getDefault(data, "shroom-spawn_use-snap-v", false),
     }
     controller.shroomService.send(new Event("spawn-shroom", shroom))
-  
+    
     ///@ecs
     /*
     var controller = Beans.get(BeanVisuController)
