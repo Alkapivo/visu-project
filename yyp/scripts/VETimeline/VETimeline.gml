@@ -848,7 +848,7 @@ function VETimeline(_editor) constructor {
           var bpmX = 0
           var bpmY = round(clamp((linesSize - 1) * 32, 0, areaHeight))
           var _thickness = thickness
-          var bpmCountIndex = abs(this.offset.x) div bpmWidth
+          var bpmCountIndex = ceil(abs(this.offset.x) / bpmWidth)
           if (bpmSub > 1) {
             var bpmSubLength = round(bpmWidth / bpmSub)
             for (var bpmIndex = 0; bpmIndex < bpmSize; bpmIndex++) {

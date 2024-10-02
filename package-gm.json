@@ -12,7 +12,7 @@
     },
     "visu": {
       "remote": "https://github.com/Alkapivo/visu-gml.git",
-      "revision": "5393a7c2125eeaccf870c3db562460ba4ef36c3e"
+      "revision": "779f8be5b407292bd17c5a182c505ab6e638b5f4"
     },
     "neon-baron": {
       "remote": "https://github.com/Alkapivo/neon-baron-gml.git",
