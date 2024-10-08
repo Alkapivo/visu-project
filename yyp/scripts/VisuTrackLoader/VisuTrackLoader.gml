@@ -326,32 +326,16 @@ function VisuTrackLoader(_controller): Service() constructor {
               ),
             })
 
-            if (Optional.is(Struct.get(data.manifest, "video"))) {
-              promises.set("video", new Promise().fullfill(
-                new Task("send-load-video")
-                  .setPromise(new Promise())
-                  .setState(new Map(any, any, {
-                    service: controller.videoService,
-                    event: new Event("open-video", {
-                      video: {
-                        name: $"{data.manifest.video}",
-                        path: $"{data.path}{data.manifest.video}",
-                        timestamp: 0.0,
-                        volume: 0,
-                        loop: true,
-                      }
-                    })
-                  }))
-                  .whenUpdate(function() {
-                    var event = Assert.isType(this.state.get("event"), Event)
-                    var service = Assert.isType(this.state.get("service"), VideoService)
-                    var name = Struct.get(Struct.get(event.data, "video"), "name")
-                    service.send(event.setPromise(Assert.isType(this.promise, Promise)))
-                    Logger.debug("VisuTrackLoader", $"load video '{name}'")
-                    this.setPromise()
-                    this.fullfill()
-                  })
-              ))
+            if (Core.isType(Struct.get(data.manifest, "video"), String)) {
+              fsmState.state.set("video", new Event("open-video", {
+                video: {
+                  name: $"{data.manifest.video}",
+                  path: $"{data.path}{data.manifest.video}",
+                  timestamp: 0.0,
+                  volume: 0,
+                  loop: true,
+                }
+              }))
             }
             
             if (Core.isType(Beans.get(BeanVisuEditorController), VisuEditorController)) {
@@ -392,7 +376,10 @@ function VisuTrackLoader(_controller): Service() constructor {
 
             fsm.dispatcher.send(new Event("transition", {
               name: "parse-primary-assets",
-              data: filtered.map(fsm.context.utils.mapPromiseToTask, null, String, Task),
+              data: {
+                video: this.state.get("video"),
+                tasks: filtered.map(fsm.context.utils.mapPromiseToTask, null, String, Task),
+              }
             }))
           } catch (exception) {
             var message = $"'create-parser-tasks' fatal error: {exception.message}",
@@ -408,20 +395,20 @@ function VisuTrackLoader(_controller): Service() constructor {
       },
       "parse-primary-assets": {
         actions: {
-          onStart: function(fsm, fsmState, tasks) { 
+          onStart: function(fsm, fsmState, acc) { 
             var addTask = fsm.context.utils.addTask
             var executor = fsm.context.executor
-            fsmState.state.set("tasks", tasks).set("promises", new Map(String, Promise, {
-              "texture": addTask(tasks.get("texture"), executor),
-              "sound": addTask(tasks.get("sound"), executor),
-              "shader": addTask(tasks.get("shader"), executor),
-            }))
-
-            if (tasks.contains("video")) {
-              fsmState.state
-                .get("promises")
-                .set("video", addTask(tasks.get("video"), executor))
-            }
+            var video = acc.video
+            var tasks = acc.tasks
+            fsmState.state
+              .set("video", video)
+              .set("tasks", tasks)
+              .set("parsePrimaryCooldown", new Timer(0.5))
+              .set("promises", new Map(String, Promise, {
+                "texture": addTask(tasks.get("texture"), executor),
+                "sound": addTask(tasks.get("sound"), executor),
+                "shader": addTask(tasks.get("shader"), executor),
+              }))
           },
         },
         update: function(fsm) {
@@ -438,9 +425,16 @@ function VisuTrackLoader(_controller): Service() constructor {
               return
             }
 
+            if (!this.state.get("parsePrimaryCooldown").update().finished) {
+              return
+            }
+
             fsm.dispatcher.send(new Event("transition", {
-              name: "parse-secondary-assets",
-              data: Assert.isType(this.state.get("tasks"), Map)
+              name: "parse-video",
+              data: {
+                video: this.state.get("video"),
+                tasks: Assert.isType(this.state.get("tasks"), Map),
+              }
             }))
           } catch (exception) {
             var message = $"'parse-primary-assets' fatal error: {exception.message}"
@@ -451,6 +445,45 @@ function VisuTrackLoader(_controller): Service() constructor {
         },
         transitions: {
           "idle": null,
+          "parse-video": null,
+          "parse-secondary-assets": null,
+        },
+      },
+      "parse-video": {
+        actions: {
+          onStart: function(fsm, fsmState, acc) { 
+            var addTask = fsm.context.utils.addTask
+            var executor = fsm.context.executor
+            var promises = new Map(String, Promise)
+            fsmState.state.set("tasks", acc.tasks).set("promises", promises)
+            if (Core.isType(acc.video, Event)) {
+              fsmState.state
+                .get("promises")
+                .set("video", Beans.get(BeanVisuController).videoService.send(acc.video))
+            }
+          },
+        },
+        update: function(fsm) {
+          try {
+            var promises = this.state.get("promises")
+            var filtered = promises.filter(fsm.context.utils.filterPromise)
+            if (filtered.size() != promises.size()) {
+              return
+            }
+
+            fsm.dispatcher.send(new Event("transition", { 
+              name: "parse-secondary-assets",
+              data: Assert.isType(this.state.get("tasks"), Map)
+            }))
+          } catch (exception) {
+            var message = $"'parse-video' fatal error: {exception.message}"
+            Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
+            Logger.error("VisuTrackLoader", message)
+            fsm.dispatcher.send(new Event("transition", { name: "idle" }))
+          }
+        },
+        transitions: {
+          "idle": null, 
           "parse-secondary-assets": null,
         },
       },

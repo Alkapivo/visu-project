@@ -9,6 +9,36 @@ global.__WALLPAPER_TYPES = [
 #macro WALLPAPER_TYPES global.__WALLPAPER_TYPES
 
 
+///@static
+///@type {GMArray<String>}
+global.__BLEND_MODES_EXT = [
+  "ONE",
+  "ZERO",
+  "SRC_ALPHA",
+  "INV_SRC_ALPHA",
+  "SRC_COLOUR",
+  "INV_SRC_COLOUR",
+  "SRC_ALPHA_SAT",
+  "DEST_ALPHA",
+  "INV_DEST_ALPHA",
+  "DEST_COLOUR",
+  "INV_DEST_COLOUR"
+]
+#macro BLEND_MODES_EXT global.__BLEND_MODES_EXT
+
+
+///@static
+///@type {GMArray<String>}
+global.__BLEND_EQUATIONS = [
+  "ADD",
+  "SUBTRACT",
+  "REVERSE_SUBTRACT",
+  "MIN",
+  "MAX"
+]
+#macro BLEND_EQUATIONS global.__BLEND_EQUATIONS
+
+
 ///@param {?Struct} [json]
 ///@return {Struct}
 function brush_view_wallpaper(json = null) {
@@ -22,6 +52,30 @@ function brush_view_wallpaper(json = null) {
           Assert.areEqual(true, this.data.contains(value))
         },
         data: new Array(String, WALLPAPER_TYPES),
+      },
+      "view-wallpaper_blend-mode-source": {
+        type: String,
+        value: Struct.getDefault(json, "view-wallpaper_blend-mode-source", "SRC_ALPHA"),
+        validate: function(value) {
+          Assert.areEqual(true, this.data.contains(value))
+        },
+        data: new Array(String, BLEND_MODES_EXT),
+      },
+      "view-wallpaper_blend-mode-target": {
+        type: String,
+        value: Struct.getDefault(json, "view-wallpaper_blend-mode-target", Struct.get(json, "view-wallpaper_type") == "Background" ? "INV_SRC_ALPHA" : "ONE"),
+        validate: function(value) {
+          Assert.areEqual(true, this.data.contains(value))
+        },
+        data: new Array(String, BLEND_MODES_EXT),
+      },
+      "view-wallpaper_blend-equation": {
+        type: String,
+        value: Struct.getDefault(json, "view-wallpaper_blend-equation", "ADD"),
+        validate: function(value) {
+          Assert.areEqual(true, this.data.contains(value))
+        },
+        data: new Array(String, BLEND_EQUATIONS),
       },
       "view-wallpaper_fade-in-duration": {
         type: Number,
@@ -89,12 +143,58 @@ function brush_view_wallpaper(json = null) {
           return clamp(NumberUtil.parse(value, this.value), 0.0, 360.0) 
         },
       },
+      "view-wallpaper_use-angle-transform": {
+        type: Boolean,
+        value: Struct.getDefault(json, "view-wallpaper_use-angle-transform", false),
+      },
+      "view-wallpaper_angle-transform": {
+        type: NumberTransformer,
+        value: new NumberTransformer(Struct.get(json, "view-wallpaper_angle-transform")),
+      },
       "view-wallpaper_speed": {
         type: Number,
         value: Struct.getDefault(json, "view-wallpaper_speed", 0.0),
         passthrough: function(value) {
           return abs(NumberUtil.parse(value, this.value)) 
         },
+      },
+      "view-wallpaper_use-speed-transform": {
+        type: Boolean,
+        value: Struct.getDefault(json, "view-wallpaper_use-speed-transform", false),
+      },
+      "view-wallpaper_speed-transform": {
+        type: NumberTransformer,
+        value: new NumberTransformer(Struct.get(json, "view-wallpaper_speed-transform")),
+      },
+      "view-wallpaper_xScale": {
+        type: Number,
+        value: Struct.getDefault(json, "view-wallpaper_xScale", 1.0),
+        passthrough: function(value) {
+          return abs(NumberUtil.parse(value, this.value)) 
+        },
+      },
+      "view-wallpaper_use-xScale-transform": {
+        type: Boolean,
+        value: Struct.getDefault(json, "view-wallpaper_use-xScale-transform", false),
+      },
+      "view-wallpaper_xScale-transform": {
+        type: NumberTransformer,
+        value: new NumberTransformer(Struct.get(json, "view-wallpaper_xScale-transform")),
+      },
+      "view-wallpaper_yScale": {
+        type: Number,
+        value: Struct.getDefault(json, "view-wallpaper_yScale", 1.0),
+        passthrough: function(value) {
+          return abs(NumberUtil.parse(value, this.value)) 
+        },
+      },
+      "view-wallpaper_use-yScale-transform": {
+        type: Boolean,
+        value: Struct.getDefault(json, "view-wallpaper_use-yScale-transform", false),
+      },
+      "view-wallpaper_yScale-transform": {
+        type: NumberTransformer,
+        value: new NumberTransformer(Struct.get(json, "view-wallpaper_yScale-transform")),
       },
     }),
     components: new Array(Struct, [
@@ -110,6 +210,48 @@ function brush_view_wallpaper(json = null) {
             store: { key: "view-wallpaper_type" },
           }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
           next: { store: { key: "view-wallpaper_type" } },
+        },
+      },
+      {
+        name: "view-wallpaper_blend-mode-source",
+        template: VEComponents.get("spin-select"),
+        layout: VELayouts.get("spin-select"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "Blend src" },
+          previous: { store: { key: "view-wallpaper_blend-mode-source" } },
+          preview: Struct.appendRecursive({ 
+            store: { key: "view-wallpaper_blend-mode-source" },
+          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
+          next: { store: { key: "view-wallpaper_blend-mode-source" } },
+        },
+      },
+      {
+        name: "view-wallpaper_blend-mode-target",
+        template: VEComponents.get("spin-select"),
+        layout: VELayouts.get("spin-select"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "Blend dest" },
+          previous: { store: { key: "view-wallpaper_blend-mode-target" } },
+          preview: Struct.appendRecursive({ 
+            store: { key: "view-wallpaper_blend-mode-target" },
+          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
+          next: { store: { key: "view-wallpaper_blend-mode-target" } },
+        },
+      },
+      {
+        name: "view-wallpaper_blend-equation",
+        template: VEComponents.get("spin-select"),
+        layout: VELayouts.get("spin-select"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "Blend eq" },
+          previous: { store: { key: "view-wallpaper_blend-equation" } },
+          preview: Struct.appendRecursive({ 
+            store: { key: "view-wallpaper_blend-equation" },
+          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
+          next: { store: { key: "view-wallpaper_blend-equation" } },
         },
       },
       {
@@ -490,6 +632,55 @@ function brush_view_wallpaper(json = null) {
         },
       },
       {
+        name: "view-wallpaper_angle-transform",
+        template: VEComponents.get("transform-numeric-property"),
+        layout: VELayouts.get("transform-numeric-property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          title: {
+            label: { 
+              text: "Transform angle",
+              enable: { key: "view-wallpaper_use-angle-transform" },
+            },  
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "view-wallpaper_use-angle-transform"}
+            },
+          },
+          target: {
+            label: {
+              text: "Target",
+              enable: { key: "view-wallpaper_use-angle-transform" },
+            },
+            field: {
+              store: { key: "view-wallpaper_angle-transform" },
+              enable: { key: "view-wallpaper_use-angle-transform" },
+            },
+          },
+          factor: {
+            label: {
+              text: "Factor",
+              enable: { key: "view-wallpaper_use-angle-transform" },
+            },
+            field: {
+              store: { key: "view-wallpaper_angle-transform" },
+              enable: { key: "view-wallpaper_use-angle-transform" },
+            },
+          },
+          increment: {
+            label: { 
+              text: "Increment",
+              enable: { key: "view-wallpaper_use-angle-transform" },
+            },
+            field: { 
+              store: { key: "view-wallpaper_angle-transform" },
+              enable: { key: "view-wallpaper_use-angle-transform" },
+            },
+          },
+        },
+      },
+      {
         name: "view-wallpaper_angle",  
         template: VEComponents.get("numeric-slider-field"),
         layout: VELayouts.get("numeric-slider-field"),
@@ -509,6 +700,55 @@ function brush_view_wallpaper(json = null) {
         },
       },
       {
+        name: "view-wallpaper_speed-transform",
+        template: VEComponents.get("transform-numeric-property"),
+        layout: VELayouts.get("transform-numeric-property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          title: {
+            label: { 
+              text: "Transform speed",
+              enable: { key: "view-wallpaper_use-speed-transform" },
+            },  
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "view-wallpaper_use-speed-transform"}
+            },
+          },
+          target: {
+            label: {
+              text: "Target",
+              enable: { key: "view-wallpaper_use-speed-transform" },
+            },
+            field: {
+              store: { key: "view-wallpaper_speed-transform" },
+              enable: { key: "view-wallpaper_use-speed-transform" },
+            },
+          },
+          factor: {
+            label: {
+              text: "Factor",
+              enable: { key: "view-wallpaper_use-speed-transform" },
+            },
+            field: {
+              store: { key: "view-wallpaper_speed-transform" },
+              enable: { key: "view-wallpaper_use-speed-transform" },
+            },
+          },
+          increment: {
+            label: { 
+              text: "Increment",
+              enable: { key: "view-wallpaper_use-speed-transform" },
+            },
+            field: { 
+              store: { key: "view-wallpaper_speed-transform" },
+              enable: { key: "view-wallpaper_use-speed-transform" },
+            },
+          },
+        },
+      },
+      {
         name: "view-wallpaper_speed",  
         template: VEComponents.get("text-field"),
         layout: VELayouts.get("text-field"),
@@ -516,6 +756,124 @@ function brush_view_wallpaper(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Speed" },
           field: { store: { key: "view-wallpaper_speed" } },
+        },
+      },
+      {
+        name: "view-wallpaper_xScale-transform",
+        template: VEComponents.get("transform-numeric-property"),
+        layout: VELayouts.get("transform-numeric-property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          title: {
+            label: { 
+              text: "Transform xScale",
+              enable: { key: "view-wallpaper_use-xScale-transform" },
+            },  
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "view-wallpaper_use-xScale-transform"}
+            },
+          },
+          target: {
+            label: {
+              text: "Target",
+              enable: { key: "view-wallpaper_use-xScale-transform" },
+            },
+            field: {
+              store: { key: "view-wallpaper_xScale-transform" },
+              enable: { key: "view-wallpaper_use-xScale-transform" },
+            },
+          },
+          factor: {
+            label: {
+              text: "Factor",
+              enable: { key: "view-wallpaper_use-xScale-transform" },
+            },
+            field: {
+              store: { key: "view-wallpaper_xScale-transform" },
+              enable: { key: "view-wallpaper_use-xScale-transform" },
+            },
+          },
+          increment: {
+            label: { 
+              text: "Increment",
+              enable: { key: "view-wallpaper_use-xScale-transform" },
+            },
+            field: { 
+              store: { key: "view-wallpaper_xScale-transform" },
+              enable: { key: "view-wallpaper_use-xScale-transform" },
+            },
+          },
+        },
+      },
+      {
+        name: "view-wallpaper_xScale",  
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "xScale" },
+          field: { store: { key: "view-wallpaper_xScale" } },
+        },
+      },
+      {
+        name: "view-wallpaper_yScale-transform",
+        template: VEComponents.get("transform-numeric-property"),
+        layout: VELayouts.get("transform-numeric-property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          title: {
+            label: { 
+              text: "Transform yScale",
+              enable: { key: "view-wallpaper_use-yScale-transform" },
+            },  
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "view-wallpaper_use-yScale-transform"}
+            },
+          },
+          target: {
+            label: {
+              text: "Target",
+              enable: { key: "view-wallpaper_use-yScale-transform" },
+            },
+            field: {
+              store: { key: "view-wallpaper_yScale-transform" },
+              enable: { key: "view-wallpaper_use-yScale-transform" },
+            },
+          },
+          factor: {
+            label: {
+              text: "Factor",
+              enable: { key: "view-wallpaper_use-yScale-transform" },
+            },
+            field: {
+              store: { key: "view-wallpaper_yScale-transform" },
+              enable: { key: "view-wallpaper_use-yScale-transform" },
+            },
+          },
+          increment: {
+            label: { 
+              text: "Increment",
+              enable: { key: "view-wallpaper_use-yScale-transform" },
+            },
+            field: { 
+              store: { key: "view-wallpaper_yScale-transform" },
+              enable: { key: "view-wallpaper_use-yScale-transform" },
+            },
+          },
+        },
+      },
+      {
+        name: "view-wallpaper_yScale",  
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "yScale" },
+          field: { store: { key: "view-wallpaper_yScale" } },
         },
       },
       {

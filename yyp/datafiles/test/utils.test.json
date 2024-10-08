@@ -7,11 +7,11 @@
     "tests": [
       {
         "handler": "Test_Language",
-        "description": "Verify Language utils with language.en_US.json",
+        "description": "Verify Language utils with language/en_EN.json",
         "data": {
           "timeout": 5.0,
           "cooldown": 0.5,
-          "code": "en_US",
+          "code": "en_EN",
           "key": "test.language",
           "param1": "lorem",
           "param2": "ipsum",

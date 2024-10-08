@@ -273,6 +273,8 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
           fadeOutDuration: 0.5,
           angle: 3,
           speed: 0.25,
+          blendModeSource: BlendModeExt.SRC_ALPHA,
+          blendModeTarget: BlendModeExt.ONE,
           executor: executor,
         }))
         this.fullfill()
@@ -438,7 +440,15 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
 
     static shroomCollision = function(shroom, index, player) {
       if (shroom.collide(player)) {
+        player.signal("shroomCollision", shroom)
         shroom.signal("playerCollision", player)
+        shroom.signal("damage", true)
+        shroom.healthPoints = clamp(shroom.healthPoints - 1.0, 0, 9999.9)
+      }
+    }
+
+    static shroomCollisionGodMode = function(shroom, index, player) {
+      if (shroom.collide(player)) {
         player.signal("shroomCollision", shroom)
       }
     }
@@ -446,7 +456,8 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
     var player = this.controller.playerService.player
     if (Core.isType(player, Player)) {
       this.controller.bulletService.bullets.forEach(bulletCollision, this) 
-      this.controller.shroomService.shrooms.forEach(shroomCollision, player)
+      this.controller.shroomService.shrooms.forEach(player.stats.godModeCooldown > 0.0 
+        ? shroomCollisionGodMode : shroomCollision, player)
     }
     
     return this

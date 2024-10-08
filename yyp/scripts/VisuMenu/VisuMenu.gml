@@ -1,5 +1,13 @@
 ///@package io.alkapivo.visu.ui
 
+///@enum
+function _VisuMenuEntryEventType(): Enum() constructor {
+  OPEN_NODE = "open-node"
+  LOAD_TRACK = "load-track"
+}
+global.__VisuMenuEntryEventType = new _VisuMenuEntryEventType()
+#macro VisuMenuEntryEventType global.__VisuMenuEntryEventType
+
 
 ///@param {String} name
 ///@param {String} text
@@ -89,8 +97,78 @@ function factoryPlayerKeyboardKeyEntryConfig(name, text) {
 }
 
 
+///@param {Struct} json
+function VisuMenuNode(json) constructor {
+
+  ///@type {String}
+  title = Assert.isType(json.title, String)
+
+  ///@type {?String}
+  back = Core.isType(json.back, String) ? json.back : null
+
+  ///@type {Array<VisuMenuEntry>}
+  entries = new Array(VisuMenuEntry, Core.isType(Struct.get(json, "entries"), GMArray) 
+    ? GMArray.map(json.entries, function(json) { return new VisuMenuEntry(json) }) 
+    : [])
+}
+
+
+///@param {Struct} json
+function VisuMenuEntry(json) constructor {
+
+  ///@type {String}
+  name = Assert.isType(json.name, String)
+
+  ///@type {VisuMenuEntryEvent}
+  event = new VisuMenuEntryEvent(json.event)
+}
+
+
+///@param {Struct} json
+function VisuMenuEntryEvent(json) constructor {
+
+  ///@type {String}
+  type = Assert.isEnum(json.type, VisuMenuEntryEventType)
+
+  ///@type {?Struct}
+  data = Core.isType(Struct.get(json, "data"), Struct) ? json.data : null
+}
+
+
 ///@param {?Struct} [_config]
 function VisuMenu(_config = null) constructor {
+
+  ///@return {Map<String, VisuMenuNode>}
+  static parseNodes = function() {
+    var nodes = new Map(String, VisuMenuNode)
+    try {
+      var manifest = FileUtil
+        .readFileSync(FileUtil.get(Core.getRuntimeType() != RuntimeType.GXGAMES
+          ? $"{working_directory}track/manifest.json"
+          : $"{working_directory}track/manifest-wasm.json"))
+        .getData()
+      var parserTask = JSON.parserTask(manifest, {
+        callback: function(prototype, json, key, acc) {
+          acc.add(new prototype(json), key)
+        },
+        acc: nodes,
+      })
+
+      var index = 0
+      var MAX_INDEX = 9999
+      while (true) {
+        if (parserTask.update().status != TaskStatus.RUNNING) {
+          break
+        }
+        Assert.isTrue(index++ <= MAX_INDEX, $"Exceed MAX_INDEX={MAX_INDEX}")
+      }
+    } catch (exception) {
+      Logger.error(BeanVisuController, $"Exception throwed while parsing track/manifest.json: {exception.message}")
+      Core.printStackTrace()
+    }
+
+    return nodes
+  }
 
   ///@type {?Struct}
   config = Optional.is(_config) ? Assert.isType(_config, Struct) : null
@@ -101,8 +179,111 @@ function VisuMenu(_config = null) constructor {
   ///@type {?Callable}
   back = null
 
+  ///@type {any}
+  backData = null
+
   ///@type {?String}
   remapKey = null
+
+  ///@type {Map<String, VisuMenuNode>}
+  nodes = this.parseNodes()
+
+  ///@param {String} nodeName
+  ///@return {Event}
+  factoryOpenVisuMenuNode = function(nodeName) {
+    var node = this.nodes.get(nodeName)
+    if (!Core.isType(node, VisuMenuNode)) {
+      return this.factoryOpenMainMenuEvent()
+    }
+
+    var back = Core.isType(this.nodes.get(node.back), VisuMenuNode)
+      ? this.factoryOpenVisuMenuNode
+      : this.factoryOpenMainMenuEvent
+    var backData = back == this.factoryOpenVisuMenuNode ? node.back : null,
+    var event = new Event("open").setData({
+      back: back,
+      backData: backData,
+      layout: Beans.get(BeanVisuController).visuRenderer.layout,
+      title: {
+        name: $"{nodeName}_title",
+        template: VisuComponents.get("menu-title"),
+        layout: VisuLayouts.get("menu-title"),
+        config: {
+          label: { 
+            text: node.title
+          },
+        },
+      },
+      content: new Array(Struct, node.entries
+        .map(function(entry, index, nodeName) {
+          return {
+            name: $"{nodeName}_menu-button-entry_{index}",
+            template: VisuComponents.get("menu-button-entry"),
+            layout: VisuLayouts.get("menu-button-entry"),
+            config: {
+              layout: { type: UILayoutType.VERTICAL },
+              label: { 
+                text: entry.name,
+                callback: new BindIntent(function() {
+                  var controller = Beans.get(BeanVisuController)
+                  var menu = controller.menu
+                  var event = this.callbackData
+                  switch (event.type) {
+                    case VisuMenuEntryEventType.OPEN_NODE:
+                      menu.send(Core.isType(menu.nodes.get(event.data.node), VisuMenuNode)
+                        ? menu.factoryOpenVisuMenuNode(event.data.node)
+                        : menu.factoryOpenMainMenuEvent())
+                      controller.sfxService.play("menu-select-entry")
+                      break
+                    case VisuMenuEntryEventType.LOAD_TRACK:
+                      controller.send(new Event("load", {
+                        manifest: event.data.path,
+                        autoplay: true,
+                      }))
+                      controller.sfxService.play("menu-select-entry")
+                      break
+                    default:
+                      throw new Exception("VisuMenuEntryEventType does not support '{this.event.type}'")
+                  }
+                }),
+                callbackData: entry.event,
+                onMouseReleasedLeft: function() {
+                  this.callback()
+                },
+              },
+            }
+          }
+        }, nodeName, Struct)
+        .add(
+          {
+            name: $"{nodeName}_menu-button-entry_back",
+            template: VisuComponents.get("menu-button-entry"),
+            layout: VisuLayouts.get("menu-button-entry"),
+            config: {
+              layout: { type: UILayoutType.VERTICAL },
+              label: { 
+                text: "Back",
+                callback: new BindIntent(function() {
+                  var controller = Beans.get(BeanVisuController)
+                  var menu = controller.menu
+                  menu.send(Core.isType(menu.nodes.get(this.callbackData), VisuMenuNode)
+                    ? menu.factoryOpenVisuMenuNode(this.callbackData)
+                    : menu.factoryOpenMainMenuEvent())
+                  controller.sfxService.play("menu-select-entry")
+                }),
+                callbackData: node.back,
+                onMouseReleasedLeft: function() {
+                  this.callback()
+                },
+              },
+            }
+          }
+        ).getContainer()
+      ),
+    })
+
+    return event
+  }
 
   ///@param {?Struct} [_config]
   ///@return {Event}
@@ -137,11 +318,12 @@ function VisuMenu(_config = null) constructor {
           config: {
             layout: { type: UILayoutType.VERTICAL },
             label: { 
-              text: "Select track",
+              text: "Play",
               callback: new BindIntent(function() {
-                var menu = Beans.get(BeanVisuController).menu
-                menu.send(menu.factoryOpenSelectTrackMenuEvent(this.callbackData))
-                Beans.get(BeanVisuController).sfxService.play("menu-select-entry")
+                var controller = Beans.get(BeanVisuController)
+                var menu = controller.menu
+                menu.send(menu.factoryOpenVisuMenuNode("root.artists"))
+                controller.sfxService.play("menu-select-entry")
               }),
               callbackData: config,
               onMouseReleasedLeft: function() {
@@ -1601,6 +1783,7 @@ function VisuMenu(_config = null) constructor {
           "background-color": ColorUtil.fromHex(VETheme.color.header).toGMColor(),
           "title": title,
           "uiAlpha": 0.0,
+          "uiAlphaFactor": 0.1,
         }),
         updateArea: Callable
           .run(UIUtil.updateAreaTemplates
@@ -1609,7 +1792,7 @@ function VisuMenu(_config = null) constructor {
           .run(UIUtil.renderTemplates
           .get("renderDefault"))),
         render: function() {
-          var uiAlpha = clamp(this.state.get("uiAlpha") + DeltaTime.apply(0.1), 0.0, 1.0)
+          var uiAlpha = clamp(this.state.get("uiAlpha") + DeltaTime.apply(this.state.get("uiAlphaFactor")), 0.0, 1.0)
           this.state.set("uiAlpha", uiAlpha)
           if (this.surface == null) {
             this.surface = new Surface(this.area.getWidth(), this.area.getHeight())
@@ -1672,6 +1855,7 @@ function VisuMenu(_config = null) constructor {
           "remapKey": null,
           "remapKeyRestored": 2,
           "uiAlpha": 0.0,
+          "uiAlphaFactor": 0.1,
           "breath": new Timer(2 * pi, { loop: Infinity, amount: FRAME_MS * 8 }),
         }),
         scrollbarY: { align: HAlign.RIGHT },
@@ -1861,7 +2045,7 @@ function VisuMenu(_config = null) constructor {
                   }
                   break
                 case "menu-spin-select-entry":
-                  Core.print("do nth")
+                  //Core.print("do nth")
                   break
                 case "menu-keyboard-key-entry":
                   var label = component.items.find(function(item, index, name) { 
@@ -1952,7 +2136,7 @@ function VisuMenu(_config = null) constructor {
           DeltaTime.deltaTime = delta
         },
         render: function() {
-          var uiAlpha = clamp(this.state.get("uiAlpha") + DeltaTime.apply(0.1), 0.0, 1.0)
+          var uiAlpha = clamp(this.state.get("uiAlpha") + DeltaTime.apply(this.state.get("uiAlphaFactor")), 0.0, 1.0)
           this.state.set("uiAlpha", uiAlpha)
 
           this.updateVerticalSelectedIndex(VISU_MENU_ENTRY_HEIGHT)
@@ -2074,6 +2258,7 @@ function VisuMenu(_config = null) constructor {
       this.back = Core.isType(Struct.get(event.data, "back"), Callable) 
         ? event.data.back 
         : null
+      this.backData = Struct.getDefault(event.data, "backData", null)
 
       this.containers.forEach(function(container, key, uiService) {
         uiService.send(new Event("add", {
@@ -2083,7 +2268,25 @@ function VisuMenu(_config = null) constructor {
       }, Beans.get(BeanVisuController).uiService)
     },
     "close": function(event) {
+      if (Struct.getDefault(event.data, "fade", false)) {
+        this.containers.forEach(function (container) {
+          Struct.set(container, "updateCustom", method(container, function() {
+            this.state.set("uiAlphaFactor", -0.05)
+            var blur = Beans.get(BeanVisuController).visuRenderer.blur
+            blur.value = Math.transformNumber(blur.value, 0.0, 0.5)
+            if (blur.value == 0.0) {
+              this.controller.send(new Event("close"))
+            }
+          }))
+          Struct.set(container, "onMousePressedLeft", method(container, function(event) { }))
+          Struct.set(container, "onMouseWheelUp", method(container, function(event) { }))
+          Struct.set(container, "onMouseWheelDown", method(container, function(event) { }))
+        })
+        return
+      }
+
       this.back = null
+      this.backData = null
       this.containers.forEach(function (container, key, uiService) {
         uiService.send(new Event("remove", { 
           name: key, 
@@ -2093,10 +2296,10 @@ function VisuMenu(_config = null) constructor {
     },
     "back": function(event) {
       if (Optional.is(this.back)) {
-        this.dispatcher.execute(this.back())
+        this.dispatcher.execute(this.back(this.backData))
         return
       }
-      this.dispatcher.execute(new Event("close"))
+      this.dispatcher.execute(new Event("close", { fade: true }))
     },
     "game-end": function(event) {
       game_end()

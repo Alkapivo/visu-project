@@ -125,10 +125,10 @@ global.__grid_track_event = {
     var controller = Beans.get(BeanVisuController)
     var view = controller.gridService.view
     var viewX = Struct.getDefault(data, "grid-coin_use-snap-h", false)
-      ? floor(view.x / view.width) * view.width
+      ? floor(view.x / (view.width / 2.0)) * (view.width / 2.0)
       : view.x
     var viewY = Struct.getDefault(data, "grid-coin_use-snap-v", false)
-      ? floor(view.y / view.height) * view.height
+      ? floor(view.y / (view.height / 2.0)) * (view.height / 2.0)
       : view.y
     
     var coin = {

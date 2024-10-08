@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"VEProjectModal",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"VEProjectModal",
+  "parent":{
+    "name":"controller",
+    "path":"folders/visu/src/editor/ui/controller.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

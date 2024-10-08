@@ -81,11 +81,11 @@ function ShroomService(_controller, config = {}): Service() constructor {
 
       
       var viewX = Struct.getDefault(event.data, "snapH", true)
-        ? floor(view.x / view.width) * view.width
+        ? floor(view.x / (view.width / 2.0)) * (view.width / 2.0)
         : view.x
 
       var viewY = Struct.getDefault(event.data, "snapV", true)
-        ? floor(view.y / view.height) * view.height
+        ? floor(view.y / (view.height / 2.0)) * (view.height / 2.0)
         : view.y
 
       Struct.set(template, "x", viewX + spawnX)

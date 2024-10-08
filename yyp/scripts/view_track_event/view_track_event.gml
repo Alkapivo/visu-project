@@ -15,6 +15,9 @@ global.__view_track_event = {
         fadeInDuration: Struct.get(data, "view-wallpaper_fade-in-duration"),
         fadeOutDuration: Struct.get(data, "view-wallpaper_fade-out-duration"),
         executor: controller.gridService.executor,
+        blendModeSource: BlendModeExt.get(Struct.getDefault(data, "view-wallpaper_blend-mode-source", "SRC_ALPHA")),
+        blendModeTarget: BlendModeExt.get(Struct.getDefault(data, "view-wallpaper_blend-mode-target", Struct.get(data, "view-wallpaper_type") == "Background" ? "INV_SRC_ALPHA" : "ONE")),
+        blendEquation: BlendEquation.get(Struct.getDefault(data, "view-wallpaper_blend-equation", "ADD")),
       }))
     }
 
@@ -40,10 +43,27 @@ global.__view_track_event = {
           ? controller.visuRenderer.gridRenderer.overlayRenderer.backgrounds
           : controller.visuRenderer.gridRenderer.overlayRenderer.foregrounds,
         type: Struct.get(data, "view-wallpaper_type"),
+        blendModeSource: BlendModeExt.get(Struct.getDefault(data, "view-wallpaper_blend-mode-source", "SRC_ALPHA")),
+        blendModeTarget: BlendModeExt.get(Struct.getDefault(data, "view-wallpaper_blend-mode-target", Struct.get(data, "view-wallpaper_type") == "Background" ? "INV_SRC_ALPHA" : "ONE")),
+        blendEquation: BlendEquation.get(Struct.getDefault(data, "view-wallpaper_blend-equation", "ADD")),
         fadeInDuration: Struct.get(data, "view-wallpaper_fade-in-duration"),
         fadeOutDuration: Struct.get(data, "view-wallpaper_fade-out-duration"),
         angle: Struct.get(data, "view-wallpaper_angle"),
+        angleTransformer: Struct.get(data, "view-wallpaper_use-angle-transform") 
+          ? Struct.get(data, "view-wallpaper_angle-transform") 
+          : null,
         speed: Struct.get(data, "view-wallpaper_speed"),
+        speedTransformer: Struct.get(data, "view-wallpaper_use-speed-transform") 
+          ? Struct.get(data, "view-wallpaper_speed-transform") 
+          : null,
+        xScale: Struct.get(data, "view-wallpaper_xScale"),
+        xScaleTransformer: Struct.get(data, "view-wallpaper_use-xScale-transform") 
+          ? Struct.get(data, "view-wallpaper_xScale-transform") 
+          : null,
+        yScale: Struct.get(data, "view-wallpaper_yScale"),
+        yScaleTransformer: Struct.get(data, "view-wallpaper_use-yScale-transform") 
+          ? Struct.get(data, "view-wallpaper_yScale-transform") 
+          : null,
         executor: controller.gridService.executor,
       }))
     }

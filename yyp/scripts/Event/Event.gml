@@ -184,31 +184,117 @@ global.__EVENT_DISPATCHERS = {
       var originalAlpha = sprite.getAlpha()
       var type = Assert.isType(event.data.type, String)
       sprite.setAlpha(fadeInSpeed)
+
+      var _speed = Core.isType(Struct.get(event.data, "speed"), Number) ? event.data.speed : 0
+      var speedTransformer = Core.isType(Struct.get(event.data, "speedTransformer"), Struct) 
+        ? event.data.speedTransformer 
+        : null
+      if (Optional.is(speedTransformer)) {
+        Struct.set(speedTransformer, "value", _speed)
+        speedTransformer = new NumberTransformer(speedTransformer)
+      }
+
+      var angle = Core.isType(Struct.get(event.data, "angle"), Number) ? event.data.angle : 0
+      var angleTransformer = Core.isType(Struct.get(event.data, "angleTransformer"), Struct) 
+        ? event.data.angleTransformer 
+        : null
+      if (Optional.is(angleTransformer)) {
+        angleTransformer = new NumberTransformer(angleTransformer)
+        angleTransformer.value = 0
+        angleTransformer.startValue = 0
+        angleTransformer.target = angle_difference(angleTransformer.target, angle)
+        angleTransformer.factor = abs(angleTransformer.factor)
+        
+      }
+
+      var xScale = Core.isType(Struct.get(event.data, "xScale"), Number) ? event.data.xScale : 1
+      var xScaleTransformer = Core.isType(Struct.get(event.data, "xScaleTransformer"), Struct) 
+        ? event.data.xScaleTransformer 
+        : null
+      if (Optional.is(xScaleTransformer)) {
+        Struct.set(xScaleTransformer, "value", xScale)
+        xScaleTransformer = new NumberTransformer(xScaleTransformer)
+      }
+
+      var yScale = Core.isType(Struct.get(event.data, "yScale"), Number) ? event.data.yScale : 1
+      var yScaleTransformer = Core.isType(Struct.get(event.data, "yScaleTransformer"), Struct) 
+        ? event.data.yScaleTransformer 
+        : null
+      if (Optional.is(yScaleTransformer)) {
+        Struct.set(yScaleTransformer, "value", yScale)
+        yScaleTransformer = new NumberTransformer(yScaleTransformer)
+      }
+
+      var blendModeSource = Core.isEnum(Struct.get(event.data, "blendModeSource"), BlendModeExt) 
+        ? event.data.blendModeSource
+        : BlendModeExt.SRC_ALPHA
+
+      var blendModeTarget = Core.isEnum(Struct.get(event.data, "blendModeTarget"), BlendModeExt) 
+        ? event.data.blendModeTarget
+        : BlendModeExt.INV_SRC_ALPHA
+
+      var blendEquation = Core.isEnum(Struct.get(event.data, "blendEquation"), BlendEquation) 
+        ? event.data.blendEquation
+        : BlendEquation.ADD
+      
       var task = new Task(event.name)
         .setState(new Map(String, any, {
+          type: type,
           stage: "fade-in",
           sprite: sprite,
           alpha: originalAlpha,
+          blendModeSource: blendModeSource,
+          blendModeTarget: blendModeTarget,
+          blendEquation: blendEquation,
           fadeInSpeed: fadeInSpeed,
           fadeOutSpeed: fadeOutSpeed,
-          speed: (Core.isType(Struct.get(event.data, "speed"), Number) ? event.data.speed : 0),
-          angle: (Core.isType(Struct.get(event.data, "angle"), Number) ? event.data.angle : 0),
+          speed: _speed,
+          speedTransformer: speedTransformer,
+          angle: angle,
+          angleTransformer: angleTransformer,
           x: 0,
           y: 0,
-          type: type,
+          xScale: xScale,
+          xScaleTransformer: xScaleTransformer,
+          yScale: yScale,
+          yScaleTransformer: yScaleTransformer,
         }))
         .whenUpdate(function() {
           var stage = this.state.get("stage")
           var sprite = this.state.get("sprite")
 
+          var _speed = this.state.get("speed")
+          var speedTransformer = this.state.get("speedTransformer")
+          if (Optional.is(speedTransformer)) {
+            _speed = speedTransformer.update().value
+          }
+
+          var angle = this.state.get("angle")
+          var angleTransformer = this.state.get("angleTransformer")
+          if (Optional.is(angleTransformer)) {
+            angle = angle + angleTransformer.update().value
+          }
+
+          var xScale = this.state.get("xScale")
+          var xScaleTransformer = this.state.get("xScaleTransformer")
+          if (Optional.is(xScaleTransformer)) {
+            xScale = xScaleTransformer.update().value
+          }
+          this.state.set("xScale", xScale)
+
+          var yScale = this.state.get("yScale")
+          var yScaleTransformer = this.state.get("yScaleTransformer")
+          if (Optional.is(yScaleTransformer)) {
+            yScale = yScaleTransformer.update().value
+          }
+          this.state.set("yScale", yScale)
+
           var _x = this.state.get("x")
           var _y = this.state.get("y")
           var width = sprite.getWidth() * sprite.getScaleX()
           var height = sprite.getHeight() * sprite.getScaleY()
-          var _speed = this.state.get("speed")
-          var angle = this.state.get("angle")
-          _x += Math.fetchCircleX(DeltaTime.apply(_speed), angle)
-          _y += Math.fetchCircleY(DeltaTime.apply(_speed), angle)
+          _x -= Math.fetchCircleX(DeltaTime.apply(_speed), angle)
+          _y -= Math.fetchCircleY(DeltaTime.apply(_speed), angle)
           if (abs(_x) > width) {
             _x =  sign(_x) * (abs(_x) - ((abs(_x) div width) * width))
           }
@@ -272,6 +358,18 @@ global.__EVENT_DISPATCHERS = {
         fadeOutSpeed = FRAME_MS / fadeOutDuration
       }
 
+      var blendModeSource = Core.isEnum(Struct.get(event.data, "blendModeSource"), BlendModeExt) 
+        ? event.data.blendModeSource
+        : BlendModeExt.SRC_ALPHA
+
+      var blendModeTarget = Core.isEnum(Struct.get(event.data, "blendModeTarget"), BlendModeExt) 
+        ? event.data.blendModeTarget
+        : BlendModeExt.INV_SRC_ALPHA
+
+      var blendEquation = Core.isEnum(Struct.get(event.data, "blendEquation"), BlendEquation) 
+        ? event.data.blendEquation
+        : BlendEquation.ADD
+      
       var color = Assert.isType(event.data.color, Color)
       var originalAlpha = color.alpha
       var type = Assert.isType(event.data.type, String)
@@ -281,6 +379,9 @@ global.__EVENT_DISPATCHERS = {
           stage: "fade-in",
           color: color,
           alpha: originalAlpha,
+          blendModeSource: blendModeSource,
+          blendModeTarget: blendModeTarget,
+          blendEquation: blendEquation,
           fadeInSpeed: fadeInSpeed,
           fadeOutSpeed: fadeOutSpeed,
           type: type,

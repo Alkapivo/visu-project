@@ -6,7 +6,7 @@ function DialogueDesignerService(config = {}) constructor {
 
   ///@type {Map<String, String>}
   templates = new Map(String, String)
-  templates.set("menu", FileUtil.readFileSync("dialogue-designer/menu.json").getData()) ///@mockup
+  //templates.set("menu", FileUtil.readFileSync("dialogue/menu.json").getData()) ///@mockup
 
   ///@type {?DDDialogue}
   dialog = null

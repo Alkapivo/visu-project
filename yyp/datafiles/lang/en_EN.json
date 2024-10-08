@@ -1,0 +1,13 @@
+{
+  "version": "1",
+  "model": "io.alkapivo.core.lang.LanguagePack",
+  "data":{
+    "code": "en_EN",
+    "labels": {
+      "visu-editor.title-bar.new": "New",
+      "visu-editor.title-bar.open": "Open",
+      "visu-editor.title-bar.save": "Save",
+      "test.language": "Test language with params: {0}, {1}"
+    }
+  }
+}

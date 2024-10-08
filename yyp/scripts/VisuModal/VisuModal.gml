@@ -7,6 +7,9 @@ function VisuModal(_config = null) constructor {
   ///@type {?Struct}
   config = Optional.is(_config) ? Assert.isType(_config, Struct) : null
 
+  ///@type {Map<String, Containers>}
+  containers = new Map(String, UI)
+
   ///@private
   ///@param {UIlayout} parent
   ///@return {UILayout}
@@ -142,6 +145,7 @@ function VisuModal(_config = null) constructor {
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "open": function(event) {
+      this.dispatcher.execute(new Event("close"))
       this.containers = this.factoryContainers(event.data.layout)
       containers.forEach(function(container, key, uiService) {
         uiService.send(new Event("add", {

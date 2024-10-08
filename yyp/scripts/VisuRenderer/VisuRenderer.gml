@@ -54,7 +54,7 @@ function VisuRenderer() constructor {
   blur = new NumberTransformer({
     value: 0.0,
     target: 32.0,
-    factor: 0.25,
+    factor: 0.5,
     increase: 0.005,
   })
 

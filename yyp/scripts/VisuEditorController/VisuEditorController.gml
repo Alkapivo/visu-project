@@ -33,6 +33,9 @@ function VisuEditorController() constructor {
   ///@type {VENewProjectModal}
   newProjectModal = new VENewProjectModal()
 
+  ///@type {VEProjectModal}
+  projectModal = new VEProjectModal()
+
   ///@type {VisuModal}
   exitModal = new VisuModal({
     message: { text: "Changes you made may not be saved." },
@@ -124,6 +127,10 @@ function VisuEditorController() constructor {
       type: Optional.of(Struct),
       value: null,
     },
+    "selected-events": {
+      type: Map,
+      value: new Map(String, Struct),
+    },
     "timeline-zoom": {
       type: Number,
       value: 10,
@@ -196,6 +203,7 @@ function VisuEditorController() constructor {
       this.store.get("_render-trackControl").set(this.store.getValue("render-trackControl"))
       this.store.get("render-trackControl").set(false)
       this.store.get("selected-event").set(null)
+      this.store.getValue("selected-events").clear()
 
       return {
         "accordion": this.accordion.send(new Event("close")),
@@ -228,6 +236,7 @@ function VisuEditorController() constructor {
     "popupQueue",
     "exitModal",
     "newProjectModal",
+    "projectModal",
     "autosave"
   ], function(name, index, editor) {
     Logger.debug(BeanVisuEditorController, $"Load service '{name}'")

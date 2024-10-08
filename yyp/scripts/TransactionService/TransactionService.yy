@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"TransactionService",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"TransactionService",
+  "parent":{
+    "name":"transaction",
+    "path":"folders/core/src/service/transaction.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

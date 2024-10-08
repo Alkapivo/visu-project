@@ -30,16 +30,23 @@ function VETitleBar(_editor) constructor {
             y: function() { return 0 },
             width: function() { return 48 },
           },
-          view: {
-            name: "title-bar.view",
+          open: {
+            name: "title-bar.open",
             x: function() { return this.context.nodes.edit.right()
+              + this.margin.left },
+            y: function() { return 0 },
+            width: function() { return 48 },
+          },
+          save: {
+            name: "title-bar.save",
+            x: function() { return this.context.nodes.open.right()
               + this.margin.left },
             y: function() { return 0 },
             width: function() { return 48 },
           },
           help: {
             name: "title-bar.help",
-            x: function() { return this.context.nodes.view.right()
+            x: function() { return this.context.nodes.save.right()
               + this.margin.left },
             y: function() { return 0 },
             width: function() { return 48 },
@@ -159,7 +166,16 @@ function VETitleBar(_editor) constructor {
             layout: layout.nodes.file,
             options: new Array(),
             callback: function() {
-              Beans.get(BeanVisuEditorController).newProjectModal
+              var editor = Beans.get(BeanVisuEditorController)
+              if (Core.isType(editor.uiService.find("visu-project-modal"), UI)) {
+                editor.projectModal.send(new Event("close"))
+              }
+        
+              if (Core.isType(editor.uiService.find("visu-modal"), UI)) {
+                editor.exitModal.send(new Event("close"))
+              }
+
+              editor.newProjectModal
                 .send(new Event("open").setData({
                   layout: new UILayout({
                     name: "display",
@@ -171,9 +187,35 @@ function VETitleBar(_editor) constructor {
                 }))
             }
           }),
-          "button_ve-title-bar_view": factoryTextButton({
-            text: "Open",
+          "button_ve-title-bar_edit": factoryTextButton({
+            text: "Edit",
             layout: layout.nodes.edit,
+            options: new Array(),
+            callback: function() {
+              var editor = Beans.get(BeanVisuEditorController)
+              if (Core.isType(editor.uiService.find("visu-new-project-modal"), UI)) {
+                editor.newProjectModal.send(new Event("close"))
+              }
+        
+              if (Core.isType(editor.uiService.find("visu-modal"), UI)) {
+                editor.exitModal.send(new Event("close"))
+              }
+
+              editor.projectModal
+                .send(new Event("open").setData({
+                  layout: new UILayout({
+                    name: "display",
+                    x: function() { return 0 },
+                    y: function() { return 0 },
+                    width: function() { return GuiWidth() },
+                    height: function() { return GuiHeight() },
+                  }),
+                }))
+            }
+          }),
+          "button_ve-title-bar_open": factoryTextButton({
+            text: "Open",
+            layout: layout.nodes.open,
             options: new Array(),
             callback: function() {
               try {
@@ -203,9 +245,9 @@ function VETitleBar(_editor) constructor {
               }
             }
           }),
-          "button_ve-title-bar_edit": factoryTextButton({
+          "button_ve-title-bar_save": factoryTextButton({
             text: "Save",
-            layout: layout.nodes.view,
+            layout: layout.nodes.save,
             options: new Array(),
             callback: function() {
               try {
@@ -222,6 +264,10 @@ function VETitleBar(_editor) constructor {
                 })
 
                 if (!Core.isType(path, String) || String.isEmpty(path)) {
+                  return
+                }
+
+                if (!Beans.get(BeanVisuController).trackService.isTrackLoaded()) {
                   return
                 }
 

@@ -1,0 +1,51 @@
+{
+  "version": "1",
+  "model": "Collection<io.alkapivo.visu.ui.VisuMenuNode>",
+  "data": {
+    "root.artists": {
+      "title": "Select artist",
+      "back": "root",
+      "entries": [
+        {
+          "name": "kedy_selma",
+          "event": {
+            "type": "open-node",
+            "data": {
+              "node": "root.artists.kedy_selma"
+            }
+          }
+        }
+      ]
+    },
+    "root.artists.kedy_selma": {
+      "title": "Select album",
+      "back": "root.artists",
+      "entries": [
+        {
+          "name": "Just To Create Something",
+          "event": {
+            "type": "open-node",
+            "data": {
+              "node": "root.artists.kedy_selma.just-to-create-something"
+            }
+          }
+        }
+      ]
+    },
+    "root.artists.kedy_selma.just-to-create-something": {
+      "title": "Select track",
+      "back": "root.artists.kedy_selma",
+      "entries": [
+        {
+          "name": "Just To Create Something",
+          "event": {
+            "type": "load-track",
+            "data": {
+              "path": "track/kedy_selma/Just-To-Create-Something/Just-To-Create-Something/manifest.visu"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

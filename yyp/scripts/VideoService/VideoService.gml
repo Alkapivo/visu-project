@@ -30,11 +30,11 @@ function VideoService(config = {}): Service() constructor {
       var handler = Struct.get(this.state.get("stages"), this.state.get("stage"))
       handler(this, executor)
 
-      var status = this.state.get("video").getStatus()
-      if (status == VideoStatus.CLOSED) {
-        VideoUtil.runGC()
-        throw new VideoOpenException($"Invalid video status: {status}")
-      }
+      //var status = this.state.get("video").getStatus()
+      //if (status == VideoStatus.CLOSED) {
+      //  VideoUtil.runGC()
+      //  throw new VideoOpenException($"Invalid video status: {status}")
+      //}
     }
   }
 
@@ -42,25 +42,23 @@ function VideoService(config = {}): Service() constructor {
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "open-video": function(event) {
-      if (this.executor.tasks.size() > 0) {
-        //event.promise.reject("There are unfinished tasks in videoService")
-        //return
-      }
-
       var video = new Video(event.data.video)
       var service = this
       var task = new Task("open-video")
         .setPromise(event.promise // pass promise to TaskExecutor
-          .whenSuccess(function(data) {
-            data.context.setVideo(data.video.setVolume(data.video.volume))
-            Logger.info("VideoService", $"Video loaded successfully: {data.video.path}")
-            return data.video
+          .whenSuccess(function(video) {
+            Logger.info("VideoService", $"Video loaded successfully: {video.path}")
+            Beans.get(BeanVisuController).videoService
+              .setVideo(video
+              .setVolume(video.volume))
+            return video
           })
-          .whenFailure(function(data) {
-            Logger.error("VideoService", $"Failed to load video: {data}")
+          .whenFailure(function() {
+            Logger.error("VideoService", $"Failed to load video")
             VideoUtil.runGC()
-            return null
+            Beans.get(BeanVisuController).videoService.setVideo(null)
           }))
+        .setTimeout(this.timeout)
         .setState(new Map(String, any, {
           video: video,
           service: service,
@@ -78,36 +76,27 @@ function VideoService(config = {}): Service() constructor {
               }
 
               video.pause().setVolume(0)
+              task.state.set("stage", "finalize")
+            },
+            finalize: function(task) {
+              var video = task.state.get("video")
               if (video.getStatus() != VideoStatus.PAUSED) {
                 return
               }
 
-              var service = task.state.get("service")
-              if (Core.isType(video.timestamp, Number) && video.timestamp > 0.0) {
-                service.send(new Event("rewind-video")
-                  .setData({ timestamp: video.timestamp })
-                  .setPromise(task.promise))
-                task.promise.onSuccess({ context: service, video: video })
-                task.setPromise() // disable promise, the promise will be resolved within TaskExecutor
-              }
-              task.fullfill({ context: service, video: video })
-            }
-          }
+              task.fullfill(video)
+            },
+          },
         }))
-        .setTimeout(this.timeout)
         .whenUpdate(this.factoryTaskUpdate())
       
       this.executor.tasks.forEach(this.rejectExistingTask)
       this.executor.add(task)
+      VideoUtil.runGC()
       this.setVideo(null)
       event.setPromise() // disable promise in EventPump, the promise will be resolved within TaskExecutor
     },
     "rewind-video": function(event) {
-      if (this.executor.tasks.size() > 0) {
-        //event.promise.reject("There are unfinished tasks in videoService")
-        //return
-      }
-
       var video = Assert.isType(this.getVideo(), Video)
       var task = new Task("rewind-video")
         .setPromise(event.promise // pass promise to TaskExecutor
@@ -134,6 +123,10 @@ function VideoService(config = {}): Service() constructor {
               }
 
               video.pause().setVolume(0.0)
+              task.state.set("stage", "preSeek")
+            },
+            preSeek: function(task) {
+              var video = task.state.get("video")
               if (video.getStatus() != VideoStatus.PAUSED) {
                 return
               }
@@ -182,11 +175,11 @@ function VideoService(config = {}): Service() constructor {
       }
 
       var task = new Task("resume-video")
+        .setPromise(event.promise) // pass promise to TaskExecutor
+        .setTimeout(this.timeout)
         .setState(new Map(String, any, {
           timer: new Timer(this.cooldown),
         }))
-        .setTimeout(this.timeout)
-        .setPromise(event.promise) // pass promise to TaskExecutor
         .whenUpdate(function(executor) {
           var video = executor.context.getVideo()
           var timer = this.state.get("timer").update()
@@ -217,17 +210,12 @@ function VideoService(config = {}): Service() constructor {
       event.setPromise() // disable promise in EventPump, the promise will be resolved within TaskExecutor
     },
     "pause-video": function(event) {
-      if (this.executor.tasks.size() > 0) {
-        //event.promise.reject("There are unfinished tasks in videoService")
-        //return
-      }
-
       var task = new Task("pause-video")
+        .setPromise(event.promise) // pass promise to TaskExecutor
+        .setTimeout(3.0)
         .setState(new Map(String, any, {
           timer: new Timer(0.05),
         }))
-        .setTimeout(2.0)
-        .setPromise(event.promise) // pass promise to TaskExecutor
         .whenUpdate(function(executor) {
           var video = executor.context.getVideo()
           var status = video.getStatus()

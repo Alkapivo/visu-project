@@ -26,9 +26,41 @@ function _BlendMode(): Enum() constructor {
   NORMAL = bm_normal
   SUBTRACT = bm_subtract
   REVERSE_SUBTRACT = bm_reverse_subtract
+  MIN = bm_min
+  MAX = bm_max
 }
 global.__BlendMode = new _BlendMode()
 #macro BlendMode global.__BlendMode
+
+
+///@enum
+function _BlendModeExt(): Enum() constructor {
+  ZERO = bm_zero
+  ONE = bm_one
+  SRC_COLOUR = bm_src_colour
+  INV_SRC_COLOUR = bm_inv_src_colour
+  SRC_ALPHA = bm_src_alpha
+  INV_SRC_ALPHA = bm_inv_src_alpha
+  DEST_ALPHA = bm_dest_alpha
+  INV_DEST_ALPHA = bm_inv_dest_alpha
+  DEST_COLOUR = bm_dest_colour
+  INV_DEST_COLOUR = bm_inv_dest_colour
+  SRC_ALPHA_SAT = bm_src_alpha_sat
+}
+global.__BlendModeExt = new _BlendModeExt()
+#macro BlendModeExt global.__BlendModeExt
+
+
+///@enum
+function _BlendEquation(): Enum() constructor {
+  ADD = bm_eq_add
+  SUBTRACT = bm_eq_subtract
+  REVERSE_SUBTRACT = bm_eq_reverse_subtract
+  MIN = bm_eq_min
+  MAX = bm_eq_max
+}
+global.__BlendEquation = new _BlendEquation()
+#macro BlendEquation global.__BlendEquation
 
 
 ///@enum
@@ -213,6 +245,21 @@ function _GPU() constructor {
       return GPU
     },
 
+    ///@param {BlendModeExt} source
+    ///@param {BlendModeExt} target
+    ///@return {GPU}
+    blendModeExt: function(source, target) {
+      gpu_set_blendmode_ext(source, target)
+      return GPU
+    },
+
+    ///@param {BlendEquation} equation
+    ///@return {GPU}
+    blendEquation: function(equation) {
+      gpu_set_blendequation(equation)
+      return GPU
+    },
+
     ///@param {Boolean} enable
     ///@return {GPU}
     blendEnable: function(enable) {
@@ -283,6 +330,12 @@ function _GPU() constructor {
     ///@return {GPU}
     blendMode: function() {
       gpu_set_blendmode(BlendMode.NORMAL)
+      return GPU
+    },
+
+    ///@return {GPU}
+    blendEquation: function() {
+      gpu_set_blendequation(BlendEquation.ADD)
       return GPU
     },
   }

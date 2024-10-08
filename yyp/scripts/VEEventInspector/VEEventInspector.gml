@@ -92,6 +92,10 @@ function VEEventInspector(_editor) constructor {
         renderItem: Callable.run(UIUtil.renderTemplates.get("renderItemDefaultScrollable")),
         renderDefaultScrollable: new BindIntent(Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable"))),
         render: function() {
+          if (this.executor != null) {
+            this.executor.update()
+          }
+
           this._updateTrackEvent()
           this.renderDefaultScrollable()
           if (!Optional.is(this.state.get("selectedEvent"))) {
@@ -101,12 +105,17 @@ function VEEventInspector(_editor) constructor {
             )
           }
         },
+        executor: null,
         scrollbarY: { align: HAlign.LEFT },
         onMousePressedLeft: Callable.run(UIUtil.mouseEventTemplates.get("onMouseScrollbarY")),
         onMouseWheelUp: Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelUpY")),
         onMouseWheelDown: Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelDownY")),
         onInit: function() {
           var container = this
+          this.executor = new TaskExecutor(this, {
+            enableLogger: true,
+            catchException: false,
+          })
           this.collection = new UICollection(this, { layout: container.layout })
           Beans.get(BeanVisuEditorController).store
             .get("selected-event")
@@ -141,30 +150,107 @@ function VEEventInspector(_editor) constructor {
                   .set("event", event)
                   .set("store", event.store)
 
-                data.addUIComponents(event.components
-                  .map(function(component) {
-                    return new UIComponent(component)
-                  }),
-                  new UILayout({
-                    area: data.area,
-                    width: function() { return this.area.getWidth() },
-                  })
-                )
+                data.executor.tasks.forEach(function(task, iterator, name) {
+                  if (task.name == name) {
+                    task.fullfill()
+                  }
+                }, "init-ui-components")
 
-                event.store.container.forEach(function(item, name, acc) {
-                  item.addSubscriber(acc)
-                }, {
-                  name: data.name,
-                  callback: function(value, data) { 
-                    data.state.set("updateTrackEvent", true)
-                  },
-                  data: data,
-                })
+                var task = new Task("init-ui-components")
+                  .setTimeout(60)
+                  .setState({
+                    stage: "load-components",
+                    context: data,
+                    components: event.components,
+                    componentsQueue: new Queue(String, GMArray
+                      .map(event.components.container, function(component, index) { 
+                        return index 
+                      })),
+                    componentsConfig: {
+                      context: data,
+                      layout: new UILayout({
+                        area: data.area,
+                        width: function() { return this.area.getWidth() },
+                      }),
+                      textField: null,
+                    },
+                    subscribers: event.store.container,
+                    subscribersQueue: new Queue(String, event.store.container
+                      .keys()
+                      .map(function(key) { return key }).container),
+                    subscribersConfig: {
+                      name: data.name,
+                      callback: function(value, data) { 
+                        data.state.set("updateTrackEvent", true)
+                      },
+                      data: data,
+                    },
+                    "load-components": function(task) {
+                      static factoryComponent = function(component, index, acc) {
+                        static add = function(item, index, acc) {
+                          if (item.type == UITextField) {
+                            var textField = item.textField
+                            if (Optional.is(acc.textField)) {
+                              acc.textField.setNext(textField)
+                              textField.setPrevious(acc.textField)
+                            }
+                            acc.textField = textField
+                          }
+                  
+                          acc.context.add(item, item.name)
+                          if (Optional.is(item.updateArea())) {
+                            item.updateArea()
+                          }
+                        }
+                  
+                        acc.layout = component
+                          .toUIItems(acc.layout)
+                          .forEach(add, acc)
+                          .getLast().layout.context
+                      }
+                      
+                      var index = task.state.componentsQueue.pop()
+                      if (!Optional.is(index)) {
+                        task.state.stage = "set-subscribers"
+                        return
+                      }
+
+                      var component = new UIComponent(task.state.components.get(index))
+                      factoryComponent(component, index, task.state.componentsConfig)
+                    },
+                    "set-subscribers": function(task) {
+                      var key = task.state.subscribersQueue.pop()
+                      if (!Optional.is(key)) {
+                        if (Optional.is(task.state.context.updateTimer)) {
+                          task.state.context.updateTimer.finish()
+                        }
+
+                        task.fullfill()
+                        return
+                      }
+
+                      var item = task.state.subscribers.get(key)
+                      item.addSubscriber(task.state.subscribersConfig)
+                    }
+                  })
+                  .whenUpdate(function() {
+                    var stage = Struct.get(this.state, this.state.stage)
+                    stage(this)
+                    return this
+                  })
+                
+                data.executor.add(task)
               },
               data: container,
             })
         },
         onDestroy: function() {
+          if (Optional.is(this.executor)) {
+            this.executor.tasks.forEach(function(task) { 
+              task.fullfill() 
+            }).clear()
+          }
+
           if (Core.isType(this.eventInspector.editor, VisuEditorController)) {
             this.eventInspector.editor.store
               .get("selected-event")

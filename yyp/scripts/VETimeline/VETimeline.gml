@@ -11,10 +11,6 @@ global.__ToolType = new _ToolType()
 #macro ToolType global.__ToolType
 
 
-function _dummy(a) {
-  return a
-}
-
 ///@param {VisuEditorController} _editor
 function VETimeline(_editor) constructor {
 
@@ -23,6 +19,9 @@ function VETimeline(_editor) constructor {
   
   ///@type {Map<String, Containers>}
   containers = new Map(String, UI)
+
+  ///@type {TransactionService}
+  transactionService = new TransactionService()
 
   ///@private
   ///@param {Struct} context
@@ -645,6 +644,28 @@ function VETimeline(_editor) constructor {
         },
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
         updateCustom: function() {
+          var store = Beans.get(BeanVisuEditorController).store
+          if (mouse_check_button(mb_right) 
+            || (mouse_check_button(mb_left) 
+            && store.getValue("tool") == ToolType.ERASE)) {
+            var mouseX = device_mouse_x_to_gui(0)
+            var mouseY = device_mouse_y_to_gui(0)
+            var areaX = this.area.getX()
+            var areaY = this.area.getY()
+            var areaWidth = this.area.getWidth()
+            var areaHeight = this.area.getHeight()
+            if (point_in_rectangle(mouseX, mouseY, areaX, areaY, areaX + areaWidth, areaY + areaHeight)) {
+              this.updateTimer.time = this.updateTimer.duration
+              this.items.forEach(this.itemMouseEraseEvent, { 
+                data: {
+                  x: mouseX, 
+                  y: mouseY, 
+                  store: store,
+                },
+              })
+            }
+          }
+
           var trackService = Beans.get(BeanVisuController).trackService
           if (!trackService.isTrackLoaded()) {
             return
@@ -848,7 +869,7 @@ function VETimeline(_editor) constructor {
           var bpmX = 0
           var bpmY = round(clamp((linesSize - 1) * 32, 0, areaHeight))
           var _thickness = thickness
-          var bpmCountIndex = ceil(abs(this.offset.x) / bpmWidth)
+          var bpmCountIndex = floor(abs(this.offset.x) / bpmWidth)
           if (bpmSub > 1) {
             var bpmSubLength = round(bpmWidth / bpmSub)
             for (var bpmIndex = 0; bpmIndex < bpmSize; bpmIndex++) {
@@ -879,11 +900,29 @@ function VETimeline(_editor) constructor {
 
           this.renderClipboard()
 
-          var selectedItem = Beans.get(BeanVisuEditorController).store.getValue("selected-event")
-          if (Optional.is(selectedItem)) {
-            var xx = this.getXFromTimestamp(selectedItem.data.timestamp) + this.offset.x
-            var yy = this.getYFromChannelName(selectedItem.channel) + this.offset.y
-            this.selectedSprite.render(xx, yy)
+          var context = this
+          var controller = Beans.get(BeanVisuEditorController)
+          var selectedEvent = controller.store.getValue("selected-event")
+          var selectedEvents = controller.store.getValue("selected-events")
+          if (Optional.is(selectedEvent) && Optional.is(selectedEvents)) {
+            selectedEvents.forEach(function(selectedEvent, key, acc) {
+              var context = acc.context
+              var index = acc.index
+              var xx = context.getXFromTimestamp(selectedEvent.data.timestamp) + context.offset.x
+              var yy = context.getYFromChannelName(selectedEvent.channel) + context.offset.y
+              context.selectedSprite
+                .setBlend(key == acc.name ? acc.color : c_white)
+                .setAnimate(index == 0)
+                .render(xx, yy)
+                .setBlend(c_white)
+                .setAnimate(true)
+              acc.index = index + 1
+            }, { 
+              context: context, 
+              index: 0, 
+              name: selectedEvent.name, 
+              color: selectedEvents.size() > 1 ? c_lime : c_white,
+            })
           }
 
           DeltaTime.deltaTime = delta
@@ -922,62 +961,190 @@ function VETimeline(_editor) constructor {
           }
         },
         onMouseDropLeft: function(event) {
-          var trackEvent = MouseUtil.getClipboard()
-          var channelName = Struct.get(trackEvent, "channelName")
-          MouseUtil.clearClipboard()
           if (Optional.is(this.updateTimer)) {
             this.updateTimer.finish()
           }
 
-          if (!Core.isType(trackEvent, TrackEvent)
-            || !Beans.get(BeanVisuController).trackService.track.channels
-              .contains(channelName)) {
+          var trackEvent = MouseUtil.getClipboard()
+          MouseUtil.clearClipboard()
+          if (!Core.isType(trackEvent, TrackEvent)) {
             return
           }
 
-          this.removeEvent(channelName, trackEvent.eventName)
-
-          trackEvent = trackEvent.serialize()
-          trackEvent.timestamp = this.getTimestampFromMouseX(event.data.x)
+          var sourceChannel = Struct.get(trackEvent, "channelName")
+          var track = Beans.get(BeanVisuController).trackService.track 
           var store = Beans.get(BeanVisuEditorController).store
-          if (store.getValue("snap") || keyboard_check(vk_control)) {
-            var bpmSub = store.getValue("bpm-sub")
-            var bpm = store.getValue("bpm") * bpmSub
-            trackEvent.timestamp = floor(trackEvent.timestamp / (60 / bpm)) * (60 / bpm)
+          if (!track.channels.contains(sourceChannel)) {
+            Logger.warn("VETimeline", $"Track does not contain the source channel '{sourceChannel}'")
+            return
           }
 
-          var channel = this.getChannelNameFromMouseY(event.data.y)
-          if (!Optional.is(channel)) {
-            var size = this.controller.containers
+          var targetChannel = this.getChannelNameFromMouseY(event.data.y)
+          if (!Optional.is(targetChannel)) {
+            var collection = this.controller.containers
               .get("ve-timeline-channels").collection
-              .size()
-
-            channel = this.controller.containers
-              .get("ve-timeline-channels").collection
-              .findKeyByIndex(size - 1)
-            if (!Optional.is(channel)) {
+            targetChannel = collection
+              .findKeyByIndex(collection.size() - 1)
+            
+            if (!Optional.is(targetChannel)) {
+              Logger.warn("VETimeline", "Unable to find targetChannel")
               return
             }
           }
 
-          var uiItem = this.addEvent(channel, new TrackEvent(trackEvent, {
-            handlers: Beans.get(BeanVisuController).trackService.handlers,
-          }))
+          var selectedEvents = store.getValue("selected-events")
+            .map(function(selectedEvent, key) { return selectedEvent })
+          var contextEvent = selectedEvents.get(trackEvent.eventName)
+          if (!Optional.is(contextEvent)) {
+            contextEvent = {
+              name: trackEvent.eventName,
+              channel: trackEvent.channelName,
+              data: trackEvent,
+            }
+            selectedEvents.add(contextEvent, trackEvent.eventName)
+          }
 
-          ///@description select
-          Beans.get(BeanVisuEditorController).store
-            .get("selected-event")
-            .set({
+          var trackEventConfig = trackEvent.serialize()
+          var timestamp = trackEventConfig.timestamp
+          trackEventConfig.timestamp = this.getTimestampFromMouseX(event.data.x)
+          if (store.getValue("snap") || keyboard_check(vk_control)) {
+            var bpmSub = store.getValue("bpm-sub")
+            var bpm = store.getValue("bpm") * bpmSub
+            trackEventConfig.timestamp = floor(trackEventConfig.timestamp / (60 / bpm)) * (60 / bpm)
+          }
+
+          var removeTransactions = selectedEvents.map(function(selectedEvent, key, context) {
+            var transactionService = context.controller.transactionService
+            var sizeBefore = transactionService.applied.size()
+            context.removeEvent(selectedEvent.channel, selectedEvent.name)
+            Assert.isTrue(sizeBefore == transactionService.limit 
+              || sizeBefore == transactionService.applied.size() - 1, 
+              "different removeEvent applied size was expected")
+
+            var removeTransaction = transactionService.peekApplied()
+            Assert.isTrue(Core.isType(removeTransaction, Transaction) 
+              && removeTransaction.name == "Remove event"
+              && removeTransaction == transactionService.applied.pop(),
+              "Transaction name must be 'Remove event'")
+
+            return removeTransaction
+          }, this)
+
+          var context = this
+          var newEvents = new Map(String, Struct)
+          var addTransactions = selectedEvents.map(function(selectedEvent, key, acc) {
+            var channel = acc.context.getMovedChannelName(acc.sourceChannel, acc.targetChannel, selectedEvent.channel)
+            var transactionService = acc.context.controller.transactionService
+            var trackEventConfig = selectedEvent.data.serialize()
+            trackEventConfig.timestamp += acc.offset
+            var sizeBefore = transactionService.applied.size()
+            var uiItem = acc.context.addEvent(channel, new TrackEvent(trackEventConfig, {
+              handlers: Beans.get(BeanVisuController).trackService.handlers,
+            }), selectedEvent.name)
+
+            var contextEvent = acc.contextEvent
+            if (contextEvent.name == selectedEvent.name) {
+              contextEvent.name = uiItem.name
+              contextEvent.channel = channel
+              contextEvent.data = uiItem.state.get("event")
+            }
+
+            Assert.isTrue(sizeBefore == transactionService.limit 
+              || sizeBefore == transactionService.applied.size() - 1,
+              "different addEvent applied size was expected")
+            var addTransaction = transactionService.peekApplied()
+            Assert.isTrue(Core.isType(addTransaction, Transaction) 
+              && addTransaction.name == "Add event"
+              && addTransaction == transactionService.applied.pop(), 
+              "Transaction name must be 'Add event'")
+
+            acc.newEvents.add({
               name: uiItem.name,
               channel: channel,
-              data: uiItem.state.get("event"),
-            })
+              data: uiItem.state.get("event")
+            }, uiItem.name)
+
+            return addTransaction
+          }, {
+            context: context,
+            offset: trackEventConfig.timestamp - timestamp,
+            contextEvent: contextEvent,
+            sourceChannel: sourceChannel,
+            targetChannel: targetChannel,
+            newEvents: newEvents,
+          })
+
+          var transaction = new Transaction({
+            name: "Move event",
+            data: {
+              add: addTransactions,
+              remove: removeTransactions,
+              name: contextEvent.name,
+              restoreName: function(name) {
+                var store = Beans.get(BeanVisuEditorController).store
+                var selectedEvent = store.getValue("selected-event")
+                if (Optional.is(selectedEvent) 
+                  && selectedEvent.name != name) {
+                  var foundEvent = store.getValue("selected-events")
+                    .find(function(event, key, name) {
+                      return event.name == name
+                    }, name)
+                  if (Optional.is(foundEvent)) {
+                    store.get("selected-event").set(foundEvent)
+                  }
+                }
+              },
+            },
+            apply: function() {
+              for (var index = 0; index < this.data.add.size(); index++) {
+                this.data.remove.get(this.data.remove.keys().get(index)).apply()
+                this.data.add.get(this.data.add.keys().get(index)).apply()
+              }
+
+              this.data.restoreName(this.data.name)
+              return this
+            },
+            rollback: function() {
+              for (var index = 0; index < this.data.add.size(); index++) {
+                this.data.add.get(this.data.add.keys().get(index)).rollback()
+                this.data.remove.get(this.data.remove.keys().get(index)).rollback()
+              }
+
+              this.data.restoreName(this.data.name)
+              return this
+            }
+          })
+
+          var transactionService = this.controller.transactionService
+          transactionService.applied.push(transaction)
+          if (transactionService.applied.size() >= transactionService.limit) {
+            Core.print("remove! add")
+            transactionService.applied.container.remove(0)
+          }
+
+          ///@description select
+          store.getValue("selected-events").clear()
+          newEvents.forEach(function(newEvent, key, name) {
+            var store = Beans.get(BeanVisuEditorController).store
+            if (key == name) {
+              store.get("selected-event").set(newEvent)
+            }
+            store.getValue("selected-events").add(newEvent, key)
+          }, contextEvent.name)
 
           var inspector = Beans.get(BeanVisuEditorController).uiService
             .find("ve-event-inspector-properties")
           if (Core.isType(inspector, UI) && Optional.is(inspector.updateTimer)) {
             inspector.updateTimer.finish()
           }
+        },
+
+        onMousePressedLeft: function(event) {
+          this.updateTimer.time = this.updateTimer.duration
+        },
+
+        onMousePressedRight: function(event) {
+          this.updateTimer.time = this.updateTimer.duration
         },
         
         onMouseReleasedLeft: function(event) {
@@ -998,10 +1165,7 @@ function VETimeline(_editor) constructor {
             switch (tool) {
               case ToolType.SELECT:
                 ///@description deselect
-                var store = Beans.get(BeanVisuEditorController).store
-                if (Optional.is(store.getValue("selected-event"))) {
-                  store.get("selected-event").set(null)
-                }
+                this.deselect()
                 break
               case ToolType.BRUSH:
                 var brush = Beans.get(BeanVisuEditorController).brushToolbar.store
@@ -1017,7 +1181,7 @@ function VETimeline(_editor) constructor {
                 var uiItem = this.addEvent(channel, trackEvent)
   
                 ///@description select
-                store.get("selected-event").set({
+                this.select({
                   name: uiItem.name,
                   channel: channel,
                   data: uiItem.state.get("event"),
@@ -1030,47 +1194,156 @@ function VETimeline(_editor) constructor {
                 }
                 break
               case ToolType.CLONE:
-                var selected = store.getValue("selected-event")
-                if (Optional.is(selected)) {
-                  var channel = this.getChannelNameFromMouseY(event.data.y)
-                  var trackEvent = selected.data.serialize()
-                  trackEvent.timestamp = this.getTimestampFromMouseX(event.data.x)
+                var selectedEvent = store.getValue("selected-event")
+                if (!Optional.is(selectedEvent)) {
+                  break
+                }
 
-                  if (store.getValue("snap") || keyboard_check(vk_control)) {
-                    var bpmSub = store.getValue("bpm-sub")
-                    var bpm = store.getValue("bpm") * bpmSub
-                    trackEvent.timestamp = floor(trackEvent.timestamp / (60 / bpm)) * (60 / bpm)
-                  }
+                var trackEvent = selectedEvent.data
+                if (!Core.isType(trackEvent, TrackEvent)) {
+                  break
+                }
 
-                  if (!Optional.is(channel)) {
-                    var size = this.controller.containers
-                      .get("ve-timeline-channels").collection
-                      .size()
+                var sourceChannel = selectedEvent.channel
+                var track = Beans.get(BeanVisuController).trackService.track 
+                if (!track.channels.contains(sourceChannel)) {
+                  Logger.warn("VETimeline", $"Track does not contain the source channel '{sourceChannel}'")
+                  break
+                }
 
-                    channel = this.controller.containers
-                      .get("ve-timeline-channels").collection
-                      .findKeyByIndex(size - 1)
-                  }
-
-                  if (Optional.is(channel)) {
-                    var uiItem = this.addEvent(channel, new TrackEvent(trackEvent, {
-                      handlers: Beans.get(BeanVisuController).trackService.handlers,
-                    }))
-
-                    ///@description select
-                    store.get("selected-event").set({
-                      name: uiItem.name,
-                      channel: channel,
-                      data: uiItem.state.get("event"),
-                    })
-
-                    var inspector = Beans.get(BeanVisuEditorController).uiService
-                      .find("ve-event-inspector-properties")
-                    if (Core.isType(inspector, UI) && Optional.is(inspector.updateTimer)) {
-                      inspector.updateTimer.finish()
-                    }
+                var targetChannel = this.getChannelNameFromMouseY(event.data.y)
+                if (!Optional.is(targetChannel)) {
+                  var collection = this.controller.containers
+                    .get("ve-timeline-channels").collection
+                  targetChannel = collection
+                    .findKeyByIndex(collection.size() - 1)
+                  
+                  if (!Optional.is(targetChannel)) {
+                    Logger.warn("VETimeline", "Unable to find targetChannel")
+                    break
                   }
                 }
+
+                var selectedEvents = store.getValue("selected-events")
+                  .map(function(selectedEvent, key) { return selectedEvent })
+                var contextEvent = selectedEvents.get(selectedEvent.name)
+                if (!Optional.is(contextEvent)) {
+                  contextEvent = {
+                    name: selectedEvent.name,
+                    channel: selectedEvent.channel,
+                    data: trackEvent,
+                  }
+                  selectedEvents.add(contextEvent)
+                }
+
+                var trackEventConfig = trackEvent.serialize()
+                var timestamp = trackEventConfig.timestamp
+                trackEventConfig.timestamp = this.getTimestampFromMouseX(event.data.x)
+                if (store.getValue("snap") || keyboard_check(vk_control)) {
+                  var bpmSub = store.getValue("bpm-sub")
+                  var bpm = store.getValue("bpm") * bpmSub
+                  trackEventConfig.timestamp = floor(trackEventConfig.timestamp / (60 / bpm)) * (60 / bpm)
+                }
+
+                var context = this
+                var newEvents = new Map(String, Struct)
+                var addTransactions = selectedEvents.map(function(selectedEvent, key, acc) {
+                  var channel = acc.context.getMovedChannelName(acc.sourceChannel, acc.targetChannel, selectedEvent.channel)
+                  var transactionService = acc.context.controller.transactionService
+                  var trackEventConfig = selectedEvent.data.serialize()
+                  trackEventConfig.timestamp += acc.offset
+                  var sizeBefore = transactionService.applied.size()
+                  var uiItem = acc.context.addEvent(channel, new TrackEvent(trackEventConfig, {
+                    handlers: Beans.get(BeanVisuController).trackService.handlers,
+                  }))
+
+                  var contextEvent = acc.contextEvent
+                  if (contextEvent.name == selectedEvent.name) {
+                    contextEvent.name = uiItem.name
+                    contextEvent.channel = channel
+                    contextEvent.data = uiItem.state.get("event")
+                  }
+
+                  Assert.isTrue(sizeBefore == transactionService.limit 
+                    || sizeBefore == transactionService.applied.size() - 1,
+                    "different addEvent applied size was expected")
+                  var addTransaction = transactionService.peekApplied()
+                  Assert.isTrue(Core.isType(addTransaction, Transaction) 
+                    && addTransaction.name == "Add event"
+                    && addTransaction == transactionService.applied.pop(), 
+                    "Transaction name must be 'Add event'")
+
+                  acc.newEvents.add({
+                    name: uiItem.name,
+                    channel: channel,
+                    data: uiItem.state.get("event")
+                  }, uiItem.name)
+
+                  return addTransaction
+                }, {
+                  context: context,
+                  offset: trackEventConfig.timestamp - timestamp,
+                  sourceChannel: sourceChannel,
+                  targetChannel: targetChannel,
+                  newEvents: newEvents,
+                  contextEvent: contextEvent,
+                })
+
+                var transaction = new Transaction({
+                  name: "Clone event",
+                  data: {
+                    add: addTransactions,
+                    name: contextEvent.name,
+                    restoreName: function(name) {
+                      var store = Beans.get(BeanVisuEditorController).store
+                      var selectedEvent = store.getValue("selected-event")
+                      if (Optional.is(selectedEvent) 
+                        && selectedEvent.name != name) {
+                        var foundEvent = store.getValue("selected-events")
+                          .find(function(event, key, name) {
+                            return event.name == name
+                          }, name)
+                        if (Optional.is(foundEvent)) {
+                          store.get("selected-event").set(foundEvent)
+                        }
+                      }
+                    },
+                  },
+                  apply: function() {
+                    this.data.add.forEach(function(transaction) { transaction.apply() })
+                    this.data.restoreName(this.data.name)
+                    return this
+                  },
+                  rollback: function() {
+                    this.data.add.forEach(function(transaction) { transaction.rollback() })
+                    this.data.restoreName(this.data.name)
+                    return this
+                  }
+                })
+
+                var transactionService = this.controller.transactionService
+                transactionService.applied.push(transaction)
+                if (transactionService.applied.size() >= transactionService.limit) {
+                  Core.print("remove! add")
+                  transactionService.applied.container.remove(0)
+                }
+
+                ///@description select
+                store.getValue("selected-events").clear()
+                newEvents.forEach(function(newEvent, key, name) {
+                  var store = Beans.get(BeanVisuEditorController).store
+                  if (key == name) {
+                    store.get("selected-event").set(newEvent)
+                  }
+                  store.getValue("selected-events").add(newEvent, key)
+                }, contextEvent.name)
+
+                var inspector = Beans.get(BeanVisuEditorController).uiService
+                  .find("ve-event-inspector-properties")
+                if (Core.isType(inspector, UI) && Optional.is(inspector.updateTimer)) {
+                  inspector.updateTimer.finish()
+                }
+            
                 break
             }
           } catch (exception) {
@@ -1100,13 +1373,29 @@ function VETimeline(_editor) constructor {
             case ToolType.CLONE:
             case ToolType.ERASE:
               ///@description deselect
-              var store = Beans.get(BeanVisuEditorController).store
-              if (Optional.is(store.getValue("selected-event"))) {
-                store.get("selected-event").set(null)
-              }
+              this.deselect()
               break
           }
         },
+
+        ///@param {UIItem} item
+        ///@param {String} key
+        ///@param {Event} event
+        itemMouseEraseEvent: new BindIntent(function(item, key, event) {
+          if (!item.collide(event)) {
+            return
+          }
+
+          var channelName = this.getChannelNameFromMouseY(event.data.y)
+          if (Optional.is(channelName)) {
+            this.removeEvent(channelName, item.name)
+          }
+
+          var selected = event.data.store.getValue("selected-event")
+          if (Optional.is(selected) && selected.name == item.name) {
+            event.data.store.get("selected-event").set(null)
+          }
+        }),
     
         ///@param {Number} timestamp
         ///@return {Number}
@@ -1187,11 +1476,12 @@ function VETimeline(_editor) constructor {
 
         ///@param {String} channelName
         ///@param {TrackEvent} event
+        ///@param {?String} [_name]
         ///@return {UIItem}
-        factoryEventUIItem: new BindIntent(function(channelName, event) { 
+        factoryEventUIItem: new BindIntent(function(channelName, event, _name = null) { 
           var _x = this.getXFromTimestamp(event.timestamp) 
           var key = this.items.generateKey(event.timestamp * (100 + random(1000000) + random(100000)))
-          var name = $"channel_{channelName}_event_{key}"
+          var name = Core.isType(_name, String) ? _name : $"channel_{channelName}_event_{key}"
           var component = this.controller.containers
             .get("ve-timeline-channels").collection
             .get(channelName)
@@ -1211,6 +1501,12 @@ function VETimeline(_editor) constructor {
                 this.area.setY(this.component.index * this.area.getHeight())
               },
               onMouseDragLeft: function(event) {
+                var store = Beans.get(BeanVisuEditorController).store
+                var tool = store.getValue("tool")
+                if (tool == ToolType.ERASE) {
+                  return
+                }
+
                 var channelName = this.state.get("channel")
                 if (!Optional.is(channelName)) {
                   return
@@ -1223,6 +1519,12 @@ function VETimeline(_editor) constructor {
                 Struct.set(trackEvent, "eventName", this.name)
                 Struct.set(trackEvent, "channelName", channelName)
                 MouseUtil.setClipboard(trackEvent)
+
+                this.context.select({
+                  name: this.name,
+                  channel: channelName,
+                  data: trackEvent,
+                })
 
                 var events = Beans
                   .get(BeanVisuEditorController).timeline.containers
@@ -1262,13 +1564,11 @@ function VETimeline(_editor) constructor {
                   case ToolType.CLONE:
                   case ToolType.SELECT:
                     ///@description select
-                    Beans.get(BeanVisuEditorController).store
-                      .get("selected-event")
-                      .set({
-                        name: context.name,
-                        channel: channel,
-                        data: trackEvent,
-                      })
+                    context.context.select({
+                      name: context.name,
+                      channel: channel,
+                      data: trackEvent,
+                    })
                     
                     var inspector = Beans.get(BeanVisuEditorController).uiService
                       .find("ve-event-inspector-properties")
@@ -1297,7 +1597,7 @@ function VETimeline(_editor) constructor {
         ///@param {String} channelName
         ///@param {TrackEvent} event
         ///@return {?UIItem}
-        addEvent: new BindIntent(function(channelName, event) {
+        addEvent: new BindIntent(function(channelName, event, _key = null) {
           if (!Core.isType(event, TrackEvent)) {
             return null
           }
@@ -1306,11 +1606,64 @@ function VETimeline(_editor) constructor {
             throw new Exception("Load track before adding event on timeline")
           }
 
-          var track = Beans.get(BeanVisuController).trackService.track
-          var uiItem = this.factoryEventUIItem(channelName, event)
-          track.addEvent(channelName, event)
-          this.add(uiItem, uiItem.name)
-          return uiItem
+          var context = this
+          var transaction = new Transaction({
+            name: "Add event",
+            data: {
+              context: context,
+              channelName: channelName,
+              name: name,
+              uiItem: null,
+              event: event,
+              key: _key,
+            },
+            apply: function() {
+              var trackEvent = this.data.event
+              var track = Beans.get(BeanVisuController).trackService.track
+              if (!Core.isType(track, Track)) {
+                Logger.warn("VETimeline", "Load track before adding event on timeline")
+                return this
+              }
+      
+              var uiItem = this.data.context.factoryEventUIItem(this.data.channelName, trackEvent, this.data.key)
+              track.addEvent(this.data.channelName, trackEvent)
+              this.data.context.add(uiItem, uiItem.name)
+
+              this.data.key = uiItem.name
+              this.data.name = uiItem.name
+              this.data.uiItem = uiItem
+              this.data.event = trackEvent
+              this.data.context.updateTimer.time = this.data.context.updateTimer.duration
+
+              ///@description select
+              this.data.context.select({
+                name: uiItem.name,
+                channel: this.data.channelName,
+                data: this.data.event,
+              })
+
+              return this
+            },
+            rollback: function() {
+              Beans.get(BeanVisuController).trackService.track
+                .removeEvent(this.data.channelName, this.data.event)
+              this.data.context.remove(this.data.uiItem.name)
+              this.data.key = this.data.uiItem.name
+
+              ///@description deselect
+              this.data.context.deselect({
+                name: this.data.uiItem.name,
+                channel: this.data.channelName,
+                data: this.data.event,
+              })
+
+              this.data.context.updateTimer.time = this.data.context.updateTimer.duration
+
+              return this
+            },
+          })
+
+          return this.controller.transactionService.add(transaction).peekApplied().data.uiItem
         }),
 
         ///@param {String} channel
@@ -1323,16 +1676,65 @@ function VETimeline(_editor) constructor {
             || !Core.isType(event, TrackEvent)) {
             return
           }
-          Beans.get(BeanVisuController).trackService.track
-            .removeEvent(channelName, event)
-          this.remove(uiItem.name)
-          
-          ///@description deselect
-          var selectedEvent = editor.store.getValue("selected-event")
-          if (Core.isType(selectedEvent, Struct)
-            && name == selectedEvent.name) {
-            editor.store.get("selected-event").set(null)
-          }
+
+          var context = this
+          var transaction = new Transaction({
+            name: "Remove event",
+            data: {
+              context: context,
+              channelName: channelName,
+              name: name,
+              uiItem: uiItem,
+              event: event,
+              key: name,
+            },
+            apply: function() {
+              Beans.get(BeanVisuController).trackService.track
+                .removeEvent(this.data.channelName, this.data.event)
+              this.data.context.remove(this.data.uiItem.name)
+              this.data.key = this.data.uiItem.name
+
+              ///@description deselect
+              this.data.context.deselect({
+                name: this.data.uiItem.name,
+                channel: this.data.channelName,
+                data: this.data.event,
+              })
+
+              this.data.context.updateTimer.time = this.data.context.updateTimer.duration
+
+              return this
+            },
+            rollback: function() {
+              var trackEvent = this.data.event
+              var track = Beans.get(BeanVisuController).trackService.track
+              if (!Core.isType(track, Track)) {
+                Logger.warn("VETimeline", "Load track before adding event on timeline")
+                return this
+              }
+      
+              var uiItem = this.data.context.factoryEventUIItem(this.data.channelName, trackEvent, this.data.key)
+              track.addEvent(this.data.channelName, trackEvent)
+              this.data.context.add(uiItem, uiItem.name)
+
+              this.data.key = uiItem.name
+              this.data.name = uiItem.name
+              this.data.uiItem = uiItem
+              this.data.event = trackEvent
+              this.data.context.updateTimer.time = this.data.context.updateTimer.duration
+
+              ///@description select
+              this.data.context.select({
+                name: uiItem.name,
+                channel: this.data.channelName,
+                data: this.data.event,
+              })
+
+              return this
+            },
+          })
+
+          this.controller.transactionService.add(transaction)
         }),
 
         ///@param {String} channel
@@ -1344,13 +1746,94 @@ function VETimeline(_editor) constructor {
           var uiItem = this.items.get(name)
           this.remove(name)
           
-          uiItem = this.factoryEventUIItem(channelName, event)
+          uiItem = this.factoryEventUIItem(channelName, event, name)
           this.add(uiItem, uiItem.name)
           if (Optional.is(uiItem.updateArea)) {
             uiItem.updateArea()
           }
           return uiItem
         }),
+
+        ///@param {String} sourceChannel
+        ///@param {String} targetChannel
+        ///@param {String} eventChannel
+        ///@throws {Exception}
+        ///@return {String}
+        getMovedChannelName: new BindIntent(function(sourceChannel, targetChannel, eventChannel) {
+          var track = Beans.get(BeanVisuController).trackService.track
+          var source = track.channels.get(sourceChannel)
+          var target = track.channels.get(targetChannel)
+          var event = track.channels.get(eventChannel)
+          var size = track.channels.size()
+          var index = clamp(event.index + target.index - source.index, 0, size - 1)
+          var channel = track.channels.find(function(channel, name, index) {
+            return channel.index == index
+          }, index)
+          Assert.isType(channel, TrackChannel)
+
+          return channel.name
+        }),
+
+        ///@param {Struct} contextEvent
+        ///@return {UI}
+        select: new BindIntent(function(contextEvent) {
+          var store = Beans.get(BeanVisuEditorController).store
+          var selectedEvent = store.getValue("selected-event")
+          var selectedEvents = store.getValue("selected-events")
+          if (!keyboard_check(vk_control)) {
+            selectedEvents.clear().add(contextEvent, contextEvent.name)
+            if (!Optional.is(selectedEvent) 
+              || contextEvent.name != selectedEvent.name) {
+              store.get("selected-event").set(contextEvent)
+            }
+          } else {
+            if (!selectedEvents.contains(contextEvent.name)) {
+              selectedEvents.add(contextEvent, contextEvent.name)
+              if (!Optional.is(selectedEvent) 
+                || selectedEvent.name != contextEvent.name) {
+                store.get("selected-event").set(contextEvent)
+              }
+            } else if (Optional.is(selectedEvent)) {
+              if (selectedEvent.name != contextEvent.name) {
+                store.get("selected-event").set(contextEvent)
+              } else {
+                selectedEvents.remove(contextEvent.name)
+                store.get("selected-event").set(selectedEvents.getFirst())
+              }
+            } else {
+              //store.get("selected-event").set(contextEvent)
+            }
+          }
+
+          return this
+        }),
+
+        ///@param {?Struct} [contextEvent]
+        ///@return {UI}
+        deselect: new BindIntent(function(contextEvent = null) {
+          var store = Beans.get(BeanVisuEditorController).store
+
+          if (Optional.is(contextEvent)) {
+            var selectedEvent = store.getValue("selected-event")
+            if (Optional.is(selectedEvent) 
+              && selectedEvent.name == contextEvent.name) {
+              store.get("selected-event").set(null)
+            }
+
+            store.getValue("selected-events").remove(contextEvent.name)
+          } else {
+            if (Optional.is(store.getValue("selected-event"))) {
+              store.get("selected-event").set(null)
+            }
+  
+            if (store.getValue("selected-events").size() > 0) {
+              store.getValue("selected-events").clear()
+            }
+          }
+          
+          return this
+        }),
+
       },
       "ve-timeline-ruler": {
         name: "ve-timeline-ruler",
@@ -1569,6 +2052,7 @@ function VETimeline(_editor) constructor {
     },
     "close": function(event) {
       var context = this
+      this.transactionService.clear()
       this.containers.forEach(function (container, key, uiService) {
         uiService.dispatcher.execute(new Event("remove", { 
           name: key, 

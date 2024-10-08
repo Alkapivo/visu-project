@@ -2,7 +2,7 @@
 
 ///@enum
 function _LanguageType(): Enum() constructor {
-  en_US = "en_US"
+  en_EN = "en_EN"
   pl_PL = "pl_PL"
 }
 
@@ -69,7 +69,7 @@ function _Language() constructor {
   ///@return {LanguageType}
   getCode = function() {
     if (!Core.isType(this.pack, LanguagePack)) {
-      return LanguageType.en_US
+      return LanguageType.en_EN
     }
 
     return this.pack.code
@@ -84,9 +84,9 @@ function initLanguage(code) {
   Language = new _Language()
   var path = null
   switch (code) {
-    case LanguageType.en_US: path = $"{working_directory}language.en_US.json" break
-    case LanguageType.pl_PL: path = $"{working_directory}language.pl_PL.json" break
-    default: path = $"{working_directory}language.en_US.json" break
+    case LanguageType.en_EN: path = $"{working_directory}lang/en_EN.json" break
+    case LanguageType.pl_PL: path = $"{working_directory}lang/pl_PL.json" break
+    default: path = $"{working_directory}lang/en_EN.json" break
   }
   
   var json = FileUtil.readFileSync(FileUtil.get(path)).getData()

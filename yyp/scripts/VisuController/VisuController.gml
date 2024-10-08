@@ -103,7 +103,7 @@ function VisuController(layerName) constructor {
       "play": {
         actions: {
           onStart: function(fsm, fsmState, data) {
-            Beans.get(BeanVisuController).menu.send(new Event("close"))
+            Beans.get(BeanVisuController).menu.send(new Event("close", { fade: true }))
 
             var promises = new Map(String, Promise, {})
 
@@ -217,7 +217,7 @@ function VisuController(layerName) constructor {
             }
           },
           onFinish: function(fsm, fsmState, data) {
-            Beans.get(BeanVisuController).menu.send(new Event("close"))
+            Beans.get(BeanVisuController).menu.send(new Event("close", { fade: true }))
           },
         },
         update: function(fsm) { },

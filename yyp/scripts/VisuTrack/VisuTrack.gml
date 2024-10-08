@@ -191,9 +191,10 @@ function VisuTrack(_path, json) constructor {
 
     var video = null
     var sourceVideo = null
-    if (Optional.is(this.video)) {
-      sourceVideo = Assert.isType(FileUtil.get(Struct.get(controller.videoService.getVideo(), "path")), String)
-      video = FileUtil.getFilenameFromPath(sourceVideo)
+    if (Core.isType(this.video, String) 
+      && FileUtil.fileExists(this.video)) {
+      video = FileUtil.getFilenameFromPath(this.Video)
+      sourceVideo = Assert.fileExists(FileUtil.get($"{path}{video}"))
     } 
     #endregion
 

@@ -1,9 +1,0 @@
-{
-  "version":"1",
-  "model":"Collection<io.alkapivo.core.service.sound.SoundIntent>",
-  "data":{
-    "sound_external":{
-      "file":"4-Just-To-Create-Something.ogg"
-    }
-  }
-}

@@ -385,6 +385,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
         
         store.get("category").addSubscriber({ 
           name: this.name,
+          overrideSubscriber: true,
           callback: function(category, context) { 
             if (category == context.state.get("category")) {
               return
@@ -402,6 +403,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
 
         store.get("type").addSubscriber({ 
           name: this.name,
+          overrideSubscriber: true,
           callback: function(type, context) {
             //if (type == context.state.get("type")) {
             //  return
@@ -690,6 +692,7 @@ global.__VisuBrushContainers = new Map(String, Callable, {
         this.collection = new UICollection(this, { layout: this.layout })
         this.brushToolbar.store.get("type").addSubscriber({ 
           name: container.name,
+          overrideSubscriber: true,
           callback: function(type, data) {
             data.items.forEach(function(item) { item.free() }).clear() ///@todo replace with remove lambda
             data.collection.components.clear() ///@todo replace with remove lambda
@@ -840,18 +843,32 @@ global.__VisuBrushContainers = new Map(String, Callable, {
       updateTimer: new Timer(FRAME_MS * 60, { loop: Infinity, shuffle: true }),
       brushToolbar: brushToolbar,
       layout: layout,
+      executor: null,
       scrollbarY: { align: HAlign.RIGHT },
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
       renderItem: Callable.run(UIUtil.renderTemplates.get("renderItemDefaultScrollable")),
-      render: Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable")),
+      renderDefaultScrollable: new BindIntent(Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable"))),
+      render: function() {
+        if (this.executor != null) {
+          this.executor.update()
+        }
+
+        this.renderDefaultScrollable()
+        return this
+      },
       onMousePressedLeft: Callable.run(UIUtil.mouseEventTemplates.get("onMouseScrollbarY")),
       onMouseWheelUp: Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelUpY")),
       onMouseWheelDown: Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelDownY")),
       onInit: function() {
         var container = this
+        this.executor = new TaskExecutor(this, {
+          enableLogger: true,
+          catchException: false,
+        })
         this.collection = new UICollection(this, { layout: container.layout })
         this.brushToolbar.store.get("template").addSubscriber({ 
           name: this.name,
+          overrideSubscriber: true,
           callback: function(template, data) {
             if (!Optional.is(template)) {
               data.items.forEach(function(item) { item.free() }).clear() ///@todo replace with remove lambda
@@ -872,21 +889,86 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               .set("brush", brush)
               .set("store", brush.store)
 
-            data.updateArea()
-            data.addUIComponents(brush.components
-              .map(function(component) {
-                return new UIComponent(component)
-              }),
-              new UILayout({
-                area: data.area,
-                width: function() { return this.area.getWidth() },
+            data.executor.tasks.forEach(function(task, iterator, name) {
+              if (task.name == name) {
+                task.fullfill()
+              }
+            }, "init-ui-components")
+
+            var task = new Task("init-ui-components")
+              .setTimeout(60)
+              .setState({
+                context: data,
+                stage: "load-components",
+                components: brush.components,
+                componentsQueue: new Queue(String, GMArray
+                  .map(brush.components.container, function(component, index) { 
+                    return index 
+                  })),
+                componentsConfig: {
+                  context: data,
+                  layout: new UILayout({
+                    area: data.area,
+                    width: function() { return this.area.getWidth() },
+                  }),
+                  textField: null,
+                },
+                "load-components": function(task) {
+                  static factoryComponent = function(component, index, acc) {
+                    static add = function(item, index, acc) {
+                      if (item.type == UITextField) {
+                        var textField = item.textField
+                        if (Optional.is(acc.textField)) {
+                          acc.textField.setNext(textField)
+                          textField.setPrevious(acc.textField)
+                        }
+                        acc.textField = textField
+                      }
+              
+                      acc.context.add(item, item.name)
+                      if (Optional.is(item.updateArea())) {
+                        item.updateArea()
+                      }
+                    }
+              
+                    acc.layout = component
+                      .toUIItems(acc.layout)
+                      .forEach(add, acc)
+                      .getLast().layout.context
+                  }
+                  
+                  var index = task.state.componentsQueue.pop()
+                  if (!Optional.is(index)) {
+                    if (Optional.is(task.state.context.updateTimer)) {
+                      task.state.context.updateTimer.finish()
+                    }
+
+                    task.fullfill()
+                    return
+                  }
+
+                  var component = new UIComponent(task.state.components.get(index))
+                  factoryComponent(component, index, task.state.componentsConfig)
+                },
               })
-            )
+              .whenUpdate(function() {
+                var stage = Struct.get(this.state, this.state.stage)
+                stage(this)
+                return this
+              })
+            
+            data.executor.add(task)
           },
           data: container
         })
       },
       onDestroy: function() {
+        if (Optional.is(this.executor)) {
+          this.executor.tasks.forEach(function(task) { 
+            task.fullfill() 
+          }).clear()
+        }
+
         var store = this.brushToolbar.store
         store.get("template").removeSubscriber(this.name)
         store.get("type").removeSubscriber(this.name)

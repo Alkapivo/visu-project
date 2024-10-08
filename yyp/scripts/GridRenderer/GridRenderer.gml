@@ -359,20 +359,31 @@ function GridRenderer() constructor {
     if (useBlendAsZ) {
       shader_set(shader_gml_use_blend_as_z)
       shader_set_uniform_f(shader_get_uniform(shader_gml_use_blend_as_z, "size"), 1024.0)
-      player.sprite.blend = (sin(this.playerZTimer.update().time) * 0.5 + 0.5) * 255     
-      player.sprite.render(
-        (player.x - (player.sprite.texture.width / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) + ((player.sprite.texture.offsetX * player.sprite.scaleX) / GRID_SERVICE_PIXEL_WIDTH)  - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
-        (player.y - (player.sprite.texture.height / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) + ((player.sprite.texture.offsetY * player.sprite.scaleY) / GRID_SERVICE_PIXEL_HEIGHT)  - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
-      )
+      var _x = (player.x - (player.sprite.texture.width / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) + ((player.sprite.texture.offsetX * player.sprite.scaleX) / GRID_SERVICE_PIXEL_WIDTH)  - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH
+      var _y = (player.y - (player.sprite.texture.height / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) + ((player.sprite.texture.offsetY * player.sprite.scaleY) / GRID_SERVICE_PIXEL_HEIGHT)  - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
+      var blend = player.sprite.getBlend()
+      var alpha = player.sprite.getAlpha()
+      var angle = player.sprite.getAngle()
+      player.sprite
+        .setBlend((sin(this.playerZTimer.update().time) * 0.5 + 0.5) * 255     )
+        .setAlpha(alpha * ((cos(player.stats.godModeCooldown * 15.0) + 2.0) / 3.0) * player.fadeIn)
+        .setAngle(angle - 90.0)
+        .render(_x, _y)
+        .setBlend(blend)
+        .setAlpha(alpha)
+        .setAngle(angle)
       shader_reset()
     } else {
       var _x = (player.x - ((player.sprite.texture.width * player.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) + ((player.sprite.texture.offsetX * player.sprite.scaleX) / GRID_SERVICE_PIXEL_WIDTH) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
       var _y = (player.y - ((player.sprite.texture.height * player.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) + ((player.sprite.texture.offsetY * player.sprite.scaleY) / GRID_SERVICE_PIXEL_HEIGHT) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
-      var alpha = player.sprite.alpha
+      var alpha = player.sprite.getAlpha()
+      var angle = player.sprite.getAngle()
       player.sprite
         .setAlpha(alpha * ((cos(player.stats.godModeCooldown * 15.0) + 2.0) / 3.0) * player.fadeIn)
+        .setAngle(angle - 90.0)
         .render(_x, _y)
         .setAlpha(alpha)
+        .setAngle(angle)
       this.player2DCoords = Math.project3DCoordsOn2D(_x + baseX, _y + baseY, gridService.properties.depths.playerZ, this.camera.viewMatrix, this.camera.projectionMatrix, this.gridSurface.width, this.gridSurface.height)
     }
     
@@ -545,7 +556,7 @@ function GridRenderer() constructor {
   renderBullets = function(gridService, bulletService) {
     static renderBullet = function(bullet, index, gridService) {
       bullet.sprite
-        .setAngle(bullet.angle)
+        .setAngle(bullet.angle - 90.0)
         .render(
           (bullet.x - ((bullet.sprite.texture.width * bullet.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) + ((bullet.sprite.texture.offsetX * bullet.sprite.scaleX) / GRID_SERVICE_PIXEL_WIDTH) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
           (bullet.y - ((bullet.sprite.texture.height * bullet.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) + ((bullet.sprite.texture.offsetY * bullet.sprite.scaleY) / GRID_SERVICE_PIXEL_HEIGHT) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
@@ -601,31 +612,42 @@ function GridRenderer() constructor {
 
     var useBlendAsZ = false
     if (useBlendAsZ) {
+      var _x = (player.x - (player.sprite.texture.width / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) + ((player.sprite.texture.offsetX * player.sprite.scaleX) / GRID_SERVICE_PIXEL_WIDTH)  - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH
+      var _y = (player.y - (player.sprite.texture.height / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) + ((player.sprite.texture.offsetY * player.sprite.scaleY) / GRID_SERVICE_PIXEL_HEIGHT)  - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
+      var blend = player.sprite.getBlend()
+      var alpha = player.sprite.getAlpha()
+      var angle = player.sprite.getAngle()
       shader_set(shader_gml_use_blend_as_z)
       shader_set_uniform_f(shader_get_uniform(shader_gml_use_blend_as_z, "size"), 1024.0)
-      player.sprite.blend = (sin(this.playerZTimer.update().time) * 0.5 + 0.5) * 255     
-      player.sprite.render(
-        (player.x - (player.sprite.texture.width / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) + ((player.sprite.texture.offsetX * player.sprite.scaleX) / GRID_SERVICE_PIXEL_WIDTH)  - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
-        (player.y - (player.sprite.texture.height / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) + ((player.sprite.texture.offsetY * player.sprite.scaleY) / GRID_SERVICE_PIXEL_HEIGHT)  - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
-      )
-      
-      GPU.render.rectangle(
-        (player.x - ((player.mask.getWidth() * player.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
-        (player.y - ((player.mask.getHeight() * player.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT,
-        (player.x + ((player.mask.getWidth() * player.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
-        (player.y + ((player.mask.getHeight() * player.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT,
-        false, 
-        c_lime
-      )
+        player.sprite
+          .setBlend((sin(this.playerZTimer.update().time) * 0.5 + 0.5) * 255)
+          .setAlpha(alpha * ((cos(player.stats.godModeCooldown * 15.0) + 2.0) / 3.0))
+          .setAngle(angle - 90)
+          .render(_x, _y)
+          .setBlend(blend)
+          .setAlpha(alpha)
+          .setAngle(angle)
+        
+        GPU.render.rectangle(
+          (player.x - ((player.mask.getWidth() * player.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
+          (player.y - ((player.mask.getHeight() * player.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT,
+          (player.x + ((player.mask.getWidth() * player.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
+          (player.y + ((player.mask.getHeight() * player.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT,
+          false, 
+          c_lime
+        )
       shader_reset()
     } else {
       var _x = (player.x - ((player.sprite.texture.width * player.sprite.scaleX) / (2.0 * GRID_SERVICE_PIXEL_WIDTH)) + ((player.sprite.texture.offsetX * player.sprite.scaleX) / GRID_SERVICE_PIXEL_WIDTH) - gridService.view.x) * GRID_SERVICE_PIXEL_WIDTH,
       var _y = (player.y - ((player.sprite.texture.height * player.sprite.scaleY) / (2.0 * GRID_SERVICE_PIXEL_HEIGHT)) + ((player.sprite.texture.offsetY * player.sprite.scaleY) / GRID_SERVICE_PIXEL_HEIGHT) - gridService.view.y) * GRID_SERVICE_PIXEL_HEIGHT
-      var alpha = player.sprite.alpha
+      var alpha = player.sprite.getAlpha()
+      var angle = player.sprite.getAngle()
       player.sprite
         .setAlpha(alpha * ((cos(player.stats.godModeCooldown * 15.0) + 2.0) / 3.0))
+        .setAngle(angle - 90.0)
         .render(_x, _y)
         .setAlpha(alpha)
+        .setAngle(angle)
       this.player2DCoords = Math.project3DCoordsOn2D(_x + baseX, _y + baseY, gridService.properties.depths.playerZ, this.camera.viewMatrix, this.camera.projectionMatrix, this.gridSurface.width, this.gridSurface.height)
       
       GPU.render.rectangle(
@@ -850,13 +872,14 @@ function GridRenderer() constructor {
 
     var depths = properties.depths
     var camera = this.camera
-    var cameraDistance = 1 ///@todo investigate
+    var cameraAngle = camera.angle
+    var cameraPitch = camera.pitch
     var xto = camera.x
     var yto = camera.y
     var zto = camera.z + camera.zoom
-    var xfrom = xto + cameraDistance * dcos(camera.angle) * dcos(camera.pitch)
-    var yfrom = yto - cameraDistance * dsin(camera.angle) * dcos(camera.pitch)
-    var zfrom = zto - cameraDistance * dsin(camera.pitch)
+    var xfrom = xto + dcos(cameraAngle) * dcos(cameraPitch)
+    var yfrom = yto - dsin(cameraAngle) * dcos(cameraPitch)
+    var zfrom = zto - dsin(cameraPitch)
     var baseX = GRID_SERVICE_PIXEL_WIDTH + GRID_SERVICE_PIXEL_WIDTH * 0.5
     var baseY = GRID_SERVICE_PIXEL_HEIGHT + GRID_SERVICE_PIXEL_HEIGHT * 0.5
     camera.viewMatrix = matrix_build_lookat(

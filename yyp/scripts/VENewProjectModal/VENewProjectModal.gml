@@ -1584,6 +1584,9 @@ function VENewProjectModal(_config = null) constructor {
     },
   })
 
+  ///@type {Map<String, Containers>}
+  containers = new Map(String, UI)
+
   ///@private
   ///@param {UIlayout} parent
   ///@return {UILayout}
@@ -1648,6 +1651,8 @@ function VENewProjectModal(_config = null) constructor {
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "open": function(event) {
+      this.dispatcher.execute(new Event("close"))
+
       this.containers = this.factoryContainers(event.data.layout)
       containers.forEach(function(container, key, uiService) {
         uiService.send(new Event("add", {

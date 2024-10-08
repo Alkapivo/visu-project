@@ -8,7 +8,7 @@ function Test_Language(json = {}) {
     .setPromise(new Promise())
     .setState({
       cooldown: new Timer(Struct.getDefault(json, "cooldown", 0.5)),
-      code: Struct.getDefault(json, "code", LanguageType.en_US),
+      code: Struct.getDefault(json, "code", LanguageType.en_EN),
       key: Struct.getDefault(json, "key", "test.language"),
       param1: Struct.getDefault(json, "param1", "lorem"),
       param2: Struct.getDefault(json, "param2", "ipsum"),

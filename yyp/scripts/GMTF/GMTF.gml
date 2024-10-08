@@ -87,6 +87,7 @@ function _GMTFContext(config = {}) constructor {
 							0, offsetY, 10, offsetY + areaHeight, 
 							0, itemY, 10, itemBottom
 						)
+					
 						if (!scrollYBug && (itemY < offsetY || itemBottom > offsetY + areaHeight)) {
 							var newY = (itemY < offsetY) ? itemY : itemBottom - areaHeight
 							uiTextField.context.offset.y = -1 * clamp(newY, 0.0, abs(uiTextField.context.offsetMax.y))

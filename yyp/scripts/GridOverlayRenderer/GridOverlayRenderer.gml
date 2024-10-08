@@ -32,18 +32,28 @@ function GridOverlayRenderer() constructor {
       var color = task.state.get("color")
       var alpha = color.alpha
       color = color.toGMColor()
+      GPU.set.blendModeExt(task.state.get("blendModeSource"), task.state.get("blendModeTarget"))
+      GPU.set.blendEquation(task.state.get("blendEquation"))
       GPU.render.rectangle(0, 0, acc.width, acc.height, false, color, color, color, color, alpha)
+      GPU.reset.blendEquation()
+      GPU.reset.blendMode()
     }
 
     static renderBackground = function(task, index, acc) {
       var sprite = task.state.get("sprite")
       sprite.scaleToFill(acc.width, acc.height)
-      var _x = ceil(((sprite.texture.width * sprite.scaleX) - acc.width) / 2.0) + task.state.get("x")
-      var _y = ceil(((sprite.texture.height * sprite.scaleY) - acc.height) / 2.0) + task.state.get("y")
+        .setScaleX(sprite.scaleX * task.state.get("xScale"))
+        .setScaleY(sprite.scaleY * task.state.get("yScale"))
+      var _x = ceil(((sprite.texture.width * sprite.getScaleX()) - acc.width) / 2.0) + task.state.get("x")
+      var _y = ceil(((sprite.texture.height * sprite.getScaleY()) - acc.height) / 2.0) + task.state.get("y")
+      GPU.set.blendModeExt(task.state.get("blendModeSource"), task.state.get("blendModeTarget"))
+      GPU.set.blendEquation(task.state.get("blendEquation"))
       sprite.renderTiled(
         ((sprite.texture.offsetX / sprite.texture.width) * acc.width) - _x,
         ((sprite.texture.offsetY / sprite.texture.height) * acc.height) - _y
       )
+      GPU.reset.blendEquation()
+      GPU.reset.blendMode()
     }
 
     this.backgroundColors.forEach(renderBackgroundColor, { width: width, height: height })
@@ -59,24 +69,32 @@ function GridOverlayRenderer() constructor {
       var color = task.state.get("color")
       var alpha = color.alpha
       color = color.toGMColor()
+      GPU.set.blendModeExt(task.state.get("blendModeSource"), task.state.get("blendModeTarget"))
+      GPU.set.blendEquation(task.state.get("blendEquation"))
       GPU.render.rectangle(0, 0, acc.width, acc.height, false, color, color, color, color, alpha)
+      GPU.reset.blendEquation()
+      GPU.reset.blendMode()
     }
 
     static renderForeground = function(task, index, acc) {
       var sprite = task.state.get("sprite")
       sprite.scaleToFill(acc.width, acc.height)
-      var _x = ceil(((sprite.texture.width * sprite.scaleX) - acc.width) / 2.0) + task.state.get("x")
-      var _y = ceil(((sprite.texture.height * sprite.scaleY) - acc.height) / 2.0) + task.state.get("y")
+        .setScaleX(sprite.scaleX * task.state.get("xScale"))
+        .setScaleY(sprite.scaleY * task.state.get("yScale"))
+      var _x = ceil(((sprite.texture.width * sprite.getScaleX()) - acc.width) / 2.0) + task.state.get("x")
+      var _y = ceil(((sprite.texture.height * sprite.getScaleY()) - acc.height) / 2.0) + task.state.get("y")
+      GPU.set.blendModeExt(task.state.get("blendModeSource"), task.state.get("blendModeTarget"))
+      GPU.set.blendEquation(task.state.get("blendEquation"))
       sprite.renderTiled(
         ((sprite.texture.offsetX / sprite.texture.width) * acc.width) - _x,
         ((sprite.texture.offsetY / sprite.texture.height) * acc.height) - _y
       )
+      GPU.reset.blendEquation()
+      GPU.reset.blendMode()
     }
 
-    GPU.set.blendMode(BlendMode.ADD)
     this.foregroundColors.forEach(renderForegroundColor, { width: width, height: height })
     this.foregrounds.forEach(renderForeground, { width: width, height: height })
-    GPU.reset.blendMode()
     return this
   }
 
@@ -91,9 +109,9 @@ function GridOverlayRenderer() constructor {
     }
 
     video.surface.update()
-    var scale = max(video.surface.width / width, video.surface.height / height)
-    var _width = ceil(width * scale)
-    var _height = ceil(height * scale)
+    var scale = max(width / video.surface.width, height / video.surface.height)
+    var _width = ceil(video.surface.width * scale)
+    var _height = ceil(video.surface.height * scale)
     var _x = -1 * ceil((_width - width) / 2.0)
     var _y = -1 * ceil((_height - height) / 2.0)
     video.surface.render(_x, _y, _width, _height)    

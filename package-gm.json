@@ -8,11 +8,11 @@
   "dependencies": {
     "core": {
       "remote": "https://github.com/Alkapivo/core-gml.git",
-      "revision": "b80ed97528fa8e6ed544c9a48a7e04d2829fcb8b"
+      "revision": "f5412884d7783aff452fa199f172f17db5113103"
     },
     "visu": {
       "remote": "https://github.com/Alkapivo/visu-gml.git",
-      "revision": "779f8be5b407292bd17c5a182c505ab6e638b5f4"
+      "revision": "e6f7779f3a4dbdb33e0e2891d2fe94c3ff70b383"
     },
     "neon-baron": {
       "remote": "https://github.com/Alkapivo/neon-baron-gml.git",

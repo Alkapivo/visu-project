@@ -84,6 +84,18 @@ function GridCamera(config = {}) constructor {
 				dy -= dsin(this.angle) * moveSpeed
 				Logger.debug("GridCamera", $"x: {this.x}, y: {this.y} z: {this.z}")
 			}
+
+			/* 
+			if (keyboard_check(ord("Q"))) {
+				this.angle += 0.1
+				Logger.debug("GridCamera", $"angle: {this.angle}")
+			}
+
+			if (keyboard_check(ord("E"))) {
+				this.angle -= 0.1
+				Logger.debug("GridCamera", $"angle: {this.angle}")
+			}
+			*/
 	
 			if (mouse_wheel_up()) {
 				dz += moveSpeed * 10

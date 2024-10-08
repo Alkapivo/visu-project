@@ -41,7 +41,9 @@ function Track(json, config = null) constructor {
         //Logger.debug("Track", $"Parse channel '{channel.name}' at index {index}")
         return new TrackChannel({ 
           name: Assert.isType(Struct.get(channel, "name"), String),
-          events: Assert.isType(Struct.get(channel, "events"), GMArray),
+          events: GMArray.sort(Assert.isType(Struct.get(channel, "events"), GMArray), function(a, b) {
+            return sign(a.timestamp - b.timestamp) * ceil(abs(a.timestamp - b.timestamp))
+          }),
           index: index,
         }, config)
       }
@@ -280,6 +282,7 @@ function TrackChannel(json, config = null) constructor {
           break
         }
         if (index == this.events.size() - 1) {
+          Logger.warn("Track", $"TrackEvent wasn't found. channel: '{this.name}'")
           return this
         }
       }
