@@ -473,6 +473,20 @@ function brush_view_wallpaper(json = null) {
         },
       },
       {
+        name: "view-wallpaper_clear-texture",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "Remove texture" },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "view-wallpaper_clear-texture" },
+          },
+        },
+      },
+      {
         name: "view-wallpaper_use-texture-speed",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
@@ -670,7 +684,7 @@ function brush_view_wallpaper(json = null) {
           },
           increment: {
             label: { 
-              text: "Increment",
+              text: "Increase",
               enable: { key: "view-wallpaper_use-angle-transform" },
             },
             field: { 
@@ -738,7 +752,7 @@ function brush_view_wallpaper(json = null) {
           },
           increment: {
             label: { 
-              text: "Increment",
+              text: "Increase",
               enable: { key: "view-wallpaper_use-speed-transform" },
             },
             field: { 
@@ -797,7 +811,7 @@ function brush_view_wallpaper(json = null) {
           },
           increment: {
             label: { 
-              text: "Increment",
+              text: "Increase",
               enable: { key: "view-wallpaper_use-xScale-transform" },
             },
             field: { 
@@ -856,7 +870,7 @@ function brush_view_wallpaper(json = null) {
           },
           increment: {
             label: { 
-              text: "Increment",
+              text: "Increase",
               enable: { key: "view-wallpaper_use-yScale-transform" },
             },
             field: { 
@@ -874,20 +888,6 @@ function brush_view_wallpaper(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "yScale" },
           field: { store: { key: "view-wallpaper_yScale" } },
-        },
-      },
-      {
-        name: "view-wallpaper_clear-texture",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Remove texture" },
-          checkbox: { 
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "view-wallpaper_clear-texture" },
-          },
         },
       },
     ]),

@@ -128,7 +128,7 @@ function brush_shroom_config(json = null) {
           },
           increment: {
             label: {
-              text: "Increment",
+              text: "Increase",
               enable: { key: "shroom-config_use-transform-shroom-z" },
             },
             field: {
@@ -200,7 +200,7 @@ function brush_shroom_config(json = null) {
           },
           increment: {
             label: {
-              text: "Increment",
+              text: "Increase",
               enable: { key: "shroom-config_use-transform-bullet-z" },
             },
             field: {
@@ -272,7 +272,7 @@ function brush_shroom_config(json = null) {
           },
           increment: {
             label: {
-              text: "Increment",
+              text: "Increase",
               enable: { key: "shroom-config_use-transform-coin-z" },
             },
             field: {

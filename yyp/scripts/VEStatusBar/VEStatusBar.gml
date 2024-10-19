@@ -127,20 +127,6 @@ function VEStatusBar(_editor) constructor {
             y: function() { return 0 },
             width: function() { return 24 },
           },
-          shaderQualityLabel: {
-            name: "status-bar.shaderQualityLabel",
-            x: function() { return this.context.nodes.autosaveCheckbox.right()
-              + this.margin.left },
-            y: function() { return 0 },
-            width: function() { return 50 },
-          },
-          shaderQualityValue: {
-            name: "status-bar.shaderQualityValue",
-            x: function() { return this.context.nodes.shaderQualityLabel.right() + this.margin.left },
-            y: function() { return 0 },
-            margin: { left: 2 },
-            width: function() { return 40 },
-          },
           stateLabel: {
             name: "status-bar.stateLabel",
             x: function() { return this.context.nodes.stateValue.left() 
@@ -365,51 +351,6 @@ function VEStatusBar(_editor) constructor {
       )
     }
 
-    static factoryShaderQualityField = function(json) {
-      var struct = {
-        type: UITextField,
-        layout: json.layout,
-        text: 1.0,
-        updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-        config: { key: "shader-quality" },
-        store: {
-          key: "shader-quality",
-          callback: function(value, data) { 
-            var item = data.store.get("shader-quality")
-            if (item == null) {
-              return 
-            }
-
-            var shaderQuality = item.get()
-            if (!Core.isType(shaderQuality, Number)) {
-              return 
-            }
-            data.textField.setText(string(shaderQuality))
-          },
-          set: function(value) {
-            var item = this.get()
-            if (item == null) {
-              return 
-            }
-
-            var parsedValue = NumberUtil.parse(value, null)
-            if (parsedValue == null) {
-              return
-            }
-            item.set(parsedValue)
-
-            Visu.settings.setValue("visu.graphics.shader-quality", parsedValue).save()
-          },
-        },
-      }
-
-      return Struct.appendRecursiveUnique(
-        struct,
-        VEStyles.get("text-field"),
-        false
-      )
-    }
-
     static factoryCheckbox = function(json) {
       var struct = {
         type: UICheckbox,
@@ -570,13 +511,6 @@ function VEStatusBar(_editor) constructor {
                 editor.autosave.timer.time = 0
               }
             },
-          }),
-          "text_ve-status-bar_shaderQualityLabel": factoryLabel({
-            text: "Quality:",
-            layout: layout.nodes.shaderQualityLabel,
-          }),
-          "text_ve-status-bar_shaderQualityField": factoryShaderQualityField({
-            layout: layout.nodes.shaderQualityValue,
           }),
           "text_ve-status-bar_stateLabel": factoryLabel({
             text: "State:",

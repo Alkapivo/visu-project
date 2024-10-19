@@ -83,6 +83,19 @@ function template_bullet(json = null) {
         type: NumberTransformer,
         value: new NumberTransformer(Struct.get(json, "speedTransformer")),
       },
+      "bullet_use-wiggle-speed": {
+        type: Boolean,
+        value: Core.isType(Struct.get(json, "speedWiggleValue"), Struct) 
+          && Core.isType(Struct.get(json, "speedWiggleInterval"), Struct),
+      },
+      "bullet_wiggle-speed-value": {
+        type: NumberTransformer,
+        value: new NumberTransformer(Struct.get(json, "speedWiggleValue")),
+      },
+      "bullet_wiggle-speed-interval": {
+        type: NumberTransformer,
+        value: new NumberTransformer(Struct.get(json, "speedWiggleInterval")),
+      },
       "bullet_use-transform-angle": {
         type: Boolean,
         value: Core.isType(Struct.get(json, "angleTransformer"), Struct),
@@ -90,6 +103,19 @@ function template_bullet(json = null) {
       "bullet_transform-angle": {
         type: NumberTransformer,
         value: new NumberTransformer(Struct.get(json, "angleTransformer")),
+      },
+      "bullet_use-wiggle-angle": {
+        type: Boolean,
+        value: Core.isType(Struct.get(json, "angleWiggleValue"), Struct) 
+          && Core.isType(Struct.get(json, "angleWiggleInterval"), Struct),
+      },
+      "bullet_wiggle-angle-value": {
+        type: NumberTransformer,
+        value: new NumberTransformer(Struct.get(json, "angleWiggleValue")),
+      },
+      "bullet_wiggle-angle-interval": {
+        type: NumberTransformer,
+        value: new NumberTransformer(Struct.get(json, "angleWiggleInterval")),
       },
       "bullet_use-random-direction": {
         type: Boolean,
@@ -101,57 +127,8 @@ function template_bullet(json = null) {
           ? json.randomDirection 
           : false,
       },
-      "bullet_use-transform-swing-amount": {
-        type: Boolean,
-        value: Core.isType(Struct.get(json, "swingAmount"), Struct),
-      },
-      "bullet_transform-swing-amount": {
-        type: NumberTransformer,
-        value: new NumberTransformer(Struct.get(json, "swingAmount")),
-      },
-      "bullet_use-transform-swing-size": {
-        type: Boolean,
-        value: Core.isType(Struct.get(json, "swingSize"), Struct),
-      },
-      "bullet_transform-swing-size": {
-        type: NumberTransformer,
-        value: new NumberTransformer(Struct.get(json, "swingSize")),
-      },
     }),
     components: new Array(Struct, [
-      {
-        name: "bullet_use-damage",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Set damage",
-            enable: { key: "bullet_use-damage" },
-          },  
-          checkbox: { 
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "bullet_use-damage" },
-          },
-        },
-      },
-      {
-        name: "bullet_damage",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Damage",
-            enable: { key: "bullet_use-damage" },
-          },  
-          field: { 
-            store: { key: "bullet_damage" },
-            enable: { key: "bullet_use-damage" },
-          },
-        },
-      },
       {
         name: "bullet_use-lifespawn",
         template: VEComponents.get("property"),
@@ -186,83 +163,35 @@ function template_bullet(json = null) {
         },
       },
       {
-        name: "bullet_use-template-on-death",
+        name: "bullet_use-damage",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Spawn bullet on death",
-            enable: { key: "bullet_use-template-on-death" },
+            text: "Set damage",
+            enable: { key: "bullet_use-damage" },
           },  
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "bullet_use-template-on-death" },
+            store: { key: "bullet_use-damage" },
           },
         },
       },
       {
-        name: "bullet_template-on-death",
+        name: "bullet_damage",
         template: VEComponents.get("text-field"),
         layout: VELayouts.get("text-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Template",
-            enable: { key: "bullet_use-template-on-death" },
+            text: "Damage",
+            enable: { key: "bullet_use-damage" },
           },  
           field: { 
-            store: { key: "bullet_template-on-death" },
-            enable: { key: "bullet_use-template-on-death" },
-          },
-        },
-      },
-      {
-        name: "bullet_template-amount-on-death",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Amount",
-            enable: { key: "bullet_use-template-on-death" },
-          },  
-          field: { 
-            store: { key: "bullet_template-amount-on-death" },
-            enable: { key: "bullet_use-template-on-death" },
-          },
-        },
-      },
-      {
-        name: "bullet_template-spawn-angle-on-death",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Start angle",
-            enable: { key: "bullet_use-template-on-death" },
-          },  
-          field: { 
-            store: { key: "bullet_template-spawn-angle-on-death" },
-            enable: { key: "bullet_use-template-on-death" },
-          },
-        },
-      },
-      {
-        name: "bullet_template-angle-step-on-death",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Angle step",
-            enable: { key: "bullet_use-template-on-death" },
-          },  
-          field: { 
-            store: { key: "bullet_template-angle-step-on-death" },
-            enable: { key: "bullet_use-template-on-death" },
+            store: { key: "bullet_damage" },
+            enable: { key: "bullet_use-damage" },
           },
         },
       },
@@ -389,6 +318,29 @@ function template_bullet(json = null) {
         },
       },
       {
+        name: "bullet_random-direction",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Randomize direction",
+            enable: { key: "bullet_use-random-direction" },
+          },  
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "bullet_use-random-direction" },
+          },
+          input: { 
+            spriteOn: { name: "visu_texture_checkbox_switch_on" },
+            spriteOff: { name: "visu_texture_checkbox_switch_off" },
+            store: { key: "bullet_random-direction" },
+            enable: { key: "bullet_use-random-direction" },
+          },
+        },
+      },
+      {
         name: "bullet_transform-speed",
         template: VEComponents.get("transform-numeric-property"),
         layout: VELayouts.get("transform-numeric-property"),
@@ -427,12 +379,105 @@ function template_bullet(json = null) {
           },
           increment: {
             label: {
-              text: "Increment",
+              text: "Increase",
               enable: { key: "bullet_use-transform-speed" },
             },
             field: {
               store: { key: "bullet_transform-speed" },
               enable: { key: "bullet_use-transform-speed" },
+            },
+          },
+        },
+      },
+      {
+        name: "bullet_wiggle-speed-value",
+        template: VEComponents.get("transform-numeric-property"),
+        layout: VELayouts.get("transform-numeric-property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          title: {
+            label: {
+              text: "Wiggle speed value",
+              enable: { key: "bullet_use-wiggle-speed" },
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "bullet_use-wiggle-speed" },
+            },
+          },
+          target: {
+            label: {
+              text: "Target",
+              enable: { key: "bullet_use-wiggle-speed" },
+            },
+            field: {
+              store: { key: "bullet_wiggle-speed-value" },
+              enable: { key: "bullet_use-wiggle-speed" },
+            },
+          },
+          factor: {
+            label: {
+              text: "Factor",
+              enable: { key: "bullet_use-wiggle-speed" },
+            },
+            field: {
+              store: { key: "bullet_wiggle-speed-value" },
+              enable: { key: "bullet_use-wiggle-speed" },
+            },
+          },
+          increment: {
+            label: {
+              text: "Increase",
+              enable: { key: "bullet_use-wiggle-speed" },
+            },
+            field: {
+              store: { key: "bullet_wiggle-speed-value" },
+              enable: { key: "bullet_use-wiggle-speed" },
+            },
+          },
+        },
+      },
+      {
+        name: "bullet_wiggle-speed-interval",
+        template: VEComponents.get("transform-numeric-property"),
+        layout: VELayouts.get("transform-numeric-property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          title: {
+            label: {
+              text: "Wiggle speed interval",
+              enable: { key: "bullet_use-wiggle-speed" },
+            },
+          },
+          target: {
+            label: {
+              text: "Target",
+              enable: { key: "bullet_use-wiggle-speed" },
+            },
+            field: {
+              store: { key: "bullet_wiggle-speed-interval" },
+              enable: { key: "bullet_use-wiggle-speed" },
+            },
+          },
+          factor: {
+            label: {
+              text: "Factor",
+              enable: { key: "bullet_use-wiggle-speed" },
+            },
+            field: {
+              store: { key: "bullet_wiggle-speed-interval" },
+              enable: { key: "bullet_use-wiggle-speed" },
+            },
+          },
+          increment: {
+            label: {
+              text: "Increase",
+              enable: { key: "bullet_use-wiggle-speed" },
+            },
+            field: {
+              store: { key: "bullet_wiggle-speed-interval" },
+              enable: { key: "bullet_use-wiggle-speed" },
             },
           },
         },
@@ -476,7 +521,7 @@ function template_bullet(json = null) {
           },
           increment: {
             label: {
-              text: "Increment",
+              text: "Increase",
               enable: { key: "bullet_use-transform-angle" },
             },
             field: {
@@ -487,123 +532,176 @@ function template_bullet(json = null) {
         },
       },
       {
-        name: "bullet_random-direction",
+        name: "bullet_wiggle-angle-value",
+        template: VEComponents.get("transform-numeric-property"),
+        layout: VELayouts.get("transform-numeric-property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          title: {
+            label: {
+              text: "Wiggle angle value",
+              enable: { key: "bullet_use-wiggle-angle" },
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "bullet_use-wiggle-angle" },
+            },
+          },
+          target: {
+            label: {
+              text: "Target",
+              enable: { key: "bullet_use-wiggle-angle" },
+            },
+            field: {
+              store: { key: "bullet_wiggle-angle-value" },
+              enable: { key: "bullet_use-wiggle-angle" },
+            },
+          },
+          factor: {
+            label: {
+              text: "Factor",
+              enable: { key: "bullet_use-wiggle-angle" },
+            },
+            field: {
+              store: { key: "bullet_wiggle-angle-value" },
+              enable: { key: "bullet_use-wiggle-angle" },
+            },
+          },
+          increment: {
+            label: {
+              text: "Increase",
+              enable: { key: "bullet_use-wiggle-angle" },
+            },
+            field: {
+              store: { key: "bullet_wiggle-angle-value" },
+              enable: { key: "bullet_use-wiggle-angle" },
+            },
+          },
+        },
+      },
+      {
+        name: "bullet_wiggle-angle-interval",
+        template: VEComponents.get("transform-numeric-property"),
+        layout: VELayouts.get("transform-numeric-property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          title: {
+            label: {
+              text: "Wiggle angle interval",
+              enable: { key: "bullet_use-wiggle-angle" },
+            },
+          },
+          target: {
+            label: {
+              text: "Target",
+              enable: { key: "bullet_use-wiggle-angle" },
+            },
+            field: {
+              store: { key: "bullet_wiggle-angle-interval" },
+              enable: { key: "bullet_use-wiggle-angle" },
+            },
+          },
+          factor: {
+            label: {
+              text: "Factor",
+              enable: { key: "bullet_use-wiggle-angle" },
+            },
+            field: {
+              store: { key: "bullet_wiggle-angle-interval" },
+              enable: { key: "bullet_use-wiggle-angle" },
+            },
+          },
+          increment: {
+            label: {
+              text: "Increase",
+              enable: { key: "bullet_use-wiggle-angle" },
+            },
+            field: {
+              store: { key: "bullet_wiggle-angle-interval" },
+              enable: { key: "bullet_use-wiggle-angle" },
+            },
+          },
+        },
+      },
+      {
+        name: "bullet_use-template-on-death",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Randomize direction",
-            enable: { key: "bullet_use-random-direction" },
+            text: "Spawn bullet on death",
+            enable: { key: "bullet_use-template-on-death" },
           },  
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "bullet_use-random-direction" },
-          },
-          input: { 
-            spriteOn: { name: "visu_texture_checkbox_switch_on" },
-            spriteOff: { name: "visu_texture_checkbox_switch_off" },
-            store: { key: "bullet_random-direction" },
-            enable: { key: "bullet_use-random-direction" },
+            store: { key: "bullet_use-template-on-death" },
           },
         },
       },
       {
-        name: "bullet_transform-swing-amount",
-        template: VEComponents.get("transform-numeric-property"),
-        layout: VELayouts.get("transform-numeric-property"),
+        name: "bullet_template-on-death",
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          title: {
-            label: {
-              text: "Transform swing amount",
-              enable: { key: "bullet_use-transform-swing-amount" },
-            },
-            checkbox: { 
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "bullet_use-transform-swing-amount" },
-            },
-          },
-          target: {
-            label: {
-              text: "Target",
-              enable: { key: "bullet_use-transform-swing-amount" },
-            },
-            field: {
-              store: { key: "bullet_transform-swing-amount" },
-              enable: { key: "bullet_use-transform-swing-amount" },
-            },
-          },
-          factor: {
-            label: {
-              text: "Factor",
-              enable: { key: "bullet_use-transform-swing-amount" },
-            },
-            field: {
-              store: { key: "bullet_transform-swing-amount" },
-              enable: { key: "bullet_use-transform-swing-amount" },
-            },
-          },
-          increment: {
-            label: {
-              text: "Increment",
-              enable: { key: "bullet_use-transform-swing-amount" },
-            },
-            field: {
-              store: { key: "bullet_transform-swing-amount" },
-              enable: { key: "bullet_use-transform-swing-amount" },
-            },
+          label: { 
+            text: "Template",
+            enable: { key: "bullet_use-template-on-death" },
+          },  
+          field: { 
+            store: { key: "bullet_template-on-death" },
+            enable: { key: "bullet_use-template-on-death" },
           },
         },
       },
       {
-        name: "bullet_transform-swing-size",
-        template: VEComponents.get("transform-numeric-property"),
-        layout: VELayouts.get("transform-numeric-property"),
+        name: "bullet_template-amount-on-death",
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          title: {
-            label: {
-              text: "Transform swing size",
-              enable: { key: "bullet_use-transform-swing-size" },
-            },
-            checkbox: { 
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "bullet_use-transform-swing-size" },
-            },
+          label: { 
+            text: "Amount",
+            enable: { key: "bullet_use-template-on-death" },
+          },  
+          field: { 
+            store: { key: "bullet_template-amount-on-death" },
+            enable: { key: "bullet_use-template-on-death" },
           },
-          target: {
-            label: {
-              text: "Target",
-              enable: { key: "bullet_use-transform-swing-size" },
-            },
-            field: {
-              store: { key: "bullet_transform-swing-size" },
-              enable: { key: "bullet_use-transform-swing-size" },
-            },
+        },
+      },
+      {
+        name: "bullet_template-spawn-angle-on-death",
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Start angle",
+            enable: { key: "bullet_use-template-on-death" },
+          },  
+          field: { 
+            store: { key: "bullet_template-spawn-angle-on-death" },
+            enable: { key: "bullet_use-template-on-death" },
           },
-          factor: {
-            label: {
-              text: "Factor",
-              enable: { key: "bullet_use-transform-swing-size" },
-            },
-            field: {
-              store: { key: "bullet_transform-swing-size" },
-              enable: { key: "bullet_use-transform-swing-size" },
-            },
-          },
-          increment: {
-            label: {
-              text: "Increment",
-              enable: { key: "bullet_use-transform-swing-size" },
-            },
-            field: {
-              store: { key: "bullet_transform-swing-size" },
-              enable: { key: "bullet_use-transform-swing-size" },
-            },
+        },
+      },
+      {
+        name: "bullet_template-angle-step-on-death",
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Angle step",
+            enable: { key: "bullet_use-template-on-death" },
+          },  
+          field: { 
+            store: { key: "bullet_template-angle-step-on-death" },
+            enable: { key: "bullet_use-template-on-death" },
           },
         },
       },

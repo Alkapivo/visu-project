@@ -352,24 +352,6 @@ function VisuMenu(_config = null) constructor {
             },
           }
         },
-        {
-          name: "main-menu_menu-button-entry_restart",
-          template: VisuComponents.get("menu-button-entry"),
-          layout: VisuLayouts.get("menu-button-entry"),
-          config: {
-            layout: { type: UILayoutType.VERTICAL },
-            label: { 
-              text: "Restart",
-              callback: new BindIntent(function() {
-                SceneContext.open("scene_visu")
-              }),
-              callbackData: config,
-              onMouseReleasedLeft: function() {
-                this.callback()
-              },
-            },
-          }
-        },
       ])
     })
 
@@ -490,288 +472,6 @@ function VisuMenu(_config = null) constructor {
           }
         },
       ])
-    })
-
-    return event
-  }
-
-  ///@param {?Struct} [_config]
-  ///@return {Event}
-  factoryOpenSelectTrackMenuEvent = function(_config = null) {
-    var config = Struct.appendUnique(
-      _config,
-      {
-        back: this.factoryOpenMainMenuEvent, 
-      }
-    )
-
-    var event = new Event("open").setData({
-      back: config.back,
-      layout: Beans.get(BeanVisuController).visuRenderer.layout,
-      title: {
-        name: "select-track_title",
-        template: VisuComponents.get("menu-title"),
-        layout: VisuLayouts.get("menu-title"),
-        config: {
-          label: { 
-            text: "kedy_selma\nJust To Create Someting",
-          },
-        },
-      },
-      content: new Array(Struct, Core.getRuntimeType() == RuntimeType.GXGAMES
-        ? [
-          {
-            name: "select-track_menu-button-entry_kedy-selma_just-to-create-something",
-            template: VisuComponents.get("menu-button-entry"),
-            layout: VisuLayouts.get("menu-button-entry"),
-            config: {
-              layout: { type: UILayoutType.VERTICAL },
-              label: { 
-                text: "4. Just To Create Something",
-                callback: new BindIntent(function() {
-                  Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
-                  Beans.get(BeanVisuController).send(new Event("load", {
-                    manifest: "track/kedy_selma/2024-Just-To-Create-Something/4-Just-To-Create-Something/manifest.visu",
-                    autoplay: true,
-                  }))
-                }),
-                onMouseReleasedLeft: function() {
-                  this.callback()
-                },
-              },
-            }
-          },
-          {
-            name: "select-track_menu-button-entry_back",
-            template: VisuComponents.get("menu-button-entry"),
-            layout: VisuLayouts.get("menu-button-entry"),
-            config: {
-              layout: { type: UILayoutType.VERTICAL },
-              label: { 
-                text: "Back",
-                callback: new BindIntent(function() {
-                  Beans.get(BeanVisuController).menu.send(Callable.run(this.callbackData))
-                  Beans.get(BeanVisuController).sfxService.play("menu-select-entry")
-                }),
-                callbackData: config.back,
-                onMouseReleasedLeft: function() {
-                  this.callback()
-                },
-              },
-            }
-          }
-        ]
-        : [
-          {
-            name: "select-track_menu-button-entry_kedy-selma_wake-up-before-you-forget-how-to",
-            template: VisuComponents.get("menu-button-entry"),
-            layout: VisuLayouts.get("menu-button-entry"),
-            config: {
-              layout: { type: UILayoutType.VERTICAL },
-              label: { 
-                text: "1. Wake Up Before You Forget How To",
-                callback: new BindIntent(function() {
-                  Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
-                  Beans.get(BeanVisuController).send(new Event("load", {
-                    manifest: "track/kedy_selma/2024-Just-To-Create-Something/1-Wake-Up-Before-You-Forget-How-To/manifest.visu",
-                    autoplay: true,
-                  }))
-                }),
-                onMouseReleasedLeft: function() {
-                  this.callback()
-                },
-              },
-            }
-          },
-          {
-            name: "select-track_menu-button-entry_kedy-selma_you-will-live-and-you-will-be-happy",
-            template: VisuComponents.get("menu-button-entry"),
-            layout: VisuLayouts.get("menu-button-entry"),
-            config: {
-              layout: { type: UILayoutType.VERTICAL },
-              label: { 
-                text: "2. You Will Live and You Will Be Happy",
-                callback: new BindIntent(function() {
-                  Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
-                  Beans.get(BeanVisuController).send(new Event("load", {
-                    manifest: "track/kedy_selma/2024-Just-To-Create-Something/2-You-Will-Live-and-You-Will-Be-Happy/manifest.visu",
-                    autoplay: true,
-                  }))
-                }),
-                onMouseReleasedLeft: function() {
-                  this.callback()
-                },
-              },
-            }
-          },
-          {
-            name: "select-track_menu-button-entry_kedy-selma_what-kills-you",
-            template: VisuComponents.get("menu-button-entry"),
-            layout: VisuLayouts.get("menu-button-entry"),
-            config: {
-              layout: { type: UILayoutType.VERTICAL },
-              label: { 
-                text: "3. What Kills You",
-                callback: new BindIntent(function() {
-                  Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
-                  Beans.get(BeanVisuController).send(new Event("load", {
-                    manifest: "track/kedy_selma/2024-Just-To-Create-Something/3-What-Kills-You/manifest.visu",
-                    autoplay: true,
-                  }))
-                }),
-                onMouseReleasedLeft: function() {
-                  this.callback()
-                },
-              },
-            }
-          },
-          {
-            name: "select-track_menu-button-entry_kedy-selma_just-to-create-something",
-            template: VisuComponents.get("menu-button-entry"),
-            layout: VisuLayouts.get("menu-button-entry"),
-            config: {
-              layout: { type: UILayoutType.VERTICAL },
-              label: { 
-                text: "4. Just To Create Something",
-                callback: new BindIntent(function() {
-                  Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
-                  Beans.get(BeanVisuController).send(new Event("load", {
-                    manifest: "track/kedy_selma/2024-Just-To-Create-Something/4-Just-To-Create-Something/manifest.visu",
-                    autoplay: true,
-                  }))
-                }),
-                onMouseReleasedLeft: function() {
-                  this.callback()
-                },
-              },
-            }
-          },
-          {
-            name: "select-track_menu-button-entry_kedy-selma_lost_media.mp3",
-            template: VisuComponents.get("menu-button-entry"),
-            layout: VisuLayouts.get("menu-button-entry"),
-            config: {
-              layout: { type: UILayoutType.VERTICAL },
-              label: { 
-                text: "5. Lost_Media.mp3",
-                callback: new BindIntent(function() {
-                  Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
-                  Beans.get(BeanVisuController).send(new Event("load", {
-                    manifest: "track/kedy_selma/2024-Just-To-Create-Something/5-Lost_Media.mp3/manifest.visu",
-                    autoplay: true,
-                  }))
-                }),
-                onMouseReleasedLeft: function() {
-                  this.callback()
-                },
-              },
-            }
-          },
-          {
-            name: "select-track_menu-button-entry_kedy-selma_one-sky-feat-rayiko",
-            template: VisuComponents.get("menu-button-entry"),
-            layout: VisuLayouts.get("menu-button-entry"),
-            config: {
-              layout: { type: UILayoutType.VERTICAL },
-              label: { 
-                text: "6. One Sky (feat. Rayiko)",
-                callback: new BindIntent(function() {
-                  Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
-                  Beans.get(BeanVisuController).send(new Event("load", {
-                    manifest: "track/kedy_selma/2024-Just-To-Create-Something/6-One-Sky-feat-Rayiko/manifest.visu",
-                    autoplay: true,
-                  }))
-                }),
-                onMouseReleasedLeft: function() {
-                  this.callback()
-                },
-              },
-            }
-          },
-          {
-            name: "select-track_menu-button-entry_kedy-selma_interlude-lore",
-            template: VisuComponents.get("menu-button-entry"),
-            layout: VisuLayouts.get("menu-button-entry"),
-            config: {
-              layout: { type: UILayoutType.VERTICAL },
-              label: { 
-                text: "7. Interlude:Lore",
-                callback: new BindIntent(function() {
-                  Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
-                  Beans.get(BeanVisuController).send(new Event("load", {
-                    manifest: "track/kedy_selma/2024-Just-To-Create-Something/7-Interlude-Lore/manifest.visu",
-                    autoplay: true,
-                  }))
-                }),
-                onMouseReleasedLeft: function() {
-                  this.callback()
-                },
-              },
-            }
-          },
-          {
-            name: "select-track_menu-button-entry_kedy-selma_everything-will-end",
-            template: VisuComponents.get("menu-button-entry"),
-            layout: VisuLayouts.get("menu-button-entry"),
-            config: {
-              layout: { type: UILayoutType.VERTICAL },
-              label: { 
-                text: "8. Everything Will End",
-                callback: new BindIntent(function() {
-                  Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
-                  Beans.get(BeanVisuController).send(new Event("load", {
-                    manifest: "track/kedy_selma/2024-Just-To-Create-Something/8-Everything-Will-End/manifest.visu",
-                    autoplay: true,
-                  }))
-                }),
-                onMouseReleasedLeft: function() {
-                  this.callback()
-                },
-              },
-            }
-          },
-          {
-            name: "select-track_menu-button-entry_kedy-selma_there-is-no-point-only-reasons",
-            template: VisuComponents.get("menu-button-entry"),
-            layout: VisuLayouts.get("menu-button-entry"),
-            config: {
-              layout: { type: UILayoutType.VERTICAL },
-              label: { 
-                text: "9. There Is No Point, Only Reasons",
-                callback: new BindIntent(function() {
-                  Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
-                  Beans.get(BeanVisuController).send(new Event("load", {
-                    manifest: "track/kedy_selma/2024-Just-To-Create-Something/9-There-Is-No-Point-Only-Reasons/manifest.visu",
-                    autoplay: true,
-                  }))
-                }),
-                onMouseReleasedLeft: function() {
-                  this.callback()
-                },
-              },
-            }
-          },
-          {
-            name: "select-track_menu-button-entry_back",
-            template: VisuComponents.get("menu-button-entry"),
-            layout: VisuLayouts.get("menu-button-entry"),
-            config: {
-              layout: { type: UILayoutType.VERTICAL },
-              label: { 
-                text: "Back",
-                callback: new BindIntent(function() {
-                  Beans.get(BeanVisuController).sfxService.play("menu-select-entry")
-                  Beans.get(BeanVisuController).menu.send(Callable.run(this.callbackData))
-                }),
-                callbackData: config.back,
-                onMouseReleasedLeft: function() {
-                  this.callback()
-                },
-              },
-            }
-          }
-        ]
-      )
     })
 
     return event
@@ -912,6 +612,88 @@ function VisuMenu(_config = null) constructor {
                 this.callback()
               },
             }
+          }
+        },
+        {
+          name: "settings_menu-button-input-entry_editor",
+          template: VisuComponents.get("menu-button-input-entry"),
+          layout: VisuLayouts.get("menu-button-input-entry"),
+          config: {
+            layout: { type: UILayoutType.VERTICAL },
+            label: { 
+              text: "Editor",
+              callback: function() {
+                Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
+                
+                if (Optional.is(Beans.get(BeanVisuEditorIO))) {
+                  Beans.kill(BeanVisuEditorIO)
+                } else {
+                  Beans.add(Beans.factory(BeanVisuEditorIO, GMServiceInstance, 
+                    Beans.get(BeanVisuController).layerId, new VisuEditorIO()))
+                }
+
+                if (Optional.is(Beans.get(BeanVisuEditorController))) {
+                  Beans.kill(BeanVisuEditorController)
+                } else {
+                  Beans.add(Beans.factory(BeanVisuEditorController, GMServiceInstance, 
+                    Beans.get(BeanVisuController).layerId, new VisuEditorController()))
+
+                  var editor = Beans.get(BeanVisuEditorController)
+                  if (Optional.is(editor)) {
+                    editor.send(new Event("open"))
+                  }
+                }
+              },
+              onMouseReleasedLeft: function() {
+                this.callback()
+              },
+            },
+            input: {
+              label: { text: "" },
+              updateCustom: function() {
+                this.label.text = Optional.is(Beans.get(BeanVisuEditorController)) ? "Enabled" : "Disabled"
+              },
+              callback: function() {
+                Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
+                
+                if (Optional.is(Beans.get(BeanVisuEditorIO))) {
+                  Beans.kill(BeanVisuEditorIO)
+                } else {
+                  Beans.add(Beans.factory(BeanVisuEditorIO, GMServiceInstance, 
+                    Beans.get(BeanVisuController).layerId, new VisuEditorIO()))
+                }
+
+                if (Optional.is(Beans.get(BeanVisuEditorController))) {
+                  Beans.kill(BeanVisuEditorController)
+                } else {
+                  Beans.add(Beans.factory(BeanVisuEditorController, GMServiceInstance, 
+                    Beans.get(BeanVisuController).layerId, new VisuEditorController()))
+
+                  var editor = Beans.get(BeanVisuEditorController)
+                  if (Optional.is(editor)) {
+                    editor.send(new Event("open"))
+                  }
+                }
+              },
+            }
+          }
+        },
+        {
+          name: "settings_menu-button-entry_restart",
+          template: VisuComponents.get("menu-button-entry"),
+          layout: VisuLayouts.get("menu-button-entry"),
+          config: {
+            layout: { type: UILayoutType.VERTICAL },
+            label: { 
+              text: "Restart",
+              callback: new BindIntent(function() {
+                Scene.open("scene_visu")
+              }),
+              callbackData: config,
+              onMouseReleasedLeft: function() {
+                this.callback()
+              },
+            },
           }
         },
         {

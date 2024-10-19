@@ -683,7 +683,7 @@ function brush_grid_player(json = null) {
           },
           increment: {
             label: {
-              text: "Increment",
+              text: "Increase",
               enable: { key: "grid-player_use-transform-player-z" },
             },
             field: {

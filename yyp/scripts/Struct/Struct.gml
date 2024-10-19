@@ -28,6 +28,16 @@ function _Struct() constructor {
   }
 
   ///@param {?Struct} struct
+  ///@param {String} key
+  ///@param {Type} type
+  ///@param {any} [defaultValue]
+  ///@return {any}
+  getIfType = function(struct, key, type, defaultValue = null) {
+    var value = Struct.get(struct, key)
+    return Core.isType(value, type) ? value : defaultValue
+  }
+
+  ///@param {?Struct} struct
   ///@param {any} key
   ///@param {any} value
   ///@return {?Struct}

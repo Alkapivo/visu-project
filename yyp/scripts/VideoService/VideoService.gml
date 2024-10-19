@@ -44,19 +44,27 @@ function VideoService(config = {}): Service() constructor {
     "open-video": function(event) {
       var video = new Video(event.data.video)
       var service = this
+      if (Core.isType(event.promise.state, Struct)) {
+        Struct.set(event.promise.state, "videoService", service)
+      } else {
+        event.promise.state = { videoService: service }
+      }
+
       var task = new Task("open-video")
         .setPromise(event.promise // pass promise to TaskExecutor
           .whenSuccess(function(video) {
             Logger.info("VideoService", $"Video loaded successfully: {video.path}")
-            Beans.get(BeanVisuController).videoService
-              .setVideo(video
-              .setVolume(video.volume))
+            var videoService = Assert.isType(Struct.get(this.state, "videoService"), VideoService, 
+              "videoService was not provided to open-video task")
+            videoService.setVideo(video.setVolume(video.volume))
             return video
           })
           .whenFailure(function() {
             Logger.error("VideoService", $"Failed to load video")
             VideoUtil.runGC()
-            Beans.get(BeanVisuController).videoService.setVideo(null)
+            var videoService = Assert.isType(Struct.get(this.state, "videoService"), VideoService, 
+              "videoService was not provided to open-video task")
+            videoService.setVideo(null)
           }))
         .setTimeout(this.timeout)
         .setState(new Map(String, any, {

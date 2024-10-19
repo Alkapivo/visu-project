@@ -100,7 +100,7 @@ function brush_shader_overlay(json = null) {
           },
           increment: {
             label: { 
-              text: "Increment",
+              text: "Increase",
               enable: { key: "shader-overlay_use-transform-support-grid-treshold" },
             },
             field: { 
@@ -149,7 +149,7 @@ function brush_shader_overlay(json = null) {
           },
           increment: {
             label: { 
-              text: "Increment",
+              text: "Increase",
               enable: { key: "shader-overlay_use-transform-support-grid-alpha" },
             },
             field: { 

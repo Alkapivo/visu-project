@@ -1,9 +1,12 @@
 {
-  "version":"1",
   "data":[
     {
       "texture":"texture_baron",
+      "type":"brush_view_glitch",
       "properties":{
+        "view-glitch_shader-noise-level":0.5,
+        "view-glitch_shader-rng-seed":0.0,
+        "view-glitch_shader-shakiness":0.5,
         "view-glitch_use-config":true,
         "view-glitch_use-factor":true,
         "view-glitch_factor":0.060728999999999998,
@@ -18,18 +21,18 @@
         "view-glitch_line-vertical-shift":0.0,
         "view-glitch_shader-channel-shift":0.0040000000000000001,
         "view-glitch_shader-dispersion":0.0025000000000000001,
-        "view-glitch_shader-intensity":1.0,
-        "view-glitch_shader-noise-level":0.5,
-        "view-glitch_shader-rng-seed":0.0,
-        "view-glitch_shader-shakiness":0.5
+        "view-glitch_shader-intensity":1.0
       },
-      "color":"#FFFFFF",
       "name":"glitch 1",
-      "type":"brush_view_glitch"
+      "color":"#FFFFFF"
     },
     {
       "texture":"texture_baron",
+      "type":"brush_view_glitch",
       "properties":{
+        "view-glitch_shader-noise-level":0.5,
+        "view-glitch_shader-rng-seed":0.0,
+        "view-glitch_shader-shakiness":0.769231,
         "view-glitch_use-config":true,
         "view-glitch_use-factor":true,
         "view-glitch_factor":0.10931200000000001,
@@ -44,18 +47,18 @@
         "view-glitch_line-vertical-shift":0.40081,
         "view-glitch_shader-channel-shift":0.0042509999999999996,
         "view-glitch_shader-dispersion":0.0025000000000000001,
-        "view-glitch_shader-intensity":1.477733,
-        "view-glitch_shader-noise-level":0.5,
-        "view-glitch_shader-rng-seed":0.0,
-        "view-glitch_shader-shakiness":0.769231
+        "view-glitch_shader-intensity":1.477733
       },
-      "color":"#FFFFFF",
       "name":"glitch 2",
-      "type":"brush_view_glitch"
+      "color":"#FFFFFF"
     },
     {
       "texture":"texture_baron",
+      "type":"brush_view_glitch",
       "properties":{
+        "view-glitch_shader-noise-level":0.295547,
+        "view-glitch_shader-rng-seed":0.0,
+        "view-glitch_shader-shakiness":1.9028339999999999,
         "view-glitch_use-config":true,
         "view-glitch_use-factor":true,
         "view-glitch_factor":0.12550600000000001,
@@ -70,18 +73,18 @@
         "view-glitch_line-vertical-shift":0.19028300000000001,
         "view-glitch_shader-channel-shift":0.035424999999999998,
         "view-glitch_shader-dispersion":0.087044534412955468,
-        "view-glitch_shader-intensity":0.87044500000000002,
-        "view-glitch_shader-noise-level":0.295547,
-        "view-glitch_shader-rng-seed":0.0,
-        "view-glitch_shader-shakiness":1.9028339999999999
+        "view-glitch_shader-intensity":0.87044500000000002
       },
-      "color":"#FFFFFF",
       "name":"glitch 3",
-      "type":"brush_view_glitch"
+      "color":"#FFFFFF"
     },
     {
       "texture":"texture_baron",
+      "type":"brush_view_glitch",
       "properties":{
+        "view-glitch_shader-noise-level":0.34883700000000001,
+        "view-glitch_shader-rng-seed":0.0,
+        "view-glitch_shader-shakiness":0.769231,
         "view-glitch_use-config":true,
         "view-glitch_use-factor":true,
         "view-glitch_factor":0.10931200000000001,
@@ -96,18 +99,18 @@
         "view-glitch_line-vertical-shift":0.13178300000000001,
         "view-glitch_shader-channel-shift":0.0042509999999999996,
         "view-glitch_shader-dispersion":0.0025000000000000001,
-        "view-glitch_shader-intensity":1.2015499999999999,
-        "view-glitch_shader-noise-level":0.34883700000000001,
-        "view-glitch_shader-rng-seed":0.0,
-        "view-glitch_shader-shakiness":0.769231
+        "view-glitch_shader-intensity":1.2015499999999999
       },
-      "color":"#FFFFFF",
       "name":"glitch 4",
-      "type":"brush_view_glitch"
+      "color":"#FFFFFF"
     },
     {
       "texture":"texture_baron",
+      "type":"brush_view_glitch",
       "properties":{
+        "view-glitch_shader-noise-level":0.34883700000000001,
+        "view-glitch_shader-rng-seed":0.46406799999999998,
+        "view-glitch_shader-shakiness":6.9549329999999996,
         "view-glitch_use-config":true,
         "view-glitch_use-factor":true,
         "view-glitch_factor":0.65000000000000002,
@@ -122,15 +125,12 @@
         "view-glitch_line-vertical-shift":0.13178300000000001,
         "view-glitch_shader-channel-shift":0.024421000000000002,
         "view-glitch_shader-dispersion":0.14000000000000001,
-        "view-glitch_shader-intensity":1.2015499999999999,
-        "view-glitch_shader-noise-level":0.34883700000000001,
-        "view-glitch_shader-rng-seed":0.46406799999999998,
-        "view-glitch_shader-shakiness":6.9549329999999996
+        "view-glitch_shader-intensity":1.2015499999999999
       },
-      "color":"#FFFFFF",
       "name":"glitch 5",
-      "type":"brush_view_glitch"
+      "color":"#FFFFFF"
     }
   ],
+  "version":"1",
   "model":"Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>"
 }

@@ -27,9 +27,6 @@ function VisuEditorController() constructor {
   ///@type {VEPopupQueue}
   popupQueue = new VEPopupQueue(this)
 
-  ///@type {VEBrushService}
-  brushService = new VEBrushService(this)
-
   ///@type {VENewProjectModal}
   newProjectModal = new VENewProjectModal()
 

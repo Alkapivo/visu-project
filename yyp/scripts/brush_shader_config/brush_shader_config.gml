@@ -234,7 +234,7 @@ function brush_shader_config(json = null) {
           },
           increment: {
             label: { 
-              text: "Increment",
+              text: "Increase",
               enable: { key: "shader-config_use-transform-clear-frame-alpha" },
             },
             field: { 

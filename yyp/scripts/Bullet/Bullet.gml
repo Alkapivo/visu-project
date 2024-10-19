@@ -11,67 +11,51 @@ function BulletTemplate(_name, json) constructor {
   sprite = Assert.isType(Struct.get(json, "sprite"), Struct)
 
   ///@type {?Struct}
-  mask = Struct.contains(json, "mask")
-    ? Assert.isType(json.mask, Struct)
-    : null
+  mask = Struct.getIfType(json, "mask", Struct)
 
   ///@type {?Number}
-  damage = Core.isType(Struct.get(json, "damage"), Number) 
-    ? json.damage 
-    : null
+  damage = Struct.getIfType(json, "damage", Number)
 
   ///@type {?Number}
-  lifespawnMax = Core.isType(Struct.get(json, "lifespawnMax"), Number)
-    ? json.lifespawnMax
-    : null 
+  lifespawnMax = Struct.getIfType(json, "lifespawnMax", Number)
 
   ///@type {?String}
-  bulletTemplateOnDeath = Core.isType(Struct.get(json, "bulletTemplateOnDeath"), String)
-    ? json.bulletTemplateOnDeath
-    : null
+  bulletTemplateOnDeath = Struct.getIfType(json, "bulletTemplateOnDeath", String)
 
   ///@private
   ///@type {?Number}
-  bulletAmountOnDeath = Core.isType(Struct.get(json, "bulletAmountOnDeath"), Number)
-    ? json.bulletAmountOnDeath
-    : null
+  bulletAmountOnDeath = Struct.getIfType(json, "bulletAmountOnDeath", Number)
 
   ///@private
   ///@type {?Number}
-  bulletSpawnAngleOnDeath = Core.isType(Struct.get(json, "bulletSpawnAngleOnDeath"), Number)
-    ? json.bulletSpawnAngleOnDeath
-    : null
+  bulletSpawnAngleOnDeath = Struct.getIfType(json, "bulletSpawnAngleOnDeath", Number)
 
   ///@private
   ///@type {?Number}
-  bulletAngleStepOnDeath = Core.isType(Struct.get(json, "bulletAngleStepOnDeath"), Number)
-    ? json.bulletAngleStepOnDeath
-    : null
+  bulletAngleStepOnDeath = Struct.getIfType(json, "bulletAngleStepOnDeath", Number)
 
   ///@type {?Struct}
-  speedTransformer = Core.isType(Struct.get(json, "speedTransformer"), Struct) 
-    ? json.speedTransformer
-    : null
+  speedTransformer = Struct.getIfType(json, "speedTransformer", Struct)
 
   ///@type {?Struct}
-  angleTransformer = Core.isType(Struct.get(json, "angleTransformer"), Struct)
-    ? json.angleTransformer
-    : null
+  speedWiggleValue = Struct.getIfType(json, "speedWiggleValue", Struct)
+
+  ///@type {?Struct}
+  speedWiggleInterval = Struct.getIfType(json, "speedWiggleInterval", Struct)
+
+  ///@type {?Struct}
+  angleTransformer = Struct.getIfType(json, "angleTransformer", Struct)
+
+  ///@type {?Struct}
+  angleWiggleValue = Struct.getIfType(json, "angleWiggleValue", Struct)
+
+  ///@type {?Struct}
+  angleWiggleInterval = Struct.getIfType(json, "angleWiggleInterval", Struct)
 
   ///@private
   ///@type {?Boolean}
   randomDirection = Core.isType(Struct.get(json, "randomDirection"), Boolean)
     ? json.randomDirection
-    : null
-
-  ///@type {?Struct}
-  swingAmount = Core.isType(Struct.get(json, "swingAmount"), Struct)
-    ? json.swingAmount
-    : null
-
-  ///@type {?Struct}
-  swingSize = Core.isType(Struct.get(json, "swingSize"), Struct)
-    ? json.swingSize
     : null
 
   ///@return {Struct}
@@ -112,20 +96,22 @@ function BulletTemplate(_name, json) constructor {
       Struct.set(json, "speedTransformer", this.speedTransformer)
     }
 
+    if (Optional.is(this.speedWiggleValue) && Optional.is(this.speedWiggleInterval)) {
+      Struct.set(json, "speedWiggleValue", this.speedWiggleValue)
+      Struct.set(json, "speedWiggleInterval", this.speedWiggleInterval)
+    }
+
     if (Optional.is(this.angleTransformer)) {
       Struct.set(json, "angleTransformer", this.angleTransformer)
     }
 
+    if (Optional.is(this.angleWiggleValue) && Optional.is(this.angleWiggleInterval)) {
+      Struct.set(json, "angleWiggleValue", this.angleWiggleValue)
+      Struct.set(json, "angleWiggleInterval", this.angleWiggleInterval)
+    }
+
     if (Optional.is(this.randomDirection)) {
       Struct.set(json, "randomDirection", this.randomDirection)
-    }
-
-    if (Optional.is(this.swingSize)) {
-      Struct.set(json, "swingSize", this.swingSize)
-    }
-
-    if (Optional.is(this.swingAmount)) {
-      Struct.set(json, "swingAmount", this.swingAmount)
     }
 
     return JSON.clone(json)
@@ -146,20 +132,38 @@ function Bullet(template): GridItem(template) constructor {
     : 1
 
   ///@private
-  ///@type {?Struct}
-  speedTransformer = Core.isType(Struct.get(template, "speedTransformer"), Struct) 
-    ? new NumberTransformer(template.speedTransformer)
-    : null
+  ///@type {?NumberTransformer}
+  speedTransformer = new NumberTransformer(Struct
+    .getIfType(template, "speedTransformer", Struct, { 
+      target: this.speed * 1000.0, 
+      factor: this.speed * 1000.0,
+    }))
 
   ///@private
   ///@type {Boolean}
   isSpeedTransformerSet = false
-  
-  ///@private  
+
+  ///@private
+  ///@type {Number}
+  speedWiggle = new Timer(pi * 2.0, { loop: Infinity })
+
+  ///@private
   ///@type {?NumberTransformer}
-  angleTransformer = Core.isType(Struct.get(template, "angleTransformer"), Struct) 
-    ? new NumberTransformer(template.angleTransformer)
+  speedWiggleValue = Core.isType(Struct.get(template, "speedWiggleValue"), Struct)
+    ? new NumberTransformer(template.speedWiggleValue)
     : null
+
+  ///@private
+  ///@type {NumberTransformer}
+  speedWiggleInterval = Core.isType(Struct.get(template, "speedWiggleInterval"), Struct)
+    ? new NumberTransformer(template.speedWiggleInterval)
+    : null
+
+
+  ///@private  
+  ///@type {NumberTransformer}
+  angleTransformer = new NumberTransformer(Struct
+    .getIfType(template, "angleTransformer", Struct))
 
   ///@private
   ///@type {Boolean}
@@ -167,29 +171,25 @@ function Bullet(template): GridItem(template) constructor {
 
   ///@private
   ///@type {Number}
-  initAngle = this.angle
+  angleWiggle = new Timer(pi * 2.0, { loop: Infinity })
+
+  ///@private
+  ///@type {NumberTransformer}
+  angleWiggleValue = Core.isType(Struct.get(template, "angleWiggleValue"), Struct)
+    ? new NumberTransformer(template.angleWiggleValue)
+    : null
+
+  ///@private
+  ///@type {NumberTransformer}
+  angleWiggleInterval = Core.isType(Struct.get(template, "angleWiggleInterval"), Struct)
+    ? new NumberTransformer(template.angleWiggleInterval)
+    : null
 
   ///@private
   ///@type {Boolean}
   randomDirection = Core.isType(Struct.get(template, "randomDirection"), Boolean)
     ? template.randomDirection
     : false
-
-  ///@private    
-  ///@type {?NumberTransformer}
-  swingAmount = Core.isType(Struct.get(template, "swingAmount"), Struct) 
-    ? new NumberTransformer(template.swingAmount)
-    : null
-  
-  ///@private
-  ///@type {?NumberTransformer}
-  swingSize = Core.isType(Struct.get(template, "swingSize"), Struct) 
-    ? new NumberTransformer(template.swingSize)
-    : null
-
-  ///@private
-  ///@type {Timer}
-  swingTimer = new Timer(pi * 2, { loop: Infinity })
 
   ///@private
   ///@type {Number}
@@ -224,34 +224,33 @@ function Bullet(template): GridItem(template) constructor {
   ///@param {VisuController} controller
   ///@return {Bullet}
   static update = function(controller) {
-    if (this.speedTransformer != null) {
-      if (!this.isSpeedTransformerSet) {
-        this.speedTransformer.value = this.speed * 1000.0
-        this.speedTransformer.startValue = this.speedTransformer.value
-        this.isSpeedTransformerSet = true
-      }
-      this.speed = this.speedTransformer.update().value / 1000.0
-    }
-    
-    if (this.angleTransformer != null) {
-      if (!this.isAngleTransformerSet) {
-        var _sign = this.randomDirection ? choose(1, -1) : 1
-        this.angleTransformer.target *= _sign
-        this.initAngle = this.angle
-        this.isAngleTransformerSet = true
-      }
-      this.angle = Math.normalizeAngle(this.initAngle 
-        + this.angleTransformer.update().value)
-    }
-    
-    if (this.swingAmount != null) {
-      this.swingTimer.amount = this.swingAmount.update().value
+    if (!this.isSpeedTransformerSet) {
+      this.speedTransformer.value = this.speed * 1000.0
+      this.speedTransformer.startValue = this.speedTransformer.value
+      this.isSpeedTransformerSet = true
     }
 
-    if (this.swingSize != null) {
-      this.angle = Math.normalizeAngle(this.angle
-        + (sin(this.swingTimer.update().time) 
-        * this.swingSize.update().value))
+    if (this.speedWiggleValue != null && this.speedWiggleInterval != null) {
+      this.speed = (this.speedTransformer.update().value + abs(((cos(this.speedWiggle
+        .setAmount(this.speedWiggleInterval.update().value).update().time) - 1.0) / 2.0) 
+        * this.speedWiggleValue.update().value)) / 1000.0
+    } else {
+      this.speed = this.speedTransformer.update().value / 1000.0
+    }
+
+    if (!this.isAngleTransformerSet) {
+      this.angleTransformer.target = this.angleTransformer.target * (this.randomDirection ? choose(1, -1) : 1)
+      this.angleTransformer.startValue = Math.normalizeAngle(this.angle)
+      this.isAngleTransformerSet = true
+    }
+
+    if (this.angleWiggleValue != null && this.angleWiggleInterval != null) {
+      this.angle = this.angleTransformer.startValue 
+        + this.angleTransformer.update().value + (sin(this.angleWiggle
+        .setAmount(this.angleWiggleInterval.update().value).update().time)
+        * this.angleWiggleValue.update().value)
+    } else {
+      this.angle = this.angleTransformer.startValue + this.angleTransformer.update().value
     }
     
     this.lifespawn += DeltaTime.apply(FRAME_MS)

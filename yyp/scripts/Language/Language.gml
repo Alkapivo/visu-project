@@ -5,7 +5,6 @@ function _LanguageType(): Enum() constructor {
   en_EN = "en_EN"
   pl_PL = "pl_PL"
 }
-
 global.__LanguageType = new _LanguageType()
 #macro LanguageType global.__LanguageType
 
@@ -27,20 +26,32 @@ function LanguagePack(json) constructor {
   }
 }
 
+
 ///@static
 function _Language() constructor {
 
   ///@type {?LanguagePack}
   pack = null
 
-  ///@type {?LanguagePack}
-  //?@return {Language}
-  apply = function(pack) {
-    if (Core.isType(pack, LanguagePack)) {
-      this.pack = pack
-    } else {
-      this.pack = null
+  ///@param {String} code
+  ///@return {Language}
+  load = function(code) {
+    var path = null
+    switch (code) {
+      case LanguageType.en_EN: path = $"{working_directory}lang/en_EN.json" break
+      case LanguageType.pl_PL: path = $"{working_directory}lang/pl_PL.json" break
+      default: path = $"{working_directory}lang/en_EN.json" break
     }
+    
+    var json = FileUtil.readFileSync(FileUtil.get(path)).getData()
+    JSON.parserTask(json, {
+      acc: this,
+      callback: function(prototype, json, index, acc) {
+        Language.pack = Assert.isType(new prototype(json), LanguagePack,
+          "Language.pack must be type of LanguagePack")
+      },
+    }).update()
+
     return this
   }
 
@@ -75,25 +86,5 @@ function _Language() constructor {
     return this.pack.code
   }
 }
+global.__Language = new _Language()
 #macro Language global.__Language
-global.__Language = null
-
-
-///@param {LanguageType} code
-function initLanguage(code) {
-  Language = new _Language()
-  var path = null
-  switch (code) {
-    case LanguageType.en_EN: path = $"{working_directory}lang/en_EN.json" break
-    case LanguageType.pl_PL: path = $"{working_directory}lang/pl_PL.json" break
-    default: path = $"{working_directory}lang/en_EN.json" break
-  }
-  
-  var json = FileUtil.readFileSync(FileUtil.get(path)).getData()
-  JSON.parserTask(json, {
-    callback: function(prototype, json, index, acc) {
-      Language.apply(new prototype(json)) 
-    },
-    acc: this,
-  }).update()
-}

@@ -1,15 +1,14 @@
-///@description https://www.shadertoy.com/view/lcscDj
-///@author nayk 2024-07-22
+///@description Based on shader created by nayk in 2024-07-22
+///             https://www.shadertoy.com/view/lcscDj
 
-varying vec2 v_vTexcoord;
-varying vec4 v_vColour;
+varying vec2 vTexcoord;
+varying vec4 vColor;
 
-uniform vec3 iResolution;
+uniform vec2 iResolution;
 uniform float iTime;
 uniform float iIterations; // 20.8
 uniform float iSize; // 0.5
 uniform float iFactor; // 32.0
-
 
 float Hash(vec2 p, in float s) {
   vec3 p2 = vec3(p.xy, 27.0 * abs(sin(s)));
@@ -26,7 +25,6 @@ float noise(in vec2 p, in float s) {
     f.y
   ) * s;
 }
-
 
 float fbm(vec2 p) {
   float v = - noise(p * 2.0, 0.35);
@@ -120,12 +118,12 @@ float makePoint(float x,float y,float fx,float fy,float sx,float sy,float t){
 
 void main() {
   float worktime = (iTime * iSize) + 100000.0;
-  vec2 uv = (v_vTexcoord.xy / iResolution.xy ) * 5.0 - 2.0;
+  vec2 uv = (vTexcoord.xy / iResolution.xy ) * 5.0 - 2.0;
   uv.y *= iResolution.y / iResolution.x;
-  vec2 st = (v_vTexcoord.xy * 2.0 - iResolution.xy) / min(iResolution.x, iResolution.y);
+  vec2 st = (vTexcoord.xy * 2.0 - iResolution.xy) / min(iResolution.x, iResolution.y);
   vec3 color = vec3(1.0);
   vec2 st2 = st;
-  vec2 p = (v_vTexcoord.xy / iResolution.x) * 2.0 - vec2(1.0, iResolution.y / iResolution.x);
+  vec2 p = (vTexcoord.xy / iResolution.x) * 2.0 - vec2(1.0, iResolution.y / iResolution.x);
   p = p*2.0;
   float x = p.x;
   float y = p.y;
@@ -175,12 +173,12 @@ void main() {
     finalColor +=  t * vec3(i * 0.1, 0.9, 1.90);
   }
   
-  vec4 pixel = vec4((finalColor * color) * (100.0) + d * 5.0, 1.0); 
-  vec4 textureColor = texture2D(gm_BaseTexture, v_vTexcoord);
+  vec4 textureColor = texture2D(gm_BaseTexture, vTexcoord);
+  vec4 pixel = mix(vec4((finalColor * color) * (100.0) + d * 5.0, 1.0), textureColor, 0.24);
   gl_FragColor = vec4(
-    pixel.x + textureColor.x,
-    pixel.y + textureColor.y,
-    pixel.z + textureColor.z,
-    textureColor.a * v_vColour.a
+    pixel.x, 
+    pixel.y, 
+    pixel.z, 
+    textureColor.a * vColor.a * ((pixel.x + pixel.y + pixel.z) / 5.0)
   );
 }

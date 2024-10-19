@@ -188,7 +188,7 @@ function SpriteFeature(json) {
           if (!this.angle.initialized) {
             this.angle.transform.value = item.sprite.angle
             this.angle.transform.startValue = item.sprite.angle
-            this.angle.transform.target = item.angle + ((this.angle.transform.factor >= 0 ? 1 : -1) * angle_difference(this.angle.transform.target, item.sprite.angle))
+            this.angle.transform.target = item.angle + ((this.angle.transform.factor >= 0 ? 1 : -1) * Math.fetchPointsAngleDiff(this.angle.transform.target, item.sprite.angle))
             this.angle.transform.factor = abs(this.angle.transform.factor)
             this.angle.initialized = true
           }

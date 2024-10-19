@@ -1,29 +1,35 @@
-///@description https://www.shadertoy.com/view/DtXfDr
-///@author supah 2023-08-23
-varying vec2 v_vTexcoord;
-varying vec4 v_vColour;
+///@description Based on shader created by supah in 2023-08-23
+///             https://www.shadertoy.com/view/DtXfDr
+
+varying vec2 vTexcoord;
+varying vec4 vColor;
 
 uniform vec3 iResolution;
 uniform float iTime;
 
 vec4 Line(vec2 uv, float speed, float height, vec3 col) {
-    uv.y += smoothstep(1., 0., abs(uv.x)) * sin(iTime * speed + uv.x * height) * .2;
-    return vec4(smoothstep(.06 * smoothstep(.2, .9, abs(uv.x)), 0., abs(uv.y) - .004) * col, 1.0) * smoothstep(1., .3, abs(uv.x));
+  uv.y += smoothstep(1.0, 0.0, abs(uv.x)) * sin(iTime * speed + uv.x * height) * 0.2;
+  return vec4(smoothstep(1.0, 0.3, abs(uv.x)) * smoothstep(
+    0.06 * smoothstep(0.2, 0.9, abs(uv.x)), 
+    0.0, 
+    abs(uv.y) - 0.004) * col, 1.0
+  );
 }
 
 void main() {
-    vec2 uv = (v_vTexcoord - .5 * iResolution.xy) / iResolution.y;
-    vec4 textureColor = texture2D(gm_BaseTexture, v_vTexcoord);
-    vec4 pixel = vec4 (0.);
-    for (float i = 0.; i <= 5.; i += 1.) {
-        float t = i / 5.;
-        pixel += Line(uv, 1. + t, 4. + t, vec3(.2 + t * .7, .2 + t * .4, 0.3));
-    }
-    
-    gl_FragColor = vec4(
-        pixel.x + textureColor.x, 
-        pixel.y + textureColor.y, 
-        pixel.z + textureColor.z, 
-        textureColor.a * v_vColour.a
-    );
+  vec2 uv = (vTexcoord - 0.5 * iResolution.xy) / iResolution.y;
+  vec4 textureColor = texture2D(gm_BaseTexture, vTexcoord);
+  vec4 pixel = vec4(0.0);
+  for (float i = 0.0; i <= 5.0; i += 1.0) {
+    float t = i / 5.0;
+    pixel += Line(uv, 1.0 + t, 4.0 + t, vec3(0.2 + t * 0.7, 0.2 + t * 0.4, 0.3));
+  }
+  
+  pixel = mix(pixel, textureColor, 0.17);
+  gl_FragColor = vec4(
+    pixel.x, 
+    pixel.y, 
+    pixel.z, 
+    textureColor.a * vColor.a * ((pixel.x + pixel.y + pixel.z) / 1.33)
+  );
 }

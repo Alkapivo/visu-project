@@ -179,17 +179,23 @@ function VETemplate(json) constructor {
       speedTransformer: this.store.getValue("bullet_use-transform-speed")
         ? this.store.getValue("bullet_transform-speed").serialize()
         : null,
+      speedWiggleValue: this.store.getValue("bullet_use-wiggle-speed")
+        ? this.store.getValue("bullet_wiggle-speed-value").serialize()
+        : null,
+      speedWiggleInterval: this.store.getValue("bullet_use-wiggle-speed")
+        ? this.store.getValue("bullet_wiggle-speed-interval").serialize()
+        : null,
       angleTransformer: this.store.getValue("bullet_use-transform-angle")
         ? this.store.getValue("bullet_transform-angle").serialize()
         : null,
+      angleWiggleValue : this.store.getValue("bullet_use-wiggle-angle")
+        ? this.store.getValue("bullet_wiggle-angle-value").serialize()
+        : null,
+      angleWiggleInterval: this.store.getValue("bullet_use-wiggle-angle")
+        ? this.store.getValue("bullet_wiggle-angle-interval").serialize()
+        : null,
       randomDirection: this.store.getValue("bullet_use-random-direction")
         ? this.store.getValue("bullet_random-direction")
-        : null,
-      swingAmount: this.store.getValue("bullet_use-transform-swing-amount")
-        ? this.store.getValue("bullet_transform-swing-amount").serialize()
-        : null,
-      swingSize: this.store.getValue("bullet_use-transform-swing-size")
-        ? this.store.getValue("bullet_transform-swing-size").serialize()
         : null,
     }
 

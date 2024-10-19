@@ -40,12 +40,12 @@ global.__VEBrushTypeNames = {
   "brush_view_lyrics": "View config",
   "brush_view_glitch": "View glitch",
   "brush_view_config": "View lyrics",
-  "brush_grid_channel": "Grid channel",
+  "brush_grid_channel": "Grid columns",
   "brush_grid_coin": "Spawn coin",
   "brush_grid_config": "Grid config",
   "brush_grid_particle": "Spawn particle",
   "brush_grid_player": "Spawn player",
-  "brush_grid_separator": "Grid separator",
+  "brush_grid_separator": "Grid rows",
 }
 #macro VEBrushTypeNames global.__VEBrushTypeNames
 
@@ -56,6 +56,13 @@ global.__BRUSH_TEXTURES = [
   "texture_white",
   "texture_baron",
   "texture_bazyl",
+  "texture_coin_life",
+  "texture_coin_bomb",
+  "texture_coin_force",
+  "texture_coin_point",
+  "texture_missing",
+  "texture_bullet",
+  "texture_bullet_circle",
   "texture_visu_editor_icon_event_shader",
   "texture_visu_editor_icon_event_shader_spawn",
   "texture_visu_editor_icon_event_shader_overlay",
@@ -76,6 +83,16 @@ global.__BRUSH_TEXTURES = [
   "texture_visu_editor_icon_event_view_foreground",
   "texture_visu_editor_icon_event_view_camera",
   "texture_visu_editor_icon_event_view_config",
+  "texture_button_next",
+  "texture_button_previous",
+  "visu_texture_checkbox_on",
+  "visu_texture_checkbox_off",
+  "visu_texture_checkbox_muted_on",
+  "visu_texture_checkbox_muted_off",
+  "texture_ve_trackcontrol_button_pause",
+  "texture_ve_trackcontrol_button_play",
+  "texture_ve_trackcontrol_button_rewind_left",
+  "texture_ve_trackcontrol_button_rewind_right"
 ]
 #macro BRUSH_TEXTURES global.__BRUSH_TEXTURES
 

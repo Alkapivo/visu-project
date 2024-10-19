@@ -3,7 +3,7 @@
 function DialogueRenderer() constructor {
 
   ///@type {Font}
-  font = Assert.isType(FontUtil.parse({ name: "font_kodeo_mono_18_regular" }), Font)
+  font = Assert.isType(FontUtil.parse({ name: "font_consolas_18_regular" }), Font)
 
   ///@type {?Struct}
   context = null
@@ -210,7 +210,7 @@ function DialogueRenderer() constructor {
       }
     }
   
-    var font = FontUtil.parse({ name: "font_kodeo_mono_28_regular" })
+    var font = FontUtil.parse({ name: "font_consolas_28_regular" })
     draw_set_font(font.asset)
 
     this.bazylTheta += choose(0.05, 0.1, 0.1, 0.15)

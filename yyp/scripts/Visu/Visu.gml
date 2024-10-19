@@ -26,6 +26,10 @@ function _Visu() constructor {
   _assets = null
 
   ///@private
+  ///@type {?CLIParamParser}
+  _cliParser = null
+
+  ///@private
   ///@type {Struct}
   shaderTemplates = {
     "shader-default": { 
@@ -503,6 +507,10 @@ function _Visu() constructor {
       "asset": texture_bullet,
       "file": ""
     },
+    "texture_bullet_circle": {
+      "asset": texture_bullet_circle,
+      "file": ""
+    },
     "texture_coin_bomb": {
       "asset": texture_coin_bomb,
       "file": ""
@@ -585,6 +593,54 @@ function _Visu() constructor {
 
     return this._assets
   }
+
+  ///@return {CLIParamParser}
+  static cliParser = function() {
+    if (this._cliParser == null) {
+      this._cliParser = new CLIParamParser({
+        cliParams: new Array(CLIParam, [
+          new CLIParam({
+            name: "-t",
+            fullName: "--test",
+            description: "Run tests from test suite",
+            args: [
+              {
+                name: "file",
+                type: "String",
+                description: "Path to test suite JSON"
+              }
+            ],
+            handler: function(args) {
+              Logger.debug("CLIParamParser", $"Run --test {args.get(0)}")
+              Beans.get(BeanTestRunner).push(args.get(0))
+              Core.setProperty("visu.manifest.load-on-start", false)
+            },
+          }),
+          new CLIParam({
+            name: "-l",
+            fullName: "--load",
+            description: "Load track from file",
+            args: [
+              {
+                name: "file",
+                type: "String",
+                descritpion: "Path to manifest.visu"
+              }
+            ],
+            handler: function(args) {
+              Logger.debug("CLIParamParser", $"Run --load {args.get(0)}")
+              Beans.get(BeanVisuController).send(new Event("load", {
+                manifest: FileUtil.get(args.get(0)),
+                autoplay: false,
+              }))
+            }
+          })
+        ])
+      })
+    }
+    
+    return this._cliParser
+  }
   
   ///@param {String} name
   ///@return {Struct}
@@ -604,14 +660,13 @@ function _Visu() constructor {
   ///@param {Number} [layerDefaultDepth]
   ///@return {Visu}
   static run = function(layerName = "layer_main", layerDefaultDepth = 100) {
-    window_set_caption($"{game_display_name}")
-
-    initGPU()
     initBeans()
-    GMTFContext = new _GMTFContext()
-    Assert.isType(layerName, String)
+    initGPU()
+    initGMTF()
+    
     Core.loadProperties(FileUtil.get($"{working_directory}core-properties.json"))
     Core.loadProperties(FileUtil.get($"{working_directory}visu-properties.json"))
+
     this.settings.set(new SettingEntry({ name: "visu.editor.autosave", type: SettingTypes.BOOLEAN, defaultValue: false }))
       .set(new SettingEntry({ name: "visu.language", type: SettingTypes.STRING, defaultValue: LanguageType.en_EN }))
       .set(new SettingEntry({ name: "visu.fullscreen", type: SettingTypes.BOOLEAN, defaultValue: false }))
@@ -652,177 +707,85 @@ function _Visu() constructor {
       .set(new SettingEntry({ name: "visu.keyboard.player.focus", type: SettingTypes.NUMBER, defaultValue: KeyboardKeyType.SHIFT }))
       .load()
     
-    initLanguage(this.settings.getValue("visu.language", LanguageType.en_EN))
+    Language.load(this.settings.getValue("visu.language", LanguageType.en_EN))
 
-    var layerId = layer_get_id(layerName)
-    if (layerId == -1) {
-      layerId = layer_create(Assert.isType(layerDefaultDepth, Number), layerName)
+    var layerId = Scene.fetchLayer(layerName, layerDefaultDepth)
+
+    if (!Beans.exists(BeanFileService)) {
+      Beans.add(Beans.factory(BeanFileService, GMServiceInstance, layerId,
+        new FileService({
+          dispatcher: {
+            limit: Core.getProperty("visu.files-service.dispatcher.limit", 1),
+          }
+        })))
     }
 
     if (!Beans.exists(BeanDeltaTimeService)) {
-      Beans.add(BeanDeltaTimeService, new Bean(DeltaTimeService,
-        GMObjectUtil.factoryGMObject(
-          GMServiceInstance, 
-          layerId, 0, 0, 
-          new DeltaTimeService()
-        )
-      ))
-    }
-
-    if (!Beans.exists(BeanFileService)) {
-      Beans.add(BeanFileService, new Bean(FileService,
-        GMObjectUtil.factoryGMObject(
-          GMServiceInstance, 
-          layerId, 0, 0, 
-          new FileService({ 
-            dispatcher: { 
-              limit: Core.getProperty("visu.files-service.dispatcher.limit", 1),
-            }
-          })
-        )
-      ))
+      Beans.add(Beans.factory(BeanDeltaTimeService, GMServiceInstance, layerId,
+        new DeltaTimeService()))
     }
 
     if (!Beans.exists(BeanTextureService)) {
-      Beans.add(BeanTextureService, new Bean(TextureService,
-        GMObjectUtil.factoryGMObject(
-          GMServiceInstance, 
-          layerId, 0, 0, 
-          new TextureService({
-            getStaticTemplates: function() {
-              return Visu.assets().textures
-            },
-          })
-        )
-      ))
+      Beans.add(Beans.factory(BeanTextureService, GMServiceInstance, layerId,
+        new TextureService({
+          getStaticTemplates: function() {
+            return Visu.assets().textures
+          },
+        })))
     }
 
     if (!Beans.exists(BeanSoundService)) {
-      Beans.add(BeanSoundService, new Bean(SoundService,
-        GMObjectUtil.factoryGMObject(
-          GMServiceInstance, 
-          layerId, 0, 0, 
-          new SoundService()
-        )
-      ))
-    }
-
-    if (!Beans.exists(BeanVisuIO)) {
-      Beans.add(BeanVisuIO, new Bean(VisuIO,
-        GMObjectUtil.factoryGMObject(
-          GMServiceInstance, 
-          layerId, 0, 0, 
-          new VisuIO()
-        )
-      ))
-    }
-
-    if (Core.getProperty("visu.editor.enable", false)) {
-      if (!Beans.exists(BeanVisuEditorController)) {
-        Beans.add(BeanVisuEditorController, new Bean(VisuEditorController,
-          GMObjectUtil.factoryGMObject(
-            GMControllerInstance, 
-            layerId, 0, 0, 
-            new VisuEditorController()
-          )
-        ))
-      }
-  
-      if (!Beans.exists(BeanVisuEditorIO)) {
-        Beans.add(BeanVisuEditorIO, new Bean(VisuEditorIO,
-          GMObjectUtil.factoryGMObject(
-            GMServiceInstance, 
-            layerId, 0, 0, 
-            new VisuEditorIO()
-          )
-        ))
-      }
+      Beans.add(Beans.factory(BeanSoundService, GMServiceInstance, layerId,
+        new SoundService()))
     }
 
     if (!Beans.exists(BeanDialogueDesignerService)) {
-      Beans.add(BeanDialogueDesignerService , new Bean(DialogueDesignerService,
-        GMObjectUtil.factoryGMObject(
-          GMServiceInstance, 
-          layerId, 0, 0, 
-          new DialogueDesignerService({
-            handlers: new Map(String, Callable, {
-              "QUIT": function(data) {
-                Beans.get(BeanDialogueDesignerService).close()
-              },
-              "LOAD_VISU_TRACK": function(data) {
-                Beans.get(BeanVisuController).send(new Event("load", {
-                  manifest: FileUtil.get(data.path),
-                  autoplay: true,
-                }))
-              },
-              "GAME_END": function(data) {
-                game_end()
-              },
-            }),
-          })
-        )
-      ))
+      Beans.add(Beans.factory(BeanDialogueDesignerService, GMServiceInstance, layerId,
+        new DialogueDesignerService({
+          handlers: new Map(String, Callable, {
+            "QUIT": function(data) {
+              Beans.get(BeanDialogueDesignerService).close()
+            },
+            "LOAD_VISU_TRACK": function(data) {
+              Beans.get(BeanVisuController).send(new Event("load", {
+                manifest: FileUtil.get(data.path),
+                autoplay: true,
+              }))
+            },
+            "GAME_END": function(data) {
+              game_end()
+            },
+          }),
+        })))
     }
 
     if (!Beans.exists(BeanTestRunner)) {
-      Beans.add(BeanTestRunner, new Bean(TestRunner,
-        GMObjectUtil.factoryGMObject(
-          GMServiceInstance, 
-          layerId, 0, 0, 
-          new TestRunner()
-        )
-      ))
+      Beans.add(Beans.factory(BeanTestRunner, GMServiceInstance, layerId,
+        new TestRunner()))
     }
 
-    Beans.add(BeanVisuController, new Bean(VisuController,
-      GMObjectUtil.factoryGMObject(
-        GMControllerInstance, 
-        layerId, 0, 0, 
-        new VisuController(layerName)
-      )
-    ))
+    var enableEditor = Core.getProperty("visu.editor.enable", false)
+    if (!Beans.exists(BeanVisuEditorIO) && enableEditor) {
+      Beans.add(Beans.factory(BeanVisuEditorIO, GMServiceInstance, layerId,
+        new VisuEditorIO()))
+    }
 
-    var parser = new CLIParamParser({
-      cliParams: new Array(CLIParam, [
-        new CLIParam({
-          name: "-t",
-          fullName: "--test",
-          description: "Run tests from test suite",
-          args: [
-            {
-              name: "file",
-              type: "String",
-              description: "Path to test suite JSON"
-            }
-          ],
-          handler: function(args) {
-            Logger.debug("CLIParamParser", $"Run --test {args.get(0)}")
-            Beans.get(BeanTestRunner).push(args.get(0))
-            Core.setProperty("visu.manifest.load-on-start", false)
-          },
-        }),
-        new CLIParam({
-          name: "-l",
-          fullName: "--load",
-          description: "Load track from file",
-          args: [
-            {
-              name: "file",
-              type: "String",
-              descritpion: "Path to manifest.visu"
-            }
-          ],
-          handler: function(args) {
-            Logger.debug("CLIParamParser", $"Run --load {args.get(0)}")
-            Beans.get(BeanVisuController).send(new Event("load", {
-              manifest: FileUtil.get(args.get(0)),
-              autoplay: false,
-            }))
-          }
-        })
-      ])
-    })
-    parser.parse()
+    if (!Beans.exists(BeanVisuEditorController) && enableEditor) {
+      Beans.add(Beans.factory(BeanVisuEditorController, GMServiceInstance, layerId,
+        new VisuEditorController()))
+    }
+
+    if (!Beans.exists(BeanVisuIO)) {
+      Beans.add(Beans.factory(BeanVisuIO, GMServiceInstance, layerId,
+        new VisuIO()))
+    }
+
+    if (!Beans.exists(BeanVisuController)) {
+      Beans.add(Beans.factory(BeanVisuController, GMControllerInstance, layerId,
+        new VisuController(layerName)))
+    }
+
+    this.cliParser().parse()
 
     return this
   }

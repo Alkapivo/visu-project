@@ -61,7 +61,7 @@ function TestEvent_BrushToolbar_save(json = {}) {
               return item.type == UIText
             })
 
-            var brushService = Beans.get(BeanVisuEditorController).brushService
+            var brushService = Beans.get(BeanVisuController).brushService
             var templates = brushService.templates.get(editor.brushToolbar.store.getValue("type"))
             var template = templates.find(function(template, index, acc) {
               return template.name == acc
@@ -80,7 +80,7 @@ function TestEvent_BrushToolbar_save(json = {}) {
               .get("brush")
 
             var template = brush.toTemplate()
-            var brushService = Beans.get(BeanVisuEditorController).brushService
+            var brushService = Beans.get(BeanVisuController).brushService
             brushService.saveTemplate(template)
 
             var handler = Beans.get(BeanVisuController).trackService.handlers.get(brush.type)

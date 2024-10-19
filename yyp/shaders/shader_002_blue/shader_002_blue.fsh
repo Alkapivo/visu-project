@@ -1,7 +1,8 @@
-///@description https://www.shadertoy.com/view/WldSRn
-///@author haquxx 2020-01-29
-varying vec2 v_vTexcoord;
-varying vec4 v_vColour;
+///@description Based on shader created by haquxx in 2020-01-29
+///             https://www.shadertoy.com/view/WldSRn
+
+varying vec2 vTexcoord;
+varying vec4 vColor;
 
 uniform vec3 iResolution;
 uniform float iTime;
@@ -11,7 +12,6 @@ uniform float iPhase;
 uniform float iDistance;
 uniform float iTreshold; // 0.0006
 uniform vec3 iTint; // vec3(0.0, 0.3, 0.7)
-
 
 float sdSphere(vec3 pos, float size) {
   return length(pos) - size;
@@ -78,7 +78,7 @@ float getDistance(vec3 pos, vec2 uv) {
 }
 
 void main() {
-  vec2 p = (v_vTexcoord.xy * 2.0 - iResolution.xy) / min(iResolution.x, iResolution.y);
+  vec2 p = (vTexcoord.xy * 2.0 - iResolution.xy) / min(iResolution.x, iResolution.y);
 
   // camera
   vec3 cameraOrigin = vec3(0.0, 0.0, -10.0 + iTime * 4.0);
@@ -88,10 +88,9 @@ void main() {
   vec3 cameraRight = normalize(cross(upDirection, cameraOrigin));
   vec3 cameraUp = cross(cameraDir, cameraRight);
   vec3 rayDirection = normalize(cameraRight * p.x + cameraUp * p.y + cameraDir);
-  
+  vec3 rayPos = vec3(0.0);
   float depth = 0.0;
   float ac = 0.0;
-  vec3 rayPos = vec3(0.0);
   float d = 0.0;
 
   for (float i = 0.0; i < iIterations; i += 1.0) {
@@ -105,13 +104,14 @@ void main() {
     depth += d;
   }
   
-  ac *= 1.2 * (iResolution.x/iResolution.y - abs(p.x));
-  vec3 pixel = iTint * ac * 0.06;
-  vec4 textureColor = texture2D(gm_BaseTexture, v_vTexcoord);
+  ac *= 0.168 * (iResolution.x / iResolution.y - abs(p.x));
+  vec4 textureColor = texture2D(gm_BaseTexture, vTexcoord);
+  vec3 pixel = mix(iTint * ac, vec3(textureColor.r, textureColor.g, textureColor.b), 0.36);
+
   gl_FragColor = vec4(
-    pixel.x + textureColor.x, 
-    pixel.y + textureColor.y, 
-    pixel.z + textureColor.z, 
-    textureColor.a * v_vColour.a
+    pixel.x, 
+    pixel.y, 
+    pixel.z, 
+    textureColor.a * vColor.a * ((pixel.x + pixel.y + pixel.z) / 1.33)
   );
 }

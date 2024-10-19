@@ -1,21 +1,22 @@
 {
-  "version":"1",
   "data":[
     {
       "texture":"texture_visu_editor_icon_event_view_foreground",
+      "type":"brush_view_wallpaper",
       "properties":{
+        "view-wallpaper_clear-color":0.0,
         "view-wallpaper_clear-texture":0.0,
         "view-wallpaper_color":"#00FFF7",
         "view-wallpaper_fade-in-duration":1.0,
         "view-wallpaper_fade-out-duration":1.0,
         "view-wallpaper_texture":{
-          "blend":"#FFFFFF",
-          "frame":0.0,
-          "scaleX":0.23225806451612904,
-          "scaleY":0.23225806451612904,
           "angle":0.0,
           "alpha":1.0,
           "animate":0.0,
+          "scaleX":0.23225806451612904,
+          "scaleY":0.23225806451612904,
+          "blend":"#FFFFFF",
+          "frame":0.0,
           "name":"texture_empty"
         },
         "view-wallpaper_texture-blend":"#BC2EFC",
@@ -24,29 +25,29 @@
         "view-wallpaper_use-color":1.0,
         "view-wallpaper_use-texture":0.0,
         "view-wallpaper_use-texture-blend":0.0,
-        "view-wallpaper_use-texture-speed":0.0,
-        "view-wallpaper_clear-color":0.0
+        "view-wallpaper_use-texture-speed":0.0
       },
-      "color":"#28A6FF",
       "name":"set background color",
-      "type":"brush_view_wallpaper"
+      "color":"#28A6FF"
     },
     {
       "texture":"texture_visu_editor_icon_event_view_foreground",
+      "type":"brush_view_wallpaper",
       "properties":{
+        "view-wallpaper_clear-color":0.0,
         "view-wallpaper_clear-texture":0.0,
         "view-wallpaper_color":"#00FFF7",
         "view-wallpaper_fade-in-duration":1.0,
         "view-wallpaper_fade-out-duration":1.0,
         "view-wallpaper_texture":{
-          "blend":"#FFFFFF",
-          "frame":0.0,
-          "scaleX":0.28125,
-          "scaleY":0.28125,
           "angle":0.0,
-          "speed":30.0,
           "alpha":1.0,
           "animate":false,
+          "scaleX":0.28125,
+          "scaleY":0.28125,
+          "speed":30.0,
+          "blend":"#FFFFFF",
+          "frame":0.0,
           "name":"texture_baron_wallpaper_1"
         },
         "view-wallpaper_texture-blend":"#BC2EFC",
@@ -55,28 +56,28 @@
         "view-wallpaper_use-color":0.0,
         "view-wallpaper_use-texture":1.0,
         "view-wallpaper_use-texture-blend":0.0,
-        "view-wallpaper_use-texture-speed":0.0,
-        "view-wallpaper_clear-color":0.0
+        "view-wallpaper_use-texture-speed":0.0
       },
-      "color":"#1366FF",
       "name":"set background texture",
-      "type":"brush_view_wallpaper"
+      "color":"#1366FF"
     },
     {
       "texture":"texture_visu_editor_icon_event_view_background",
+      "type":"brush_view_wallpaper",
       "properties":{
+        "view-wallpaper_clear-color":1.0,
         "view-wallpaper_clear-texture":0.0,
         "view-wallpaper_color":"#00FFF7",
         "view-wallpaper_fade-in-duration":1.0,
         "view-wallpaper_fade-out-duration":1.0,
         "view-wallpaper_texture":{
-          "blend":"#FFFFFF",
-          "frame":0.0,
-          "scaleX":0.23225806451612904,
-          "scaleY":0.23225806451612904,
           "angle":0.0,
           "alpha":1.0,
           "animate":0.0,
+          "scaleX":0.23225806451612904,
+          "scaleY":0.23225806451612904,
+          "blend":"#FFFFFF",
+          "frame":0.0,
           "name":"texture_empty"
         },
         "view-wallpaper_texture-blend":"#BC2EFC",
@@ -85,28 +86,28 @@
         "view-wallpaper_use-color":0.0,
         "view-wallpaper_use-texture":0.0,
         "view-wallpaper_use-texture-blend":0.0,
-        "view-wallpaper_use-texture-speed":0.0,
-        "view-wallpaper_clear-color":1.0
+        "view-wallpaper_use-texture-speed":0.0
       },
-      "color":"#FF265E",
       "name":"remove background color",
-      "type":"brush_view_wallpaper"
+      "color":"#FF265E"
     },
     {
       "texture":"texture_visu_editor_icon_event_view_background",
+      "type":"brush_view_wallpaper",
       "properties":{
+        "view-wallpaper_clear-color":0.0,
         "view-wallpaper_clear-texture":1.0,
         "view-wallpaper_color":"#00FFF7",
         "view-wallpaper_fade-in-duration":1.0,
         "view-wallpaper_fade-out-duration":1.0,
         "view-wallpaper_texture":{
-          "blend":"#FFFFFF",
-          "frame":0.0,
-          "scaleX":0.23225806451612904,
-          "scaleY":0.23225806451612904,
           "angle":0.0,
           "alpha":0.59999999999999998,
           "animate":0.0,
+          "scaleX":0.23225806451612904,
+          "scaleY":0.23225806451612904,
+          "blend":"#FFFFFF",
+          "frame":0.0,
           "name":"texture_empty"
         },
         "view-wallpaper_texture-blend":"#BC2EFC",
@@ -115,29 +116,29 @@
         "view-wallpaper_use-color":0.0,
         "view-wallpaper_use-texture":0.0,
         "view-wallpaper_use-texture-blend":0.0,
-        "view-wallpaper_use-texture-speed":0.0,
-        "view-wallpaper_clear-color":0.0
+        "view-wallpaper_use-texture-speed":0.0
       },
-      "color":"#FF333B",
       "name":"remove background texture",
-      "type":"brush_view_wallpaper"
+      "color":"#FF333B"
     },
     {
       "texture":"texture_visu_editor_icon_event_view_foreground",
+      "type":"brush_view_wallpaper",
       "properties":{
+        "view-wallpaper_clear-color":0.0,
         "view-wallpaper_clear-texture":0.0,
         "view-wallpaper_color":"#FF00FF6E",
         "view-wallpaper_fade-in-duration":0.5,
         "view-wallpaper_fade-out-duration":0.050000000000000003,
         "view-wallpaper_texture":{
-          "blend":"#FFFFFF",
-          "frame":0.0,
-          "scaleX":0.23225806451612904,
-          "scaleY":0.23225806451612904,
           "angle":0.0,
-          "speed":30.0,
           "alpha":1.0,
           "animate":false,
+          "scaleX":0.23225806451612904,
+          "scaleY":0.23225806451612904,
+          "speed":30.0,
+          "blend":"#FFFFFF",
+          "frame":0.0,
           "name":"texture_empty"
         },
         "view-wallpaper_texture-blend":"#BC2EFC",
@@ -146,29 +147,29 @@
         "view-wallpaper_use-color":1.0,
         "view-wallpaper_use-texture":0.0,
         "view-wallpaper_use-texture-blend":0.0,
-        "view-wallpaper_use-texture-speed":0.0,
-        "view-wallpaper_clear-color":0.0
+        "view-wallpaper_use-texture-speed":0.0
       },
-      "color":"#FF00FF",
       "name":"set foreground pink",
-      "type":"brush_view_wallpaper"
+      "color":"#FF00FF"
     },
     {
       "texture":"texture_visu_editor_icon_event_view_foreground",
+      "type":"brush_view_wallpaper",
       "properties":{
+        "view-wallpaper_clear-color":0.0,
         "view-wallpaper_clear-texture":0.0,
         "view-wallpaper_color":"#0028FF6E",
         "view-wallpaper_fade-in-duration":0.5,
         "view-wallpaper_fade-out-duration":0.050000000000000003,
         "view-wallpaper_texture":{
-          "blend":"#FFFFFF",
-          "frame":0.0,
-          "scaleX":0.23225806451612904,
-          "scaleY":0.23225806451612904,
           "angle":0.0,
-          "speed":30.0,
           "alpha":1.0,
           "animate":false,
+          "scaleX":0.23225806451612904,
+          "scaleY":0.23225806451612904,
+          "speed":30.0,
+          "blend":"#FFFFFF",
+          "frame":0.0,
           "name":"texture_empty"
         },
         "view-wallpaper_texture-blend":"#BC2EFC",
@@ -177,29 +178,29 @@
         "view-wallpaper_use-color":1.0,
         "view-wallpaper_use-texture":0.0,
         "view-wallpaper_use-texture-blend":0.0,
-        "view-wallpaper_use-texture-speed":0.0,
-        "view-wallpaper_clear-color":0.0
+        "view-wallpaper_use-texture-speed":0.0
       },
-      "color":"#28A6FF",
       "name":"set foreground blue",
-      "type":"brush_view_wallpaper"
+      "color":"#28A6FF"
     },
     {
       "texture":"texture_visu_editor_icon_event_view_foreground",
+      "type":"brush_view_wallpaper",
       "properties":{
+        "view-wallpaper_clear-color":0.0,
         "view-wallpaper_clear-texture":0.0,
         "view-wallpaper_color":"#00FF006E",
         "view-wallpaper_fade-in-duration":0.5,
         "view-wallpaper_fade-out-duration":0.050000000000000003,
         "view-wallpaper_texture":{
-          "blend":"#FFFFFF",
-          "frame":0.0,
-          "scaleX":0.23225806451612904,
-          "scaleY":0.23225806451612904,
           "angle":0.0,
-          "speed":30.0,
           "alpha":1.0,
           "animate":false,
+          "scaleX":0.23225806451612904,
+          "scaleY":0.23225806451612904,
+          "speed":30.0,
+          "blend":"#FFFFFF",
+          "frame":0.0,
           "name":"texture_empty"
         },
         "view-wallpaper_texture-blend":"#BC2EFC",
@@ -208,29 +209,29 @@
         "view-wallpaper_use-color":1.0,
         "view-wallpaper_use-texture":0.0,
         "view-wallpaper_use-texture-blend":0.0,
-        "view-wallpaper_use-texture-speed":0.0,
-        "view-wallpaper_clear-color":0.0
+        "view-wallpaper_use-texture-speed":0.0
       },
-      "color":"#00FF00",
       "name":"set foreground green",
-      "type":"brush_view_wallpaper"
+      "color":"#00FF00"
     },
     {
       "texture":"texture_visu_editor_icon_event_view_foreground",
+      "type":"brush_view_wallpaper",
       "properties":{
+        "view-wallpaper_clear-color":0.0,
         "view-wallpaper_clear-texture":0.0,
         "view-wallpaper_color":"#FFDC006E",
         "view-wallpaper_fade-in-duration":0.5,
         "view-wallpaper_fade-out-duration":0.050000000000000003,
         "view-wallpaper_texture":{
-          "blend":"#FFFFFF",
-          "frame":0.0,
-          "scaleX":0.23225806451612904,
-          "scaleY":0.23225806451612904,
           "angle":0.0,
-          "speed":30.0,
           "alpha":1.0,
           "animate":false,
+          "scaleX":0.23225806451612904,
+          "scaleY":0.23225806451612904,
+          "speed":30.0,
+          "blend":"#FFFFFF",
+          "frame":0.0,
           "name":"texture_empty"
         },
         "view-wallpaper_texture-blend":"#BC2EFC",
@@ -239,29 +240,29 @@
         "view-wallpaper_use-color":1.0,
         "view-wallpaper_use-texture":0.0,
         "view-wallpaper_use-texture-blend":0.0,
-        "view-wallpaper_use-texture-speed":0.0,
-        "view-wallpaper_clear-color":0.0
+        "view-wallpaper_use-texture-speed":0.0
       },
-      "color":"#FFD200",
       "name":"set foreground yellow",
-      "type":"brush_view_wallpaper"
+      "color":"#FFD200"
     },
     {
       "texture":"texture_visu_editor_icon_event_view_foreground",
+      "type":"brush_view_wallpaper",
       "properties":{
+        "view-wallpaper_clear-color":0.0,
         "view-wallpaper_clear-texture":0.0,
         "view-wallpaper_color":"#FF6E006E",
         "view-wallpaper_fade-in-duration":0.5,
         "view-wallpaper_fade-out-duration":0.050000000000000003,
         "view-wallpaper_texture":{
-          "blend":"#FFFFFF",
-          "frame":0.0,
-          "scaleX":0.23225806451612904,
-          "scaleY":0.23225806451612904,
           "angle":0.0,
-          "speed":30.0,
           "alpha":1.0,
           "animate":false,
+          "scaleX":0.23225806451612904,
+          "scaleY":0.23225806451612904,
+          "speed":30.0,
+          "blend":"#FFFFFF",
+          "frame":0.0,
           "name":"texture_empty"
         },
         "view-wallpaper_texture-blend":"#BC2EFC",
@@ -270,29 +271,29 @@
         "view-wallpaper_use-color":1.0,
         "view-wallpaper_use-texture":0.0,
         "view-wallpaper_use-texture-blend":0.0,
-        "view-wallpaper_use-texture-speed":0.0,
-        "view-wallpaper_clear-color":0.0
+        "view-wallpaper_use-texture-speed":0.0
       },
-      "color":"#FF6E00",
       "name":"set foreground orange",
-      "type":"brush_view_wallpaper"
+      "color":"#FF6E00"
     },
     {
       "texture":"texture_visu_editor_icon_event_view_foreground",
+      "type":"brush_view_wallpaper",
       "properties":{
+        "view-wallpaper_clear-color":0.0,
         "view-wallpaper_clear-texture":0.0,
         "view-wallpaper_color":"#FF3B006E",
         "view-wallpaper_fade-in-duration":0.5,
         "view-wallpaper_fade-out-duration":0.050000000000000003,
         "view-wallpaper_texture":{
-          "blend":"#FFFFFF",
-          "frame":0.0,
-          "scaleX":0.23225806451612904,
-          "scaleY":0.23225806451612904,
           "angle":0.0,
-          "speed":30.0,
           "alpha":1.0,
           "animate":false,
+          "scaleX":0.23225806451612904,
+          "scaleY":0.23225806451612904,
+          "speed":30.0,
+          "blend":"#FFFFFF",
+          "frame":0.0,
           "name":"texture_empty"
         },
         "view-wallpaper_texture-blend":"#BC2EFC",
@@ -301,31 +302,32 @@
         "view-wallpaper_use-color":1.0,
         "view-wallpaper_use-texture":0.0,
         "view-wallpaper_use-texture-blend":0.0,
-        "view-wallpaper_use-texture-speed":0.0,
-        "view-wallpaper_clear-color":0.0
+        "view-wallpaper_use-texture-speed":0.0
       },
-      "color":"#FF3B00",
       "name":"set foreground red",
-      "type":"brush_view_wallpaper"
+      "color":"#FF3B00"
     },
     {
       "texture":"texture_visu_editor_icon_event_view_foreground",
+      "type":"brush_view_wallpaper",
       "properties":{
+        "view-wallpaper_angle":0.0,
+        "view-wallpaper_clear-color":0.0,
         "view-wallpaper_clear-texture":0.0,
         "view-wallpaper_color":"#000000",
         "view-wallpaper_fade-in-duration":0.5,
         "view-wallpaper_fade-out-duration":0.050000000000000003,
         "view-wallpaper_speed":0.0,
         "view-wallpaper_texture":{
-          "randomFrame":false,
-          "blend":"#FFFFFF",
-          "frame":0.0,
-          "scaleX":0.23225806451612904,
-          "scaleY":0.23225806451612904,
           "angle":0.0,
-          "speed":30.0,
+          "randomFrame":false,
           "alpha":1.0,
           "animate":false,
+          "scaleX":0.23225806451612904,
+          "scaleY":0.23225806451612904,
+          "speed":30.0,
+          "blend":"#FFFFFF",
+          "frame":0.0,
           "name":"texture_empty"
         },
         "view-wallpaper_texture-blend":"#BC2EFC",
@@ -334,14 +336,12 @@
         "view-wallpaper_use-color":1.0,
         "view-wallpaper_use-texture":0.0,
         "view-wallpaper_use-texture-blend":0.0,
-        "view-wallpaper_use-texture-speed":0.0,
-        "view-wallpaper_angle":0.0,
-        "view-wallpaper_clear-color":0.0
+        "view-wallpaper_use-texture-speed":0.0
       },
-      "color":"#141414",
       "name":"set foreground black",
-      "type":"brush_view_wallpaper"
+      "color":"#141414"
     }
   ],
+  "version":"1",
   "model":"Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>"
 }

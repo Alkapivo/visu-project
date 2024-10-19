@@ -1,140 +1,85 @@
 {
-  "version":"1",
   "data":[
     {
       "texture":"texture_visu_editor_icon_event_grid_player",
+      "type":"brush_grid_player",
       "properties":{
-        "grid-player_use-margin":true,
-        "grid-player_use-mask":true,
-        "grid-player_use-platformer":1.0,
-        "grid-player_use-racing":1.0,
-        "grid-player_use-reset-position":true,
-        "grid-player_use-stats":false,
-        "grid-player_use-transform-player-z":1.0,
-        "grid-player_bullet-hell":{
-          "x":{
-            "acceleration":2.0,
-            "friction":20.0,
-            "speedMax":1.6000000000000001
-          },
-          "guns":[
-            {
-              "angle":90.0,
-              "cooldown":15.0,
-              "speed":24.0,
-              "offsetX":0.0,
-              "bullet":"bullet-player",
-              "offsetY":-96.0
-            },
-            {
-              "angle":93.0,
-              "cooldown":30.0,
-              "speed":30.0,
-              "offsetX":-96.0,
-              "bullet":"bullet-player",
-              "offsetY":64.0,
-              "minForce":1.0
-            },
-            {
-              "angle":87.0,
-              "cooldown":30.0,
-              "speed":30.0,
-              "offsetX":96.0,
-              "bullet":"bullet-player",
-              "offsetY":64.0,
-              "minForce":1.0
-            }
-          ],
-          "y":{
-            "acceleration":2.0,
-            "friction":20.0,
-            "speedMax":1.6000000000000001
-          }
-        },
         "grid-player_margin-bottom":0.255521,
         "grid-player_margin-left":0.69999999999999996,
         "grid-player_margin-right":0.69999999999999996,
         "grid-player_margin-top":0.50157700000000005,
         "grid-player_mask":{
-          "height":50.0,
           "x":50.0,
           "y":58.0,
+          "height":50.0,
           "width":50.0
         },
         "grid-player_platformer":{
+          "x":{
+            "friction":9.3000000000000007,
+            "speedMax":2.5,
+            "acceleration":1.9199999999999999
+          },
           "jump":{
             "size":4.0
           },
-          "x":{
-            "acceleration":1.9199999999999999,
-            "friction":9.3000000000000007,
-            "speedMax":2.5
-          },
           "y":{
-            "acceleration":1.9199999999999999,
             "friction":0.0,
-            "speedMax":25.0
+            "speedMax":25.0,
+            "acceleration":1.9199999999999999
           }
         },
         "grid-player_racing":{
           "nitro":{
-            "acceleration":0.5,
             "friction":1.0,
-            "speedMax":1.0
-          },
-          "throttle":{
-            "acceleration":0.20000000000000001,
-            "friction":0.5,
-            "speedMax":1.5
+            "speedMax":1.0,
+            "acceleration":0.5
           },
           "wheel":{
-            "acceleration":0.29999999999999999,
             "friction":0.059999999999999998,
-            "speedMax":3.0
+            "speedMax":3.0,
+            "acceleration":0.29999999999999999
+          },
+          "throttle":{
+            "friction":0.5,
+            "speedMax":1.5,
+            "acceleration":0.20000000000000001
           }
         },
         "grid-player_reset-position":true,
         "grid-player_stats":{
-          "force":{
-            "value":0.0
+          "life":{
+            "value":4.0
           },
           "point":{
             "value":0.0
           },
-          "life":{
-            "value":4.0
-          },
           "bomb":{
             "value":5.0
+          },
+          "force":{
+            "value":0.0
           }
         },
         "grid-player_texture":{
-          "randomFrame":false,
-          "blend":"#FFFFFF",
-          "frame":2.7916663333333331,
-          "scaleX":2.0,
-          "scaleY":2.0,
           "angle":0.0,
-          "speed":7.0,
+          "randomFrame":false,
           "alpha":1.0,
           "animate":1.0,
+          "scaleX":2.0,
+          "scaleY":2.0,
+          "speed":7.0,
+          "blend":"#FFFFFF",
+          "frame":1.881213666666667,
           "name":"texture_player"
         },
         "grid-player_transform-player-z":{
-          "target":2100.0,
-          "value":0.0,
           "factor":9999.0,
-          "increase":0.0
+          "value":0.0,
+          "increase":0.0,
+          "target":2100.0
         },
-        "grid-player_use-bullet-hell":1.0
-      },
-      "color":"#49FF29",
-      "name":"default player",
-      "type":"brush_grid_player"
-    },
-    {
-      "texture":"texture_visu_editor_icon_event_grid_player",
-      "properties":{
+        "grid-player_use-bullet-hell":1.0,
         "grid-player_use-margin":true,
         "grid-player_use-mask":true,
         "grid-player_use-platformer":1.0,
@@ -144,102 +89,220 @@
         "grid-player_use-transform-player-z":1.0,
         "grid-player_bullet-hell":{
           "x":{
-            "acceleration":0.0,
-            "friction":9.3000000000000007,
-            "speedMax":0.0
+            "friction":20.0,
+            "speedMax":1.6000000000000001,
+            "acceleration":2.0
+          },
+          "y":{
+            "friction":20.0,
+            "speedMax":1.6000000000000001,
+            "acceleration":2.0
           },
           "guns":[
-          ],
-          "y":{
-            "acceleration":0.0,
-            "friction":9.3000000000000007,
-            "speedMax":0.0
-          }
-        },
+            {
+              "angle":90.0,
+              "offsetX":0.0,
+              "offsetY":-96.0,
+              "speed":24.0,
+              "bullet":"bullet-player",
+              "cooldown":15.0
+            },
+            {
+              "angle":93.0,
+              "offsetX":-96.0,
+              "offsetY":64.0,
+              "speed":30.0,
+              "bullet":"bullet-player",
+              "cooldown":30.0,
+              "minForce":1.0
+            },
+            {
+              "angle":87.0,
+              "offsetX":96.0,
+              "offsetY":64.0,
+              "speed":30.0,
+              "bullet":"bullet-player",
+              "cooldown":30.0,
+              "minForce":1.0
+            }
+          ]
+        }
+      },
+      "name":"default player",
+      "color":"#49FF29"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_grid_player",
+      "type":"brush_grid_player",
+      "properties":{
         "grid-player_margin-bottom":0.35999999999999999,
         "grid-player_margin-left":3.0,
         "grid-player_margin-right":2.7360000000000002,
         "grid-player_margin-top":2.0880000000000001,
         "grid-player_mask":{
-          "height":106.0,
           "x":20.0,
           "y":20.0,
+          "height":106.0,
           "width":126.0
         },
         "grid-player_platformer":{
+          "x":{
+            "friction":9.3000000000000007,
+            "speedMax":0.0,
+            "acceleration":0.0
+          },
           "jump":{
             "size":0.0
           },
-          "x":{
-            "acceleration":0.0,
-            "friction":9.3000000000000007,
-            "speedMax":0.0
-          },
           "y":{
-            "acceleration":0.0,
             "friction":0.0,
-            "speedMax":0.0
+            "speedMax":0.0,
+            "acceleration":0.0
           }
         },
         "grid-player_racing":{
           "nitro":{
-            "acceleration":0.0,
             "friction":1.0,
-            "speedMax":0.0
-          },
-          "throttle":{
-            "acceleration":0.0,
-            "friction":0.5,
-            "speedMax":0.0
+            "speedMax":0.0,
+            "acceleration":0.0
           },
           "wheel":{
-            "acceleration":0.0,
             "friction":0.059999999999999998,
-            "speedMax":0.0
+            "speedMax":0.0,
+            "acceleration":0.0
+          },
+          "throttle":{
+            "friction":0.5,
+            "speedMax":0.0,
+            "acceleration":0.0
           }
         },
         "grid-player_reset-position":true,
         "grid-player_stats":{
-          "force":{
-            "value":0.0
+          "life":{
+            "value":4.0
           },
           "point":{
             "value":0.0
           },
-          "life":{
-            "value":4.0
-          },
           "bomb":{
             "value":5.0
+          },
+          "force":{
+            "value":0.0
           }
         },
         "grid-player_texture":{
-          "randomFrame":false,
-          "blend":"#FFFFFF",
-          "frame":0.40216333333331256,
-          "scaleX":2.0,
-          "scaleY":2.0,
           "angle":0.0,
-          "speed":10.0,
+          "randomFrame":false,
           "alpha":1.0,
           "animate":1.0,
+          "scaleX":2.0,
+          "scaleY":2.0,
+          "speed":10.0,
+          "blend":"#FFFFFF",
+          "frame":0.40216333333331256,
           "name":"texture_empty"
         },
         "grid-player_transform-player-z":{
-          "increase":0.0,
-          "value":0.0,
           "factor":9999.0,
+          "value":0.0,
+          "increase":0.0,
           "target":2100.0
         },
-        "grid-player_use-bullet-hell":1.0
+        "grid-player_use-bullet-hell":1.0,
+        "grid-player_use-margin":true,
+        "grid-player_use-mask":true,
+        "grid-player_use-platformer":1.0,
+        "grid-player_use-racing":1.0,
+        "grid-player_use-reset-position":true,
+        "grid-player_use-stats":false,
+        "grid-player_use-transform-player-z":1.0,
+        "grid-player_bullet-hell":{
+          "x":{
+            "friction":9.3000000000000007,
+            "speedMax":0.0,
+            "acceleration":0.0
+          },
+          "y":{
+            "friction":9.3000000000000007,
+            "speedMax":0.0,
+            "acceleration":0.0
+          },
+          "guns":[
+          ]
+        }
       },
-      "color":"#FFFF00",
       "name":"empty player",
-      "type":"brush_grid_player"
+      "color":"#FFFF00"
     },
     {
       "texture":"texture_baron",
+      "type":"brush_grid_player",
       "properties":{
+        "grid-player_margin-bottom":0.255521,
+        "grid-player_margin-left":0.69999999999999996,
+        "grid-player_margin-right":0.69999999999999996,
+        "grid-player_margin-top":0.50157700000000005,
+        "grid-player_mask":{
+          "x":20.0,
+          "y":20.0,
+          "height":106.0,
+          "width":126.0
+        },
+        "grid-player_platformer":{
+          "x":{
+            "friction":9.3000000000000007,
+            "speedMax":2.1000000000000001,
+            "acceleration":1.9199999999999999
+          },
+          "jump":{
+            "size":3.5
+          },
+          "y":{
+            "friction":0.0,
+            "speedMax":25.0,
+            "acceleration":1.9199999999999999
+          }
+        },
+        "grid-player_racing":{
+          "nitro":{
+            "friction":1.0,
+            "speedMax":1.0,
+            "acceleration":0.5
+          },
+          "wheel":{
+            "friction":0.059999999999999998,
+            "speedMax":2.0,
+            "acceleration":0.05000000000000001
+          },
+          "throttle":{
+            "friction":0.5,
+            "speedMax":1.5,
+            "acceleration":0.20000000000000001
+          }
+        },
+        "grid-player_texture":{
+          "angle":0.0,
+          "alpha":1.0,
+          "animate":1.0,
+          "scaleX":2.0,
+          "scaleY":2.0,
+          "speed":10.0,
+          "blend":"#FFFFFF",
+          "frame":0.84375333333333336,
+          "name":"texture_baron"
+        },
+        "grid-player_transform-player-z":{
+          "increase":0.0,
+          "target":2100.0,
+          "factor":9999.0,
+          "startValue":0.0,
+          "overrideValue":false,
+          "value":0.0,
+          "finished":false
+        },
+        "grid-player_use-bullet-hell":1.0,
         "grid-player_use-margin":true,
         "grid-player_use-mask":true,
         "grid-player_use-platformer":1.0,
@@ -247,94 +310,31 @@
         "grid-player_use-transform-player-z":1.0,
         "grid-player_bullet-hell":{
           "x":{
-            "acceleration":1.6199999999999999,
             "friction":9.3000000000000007,
-            "speedMax":1.3
+            "speedMax":1.3,
+            "acceleration":1.6199999999999999
+          },
+          "y":{
+            "friction":9.3000000000000007,
+            "speedMax":1.3,
+            "acceleration":1.6199999999999999
           },
           "guns":[
             {
               "angle":90.0,
-              "cooldown":25.0,
-              "speed":20.0,
               "offsetX":0.0,
+              "offsetY":64.0,
+              "speed":20.0,
               "bullet":"bullet-player",
-              "offsetY":64.0
+              "cooldown":25.0
             }
-          ],
-          "y":{
-            "acceleration":1.6199999999999999,
-            "friction":9.3000000000000007,
-            "speedMax":1.3
-          }
-        },
-        "grid-player_margin-bottom":0.255521,
-        "grid-player_margin-left":0.69999999999999996,
-        "grid-player_margin-right":0.69999999999999996,
-        "grid-player_margin-top":0.50157700000000005,
-        "grid-player_mask":{
-          "height":106.0,
-          "x":20.0,
-          "y":20.0,
-          "width":126.0
-        },
-        "grid-player_platformer":{
-          "jump":{
-            "size":3.5
-          },
-          "x":{
-            "acceleration":1.9199999999999999,
-            "friction":9.3000000000000007,
-            "speedMax":2.1000000000000001
-          },
-          "y":{
-            "acceleration":1.9199999999999999,
-            "friction":0.0,
-            "speedMax":25.0
-          }
-        },
-        "grid-player_racing":{
-          "nitro":{
-            "acceleration":0.5,
-            "friction":1.0,
-            "speedMax":1.0
-          },
-          "throttle":{
-            "acceleration":0.20000000000000001,
-            "friction":0.5,
-            "speedMax":1.5
-          },
-          "wheel":{
-            "acceleration":0.05000000000000001,
-            "friction":0.059999999999999998,
-            "speedMax":2.0
-          }
-        },
-        "grid-player_texture":{
-          "blend":"#FFFFFF",
-          "frame":0.84375333333333336,
-          "scaleX":2.0,
-          "scaleY":2.0,
-          "angle":0.0,
-          "speed":10.0,
-          "alpha":1.0,
-          "animate":1.0,
-          "name":"texture_baron"
-        },
-        "grid-player_transform-player-z":{
-          "finished":false,
-          "factor":9999.0,
-          "increase":0.0,
-          "target":2100.0,
-          "value":0.0,
-          "startValue":0.0,
-          "overrideValue":false
-        },
-        "grid-player_use-bullet-hell":1.0
+          ]
+        }
       },
-      "color":"#FF0000",
       "name":"Baron The Cat",
-      "type":"brush_grid_player"
+      "color":"#FF0000"
     }
   ],
+  "version":"1",
   "model":"Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>"
 }

@@ -25,18 +25,38 @@ function FileService(config = {}): Service() constructor {
       event.setPromise() // disable promise in EventPump, the promise will be resolved within TaskExecutor
     },
     "fetch-file-dialog": function(event) {
+      var path = FileUtil.getPathToOpenWithDialog(event.data)
+      if (!Core.isType(path, String) || String.isEmpty(path)) {
+        var promise = event.promise
+        if (Core.isType(event.promise, Promise)) {
+          event.setPromise()
+          promise.reject()
+        }
+        return
+      }
+
       this.send(new Event("fetch-file")
         .setPromise(event.promise)
-        .setData({ path: FileUtil.getPathToOpenWithDialog(event.data) }))
+        .setData({ path: path }))
       event.setPromise() // disable promise in EventPump, the promise will be resolved within TaskExecutor
     },
     "fetch-file-sync": function(event) {
       return FileUtil.readFileSync(event.data.path)
     },
     "fetch-file-sync-dialog": function(event) {
+      var path = FileUtil.getPathToOpenWithDialog(event.data)
+      if (!Core.isType(path, String) || String.isEmpty(path)) {
+        var promise = event.promise
+        if (Core.isType(event.promise, Promise)) {
+          event.setPromise()
+          promise.reject()
+        }
+        return
+      }
+
       this.send(new Event("fetch-file-sync")
         .setPromise(event.promise)
-        .setData({ path: FileUtil.getPathToOpenWithDialog(event.data) }))
+        .setData({ path: path }))
       event.setPromise() // disable promise in EventPump, the promise will be resolved within TaskExecutor
     },
     "save-file-sync": function(event) {

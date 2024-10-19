@@ -23,10 +23,10 @@ function Test_Language(json = {}) {
           }
         },
         init: function(task) {
-          initLanguage(task.state.code)
+          Language.load(task.state.code)
           Assert.isTrue(Core.isType(Language.pack, LanguagePack))
           task.state.stage = "get"
-          Logger.test("Test_Language", $"initLanguage(\"{task.state.code}\") passed")
+          Logger.test("Test_Language", $"Language.load(\"{task.state.code}\") passed")
         },
         get: function(task) {
           var label = Language.get(task.state.key, task.state.param1, task.state.param2)

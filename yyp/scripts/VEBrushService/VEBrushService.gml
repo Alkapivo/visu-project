@@ -1,10 +1,6 @@
 ///@package io.alkapivo.visu.editor.service.brush
 
-///@param {VisuEditorController}
-function VEBrushService(_editor) constructor {
-
-  ///@type {VisuEditorController}
-  editor = Assert.isType(_editor, VisuEditorController)
+function VEBrushService() constructor {
 
   ///@type {Map<String, Array>}
   templates = new Map(String, Array)
@@ -22,8 +18,9 @@ function VEBrushService(_editor) constructor {
   }
 
   ///@param {VEBrushTemplate}
+  ///@param {?Number} idx
   ///@return {VEBrushService}
-  saveTemplate = function(template) {
+  saveTemplate = function(template, idx = null) {
     if (!Core.isType(template, VEBrushTemplate)) {
       Logger.warn("VEBrushService::saveTemplate", $"Template must be type of VEBrushTemplate")
       return this
@@ -44,7 +41,11 @@ function VEBrushService(_editor) constructor {
       templates.set(index, template)
     } else {
       //Logger.info("VEBrushService", $"Template of type '{template.type}' added: '{template.name}'")
-      templates.add(template)
+      if (Core.isType(idx, Number)) {
+        templates.add(template, idx)
+      } else {
+        templates.add(template)
+      }
     }
 
     return this

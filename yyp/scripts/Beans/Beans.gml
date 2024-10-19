@@ -4,28 +4,41 @@
 function BeanAlreadyExistsException(_message): Exception(_message) constructor { }
 
 
-///@param {Type} _prototype
-///@param {GMObject} gmInstance
-function Bean(_prototype, gmInstance) constructor {
+///@param {String} _name
+///@param {Prototype} _prototype
+///@param {GMObject} _instance
+function Bean(_name, _prototype, _instance) constructor {
+
+  ///@type {String}
+  name = Assert.isType(_name, String,
+    "Bean.name must be of type String")
 
   ///@type {Prototype}
-  prototype = Assert.isType(_prototype, Prototype)
+  prototype = Assert.isType(_prototype, Prototype,
+    "Bean.prototype must be of type Prototype")
 
-  ///@type {GMObject<GMInstance>}
-  object = Assert.isType(gmInstance, GMObject)
-  Assert.isType(GMObjectUtil.get(this.object, "__context"), this.prototype)
+  ///@type {GMObject}
+  instance = Assert.isType(_instance, GMObject)
+  Assert.isType(GMObjectUtil.get(this.instance, "__context"), this.prototype,
+    "Bean.instance must be of type GMObject")
 
   ///@return {?Struct}
   get = function() {
-    if (Core.isType(this.object, GMObject)) {
-      var context = GMObjectUtil.get(this.object, "__context")
-      return Core.isType(context, this.prototype) ? context : null
-    }
-    return null
+    return Core.isType(this.instance, GMObject)
+      ? Core.getIfType(GMObjectUtil.get(this.instance, "__context"), this.prototype)
+      : null
+  }
+
+  ///@return {Bean}
+  free = function() {
+    GMObjectUtil.free(this.instance)
+    this.instance = null
+    return this
   }
 }
 
 
+///@static
 function _Beans() constructor {
 
   ///@private
@@ -38,10 +51,11 @@ function _Beans() constructor {
   
   ///@private
   ///@type {Timer}
-  timer = new Timer(FRAME_MS, { 
-    loop: Infinity,
-    callback: this.healthcheck
-  })
+  timer = new Timer(FRAME_MS, { loop: Infinity, callback: this.healthcheck })
+
+  ///@private
+  ///@type {Boolean}
+  _useHealthcheck = true
 
   ///@param {String} name
   ///@return {Boolean}
@@ -49,16 +63,17 @@ function _Beans() constructor {
     if (this.beans.contains(name)) {
       var bean = this.beans.get(name)
       if (!Core.isType(bean, Bean)) {
-        Logger.warn("Beans", $"Found non-bean entity in beans?: {name}")
-        this.beans.remove(name)
+        Logger.warn("Beans", $"Found non-bean entity: {name}")
+        this.remove(name)
         return false
       }
 
       if (bean.get() == null) {
         Logger.warn("Beans", $"Found corrupted bean: {name}")
-        this.beans.remove(name)
+        this.kill(name)
         return false
       }
+
       return true
     }
 
@@ -87,28 +102,55 @@ function _Beans() constructor {
     return null
   }
 
+  ///@param {String} name
+  ///@param {GMObjectType} type
+  ///@param {LayerID} layerId
+  ///@param {Struct} context
+  ///@return {Bean}
+  static factory = function(name, type, layerId, context) {
+    return new Bean(name, Core
+      .getConstructor(context), GMObjectUtil
+      .factoryStructInstance(type, layerId, context))
+  }
+
   ///@param {Bean} bean
-  ///@return {Beans}
   ///@throws {BeanAlreadyExistsException}
-  static add = function(name, bean) {
-    if (this.exists(name)) {
-      throw new BeanAlreadyExistsException($"Bean already exists: '{name}'")
+  ///@return {Beans}
+  static add = function(bean) {
+    if (this.exists(bean.name)) {
+      throw new BeanAlreadyExistsException(
+        $"Bean already exists: '{name}'")
     }
 
-    if (this.beans.contains(name)) {
-      Logger.info("Beans", $"Update existing bean: {name}")
-    } else {
-      Logger.info("Beans", $"Set new bean: {name}")
+    Logger.info("Beans", this.beans.contains(bean.name)
+      ? $"Update existing bean: {bean.name}"
+      : $"Set new bean: {bean.name}")
+
+    bean.instance.__bean = bean.name
+    this.beans.set(bean.name, bean)
+
+    return this
+  }
+
+  ///@param {String}
+  ///@return {Beans}
+  static kill = function(name) {
+    var bean = this.beans.get(name)
+    if (Core.isType(bean, Bean)) {
+      Logger.info("Beans", $"Kill bean: {name}\n", bean)
+      bean.free()
+      this.remove(name)
     }
-    this.beans.set(name, bean)
+
     return this
   }
 
   ///@param {String} name
+  ///@return {Beans}
   static remove = function(name) {
-    var bean = this.beans.get(name)
-    //Core.dereference(bean, $"Bean `{name}` dereferenced successfully")
+    Logger.info("Beans", $"Remove bean: {name}")
     this.beans.remove(name)
+    return this
   }
 
   ///@private
@@ -134,14 +176,32 @@ function _Beans() constructor {
     return this
   }
 
+  ///@param {Number} interval
+  ///@return {Beans}
+  static setHealthcheckInterval = function(interval) {
+    this.timer.changeDuration(interval)
+    return this
+  }
+
+  ///@param {Boolean} use
+  ///@return {Beans}
+  static useHealthcheck = function(use) {
+    this._useHealthcheck = use
+    return this
+  }
+
   ///@return {Beans}
   static update = function() {
-    this.timer.update()
+    if (this._useHealthcheck) {
+      this.timer.update()
+    }
+
     return this
   }
 }
 global.__Beans = null
 #macro Beans global.__Beans
+
 
 function initBeans() {
   if (global.__Beans == null) {

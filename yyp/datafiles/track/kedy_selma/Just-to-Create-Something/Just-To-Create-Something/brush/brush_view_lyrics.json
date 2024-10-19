@@ -1,8 +1,8 @@
 {
-  "version":"1",
   "data":[
     {
       "texture":"texture_visu_editor_icon_event_view",
+      "type":"brush_view_lyrics",
       "properties":{
         "view-lyrics_align-h":"CENTER",
         "view-lyrics_align-v":"TOP",
@@ -19,22 +19,22 @@
         "view-lyrics_template":"lyrics_alkapivo",
         "view-lyrics_timeout":1.0,
         "view-lyrics_transform-angle":{
-          "finished":false,
-          "factor":0.40000000000000002,
           "increase":0.0,
           "target":280.0,
-          "value":320.0,
+          "factor":0.40000000000000002,
           "startValue":320.0,
-          "overrideValue":false
+          "overrideValue":false,
+          "value":320.0,
+          "finished":false
         },
         "view-lyrics_transform-speed":{
-          "finished":false,
-          "factor":0.002,
           "increase":0.0,
           "target":8.0,
-          "value":0.10000000000000001,
+          "factor":0.002,
           "startValue":0.10000000000000001,
-          "overrideValue":false
+          "overrideValue":false,
+          "value":0.10000000000000001,
+          "finished":false
         },
         "view-lyrics_use-finish-delay":true,
         "view-lyrics_use-line-delay":false,
@@ -46,12 +46,12 @@
         "view-lyrics_x":0.25,
         "view-lyrics_y":0.41999999999999998
       },
-      "color":"#009EB9",
       "name":"Lyrics alkapivo",
-      "type":"brush_view_lyrics"
+      "color":"#009EB9"
     },
     {
       "texture":"texture_visu_editor_icon_event_view",
+      "type":"brush_view_lyrics",
       "properties":{
         "view-lyrics_align-h":"LEFT",
         "view-lyrics_align-v":"TOP",
@@ -68,22 +68,22 @@
         "view-lyrics_template":"kedy_selma",
         "view-lyrics_timeout":1.0,
         "view-lyrics_transform-angle":{
-          "finished":false,
-          "factor":0.40000000000000002,
           "increase":0.0,
           "target":180.0,
-          "value":180.0,
+          "factor":0.40000000000000002,
           "startValue":180.0,
-          "overrideValue":false
+          "overrideValue":false,
+          "value":180.0,
+          "finished":false
         },
         "view-lyrics_transform-speed":{
-          "finished":false,
-          "factor":0.0,
           "increase":0.0,
           "target":2.0,
-          "value":2.0,
+          "factor":0.0,
           "startValue":1.0,
-          "overrideValue":false
+          "overrideValue":false,
+          "value":2.0,
+          "finished":false
         },
         "view-lyrics_use-finish-delay":true,
         "view-lyrics_use-line-delay":false,
@@ -95,12 +95,12 @@
         "view-lyrics_x":0.69999999999999996,
         "view-lyrics_y":0.66000000000000003
       },
-      "color":"#8DDAB9",
       "name":"kedy_selma",
-      "type":"brush_view_lyrics"
+      "color":"#8DDAB9"
     },
     {
       "texture":"texture_visu_editor_icon_event_view",
+      "type":"brush_view_lyrics",
       "properties":{
         "view-lyrics_align-h":"LEFT",
         "view-lyrics_align-v":"TOP",
@@ -117,22 +117,22 @@
         "view-lyrics_template":"kedy_selma_title",
         "view-lyrics_timeout":1.0,
         "view-lyrics_transform-angle":{
-          "finished":false,
-          "factor":0.40000000000000002,
           "increase":0.0,
           "target":180.0,
-          "value":180.0,
+          "factor":0.40000000000000002,
           "startValue":180.0,
-          "overrideValue":false
+          "overrideValue":false,
+          "value":180.0,
+          "finished":false
         },
         "view-lyrics_transform-speed":{
-          "finished":false,
-          "factor":0.0,
           "increase":0.0,
           "target":1.0,
-          "value":1.0,
+          "factor":0.0,
           "startValue":1.0,
-          "overrideValue":false
+          "overrideValue":false,
+          "value":1.0,
+          "finished":false
         },
         "view-lyrics_use-finish-delay":true,
         "view-lyrics_use-line-delay":false,
@@ -144,12 +144,12 @@
         "view-lyrics_x":0.69999999999999996,
         "view-lyrics_y":0.69999999999999996
       },
-      "color":"#CB77C9",
       "name":"kedy_selma title",
-      "type":"brush_view_lyrics"
+      "color":"#CB77C9"
     },
     {
       "texture":"texture_visu_editor_icon_event_view",
+      "type":"brush_view_lyrics",
       "properties":{
         "view-lyrics_align-h":"LEFT",
         "view-lyrics_align-v":"TOP",
@@ -166,15 +166,15 @@
         "view-lyrics_template":"kedy_selma1",
         "view-lyrics_timeout":1.0,
         "view-lyrics_transform-angle":{
-          "increase":0.0,
-          "value":90.0,
           "factor":0.40000000000000002,
+          "value":90.0,
+          "increase":0.0,
           "target":90.0
         },
         "view-lyrics_transform-speed":{
-          "increase":0.0,
-          "value":1.0,
           "factor":0.0,
+          "value":1.0,
+          "increase":0.0,
           "target":1.0
         },
         "view-lyrics_use-finish-delay":true,
@@ -187,10 +187,10 @@
         "view-lyrics_x":0.20000000000000001,
         "view-lyrics_y":0.5
       },
-      "color":"#8DDAB9",
       "name":"kedy_selma1",
-      "type":"brush_view_lyrics"
+      "color":"#8DDAB9"
     }
   ],
+  "version":"1",
   "model":"Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>"
 }

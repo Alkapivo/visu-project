@@ -24,6 +24,11 @@ global.__shader_track_event = {
         .get(data, "shader-spawn_alpha-max"))
     }
 
+    if (Struct.get(data, "shader-spawn_use-merge-properties") == true) {
+      Struct.set(eventData, "mergeProperties", Struct
+        .get(data, "shader-spawn_merge-properties"))
+    }
+
     if (Core.getRuntimeType() == RuntimeType.GXGAMES) {
       var denyMap = new Map(String, Boolean, {
         "shader_lighting_with_glow": true,

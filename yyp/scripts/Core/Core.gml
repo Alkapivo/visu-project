@@ -3,20 +3,44 @@ show_debug_message("init Core.gml")
 
 #macro this self
 #macro null undefined
-#macro any "any"
+#macro super event_inherited
+
 #macro GAME_FPS 60
 #macro FRAME_MS 1 / GAME_FPS
-#macro ERROR_VALUE -1
+
 #macro GuiWidth display_get_gui_width
 #macro GuiHeight display_get_gui_height
-#macro super event_inherited
-#macro BREAK_LOOP "__BREAK_LOOP__"
+#macro toInt int64
+
 #macro Prototype "Prototype"
 #macro Matrix "Matrix"
 #macro NonNull "NonNull"
 #macro GMCamera "GMCamera"
 #macro GMTileset "GMTileset"
 #macro GMScene "GMScene"
+#macro GMObjectType "GMObjectType"
+#macro GMLayer "GMLayer"
+#macro any "any"
+
+
+///@enum
+function _RuntimeType(): Enum() constructor {
+  WINDOWS = "Windows"
+  GXGAMES = "GXGames"
+  LINUX = "Linux"
+  MACOSX = "macOS"
+  IOS = "iOS"
+  TVOS = "tvOS"
+  ANDROID = "Android"
+  PS4 = "PS4"
+  PS5 = "PS5"
+  GDK = "GDK"
+  SWITCH = "Switch"
+  UNKNOWN = "unknown"
+}
+global.__RuntimeType = new _RuntimeType()
+#macro RuntimeType global.__RuntimeType
+
 
 ///@static
 function _Core() constructor {
@@ -68,8 +92,10 @@ function _Core() constructor {
         case GMColor: return result == "number"
         case GMFont: return result == "ref" && font_exists(object)
         case GMKeyboardKey: return typeof(object) == "number"
+        case GMLayer: return result == "ref" && object != -1
         case GMMouseButton: return MouseButtonType.contains(object)
-        case GMObject: return result == "ref"
+        case GMObject: return result == "ref" && instance_exists(object)
+        case GMObjectType: return result == "ref" && object_exists(object)
         case GMShader: return result == "ref" && shader_is_compiled(object)
         case GMShaderUniform: return (result == "number" || result == "ref") && object != -1
         case GMScene: return result == "ref" && asset_get_type(object) == asset_room
@@ -81,7 +107,7 @@ function _Core() constructor {
         ///@todo bug, ref will be returned only when gamemaker is initalizing
         case NonNull: return object != null
         case Number: return result == "number"
-        case Prototype: return result == "number" && is_callable(object)
+        case Prototype: return result == "ref" && is_callable(object)
         case String: return result == "string"
         case Struct: return result == "struct"
         default: 
@@ -138,26 +164,16 @@ function _Core() constructor {
       : null
   }
 
-  ///@param {String} name
-  ///@return {?Callable}
-  static getConstructor = function(name) {
+  ///@param {?Struct|?String} object
+  ///@return {?Prototype}
+  static getConstructor = function(object) {
+    var name = Core.isType(object, Struct) ? instanceof(object) : object
     if (!Core.isType(name, String)) {
       return null
     }
-    
-    var prototype = asset_get_index(name)
-    if (!Core.isType(prototype, Callable)) {
-      return null
-    }
 
-    return prototype
-    /*
-    var type = null
-    try {
-      type = Assert.isType(asset_get_index(name), Callable)
-    } catch (exception) { }
-    return type
-    */
+    var prototype = asset_get_index(name)
+    return Core.isType(prototype, Prototype) ? prototype : null
   }
 
   ///@param {any} object
@@ -283,215 +299,14 @@ function _Core() constructor {
     var parser = Core.typeParsers.get(type)
     return Core.isType(parser, Callable) ? parser : passthrough
   }
+
+  ///@param {any} value
+  ///@param {Type} type
+  ///@param {any} [defaultValue]
+  ///@return {any}
+  static getIfType = function(value, type, defaultValue = null) {
+    return Core.isType(value, type) ? value : defaultValue
+  }
 }
 global.__Core = new _Core()
 #macro Core global.__Core
-
-
-///@enum
-function _RuntimeType(): Enum() constructor {
-  WINDOWS = "Windows"
-  GXGAMES = "GXGames"
-  LINUX = "Linux"
-  MACOSX = "macOS"
-  IOS = "iOS"
-  TVOS = "tvOS"
-  ANDROID = "Android"
-  PS4 = "PS4"
-  PS5 = "PS5"
-  GDK = "GDK"
-  SWITCH = "Switch"
-  UNKNOWN = "unknown"
-}
-global.__RuntimeType = new _RuntimeType()
-#macro RuntimeType global.__RuntimeType
-
-
-///@param {Struct} json
-function CLIParam(json) constructor {
-
-  ///@type {String}
-  name = Assert.isType(json.name, String)
-
-  ///@type {?String}
-  fullName = Struct.contains(json, "fullName") 
-    ? Assert.isType(json.fullName, String) 
-    : null
-
-  ///@type {?String}
-  description = Struct.contains(json, "description") 
-    ? Assert.isType(json.description, String) 
-    : null
-
-  ///@type {Array<CLIParamArg>}
-  args = Core.isType(Struct.get(json, "args"), GMArray)
-    ? GMArray.toArray(json.args, Struct, function(arg) {
-      return new CLIParamArg(arg)
-    })
-    : new Array(Struct)
-
-  ///@type {Callable}
-  handler = Assert.isType(method(this, json.handler), Callable)
-}
-
-
-///@param {Struct} json
-function CLIParamArg(json) constructor {
-  
-  ///@type {String}
-  name = Assert.isType(json.name, String)
-
-  ///@type {String}
-  type = Assert.isType(json.type, String)
-
-  ///@type {?String}
-  description = Struct.contains(json, "description") 
-    ? Assert.isType(json.description, String) 
-    : null
-}
-
-
-///@param {Struct} json
-function CLIParamParser(json) constructor {
-
-  ///@type {Array<CLIParam>}
-  cliParams = Assert.isType(json.cliParams, Array)
-
-  ///@private
-  ///@type {Queue<String>} params
-  ///@throws {Exception}
-  dispatchParam = function(params) {
-    Logger.debug("CLIParamParser", $"DispatchParam, total: {params.size()}")
-    if (params.size() == 0) {
-      return
-    }
-  
-    var param = params.pop()
-    var cliParam = this.cliParams.find(function(cliParam, index, param) {
-      return param == cliParam.name || param == cliParam.fullName
-    }, param)
-  
-    if (!Core.isType(cliParam, CLIParam)) {
-      Logger.warn("CLIParamParser", $"Cannot parse parameter '{param}'")
-      this.dispatchParam(params)
-      return
-    }
-  
-    if (cliParam.args.size() > params.size()) {
-      throw new Exception($"param '{cliParam.name}' require '{cliParam.args.size()}' options while '{params.size()} were provided'")
-    }
-  
-    var args = new Array()
-    IntStream.forEach(0, cliParam.args.size(), function(num, idx, acc) {
-      acc.args.add(acc.params.pop())
-    }, { args: args, params: params })
-  
-    cliParam.handler(args)
-  
-    this.dispatchParam(params)
-  }
-
-  ///@return {CLIParamParser}
-  parse = function() {
-    var count = parameter_count()
-    var params = new Queue(any)
-    Logger.debug("CLIParamParser", $"Parameters count: {count}")
-    for (var index = 1; index < count; index++) {
-      var param = parameter_string(index)
-      if (!String.isEmpty(param)) {
-        params.push(param)
-        Logger.debug("CLIParamParser", $"{index} Adding param: '{param}'")
-      }
-    }
-    Logger.debug("CLIParamParser", $"Parameters parsed: {params.size()}")
-
-    this.dispatchParam(params)
-    return this
-  }
-}
-
-global.__SceneContext = {
-  intent: null,
-  getIntent: function() {
-    return this.intent
-  },
-  setIntent: function(intent) {
-    this.intent = intent
-    return this
-  },
-  open: function(name, intent = null) {
-    var scene = Assert.isType(asset_get_index(name), GMScene)
-    this.setIntent(intent)
-    room_goto(scene)
-    return this
-  }
-}
-#macro SceneContext global.__SceneContext
-
-/**
- * new DebugNumericKeyboardValue({
-    name: "debugLine",
-    value: -10,
-    factor: 1,
-    keyIncrement: ord("T"),
-    keyDecrement: ord("Y"),
-    pressed: true,
-  })
- */
-///@param {Struct} config
-function DebugNumericKeyboardValue(config) constructor {
-
-  ///@type {String}
-  name = Assert.isType(config.name, String)
-
-  ///@type {Number}
-  value = Assert.isType(config.value, Number)
-
-  ///@type {Number}
-  factor = Core.isType(Struct.get(config, "factor"), Number) ? config.factor : 1
-
-  ///@type {?Number}
-  minValue = Core.isType(Struct.get(config, "minValue"), Number) ? config.minValue : null
-
-  ///@type {?Number}
-  maxValue = Core.isType(Struct.get(config, "maxValue"), Number) ? config.maxValue : null
-
-  ///@type {Number}
-  keyIncrement = Assert.isType(config.keyIncrement, Number)
-
-  ///@type {Number}
-  keyDecrement = Assert.isType(config.keyDecrement, Number)
-
-  ///@type {Boolean}
-  pressed = Core.isType(Struct.get(config, "pressed"), Boolean) ? config.pressed : false
-
-  ///@return {DebugNumericKeyboardValue}
-  update = function() {
-    var keyFunction = this.pressed ? keyboard_check_pressed : keyboard_check
-    if (keyFunction(this.keyIncrement)) {
-      this.value = this.value + this.factor
-      if (Optional.is(this.minValue) && this.value < this.minValue) {
-        this.value = this.minValue
-      }
-      if (Optional.is(this.maxValue) && this.value > this.maxValue) {
-        this.value = this.maxValue
-      }
-
-      Logger.debug(this.name, $"Increment: {this.value}")
-    }
-
-    if (keyFunction(this.keyDecrement)) {
-      this.value = this.value - this.factor
-      if (Optional.is(this.minValue) && this.value < this.minValue) {
-        this.value = this.minValue
-      }
-      if (Optional.is(this.maxValue) && this.value > this.maxValue) {
-        this.value = this.maxValue
-      }
-
-      Logger.debug(this.name, $"Decrement: {this.value}")
-    }
-
-    return this
-  }
-}

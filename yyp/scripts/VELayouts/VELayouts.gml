@@ -521,19 +521,9 @@ global.__VELayouts = new Map(String, Callable, {
           y: function() { return this.context.nodes.title.bottom() + this.margin.top },
           height: function() { return 32 },
         },
-        animate: {
-          name: "texture-field-ext.animate",
-          y: function() { return this.context.nodes.texture.bottom() + this.margin.top },
-          height: function() { return 42 },
-        },
-        randomFrame: {
-          name: "texture-field-ext.randomFrame",
-          y: function() { return this.context.nodes.animate.bottom() + this.margin.top },
-          height: function() { return 42 },
-        },
         frame: {
           name: "texture-field-ext.frame",
-          y: function() { return this.context.nodes.randomFrame.bottom() + this.margin.top },
+          y: function() { return this.context.nodes.texture.bottom() + this.margin.top },
           height: function() { return 32 },
         },
         speed: {
@@ -556,6 +546,16 @@ global.__VELayouts = new Map(String, Callable, {
           y: function() { return this.context.nodes.scaleY.bottom() + this.margin.top },
           height: function() { return 32 },
         },
+        animate: {
+          name: "texture-field-ext.animate",
+          y: function() { return this.context.nodes.alpha.bottom() + this.margin.top },
+          height: function() { return 42 },
+        },
+        randomFrame: {
+          name: "texture-field-ext.randomFrame",
+          y: function() { return this.context.nodes.animate.bottom() + this.margin.top },
+          height: function() { return 42 },
+        },
         preview: {
           name: "texture-field-ext.preview",
           y: function() { return this.context.nodes.resolution.bottom() + this.margin.top },
@@ -564,7 +564,7 @@ global.__VELayouts = new Map(String, Callable, {
         },
         resolution: {
           name: "texture-field-ext.resolution",
-          y: function() { return this.context.nodes.alpha.bottom() + this.margin.top },
+          y: function() { return this.context.nodes.randomFrame.bottom() + this.margin.top },
           height: function() { return 32 },
         },
       },

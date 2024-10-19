@@ -193,7 +193,7 @@ function _GPU() constructor {
     ///@param {VAlign} [v]
     ///@return {Struct}
     ///@return {GPU}
-    text: function(_x, _y, text, color = c_white, outline = null, alpha = 1.0, font = GPU_DEFAULT_FONT, h = HAlign.LEFT, v = VAlign.TOP) {
+    text: function(_x, _y, text, color = c_white, outline = null, alpha = 1.0, font = GPU_DEFAULT_FONT, h = HAlign.LEFT, v = VAlign.TOP, outlineAlphaFactor = 1.0) {
       if (font.asset != draw_get_font()) {
         draw_set_font(font.asset)
       }
@@ -207,14 +207,15 @@ function _GPU() constructor {
       }
 
       if (outline != null) {
-        draw_text_color(_x + 1, _y + 1, text, outline, outline, outline, outline, alpha)
-        draw_text_color(_x - 1, _y - 1, text, outline, outline, outline, outline, alpha)
-        draw_text_color(_x    , _y + 1, text, outline, outline, outline, outline, alpha)
-        draw_text_color(_x + 1, _y    , text, outline, outline, outline, outline, alpha)
-        draw_text_color(_x    , _y - 1, text, outline, outline, outline, outline, alpha)
-        draw_text_color(_x - 1, _y    , text, outline, outline, outline, outline, alpha)
-        draw_text_color(_x - 1, _y + 1, text, outline, outline, outline, outline, alpha)
-        draw_text_color(_x + 1, _y - 1, text, outline, outline, outline, outline, alpha)
+        var _alpha = alpha / outlineAlphaFactor
+        draw_text_color(_x + 1, _y + 1, text, outline, outline, outline, outline, alpha / _alpha)
+        draw_text_color(_x - 1, _y - 1, text, outline, outline, outline, outline, alpha / _alpha)
+        draw_text_color(_x    , _y + 1, text, outline, outline, outline, outline, alpha / _alpha)
+        draw_text_color(_x + 1, _y    , text, outline, outline, outline, outline, alpha / _alpha)
+        draw_text_color(_x    , _y - 1, text, outline, outline, outline, outline, alpha / _alpha)
+        draw_text_color(_x - 1, _y    , text, outline, outline, outline, outline, alpha / _alpha)
+        draw_text_color(_x - 1, _y + 1, text, outline, outline, outline, outline, alpha / _alpha)
+        draw_text_color(_x + 1, _y - 1, text, outline, outline, outline, outline, alpha / _alpha)
       }
 
       draw_text_color(_x, _y, text, color, color, color, color, alpha)

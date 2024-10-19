@@ -15,17 +15,14 @@
 	__renderGUI = null
 	
 	///@type {?Callable}
-	__free = null
-	
-	///@type {?Calllable}
-	__onNetworkEvent = null
-  
-  ///@type {?Callable}
-  __onTextureLoadedEvent = null
-	
-	///@type {?Callable}
 	__onSceneEnter = null
 	
 	///@type {?Callable}
 	__onSceneLeave = null
-	
+  
+  ///@type {?Calllable}
+	__onNetworkEvent = null
+  
+  ///@type {?Callable}
+  __onTextureLoadedEvent = null
+  

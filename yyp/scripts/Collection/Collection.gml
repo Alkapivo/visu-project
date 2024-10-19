@@ -1,5 +1,8 @@
 ///@package io.alkapivo.core.collection
 
+#macro BREAK_LOOP "__BREAK_LOOP__"
+
+
 ///@interface
 ///@param {?Struct} [config]
 function Collection(config = null) constructor {

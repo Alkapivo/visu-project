@@ -1117,10 +1117,6 @@ function VETimeline(_editor) constructor {
 
           var transactionService = this.controller.transactionService
           transactionService.applied.push(transaction)
-          if (transactionService.applied.size() >= transactionService.limit) {
-            Core.print("remove! add")
-            transactionService.applied.container.remove(0)
-          }
 
           ///@description select
           store.getValue("selected-events").clear()
@@ -1171,8 +1167,8 @@ function VETimeline(_editor) constructor {
                 var brush = Beans.get(BeanVisuEditorController).brushToolbar.store
                   .getValue("brush")
                 if (!Optional.is(brush)) {
-                  Beans.get(BeanVisuController).send(new Event("spawn-popup", 
-                    { message: "No brush has been selected!" }))
+                  //Beans.get(BeanVisuController).send(new Event("spawn-popup", 
+                  //  { message: "No brush has been selected!" }))
                   break
                 }
 
@@ -1323,10 +1319,6 @@ function VETimeline(_editor) constructor {
 
                 var transactionService = this.controller.transactionService
                 transactionService.applied.push(transaction)
-                if (transactionService.applied.size() >= transactionService.limit) {
-                  Core.print("remove! add")
-                  transactionService.applied.container.remove(0)
-                }
 
                 ///@description select
                 store.getValue("selected-events").clear()
@@ -2075,6 +2067,7 @@ function VETimeline(_editor) constructor {
   update = function() { 
     try {
       this.dispatcher.update()
+      this.transactionService.update()
     } catch (exception) {
       var message = $"VETimeline dispatcher fatal error: {exception.message}"
       Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))

@@ -178,6 +178,9 @@ function ShaderPipeline(config = {}) constructor {
 
       var templateName = Assert.isType(Struct.get(event.data, "template"), String)
       var json = Assert.isType(this.getTemplate(templateName), ShaderTemplate)
+        .serialize()
+      json.properties = Struct.appendRecursive(json.properties, Struct
+        .getIfType(event.data, "mergeProperties", Struct))
       var duration = Assert.isType(Struct.get(event.data, "duration"), Number)
       var template = Assert.isType(this.factoryShaderPipelineTaskTemplate(
         templateName, json), ShaderPipelineTaskTemplate)

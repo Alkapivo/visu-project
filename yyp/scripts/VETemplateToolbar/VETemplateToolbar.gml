@@ -1,5 +1,6 @@
 ///@package io.alkapivo.visu.editor.ui.controller
 
+#macro TEMPLATE_ENTRY_STEP 5
 ///@todo move to VEBrushToolbar
 ///@static
 ///@type {Map<String, Callable>}
@@ -823,6 +824,12 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                       store: store,
                     })
                     .whenSuccess(function(result) {
+                      if (result == null) {
+                        return new Task("dummy-task").whenUpdate(function(executor) {
+                          this.fullfill()
+                        })
+                      }
+
                       var task = JSON.parserTask(result.data, this.state)
                       task.state.set("store", this.state.store)
                       task.whenFinish(function() {
@@ -846,6 +853,12 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                       store: store,
                     })
                     .whenSuccess(function(result) {
+                      if (result == null) {
+                        return new Task("dummy-task").whenUpdate(function(executor) {
+                          this.fullfill()
+                        })
+                      }
+
                       var task = JSON.parserTask(result.data, this.state)
                       task.state.set("store", this.state.store)
                       task.whenFinish(function() {
@@ -869,6 +882,12 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                       store: store,
                     })
                     .whenSuccess(function(result) {
+                      if (result == null) {
+                        return new Task("dummy-task").whenUpdate(function(executor) {
+                          this.fullfill()
+                        })
+                      }
+
                       var task = JSON.parserTask(result.data, this.state)
                       task.state.set("store", this.state.store)
                       task.whenFinish(function() {
@@ -892,6 +911,12 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                       store: store,
                     })
                     .whenSuccess(function(result) {
+                      if (result == null) {
+                        return new Task("dummy-task").whenUpdate(function(executor) {
+                          this.fullfill()
+                        })
+                      }
+
                       var task = JSON.parserTask(result.data, this.state)
                       task.state.set("store", this.state.store)
                       task.whenFinish(function() {
@@ -915,6 +940,12 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                       store: store,
                     })
                     .whenSuccess(function(result) {
+                      if (result == null) {
+                        return new Task("dummy-task").whenUpdate(function(executor) {
+                          this.fullfill()
+                        })
+                      }
+
                       var task = JSON.parserTask(result.data, this.state)
                       task.state.set("store", this.state.store)
                       task.whenFinish(function() {
@@ -938,6 +969,12 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                       store: store,
                     })
                     .whenSuccess(function(result) {
+                      if (result == null) {
+                        return new Task("dummy-task").whenUpdate(function(executor) {
+                          this.fullfill()
+                        })
+                      }
+
                       var task = JSON.parserTask(result.data, this.state)
                       task.state.set("store", this.state.store)
                       task.whenFinish(function() {
@@ -1025,7 +1062,17 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                   throw new Exception($"Save dispatcher for type '{template.type}' wasn't found")
                   break
               }
+
+              var path = FileUtil.getPathToSaveWithDialog({ 
+                description: "JSON file",
+                filename: filename, 
+                extension: "json",
+              })
               
+              if (!Core.isType(path, String)) {
+                return
+              }
+
               if (!Core.isType(templates, Collection)) {
                 return
               }
@@ -1042,11 +1089,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
 
               Beans.get(BeanFileService).send(new Event("save-file-sync")
                 .setData(new File({
-                  path: FileUtil.getPathToSaveWithDialog({ 
-                    description: "JSON file",
-                    filename: filename, 
-                    extension: "json",
-                  }),
+                  path: path,
                   data: data
                 })))
             }
@@ -1067,6 +1110,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
       updateTimer: new Timer(FRAME_MS * 24, { loop: Infinity, shuffle: true }),
       templateToolbar: templateToolbar,
       layout: layout,
+      executor: null,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
       yOffset: null,
       updateCustom: function() {
@@ -1080,6 +1124,10 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
       renderItem: Callable.run(UIUtil.renderTemplates.get("renderItemDefaultScrollable")),
       __render: new BindIntent(Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable"))),
       render: function() {
+        if (this.executor != null) {
+          this.executor.update()
+        }
+
         this.updateVerticalSelectedIndex(32.0)
         this.__render()
       },
@@ -1088,6 +1136,11 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
       onMouseWheelUp: Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelUpY")),
       onMouseWheelDown: Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelDownY")),
       onInit: function() {
+        this.executor = new TaskExecutor(this, {
+          enableLogger: true,
+          catchException: false,
+        })
+
         var container = this
         this.collection = new UICollection(this, { layout: this.layout })
         this.templateToolbar.store.get("type").addSubscriber({ 
@@ -1095,643 +1148,826 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
           callback: function(type, data) {
             data.items.forEach(function(item) { item.free() }).clear() ///@todo replace with remove lambda
             data.collection.components.clear() ///@todo replace with remove lambda
+
+            var task = null
             switch (type) {
               case VETemplateType.SHADER:
-                var components = Beans.get(BeanVisuController).shaderPipeline.templates
-                  .map(function(template, name) {
-                    return {
-                      name: template.name,
-                      template: VEComponents.get("template-entry"),
-                      layout: VELayouts.get("template-entry"),
-                      config: {
-                        label: { 
-                          text: template.name,
-                          colorHoverOver: VETheme.color.accentShadow,
-                          colorHoverOut: VETheme.color.primaryShadow,
-                          onMouseReleasedLeft: function() {
-                            var shader = Beans.get(BeanVisuController).shaderPipeline.templates
-                              .get(this.templateName)
-                            if (!Core.isType(shader, ShaderTemplate)) {
-                              return
-                            }
-
-                            Struct.set(shader, "type", VETemplateType.SHADER)
-                            this.context.templateToolbar.store
-                              .get("template")
-                              .set(new VETemplate(shader))
-                          },
-                          templateName: template.name,
-                        },
-                        button: { 
-                          sprite: {
-                            name: "texture_ve_icon_trash",
-                            blend: VETheme.color.textShadow,
-                          },
-                          callback: function() {
-                            this.removeUIItemfromUICollection()
-                            Beans.get(BeanVisuController).shaderPipeline.templates
-                              .remove(this.templateName)
-                          },
-                          templateName: template.name,
-                          removeUIItemfromUICollection: new BindIntent(Callable
-                            .run(UIUtil.templates.get("removeUIItemfromUICollection"))),
-                        },
-                      },
-                    }
-                  }, null, String, Struct)
+                task = new Task("load-shader-templates")
+                  .setState({
+                    inspector: data.templateToolbar.containers.get("ve-template-toolbar_inspector-view"),
+                    collection: data.collection,
+                    templates: Beans.get(BeanVisuController).shaderPipeline.templates,
+                    templateNames: new Queue(String, GMArray.sort(Beans.get(BeanVisuController).shaderPipeline.templates.keys().getContainer())),
+                    assets: Visu.assets().shaderTemplates,
+                    assetNames: new Queue(String, GMArray.sort(Visu.assets().shaderTemplates.keys().getContainer())),
+                    stage: "parseTemplate",
+                    context: data,
+                    parseTemplate: function(task) {
+                      repeat (TEMPLATE_ENTRY_STEP) {
+                        if (task.state.templateNames.size() == 0) {
+                          task.state.stage = "parseAsset"
+                          return
+                        }
+  
+                        var template = task.state.templates.get(task.state.templateNames.pop())
+                        task.state.collection.add(new UIComponent({
+                          name: template.name,
+                          template: VEComponents.get("template-entry"),
+                          layout: VELayouts.get("template-entry"),
+                          config: {
+                            label: { 
+                              text: template.name,
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.primaryShadow,
+                              onMouseReleasedLeft: function() {
+                                var shader = Beans.get(BeanVisuController).shaderPipeline.templates
+                                  .get(this.templateName)
+                                if (!Core.isType(shader, ShaderTemplate)) {
+                                  return
+                                }
                 
-                Visu.assets().shaderTemplates.forEach(function(template, name, components) {
-                  components.set($"z@{template.name}", {
-                    name: $"z@{template.name}",
-                    template: VEComponents.get("template-entry"),
-                    layout: VELayouts.get("template-entry"),
-                    config: {
-                      label: { 
-                        text: template.name,
-                        colorHoverOver: VETheme.color.accentShadow,
-                        colorHoverOut: VETheme.color.dark,
-                        onMouseReleasedLeft: function() {
-                          var shader = Visu.assets().shaderTemplates.get(this.templateName)
-                          if (!Core.isType(shader, ShaderTemplate)) {
-                            return
-                          }
+                                Struct.set(shader, "type", VETemplateType.SHADER)
+                                this.context.templateToolbar.store
+                                  .get("template")
+                                  .set(new VETemplate(shader))
+                              },
+                              templateName: template.name,
+                            },
+                            button: { 
+                              sprite: {
+                                name: "texture_ve_icon_trash",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() {
+                                this.removeUIItemfromUICollection()
+                                Beans.get(BeanVisuController).shaderPipeline.templates
+                                  .remove(this.templateName)
+                              },
+                              templateName: template.name,
+                              removeUIItemfromUICollection: new BindIntent(Callable
+                                .run(UIUtil.templates.get("removeUIItemfromUICollection"))),
+                            },
+                          },
+                        }))
+                      }
+                    },
+                    parseAsset: function(task) {
+                      repeat (TEMPLATE_ENTRY_STEP) {
+                        if (task.state.assetNames.size() == 0) {
+                          task.state.stage = "finish"
+                          return
+                        }
 
-                          Struct.set(shader, "type", VETemplateType.SHADER)
-                          this.context.templateToolbar.store
-                            .get("template")
-                            .set(new VETemplate(shader))
-                        },
-                        templateName: template.name,
-                        backgroundColor: VETheme.color.dark,
-                      },
-                      button: { 
-                        backgroundColor: VETheme.color.dark,
-                        sprite: {
-                          name: "texture_ve_icon_lock",
-                          blend: VETheme.color.textShadow,
-                        },
-                        callback: function() { },
-                        templateName: template.name,
-                      },
+                        var template = task.state.assets.get(task.state.assetNames.pop())
+                        task.state.collection.add(new UIComponent({
+                          name: $"z@{template.name}",
+                          template: VEComponents.get("template-entry"),
+                          layout: VELayouts.get("template-entry"),
+                          config: {
+                            label: { 
+                              text: template.name,
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.dark,
+                              onMouseReleasedLeft: function() {
+                                var shader = Visu.assets().shaderTemplates.get(this.templateName)
+                                if (!Core.isType(shader, ShaderTemplate)) {
+                                  return
+                                }
+                  
+                                Struct.set(shader, "type", VETemplateType.SHADER)
+                                this.context.templateToolbar.store
+                                  .get("template")
+                                  .set(new VETemplate(shader))
+                              },
+                              templateName: template.name,
+                              backgroundColor: VETheme.color.dark,
+                            },
+                            button: { 
+                              backgroundColor: VETheme.color.dark,
+                              sprite: {
+                                name: "texture_ve_icon_lock",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() { },
+                              templateName: template.name,
+                            },
+                          },
+                        }))
+                      }
+                    },
+                    finish: function(task) {
+                      task.fullfill()
+                      if (Optional.is(task.state.inspector) 
+                          && Optional.is(task.state.inspector.updateTimer)) {
+                        task.state.inspector.updateTimer.finish()
+                      }
                     },
                   })
-                }, components)
-                
-                var keys = GMArray.sort(components.keys().getContainer())
-                IntStream.forEach(0, components.size(), function(iterator, index, acc) {
-                  var component = acc.components.get(acc.keys[iterator])
-                  acc.collection.add(new UIComponent(component))
-                }, {
-                  keys: keys,
-                  components: components,
-                  collection: data.collection,
-                })
+                  .whenUpdate(function(executor) {
+                    var handler = Struct.get(this.state, this.state.stage)
+                    handler(this)
+                  })
                 break
               case VETemplateType.SHROOM:
-                var components = Beans.get(BeanVisuController).shroomService.templates
-                  .map(function(template, name) {
-                    return {
-                      name: template.name,
-                      template: VEComponents.get("template-entry"),
-                      layout: VELayouts.get("template-entry"),
-                      config: {
-                        label: { 
-                          text: template.name,
-                          colorHoverOver: VETheme.color.accentShadow,
-                          colorHoverOut: VETheme.color.primaryShadow,
-                          onMouseReleasedLeft: function() {
-                            var shroom = Beans.get(BeanVisuController).shroomService
-                              .getTemplate(this.templateName)
-                            if (!Core.isType(shroom, ShroomTemplate)) {
-                              return
-                            }
-
-                            Struct.set(shroom, "type", VETemplateType.SHROOM)
-                            this.context.templateToolbar.store
-                              .get("template")
-                              .set(new VETemplate(shroom))
+                task = new Task("load-shroom-templates")
+                  .setState({
+                    inspector: data.templateToolbar.containers.get("ve-template-toolbar_inspector-view"),
+                    collection: data.collection,
+                    templates: Beans.get(BeanVisuController).shroomService.templates,
+                    templateNames: new Queue(String, GMArray.sort(Beans.get(BeanVisuController).shroomService.templates.keys().getContainer())),
+                    assets: Visu.assets().shroomTemplates,
+                    assetNames: new Queue(String, GMArray.sort(Visu.assets().shroomTemplates.keys().getContainer())),
+                    stage: "parseTemplate",
+                    context: data,
+                    parseTemplate: function(task) {
+                      repeat (TEMPLATE_ENTRY_STEP) {
+                        if (task.state.templateNames.size() == 0) {
+                          task.state.stage = "parseAsset"
+                          return
+                        }
+  
+                        var template = task.state.templates.get(task.state.templateNames.pop())
+                        task.state.collection.add(new UIComponent({
+                          name: template.name,
+                          template: VEComponents.get("template-entry"),
+                          layout: VELayouts.get("template-entry"),
+                          config: {
+                            label: { 
+                              text: template.name,
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.primaryShadow,
+                              onMouseReleasedLeft: function() {
+                                var shroom = Beans.get(BeanVisuController).shroomService
+                                  .getTemplate(this.templateName)
+                                if (!Core.isType(shroom, ShroomTemplate)) {
+                                  return
+                                }
+                
+                                Struct.set(shroom, "type", VETemplateType.SHROOM)
+                                this.context.templateToolbar.store
+                                  .get("template")
+                                  .set(new VETemplate(shroom))
+                              },
+                              templateName: template.name,
+                            },
+                            button: { 
+                              sprite: {
+                                name: "texture_ve_icon_trash",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() {
+                                this.removeUIItemfromUICollection()
+                                Beans.get(BeanVisuController).shroomService.templates
+                                  .remove(this.templateName)
+                              },
+                              templateName: template.name,
+                              removeUIItemfromUICollection: new BindIntent(Callable
+                                .run(UIUtil.templates.get("removeUIItemfromUICollection"))),
+                            },
                           },
-                          templateName: template.name,
-                        },
-                        button: { 
-                          sprite: {
-                            name: "texture_ve_icon_trash",
-                            blend: VETheme.color.textShadow,
-                          },
-                          callback: function() {
-                            this.removeUIItemfromUICollection()
-                            Beans.get(BeanVisuController).shroomService.templates
-                              .remove(this.templateName)
-                          },
-                          templateName: template.name,
-                          removeUIItemfromUICollection: new BindIntent(Callable
-                            .run(UIUtil.templates.get("removeUIItemfromUICollection"))),
-                        },
-                      },
-                    }
-                  }, null, String, Struct)
+                        }))
+                      }
+                    },
+                    parseAsset: function(task) {
+                      repeat (TEMPLATE_ENTRY_STEP) {
+                        if (task.state.assetNames.size() == 0) {
+                          task.state.stage = "finish"
+                          return
+                        }
 
-                Visu.assets().shroomTemplates.forEach(function(template, name, components) {
-                  components.set($"z@{template.name}", {
-                    name: $"z@{template.name}",
-                    template: VEComponents.get("template-entry"),
-                    layout: VELayouts.get("template-entry"),
-                    config: {
-                      label: { 
-                        text: template.name,
-                        colorHoverOver: VETheme.color.accentShadow,
-                        colorHoverOut: VETheme.color.dark,
-                        onMouseReleasedLeft: function() {
-                          var shroom = Visu.assets().shroomTemplates.get(this.templateName)
-                          if (!Core.isType(shroom, ShroomTemplate)) {
-                            return
-                          }
-
-                          Struct.set(shroom, "type", VETemplateType.SHROOM)
-                          this.context.templateToolbar.store
-                            .get("template")
-                            .set(new VETemplate(shroom))
-                        },
-                        templateName: template.name,
-                        backgroundColor: VETheme.color.dark,
-                      },
-                      button: { 
-                        backgroundColor: VETheme.color.dark,
-                        sprite: {
-                          name: "texture_ve_icon_lock",
-                          blend: VETheme.color.textShadow,
-                        },
-                        callback: function() { },
-                        templateName: template.name,
-                      },
+                        var template = task.state.assets.get(task.state.assetNames.pop())
+                        task.state.collection.add(new UIComponent({
+                          name: $"z@{template.name}",
+                          template: VEComponents.get("template-entry"),
+                          layout: VELayouts.get("template-entry"),
+                          config: {
+                            label: { 
+                              text: template.name,
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.dark,
+                              onMouseReleasedLeft: function() {
+                                var shroom = Visu.assets().shroomTemplates.get(this.templateName)
+                                if (!Core.isType(shroom, ShroomTemplate)) {
+                                  return
+                                }
+                  
+                                Struct.set(shroom, "type", VETemplateType.SHROOM)
+                                this.context.templateToolbar.store
+                                  .get("template")
+                                  .set(new VETemplate(shroom))
+                              },
+                              templateName: template.name,
+                              backgroundColor: VETheme.color.dark,
+                            },
+                            button: { 
+                              backgroundColor: VETheme.color.dark,
+                              sprite: {
+                                name: "texture_ve_icon_lock",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() { },
+                              templateName: template.name,
+                            },
+                          },
+                        }))
+                      }
+                    },
+                    finish: function(task) {
+                      task.fullfill()
+                      if (Optional.is(task.state.inspector) 
+                          && Optional.is(task.state.inspector.updateTimer)) {
+                        task.state.inspector.updateTimer.finish()
+                      }
                     },
                   })
-                }, components)
-
-                var keys = GMArray.sort(components.keys().getContainer())
-                IntStream.forEach(0, components.size(), function(iterator, index, acc) {
-                  var component = acc.components.get(acc.keys[iterator])
-                  acc.collection.add(new UIComponent(component))
-                }, {
-                  keys: keys,
-                  components: components,
-                  collection: data.collection,
-                })
+                  .whenUpdate(function(executor) {
+                    var handler = Struct.get(this.state, this.state.stage)
+                    handler(this)
+                  })
                 break
               case VETemplateType.BULLET:
-                var components = Beans.get(BeanVisuController).bulletService.templates
-                  .map(function(template, name) {
-                    return {
-                      name: template.name,
-                      template: VEComponents.get("template-entry"),
-                      layout: VELayouts.get("template-entry"),
-                      config: {
-                        label: { 
-                          text: template.name,
-                          colorHoverOver: VETheme.color.accentShadow,
-                          colorHoverOut: VETheme.color.primaryShadow,
-                          onMouseReleasedLeft: function() {
-                            var bullet = Beans.get(BeanVisuController).bulletService
-                              .getTemplate(this.templateName)
-                            if (!Core.isType(bullet, BulletTemplate)) {
-                              return
-                            }
-
-                            Struct.set(bullet, "type", VETemplateType.BULLET)
-                            this.context.templateToolbar.store
-                              .get("template")
-                              .set(new VETemplate(bullet))
+                task = new Task("load-bullet-templates")
+                  .setState({
+                    inspector: data.templateToolbar.containers.get("ve-template-toolbar_inspector-view"),
+                    collection: data.collection,
+                    templates: Beans.get(BeanVisuController).bulletService.templates,
+                    templateNames: new Queue(String, GMArray.sort(Beans.get(BeanVisuController).bulletService.templates.keys().getContainer())),
+                    assets: Visu.assets().bulletTemplates,
+                    assetNames: new Queue(String, GMArray.sort(Visu.assets().bulletTemplates.keys().getContainer())),
+                    stage: "parseTemplate",
+                    context: data,
+                    parseTemplate: function(task) {
+                      repeat (TEMPLATE_ENTRY_STEP) {
+                        if (task.state.templateNames.size() == 0) {
+                          task.state.stage = "parseAsset"
+                          return
+                        }
+  
+                        var template = task.state.templates.get(task.state.templateNames.pop())
+                        task.state.collection.add(new UIComponent({
+                          name: template.name,
+                          template: VEComponents.get("template-entry"),
+                          layout: VELayouts.get("template-entry"),
+                          config: {
+                            label: { 
+                              text: template.name,
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.primaryShadow,
+                              onMouseReleasedLeft: function() {
+                                var bullet = Beans.get(BeanVisuController).bulletService
+                                  .getTemplate(this.templateName)
+                                if (!Core.isType(bullet, BulletTemplate)) {
+                                  return
+                                }
+                
+                                Struct.set(bullet, "type", VETemplateType.BULLET)
+                                this.context.templateToolbar.store
+                                  .get("template")
+                                  .set(new VETemplate(bullet))
+                              },
+                              templateName: template.name,
+                            },
+                            button: { 
+                              sprite: {
+                                name: "texture_ve_icon_trash",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() {
+                                this.removeUIItemfromUICollection()
+                                Beans.get(BeanVisuController).bulletService.templates
+                                  .remove(this.templateName)
+                              },
+                              templateName: template.name,
+                              removeUIItemfromUICollection: new BindIntent(Callable
+                                .run(UIUtil.templates.get("removeUIItemfromUICollection"))),
+                            },
                           },
-                          templateName: template.name,
-                        },
-                        button: { 
-                          sprite: {
-                            name: "texture_ve_icon_trash",
-                            blend: VETheme.color.textShadow,
-                          },
-                          callback: function() {
-                            this.removeUIItemfromUICollection()
-                            Beans.get(BeanVisuController).bulletService.templates
-                              .remove(this.templateName)
-                          },
-                          templateName: template.name,
-                          removeUIItemfromUICollection: new BindIntent(Callable
-                            .run(UIUtil.templates.get("removeUIItemfromUICollection"))),
-                        },
-                      },
-                    }
-                  }, null, String, Struct)
+                        }))
+                      }
+                    },
+                    parseAsset: function(task) {
+                      repeat (TEMPLATE_ENTRY_STEP) {
+                        if (task.state.assetNames.size() == 0) {
+                          task.state.stage = "finish"
+                          return
+                        }
 
-                Visu.assets().bulletTemplates.forEach(function(template, name, components) {
-                  components.set($"z@{template.name}", {
-                    name: $"z@{template.name}",
-                    template: VEComponents.get("template-entry"),
-                    layout: VELayouts.get("template-entry"),
-                    config: {
-                      label: { 
-                        text: template.name,
-                        colorHoverOver: VETheme.color.accentShadow,
-                        colorHoverOut: VETheme.color.dark,
-                        onMouseReleasedLeft: function() {
-                          var bullet = Visu.assets().bulletTemplates.get(this.templateName)
-                          if (!Core.isType(bullet, BulletTemplate)) {
-                            return
-                          }
-
-                          Struct.set(bullet, "type", VETemplateType.BULLET)
-                          this.context.templateToolbar.store
-                            .get("template")
-                            .set(new VETemplate(bullet))
-                        },
-                        templateName: template.name,
-                        backgroundColor: VETheme.color.dark,
-                      },
-                      button: { 
-                        backgroundColor: VETheme.color.dark,
-                        sprite: {
-                          name: "texture_ve_icon_lock",
-                          blend: VETheme.color.textShadow,
-                        },
-                        callback: function() { },
-                        templateName: template.name,
-                      },
+                        var template = task.state.assets.get(task.state.assetNames.pop())
+                        task.state.collection.add(new UIComponent({
+                          name: $"z@{template.name}",
+                          template: VEComponents.get("template-entry"),
+                          layout: VELayouts.get("template-entry"),
+                          config: {
+                            label: { 
+                              text: template.name,
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.dark,
+                              onMouseReleasedLeft: function() {
+                                var bullet = Visu.assets().bulletTemplates.get(this.templateName)
+                                if (!Core.isType(bullet, BulletTemplate)) {
+                                  return
+                                }
+                  
+                                Struct.set(bullet, "type", VETemplateType.BULLET)
+                                this.context.templateToolbar.store
+                                  .get("template")
+                                  .set(new VETemplate(bullet))
+                              },
+                              templateName: template.name,
+                              backgroundColor: VETheme.color.dark,
+                            },
+                            button: { 
+                              backgroundColor: VETheme.color.dark,
+                              sprite: {
+                                name: "texture_ve_icon_lock",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() { },
+                              templateName: template.name,
+                            },
+                          },
+                        }))
+                      }
+                    },
+                    finish: function(task) {
+                      task.fullfill()
+                      if (Optional.is(task.state.inspector) 
+                          && Optional.is(task.state.inspector.updateTimer)) {
+                        task.state.inspector.updateTimer.finish()
+                      }
                     },
                   })
-                }, components)
-                
-                var keys = GMArray.sort(components.keys().getContainer())
-                IntStream.forEach(0, components.size(), function(iterator, index, acc) {
-                  var component = acc.components.get(acc.keys[iterator])
-                  acc.collection.add(new UIComponent(component))
-                }, {
-                  keys: keys,
-                  components: components,
-                  collection: data.collection,
-                })
+                  .whenUpdate(function(executor) {
+                    var handler = Struct.get(this.state, this.state.stage)
+                    handler(this)
+                  })
                 break
               case VETemplateType.COIN:
-                var components = Beans.get(BeanVisuController).coinService.templates
-                  .map(function(template, name) {
-                    return {
-                      name: template.name,
-                      template: VEComponents.get("template-entry"),
-                      layout: VELayouts.get("template-entry"),
-                      config: {
-                        label: { 
-                          text: template.name,
-                          colorHoverOver: VETheme.color.accentShadow,
-                          colorHoverOut: VETheme.color.primaryShadow,
-                          onMouseReleasedLeft: function() {
-                            var coin = Beans.get(BeanVisuController).coinService
-                              .getTemplate(this.templateName)
-                            if (!Core.isType(coin, CoinTemplate)) {
-                              return
-                            }
-
-                            Struct.set(coin, "type", VETemplateType.COIN)
-                            this.context.templateToolbar.store
-                              .get("template")
-                              .set(new VETemplate(coin))
+                task = new Task("load-coin-templates")
+                  .setState({
+                    inspector: data.templateToolbar.containers.get("ve-template-toolbar_inspector-view"),
+                    collection: data.collection,
+                    templates: Beans.get(BeanVisuController).coinService.templates,
+                    templateNames: new Queue(String, GMArray.sort(Beans.get(BeanVisuController).coinService.templates.keys().getContainer())),
+                    assets: Visu.assets().coinTemplates,
+                    assetNames: new Queue(String, GMArray.sort(Visu.assets().coinTemplates.keys().getContainer())),
+                    stage: "parseTemplate",
+                    context: data,
+                    parseTemplate: function(task) {
+                      repeat (TEMPLATE_ENTRY_STEP) {
+                        if (task.state.templateNames.size() == 0) {
+                          task.state.stage = "parseAsset"
+                          return
+                        }
+  
+                        var template = task.state.templates.get(task.state.templateNames.pop())
+                        task.state.collection.add(new UIComponent({
+                          name: template.name,
+                          template: VEComponents.get("template-entry"),
+                          layout: VELayouts.get("template-entry"),
+                          config: {
+                            label: { 
+                              text: template.name,
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.primaryShadow,
+                              onMouseReleasedLeft: function() {
+                                var coin = Beans.get(BeanVisuController).coinService
+                                  .getTemplate(this.templateName)
+                                if (!Core.isType(coin, CoinTemplate)) {
+                                  return
+                                }
+    
+                                Struct.set(coin, "type", VETemplateType.COIN)
+                                this.context.templateToolbar.store
+                                  .get("template")
+                                  .set(new VETemplate(coin))
+                              },
+                              templateName: template.name,
+                            },
+                            button: { 
+                              sprite: {
+                                name: "texture_ve_icon_trash",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() {
+                                this.removeUIItemfromUICollection()
+                                Beans.get(BeanVisuController).coinService.templates
+                                  .remove(this.templateName)
+                              },
+                              templateName: template.name,
+                              removeUIItemfromUICollection: new BindIntent(Callable
+                                .run(UIUtil.templates.get("removeUIItemfromUICollection"))),
+                            },
                           },
-                          templateName: template.name,
-                        },
-                        button: { 
-                          sprite: {
-                            name: "texture_ve_icon_trash",
-                            blend: VETheme.color.textShadow,
-                          },
-                          callback: function() {
-                            this.removeUIItemfromUICollection()
-                            Beans.get(BeanVisuController).coinService.templates
-                              .remove(this.templateName)
-                          },
-                          templateName: template.name,
-                          removeUIItemfromUICollection: new BindIntent(Callable
-                            .run(UIUtil.templates.get("removeUIItemfromUICollection"))),
-                        },
-                      },
-                    }
-                  }, null, String, Struct)
+                        }))
+                      }
+                    },
+                    parseAsset: function(task) {
+                      repeat (TEMPLATE_ENTRY_STEP) {
+                        if (task.state.assetNames.size() == 0) {
+                          task.state.stage = "finish"
+                          return
+                        }
 
-                Visu.assets().coinTemplates.forEach(function(template, name, components) {
-                  components.set($"z@{template.name}", {
-                    name: $"z@{template.name}",
-                    template: VEComponents.get("template-entry"),
-                    layout: VELayouts.get("template-entry"),
-                    config: {
-                      label: { 
-                        text: template.name,
-                        colorHoverOver: VETheme.color.accentShadow,
-                        colorHoverOut: VETheme.color.dark,
-                        onMouseReleasedLeft: function() {
-                          var coin = Visu.assets().coinTemplates.get(this.templateName)
-                          if (!Core.isType(coin, CoinTemplate)) {
-                            return
-                          }
-
-                          Struct.set(coin, "type", VETemplateType.COIN)
-                          this.context.templateToolbar.store
-                            .get("template")
-                            .set(new VETemplate(coin))
-                        },
-                        templateName: template.name,
-                        backgroundColor: VETheme.color.dark,
-                      },
-                      button: { 
-                        backgroundColor: VETheme.color.dark,
-                        sprite: {
-                          name: "texture_ve_icon_lock",
-                          blend: VETheme.color.textShadow,
-                        },
-                        callback: function() { },
-                        templateName: template.name,
-                      },
+                        var template = task.state.assets.get(task.state.assetNames.pop())
+                        task.state.collection.add(new UIComponent({
+                          name: $"z@{template.name}",
+                          template: VEComponents.get("template-entry"),
+                          layout: VELayouts.get("template-entry"),
+                          config: {
+                            label: { 
+                              text: template.name,
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.dark,
+                              onMouseReleasedLeft: function() {
+                                var coin = Visu.assets().coinTemplates.get(this.templateName)
+                                if (!Core.isType(coin, CoinTemplate)) {
+                                  return
+                                }
+      
+                                Struct.set(coin, "type", VETemplateType.COIN)
+                                this.context.templateToolbar.store
+                                  .get("template")
+                                  .set(new VETemplate(coin))
+                              },
+                              templateName: template.name,
+                              backgroundColor: VETheme.color.dark,
+                            },
+                            button: { 
+                              backgroundColor: VETheme.color.dark,
+                              sprite: {
+                                name: "texture_ve_icon_lock",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() { },
+                              templateName: template.name,
+                            },
+                          },
+                        }))
+                      }
+                    },
+                    finish: function(task) {
+                      task.fullfill()
+                      if (Optional.is(task.state.inspector) 
+                          && Optional.is(task.state.inspector.updateTimer)) {
+                        task.state.inspector.updateTimer.finish()
+                      }
                     },
                   })
-                }, components)
-                
-                var keys = GMArray.sort(components.keys().getContainer())
-                IntStream.forEach(0, components.size(), function(iterator, index, acc) {
-                  var component = acc.components.get(acc.keys[iterator])
-                  acc.collection.add(new UIComponent(component))
-                }, {
-                  keys: keys,
-                  components: components,
-                  collection: data.collection,
-                })
+                  .whenUpdate(function(executor) {
+                    var handler = Struct.get(this.state, this.state.stage)
+                    handler(this)
+                  })
                 break
               case VETemplateType.LYRICS:
-                var components = Beans.get(BeanVisuController).lyricsService.templates
-                  .map(function(template, name) {
-                    return {
-                      name: template.name,
-                      template: VEComponents.get("template-entry"),
-                      layout: VELayouts.get("template-entry"),
-                      config: {
-                        label: { 
-                          text: template.name,
-                          colorHoverOver: VETheme.color.accentShadow,
-                          colorHoverOut: VETheme.color.primaryShadow,
-                          onMouseReleasedLeft: function() {
-                            var lyrics = Beans.get(BeanVisuController).lyricsService
-                              .getTemplate(this.templateName)
-                            if (!Core.isType(lyrics, LyricsTemplate)) {
-                              return
-                            }
-
-                            Struct.set(lyrics, "type", VETemplateType.LYRICS)
-                            this.context.templateToolbar.store
-                              .get("template")
-                              .set(new VETemplate(lyrics))
+                task = new Task("load-lyrics-templates")
+                  .setState({
+                    inspector: data.templateToolbar.containers.get("ve-template-toolbar_inspector-view"),
+                    collection: data.collection,
+                    templates: Beans.get(BeanVisuController).lyricsService.templates,
+                    templateNames: new Queue(String, GMArray.sort(Beans.get(BeanVisuController).lyricsService.templates.keys().getContainer())),
+                    assets: Visu.assets().lyricsTemplates,
+                    assetNames: new Queue(String, GMArray.sort(Visu.assets().lyricsTemplates.keys().getContainer())),
+                    stage: "parseTemplate",
+                    context: data,
+                    parseTemplate: function(task) {
+                      repeat (TEMPLATE_ENTRY_STEP) {
+                        if (task.state.templateNames.size() == 0) {
+                          task.state.stage = "parseAsset"
+                          return
+                        }
+  
+                        var template = task.state.templates.get(task.state.templateNames.pop())
+                        task.state.collection.add(new UIComponent({
+                          name: template.name,
+                          template: VEComponents.get("template-entry"),
+                          layout: VELayouts.get("template-entry"),
+                          config: {
+                            label: { 
+                              text: template.name,
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.primaryShadow,
+                              onMouseReleasedLeft: function() {
+                                var lyrics = Beans.get(BeanVisuController).lyricsService
+                                  .getTemplate(this.templateName)
+                                if (!Core.isType(lyrics, LyricsTemplate)) {
+                                  return
+                                }
+                
+                                Struct.set(lyrics, "type", VETemplateType.LYRICS)
+                                this.context.templateToolbar.store
+                                  .get("template")
+                                  .set(new VETemplate(lyrics))
+                              },
+                              templateName: template.name,
+                            },
+                            button: { 
+                              sprite: {
+                                name: "texture_ve_icon_trash",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() {
+                                this.removeUIItemfromUICollection()
+                                Beans.get(BeanVisuController).lyricsService.templates
+                                  .remove(this.templateName)
+                              },
+                              templateName: template.name,
+                              removeUIItemfromUICollection: new BindIntent(Callable
+                                .run(UIUtil.templates.get("removeUIItemfromUICollection"))),
+                            },
                           },
-                          templateName: template.name,
-                        },
-                        button: { 
-                          sprite: {
-                            name: "texture_ve_icon_trash",
-                            blend: VETheme.color.textShadow,
-                          },
-                          callback: function() {
-                            this.removeUIItemfromUICollection()
-                            Beans.get(BeanVisuController).lyricsService.templates
-                              .remove(this.templateName)
-                          },
-                          templateName: template.name,
-                          removeUIItemfromUICollection: new BindIntent(Callable
-                            .run(UIUtil.templates.get("removeUIItemfromUICollection"))),
-                        },
-                      },
-                    }
-                  }, null, String, Struct)
+                        }))
+                      }
+                    },
+                    parseAsset: function(task) {
+                      repeat (TEMPLATE_ENTRY_STEP) {
+                        if (task.state.assetNames.size() == 0) {
+                          task.state.stage = "finish"
+                          return
+                        }
 
-                Visu.assets().lyricsTemplates.forEach(function(template, name, components) {
-                  components.set($"z@{template.name}", {
-                    name: $"z@{template.name}",
-                    template: VEComponents.get("template-entry"),
-                    layout: VELayouts.get("template-entry"),
-                    config: {
-                      label: { 
-                        text: template.name,
-                        colorHoverOver: VETheme.color.accentShadow,
-                        colorHoverOut: VETheme.color.dark,
-                        onMouseReleasedLeft: function() {
-                          var lyrics = Visu.assets().lyricsTemplates.get(this.templateName)
-                          if (!Core.isType(lyrics, LyricsTemplate)) {
-                            return
-                          }
-
-                          Struct.set(lyrics, "type", VETemplateType.LYRICS)
-                          this.context.templateToolbar.store
-                            .get("template")
-                            .set(new VETemplate(lyrics))
-                        },
-                        templateName: template.name,
-                        backgroundColor: VETheme.color.dark,
-                      },
-                      button: { 
-                        backgroundColor: VETheme.color.dark,
-                        sprite: {
-                          name: "texture_ve_icon_lock",
-                          blend: VETheme.color.textShadow,
-                        },
-                        callback: function() { },
-                        templateName: template.name,
-                      },
+                        var template = task.state.assets.get(task.state.assetNames.pop())
+                        task.state.collection.add(new UIComponent({
+                          name: $"z@{template.name}",
+                          template: VEComponents.get("template-entry"),
+                          layout: VELayouts.get("template-entry"),
+                          config: {
+                            label: { 
+                              text: template.name,
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.dark,
+                              onMouseReleasedLeft: function() {
+                                var lyrics = Visu.assets().lyricsTemplates.get(this.templateName)
+                                if (!Core.isType(lyrics, LyricsTemplate)) {
+                                  return
+                                }
+                  
+                                Struct.set(lyrics, "type", VETemplateType.LYRICS)
+                                this.context.templateToolbar.store
+                                  .get("template")
+                                  .set(new VETemplate(lyrics))
+                              },
+                              templateName: template.name,
+                              backgroundColor: VETheme.color.dark,
+                            },
+                            button: { 
+                              backgroundColor: VETheme.color.dark,
+                              sprite: {
+                                name: "texture_ve_icon_lock",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() { },
+                              templateName: template.name,
+                            },
+                          },
+                        }))
+                      }
+                    },
+                    finish: function(task) {
+                      task.fullfill()
+                      if (Optional.is(task.state.inspector) 
+                          && Optional.is(task.state.inspector.updateTimer)) {
+                        task.state.inspector.updateTimer.finish()
+                      }
                     },
                   })
-                }, components)
-                
-                var keys = GMArray.sort(components.keys().getContainer())
-                IntStream.forEach(0, components.size(), function(iterator, index, acc) {
-                  var component = acc.components.get(acc.keys[iterator])
-                  acc.collection.add(new UIComponent(component))
-                }, {
-                  keys: keys,
-                  components: components,
-                  collection: data.collection,
-                })
+                  .whenUpdate(function(executor) {
+                    var handler = Struct.get(this.state, this.state.stage)
+                    handler(this)
+                  })
                 break
               case VETemplateType.PARTICLE:
-                var components = Beans.get(BeanVisuController).particleService.templates
-                  .map(function(template, name) {
-                    return {
-                      name: template.name,
-                      template: VEComponents.get("template-entry"),
-                      layout: VELayouts.get("template-entry"),
-                      config: {
-                        label: { 
-                          text: template.name,
-                          colorHoverOver: VETheme.color.accentShadow,
-                          colorHoverOut: VETheme.color.primaryShadow,
-                          onMouseReleasedLeft: function() {
-                            var particle = Beans.get(BeanVisuController).particleService
-                              .getTemplate(this.templateName)
-                            if (!Core.isType(particle, ParticleTemplate)) {
-                              return
-                            }
-
-                            Struct.set(particle, "type", VETemplateType.PARTICLE)
-                            this.context.templateToolbar.store
-                              .get("template")
-                              .set(new VETemplate(particle))
+                task = new Task("load-particle-templates")
+                  .setState({
+                    inspector: data.templateToolbar.containers.get("ve-template-toolbar_inspector-view"),
+                    collection: data.collection,
+                    templates: Beans.get(BeanVisuController).particleService.templates,
+                    templateNames: new Queue(String, GMArray.sort(Beans.get(BeanVisuController).particleService.templates.keys().getContainer())),
+                    assets: Visu.assets().particleTemplates,
+                    assetNames: new Queue(String, GMArray.sort(Visu.assets().particleTemplates.keys().getContainer())),
+                    stage: "parseTemplate",
+                    context: data,
+                    parseTemplate: function(task) {
+                      repeat (TEMPLATE_ENTRY_STEP) {
+                        if (task.state.templateNames.size() == 0) {
+                          task.state.stage = "parseAsset"
+                          return
+                        }
+  
+                        var template = task.state.templates.get(task.state.templateNames.pop())
+                        task.state.collection.add(new UIComponent({
+                          name: template.name,
+                          template: VEComponents.get("template-entry"),
+                          layout: VELayouts.get("template-entry"),
+                          config: {
+                            label: { 
+                              text: template.name,
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.primaryShadow,
+                              onMouseReleasedLeft: function() {
+                                var particle = Beans.get(BeanVisuController).particleService
+                                  .getTemplate(this.templateName)
+                                if (!Core.isType(particle, ParticleTemplate)) {
+                                  return
+                                }
+                
+                                Struct.set(particle, "type", VETemplateType.PARTICLE)
+                                this.context.templateToolbar.store
+                                  .get("template")
+                                  .set(new VETemplate(particle))
+                              },
+                              templateName: template.name,
+                            },
+                            button: { 
+                              sprite: {
+                                name: "texture_ve_icon_trash",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() {
+                                this.removeUIItemfromUICollection()
+                                Beans.get(BeanVisuController).particleService.templates
+                                  .remove(this.templateName)
+                              },
+                              templateName: template.name,
+                              removeUIItemfromUICollection: new BindIntent(Callable
+                                .run(UIUtil.templates.get("removeUIItemfromUICollection"))),
+                            },
                           },
-                          templateName: template.name,
-                        },
-                        button: { 
-                          sprite: {
-                            name: "texture_ve_icon_trash",
-                            blend: VETheme.color.textShadow,
-                          },
-                          callback: function() {
-                            this.removeUIItemfromUICollection()
-                            Beans.get(BeanVisuController).particleService.templates
-                              .remove(this.templateName)
-                          },
-                          templateName: template.name,
-                          removeUIItemfromUICollection: new BindIntent(Callable
-                            .run(UIUtil.templates.get("removeUIItemfromUICollection"))),
-                        },
-                      },
-                    }
-                  }, null, String, Struct)
+                        }))
+                      }
+                    },
+                    parseAsset: function(task) {
+                      repeat (TEMPLATE_ENTRY_STEP) {
+                        if (task.state.assetNames.size() == 0) {
+                          task.state.stage = "finish"
+                          return
+                        }
 
-                Visu.assets().particleTemplates.forEach(function(template, name, components) {
-                  components.set($"z@{template.name}", {
-                    name: $"z@{template.name}",
-                    template: VEComponents.get("template-entry"),
-                    layout: VELayouts.get("template-entry"),
-                    config: {
-                      label: { 
-                        text: template.name,
-                        colorHoverOver: VETheme.color.accentShadow,
-                        colorHoverOut: VETheme.color.dark,
-                        onMouseReleasedLeft: function() {
-                          var particle = Visu.assets().particleTemplates.get(this.templateName)
-                          if (!Core.isType(particle, ParticleTemplate)) {
-                            return
-                          }
-
-                          Struct.set(particle, "type", VETemplateType.PARTICLE)
-                          this.context.templateToolbar.store
-                            .get("template")
-                            .set(new VETemplate(particle))
-                        },
-                        templateName: template.name,
-                        backgroundColor: VETheme.color.dark,
-                      },
-                      button: { 
-                        backgroundColor: VETheme.color.dark,
-                        sprite: {
-                          name: "texture_ve_icon_lock",
-                          blend: VETheme.color.textShadow,
-                        },
-                        callback: function() { },
-                        templateName: template.name,
-                      },
+                        var template = task.state.assets.get(task.state.assetNames.pop())
+                        task.state.collection.add(new UIComponent({
+                          name: $"z@{template.name}",
+                          template: VEComponents.get("template-entry"),
+                          layout: VELayouts.get("template-entry"),
+                          config: {
+                            label: { 
+                              text: template.name,
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.dark,
+                              onMouseReleasedLeft: function() {
+                                var particle = Visu.assets().particleTemplates.get(this.templateName)
+                                if (!Core.isType(particle, ParticleTemplate)) {
+                                  return
+                                }
+                  
+                                Struct.set(particle, "type", VETemplateType.PARTICLE)
+                                this.context.templateToolbar.store
+                                  .get("template")
+                                  .set(new VETemplate(particle))
+                              },
+                              templateName: template.name,
+                              backgroundColor: VETheme.color.dark,
+                            },
+                            button: { 
+                              backgroundColor: VETheme.color.dark,
+                              sprite: {
+                                name: "texture_ve_icon_lock",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() { },
+                              templateName: template.name,
+                            },
+                          },
+                        }))
+                      }
+                    },
+                    finish: function(task) {
+                      task.fullfill()
+                      if (Optional.is(task.state.inspector) 
+                          && Optional.is(task.state.inspector.updateTimer)) {
+                        task.state.inspector.updateTimer.finish()
+                      }
                     },
                   })
-                }, components)
-
-                var keys = GMArray.sort(components.keys().getContainer())
-                IntStream.forEach(0, components.size(), function(iterator, index, acc) {
-                  var component = acc.components.get(acc.keys[iterator])
-                  acc.collection.add(new UIComponent(component))
-                }, {
-                  keys: keys,
-                  components: components,
-                  collection: data.collection,
-                })
+                  .whenUpdate(function(executor) {
+                    var handler = Struct.get(this.state, this.state.stage)
+                    handler(this)
+                  })
                 break
               case VETemplateType.TEXTURE:
-                var components = Beans.get(BeanTextureService).templates
-                  .map(function(template, name) {
-                    return {
-                      name: template.name,
-                      template: VEComponents.get("template-entry"),
-                      layout: VELayouts.get("template-entry"),
-                      config: {
-                        label: { 
-                          text: template.name,
-                          colorHoverOver: VETheme.color.accentShadow,
-                          colorHoverOut: VETheme.color.primaryShadow,
-                          onMouseReleasedLeft: function() {
-                            var texture = Beans.get(BeanTextureService)
-                              .getTemplate(this.templateName)
-                            if (!Core.isType(texture, TextureTemplate)) {
-                              return
-                            }
-
-                            Struct.set(texture, "type", VETemplateType.TEXTURE)
-                            this.context.templateToolbar.store
-                              .get("template")
-                              .set(new VETemplate(texture))
+                task = new Task("load-textures")
+                  .setState({
+                    inspector: data.templateToolbar.containers.get("ve-template-toolbar_inspector-view"),
+                    collection: data.collection,
+                    templates: Beans.get(BeanTextureService).templates,
+                    templateNames: new Queue(String, GMArray.sort(Beans.get(BeanTextureService).templates.keys().getContainer())),
+                    assets: Visu.assets().textures,
+                    assetNames: new Queue(String, GMArray.sort(Visu.assets().textures.keys().getContainer())),
+                    stage: "parseTemplate",
+                    parseTemplate: function(task) {
+                      repeat (TEMPLATE_ENTRY_STEP) {
+                        if (task.state.templateNames.size() == 0) {
+                          task.state.stage = "parseAsset"
+                          return
+                        }
+  
+                        var template = task.state.templates.get(task.state.templateNames.pop())
+                        task.state.collection.add(new UIComponent({
+                          name: template.name,
+                          template: VEComponents.get("template-entry"),
+                          layout: VELayouts.get("template-entry"),
+                          config: {
+                            label: { 
+                              text: template.name,
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.primaryShadow,
+                              onMouseReleasedLeft: function() {
+                                var texture = Beans.get(BeanTextureService)
+                                  .getTemplate(this.templateName)
+                                if (!Core.isType(texture, TextureTemplate)) {
+                                  return
+                                }
+                
+                                Struct.set(texture, "type", VETemplateType.TEXTURE)
+                                this.context.templateToolbar.store
+                                  .get("template")
+                                  .set(new VETemplate(texture))
+                              },
+                              templateName: template.name,
+                            },
+                            button: { 
+                              sprite: {
+                                name: "texture_ve_icon_trash",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() {
+                                this.removeUIItemfromUICollection()
+                                Beans.get(BeanTextureService).templates
+                                  .remove(this.templateName)
+                              },
+                              templateName: template.name,
+                              removeUIItemfromUICollection: new BindIntent(Callable
+                                .run(UIUtil.templates.get("removeUIItemfromUICollection"))),
+                            },
                           },
-                          templateName: template.name,
-                        },
-                        button: { 
-                          sprite: {
-                            name: "texture_ve_icon_trash",
-                            blend: VETheme.color.textShadow,
-                          },
-                          callback: function() {
-                            this.removeUIItemfromUICollection()
-                            Beans.get(BeanTextureService).templates
-                              .remove(this.templateName)
-                          },
-                          templateName: template.name,
-                          removeUIItemfromUICollection: new BindIntent(Callable
-                            .run(UIUtil.templates.get("removeUIItemfromUICollection"))),
-                        },
-                      },
-                    }
-                  }, null, String, Struct)
+                        }))
+                      }
+                    },
+                    parseAsset: function(task) {
+                      repeat (TEMPLATE_ENTRY_STEP) {
+                        if (task.state.assetNames.size() == 0) {
+                          task.state.stage = "finish"
+                          return
+                        }
 
-                Visu.assets().textures.forEach(function(template, name, components) {
-                  components.set($"z@{template.name}", {
-                    name: $"z@{template.name}",
-                    template: VEComponents.get("template-entry"),
-                    layout: VELayouts.get("template-entry"),
-                    config: {
-                      label: { 
-                        text: template.name,
-                        colorHoverOver: VETheme.color.accentShadow,
-                        colorHoverOut: VETheme.color.dark,
-                        onMouseReleasedLeft: function() {
-                          var texture = Visu.assets().textures.get(this.templateName)
-                          if (!Core.isType(texture, TextureTemplate)) {
-                            return
-                          }
-
-                          Struct.set(texture, "type", VETemplateType.TEXTURE)
-                          this.context.templateToolbar.store
-                            .get("template")
-                            .set(new VETemplate(texture))
-                        },
-                        templateName: template.name,
-                        backgroundColor: VETheme.color.dark,
-                      },
-                      button: { 
-                        backgroundColor: VETheme.color.dark,
-                        sprite: {
-                          name: "texture_ve_icon_lock",
-                          blend: VETheme.color.textShadow,
-                        },
-                        callback: function() { },
-                        templateName: template.name,
-                      },
+                        var template = task.state.assets.get(task.state.assetNames.pop())
+                        task.state.collection.add(new UIComponent({
+                          name: $"z@{template.name}",
+                          template: VEComponents.get("template-entry"),
+                          layout: VELayouts.get("template-entry"),
+                          config: {
+                            label: { 
+                              text: template.name,
+                              colorHoverOver: VETheme.color.accentShadow,
+                              colorHoverOut: VETheme.color.dark,
+                              onMouseReleasedLeft: function() {
+                                var texture = Visu.assets().textures.get(this.templateName)
+                                if (!Core.isType(texture, TextureTemplate)) {
+                                  return
+                                }
+                  
+                                Struct.set(texture, "type", VETemplateType.TEXTURE)
+                                this.context.templateToolbar.store
+                                  .get("template")
+                                  .set(new VETemplate(texture))
+                              },
+                              templateName: template.name,
+                              backgroundColor: VETheme.color.dark,
+                            },
+                            button: { 
+                              backgroundColor: VETheme.color.dark,
+                              sprite: {
+                                name: "texture_ve_icon_lock",
+                                blend: VETheme.color.textShadow,
+                              },
+                              callback: function() { },
+                              templateName: template.name,
+                            },
+                          },
+                        }))
+                      }
+                    },
+                    finish: function(task) {
+                      task.fullfill()
+                      if (Optional.is(task.state.inspector) 
+                          && Optional.is(task.state.inspector.updateTimer)) {
+                        task.state.inspector.updateTimer.finish()
+                      }
                     },
                   })
-                }, components)
-
-                var keys = GMArray.sort(components.keys().getContainer())
-                IntStream.forEach(0, components.size(), function(iterator, index, acc) {
-                  var component = acc.components.get(acc.keys[iterator])
-                  acc.collection.add(new UIComponent(component))
-                }, {
-                  keys: keys,
-                  components: components,
-                  collection: data.collection,
-                })
+                  .whenUpdate(function(executor) {
+                    var handler = Struct.get(this.state, this.state.stage)
+                    handler(this)
+                  })
                 break
               default:
                 Logger.warn(
@@ -1741,10 +1977,9 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                 break
             }
 
-            var inspector = data.templateToolbar.containers
-              .get("ve-template-toolbar_inspector-view")
-            if (Optional.is(inspector)) {
-              inspector.updateTimer.time = inspector.updateTimer.duration
+            if (Core.isType(task, Task)) {
+              data.executor.tasks.clear()
+              data.executor.add(task)
             }
           },
           data: container
@@ -1868,6 +2103,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
       updateTimer: new Timer(FRAME_MS * 24, { loop: Infinity, shuffle: true }),
       templateToolbar: templateToolbar,
       layout: layout,
+      executor: null,
       updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
       updateCustom: function() {
         var previousOffset = this.state.get("previousOffset");
@@ -1880,7 +2116,15 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
         }
       },
       renderItem: Callable.run(UIUtil.renderTemplates.get("renderItemDefaultScrollable")),
-      render: Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable")),
+      renderDefaultScrollable: new BindIntent(Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable"))),
+      render: function() {
+        if (this.executor != null) {
+          this.executor.update()
+        }
+
+        this.renderDefaultScrollable()
+        return this
+      },
       scrollbarY: { align: HAlign.LEFT },
       onMouseOnLeft: Callable.run(UIUtil.mouseEventTemplates.get("onMouseScrollbarY")),
       onMousePressedLeft: Callable.run(UIUtil.mouseEventTemplates.get("onMouseScrollbarY")),
@@ -1888,41 +2132,105 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
       onMouseWheelDown: Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelDownY")),
       onInit: function() {
         var container = this
+        this.executor = new TaskExecutor(this, {
+          enableLogger: true,
+          catchException: false,
+        })
+
         this.collection = new UICollection(this, { layout: container.layout })
         this.templateToolbar.store.get("template").addSubscriber({ 
           name: container.name,
           callback: function(template, data) {
-            if (!Core.isType(template, VETemplate)) {
-              data.items.forEach(function(item) { item.free() }).clear() ///@todo replace with remove lambda
-              data.collection.components.clear() ///@todo replace with remove lambda
+
+            data.items.forEach(function(item) { item.free() }).clear() ///@todo replace with remove lambda
+            data.collection.components.clear() ///@todo replace with remove lambda
+            if (!Core.isType(template, VETemplate)) {  
               data.state
                 .set("template", null)
                 .set("store", null)
               return
             }
 
-            data.items.forEach(function(item) { item.free() }).clear() ///@todo replace with remove lambda
-            data.collection.components.clear() ///@todo replace with remove lambda
             data.state
               .set("template", template)
               .set("store", template.store)
 
-            data.addUIComponents(template.components
-              .map(function(component) {
-                return new UIComponent(component)
-              }),
-              new UILayout({
-                area: data.area,
-                width: function() { return this.area.getWidth() },
-              })
-            )
+            var task = new Task("init-ui-components")
+              .setTimeout(60)
+              .setState({
+                context: data,
+                stage: "load-components",
+                components: template.components,
+                componentsQueue: new Queue(String, GMArray
+                  .map(template.components.container, function(component, index) { 
+                    return index 
+                  })),
+                componentsConfig: {
+                  context: data,
+                  layout: new UILayout({
+                    area: data.area,
+                    width: function() { return this.area.getWidth() },
+                  }),
+                  textField: null,
+                },
+                previousOffset: {
+                  x: data.offset.x,
+                  y: data.offset.y,
+                  xMax: data.offsetMax.x,
+                  yMax: data.offsetMax.y,
+                },
+                "load-components": function(task) {
+                  static factoryComponent = function(component, index, acc) {
+                    static add = function(item, index, acc) {
+                      if (item.type == UITextField) {
+                        var textField = item.textField
+                        if (Optional.is(acc.textField)) {
+                          acc.textField.setNext(textField)
+                          textField.setPrevious(acc.textField)
+                        }
+                        acc.textField = textField
+                      }
+              
+                      acc.context.add(item, item.name)
+                      if (Optional.is(item.updateArea())) {
+                        item.updateArea()
+                      }
+                    }
+              
+                    acc.layout = component
+                      .toUIItems(acc.layout)
+                      .forEach(add, acc)
+                      .getLast().layout.context
+                  }
+                  
+                  var index = task.state.componentsQueue.pop()
+                  if (!Optional.is(index)) {
+                    if (Optional.is(task.state.context.updateTimer)) {
+                      task.state.context.updateTimer.finish()
+                    }
 
-            data.state.set("previousOffset", {
-              x: data.offset.x,
-              y: data.offset.y,
-              xMax: data.offsetMax.x,
-              yMax: data.offsetMax.y,
-            })
+                    task.fullfill()
+                    task.state.context.state.set("previousOffset", task.state.previousOffset)
+                    return
+                  }
+
+                  var component = new UIComponent(task.state.components.get(index))
+                  factoryComponent(component, index, task.state.componentsConfig)
+                },
+              })
+              .whenUpdate(function() {
+                var stage = Struct.get(this.state, this.state.stage)
+                stage(this)
+                return this
+              })
+            
+            data.state.set("previousOffset", task.state.previousOffset)
+            data.executor.tasks.forEach(function(task, iterator, name) {
+              if (task.name == name) {
+                task.fullfill()
+              }
+            }, "init-ui-components")
+            data.executor.add(task)
           },
           data: container
         })
@@ -2047,7 +2355,7 @@ function VETemplateToolbar(_editor) constructor {
   store = new Store({
     "type": {
       type: String,
-      value: VETemplateType.TEXTURE
+      value: VETemplateType.SHADER
     },
     "template_shader_name": {
       type: String,
@@ -2237,43 +2545,57 @@ function VETemplateToolbar(_editor) constructor {
       }
 
       var controller = Beans.get(BeanVisuController)
+      var sizeBefore = 0
+      var sizeAfter = 0
       switch (type) {
         case VETemplateType.SHADER:
-          controller.shaderPipeline.templates
+          sizeBefore = controller.shaderPipeline.templates.size()
+          sizeAfter = controller.shaderPipeline.templates
             .set(name, new ShaderTemplate(name, {
               name: name,
               shader: this.store.getValue("shader"),
             }))
+            .size()
           break
         case VETemplateType.SHROOM:
-          controller.shroomService.templates
+          sizeBefore = controller.shroomService.templates.size()
+          sizeAfter = controller.shroomService.templates
             .set(name, new ShroomTemplate(name, {
               name: name,
               sprite: { name: "texture_baron" },
             }))
+            .size()
           break
         case VETemplateType.BULLET:
-          controller.bulletService.templates
+          sizeBefore = controller.bulletService.templates.size()
+          sizeAfter = controller.bulletService.templates
             .set(name, new BulletTemplate(name, {
               name: name,
               sprite: { name: "texture_baron" },
             }))
+            .size()
           break
         case VETemplateType.COIN:
-          controller.coinService.templates
+          sizeBefore = controller.coinService.templates.size()
+          sizeAfter = controller.coinService.templates
             .set(name, new CoinTemplate(name, {
               name: name,
               category: CoinCategory.POINT,
               sprite: { name: "texture_coin_point" },
             }))
+            .size()
           break
         case VETemplateType.LYRICS:
-          controller.lyricsService.templates
+          sizeBefore = controller.lyricsService.templates.size()
+          sizeAfter = controller.lyricsService.templates
             .set(name, new LyricsTemplate(name, { todo: "json" }))
+            .size()
           break
         case VETemplateType.PARTICLE:
-          controller.particleService.templates
+          sizeBefore = controller.particleService.templates.size()
+          sizeAfter = controller.particleService.templates
             .set(name, new ParticleTemplate(name, { todo: "json" }))
+            .size()
           break
         case VETemplateType.TEXTURE:
           var intent = this.store.getValue("texture-intent")
@@ -2296,10 +2618,13 @@ function VETemplateToolbar(_editor) constructor {
           throw new Exception($"Dispatcher for type '{type}' wasn't found")
       }
 
-      ///@description send update event to subscribers
-      this.store.get("type").set(type)
       var storeItem = this.store.get("template")
       storeItem.set(storeItem.get())
+
+      ///@description send update event to subscribers
+      if (sizeBefore != sizeAfter) {
+        this.store.get("type").set(type)
+      }
     },      
     "save-template": function(event) {
       var template = this.store.getValue("template")
@@ -2310,28 +2635,38 @@ function VETemplateToolbar(_editor) constructor {
       var name = template.store.getValue("template-name")
       var serialized = template.serialize()
       var controller = Beans.get(BeanVisuController)
+      var sizeBefore = 0
+      var sizeAfter = 0
       switch (template.type) {
         case VETemplateType.SHADER:
-          controller.shaderPipeline.templates.set(name, serialized)
+          sizeBefore = controller.shaderPipeline.templates.size()
+          sizeAfter = controller.shaderPipeline.templates.set(name, serialized).size()
           break
         case VETemplateType.SHROOM:
-          controller.shroomService.templates.set(name, serialized)
+          sizeBefore = controller.shroomService.templates.size()
+          sizeAfter = controller.shroomService.templates.set(name, serialized).size()
           break
         case VETemplateType.BULLET:
-          controller.bulletService.templates.set(name, serialized)
+          sizeBefore = controller.bulletService.templates.size()
+          sizeAfter = controller.bulletService.templates.set(name, serialized).size()
           break
         case VETemplateType.COIN:
-          controller.coinService.templates.set(name, serialized)
+          sizeBefore = controller.coinService.templates.size()
+          sizeAfter = controller.coinService.templates.set(name, serialized).size()
           break
         case VETemplateType.LYRICS:
-          controller.lyricsService.templates.set(name, serialized)
+          sizeBefore = controller.lyricsService.templates.size()
+          sizeAfter = controller.lyricsService.templates.set(name, serialized).size()
           break
         case VETemplateType.PARTICLE:
-          controller.particleService.templates.set(name, serialized)
+          sizeBefore = controller.particleService.templates.size()
+          sizeAfter = controller.particleService.templates.set(name, serialized).size()
           break
         case VETemplateType.TEXTURE:
           if (serialized.file != "") {
-            Beans.get(BeanTextureService).templates.set(name, serialized)
+            var textureService = Beans.get(BeanTextureService)
+            sizeBefore = textureService.templates.size()
+            sizeAfter = textureService.templates.set(name, serialized).size()
           }
           break
         default:
@@ -2339,7 +2674,9 @@ function VETemplateToolbar(_editor) constructor {
       }
 
       ///@description send update event to subscribers
-      this.store.get("type").set(template.type)
+      if (sizeBefore != sizeAfter) {
+        this.store.get("type").set(template.type)
+      }
       this.store.get("template").set(template)
     },
   }), { 

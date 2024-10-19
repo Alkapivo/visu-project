@@ -29,15 +29,6 @@
               "node": "root.artists.kedy_selma.just-to-create-something"
             }
           }
-        },
-        {
-          "name": "Singles",
-          "event": {
-            "type": "open-node",
-            "data": {
-              "node": "root.artists.kedy_selma.singles"
-            }
-          }
         }
       ]
     },
@@ -46,98 +37,11 @@
       "back": "root.artists.kedy_selma",
       "entries": [
         {
-          "name": "Wake Up Before You Forget How To",
-          "event": {
-            "type": "load-track",
-            "data": {
-              "path": "track/kedy_selma/Just-To-Create-Something/Wake-Up-Before-You-Forget-How-To/manifest.visu"
-            }
-          }
-        },
-        {
-          "name": "You Will Live and You Will Be Happy",
-          "event": {
-            "type": "load-track",
-            "data": {
-              "path": "track/kedy_selma/Just-To-Create-Something/You-Will-Live-and-You-Will-Be-Happy/manifest.visu"
-            }
-          }
-        },
-        {
-          "name": "What Kills You",
-          "event": {
-            "type": "load-track",
-            "data": {
-              "path": "track/kedy_selma/Just-To-Create-Something/What-Kills-You/manifest.visu"
-            }
-          }
-        },
-        {
           "name": "Just To Create Something",
           "event": {
             "type": "load-track",
             "data": {
               "path": "track/kedy_selma/Just-To-Create-Something/Just-To-Create-Something/manifest.visu"
-            }
-          }
-        },
-        {
-          "name": "Lost_Media.mp3",
-          "event": {
-            "type": "load-track",
-            "data": {
-              "path": "track/kedy_selma/Just-To-Create-Something/Lost_Media.mp3/manifest.visu"
-            }
-          }
-        },
-        {
-          "name": "One Sky (feat. Rayiko)",
-          "event": {
-            "type": "load-track",
-            "data": {
-              "path": "track/kedy_selma/Just-To-Create-Something/One-Sky-feat-Rayiko/manifest.visu"
-            }
-          }
-        },
-        {
-          "name": "Interlude:Lore",
-          "event": {
-            "type": "load-track",
-            "data": {
-              "path": "track/kedy_selma/Just-To-Create-Something/Interlude-Lore/manifest.visu"
-            }
-          }
-        },
-        {
-          "name": "Everything Will End",
-          "event": {
-            "type": "load-track",
-            "data": {
-              "path": "track/kedy_selma/Just-To-Create-Something/Everything-Will-End/manifest.visu"
-            }
-          }
-        },
-        {
-          "name": "There Is No Point, Only Reasons",
-          "event": {
-            "type": "load-track",
-            "data": {
-              "path": "track/kedy_selma/Just-To-Create-Something/There-Is-No-Point-Only-Reasons/manifest.visu"
-            }
-          }
-        }
-      ]
-    },
-    "root.artists.kedy_selma.singles": {
-      "title": "Select track",
-      "back": "root.artists.kedy_selma",
-      "entries": [
-        {
-          "name": "Passion",
-          "event": {
-            "type": "load-track",
-            "data": {
-              "path": "track/kedy_selma/Singles/Passion/manifest.visu"
             }
           }
         }

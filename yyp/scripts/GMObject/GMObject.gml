@@ -45,7 +45,9 @@ function _GMObjectUtil() constructor {
       gmObject: "__free",
       factoryWrapper: function() {
         return function() {
-          this.__context.free()
+          if (Core.isType(Struct.get(this.__context, "free"), Callable)) {
+            this.__context.free()
+          }
         }
       }
     },
@@ -143,19 +145,34 @@ function _GMObjectUtil() constructor {
     return GMObjectUtil.get(gmObject, key)
   }
 
-  ///@param {AssetClass} type
+  ///@param {GMObjectType} type
   ///@param {AssetLayer} layerId
   ///@param {Number} [x]
   ///@param {Number} [y]
+  ///@param {?Struct} [data]
+  ///@return {GMObject}
+  static factoryInstance = function(type, layerId, x = 0.0, y = 0.0, data = null) {
+    return Core.isType(data, Struct)
+      ? instance_create_layer(x, y, layerId, type, data)
+      : instance_create_layer(x, y, layerId, type)
+  }
+
+  ///@param {GMObjectType} type
+  ///@param {LayerID} layerId
+  ///@param {Number} [x]
+  ///@param {Number} [y]
   ///@param {Struct} [context]
-  ///@return {GMObject} gmObject
-  static factoryGMObject = function(type, layerId, x = 0.0, y = 0.0, context = null) {
-    var gmObject = instance_create_layer(x, y, layerId, type)
+  ///@param {?Struct} [data]
+  ///@return {GMObject}
+  static factoryStructInstance = function(type, layerId, context,
+      x = 0.0, y = 0.0, data = null) {
+
+    var instance = this.factoryInstance(type, layerId, x, y, data)
     if (Core.isType(context, Struct)) {
-      GMObjectUtil.bind(gmObject, context)
+      GMObjectUtil.bind(instance, context)
     }
 
-    return gmObject
+    return instance
   }
 
   ///@param {GMObject} gmObject

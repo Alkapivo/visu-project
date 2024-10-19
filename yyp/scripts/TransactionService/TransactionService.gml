@@ -1,5 +1,13 @@
 ///@package io.alkapivo.core.service.transaction
 
+///@type {Number}
+#macro TRANSACTION_SERVICE_DEFAULT_LIMIT 100
+
+///@type {Number}
+#macro TRANSACTION_SERVICE_MAX_LIMIT 2000
+
+
+///@param {?Struct} [config]
 function TransactionService(config = null) constructor {
 
   ///@private
@@ -8,12 +16,11 @@ function TransactionService(config = null) constructor {
 
   ///@private
   ///@type {Stack<Transaction>}
-  reverted = new Stack(Transaction) 
+  reverted = new Stack(Transaction)
 
   ///@type {Number}
-  limit = Core.isType(Struct.get(config, "limit"), Number) 
-    ? round(clamp(config.limit, 1, 2000))
-    : Core.getProperty("visu.transaction.limit", 100)
+  limit = toInt(clamp(Struct.getIfType(config, "limit", Number, 
+    TRANSACTION_SERVICE_DEFAULT_LIMIT), 1, TRANSACTION_SERVICE_MAX_LIMIT))
 
   ///@param {?Transaction}
   ///@return {TransactionService}
@@ -21,10 +28,6 @@ function TransactionService(config = null) constructor {
     if (Core.isType(transaction, Transaction)) {
       this.reverted.clear()
       this.applied.push(transaction.apply())
-      if (this.applied.size() >= this.limit) {
-        Core.print("remove! add")
-        this.applied.container.remove(0)
-      }
     }
 
     return this
@@ -35,10 +38,6 @@ function TransactionService(config = null) constructor {
     var transaction = this.applied.pop()
     if (Core.isType(transaction, Transaction)) {
       this.reverted.push(transaction.rollback())
-      if (this.reverted.size() >= this.limit) {
-        Core.print("remove! undo")
-        this.reverted.container.remove(0)
-      }
     }
 
     return this
@@ -49,10 +48,6 @@ function TransactionService(config = null) constructor {
     var transaction = this.reverted.pop()
     if (Core.isType(transaction, Transaction)) {
       this.applied.push(transaction.apply())
-      if (this.applied.size() >= this.limit) {
-        Core.print("remove! redo")
-        this.applied.container.remove(0)
-      }
     }
     
     return this
@@ -75,4 +70,16 @@ function TransactionService(config = null) constructor {
     return this.reverted.peek()
   }
 
+  ///@return {TransactionService}
+  update = function() {
+    if (this.applied.size() >= this.limit) {
+      this.applied.container.remove(0)
+    }
+
+    if (this.reverted.size() >= this.limit) {
+      this.reverted.container.remove(0)
+    }
+
+    return this
+  }
 }

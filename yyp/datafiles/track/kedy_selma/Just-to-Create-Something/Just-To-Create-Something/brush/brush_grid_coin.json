@@ -1,78 +1,78 @@
 {
-  "version":"1",
   "data":[
     {
       "texture":"texture_bazyl",
+      "type":"brush_grid_coin",
       "properties":{
-        "grid-coin_use-preview":true,
-        "grid-coin_use-snap-h":true,
-        "grid-coin_use-snap-v":true,
-        "grid-coin_use-spawn-x":true,
         "grid-coin_use-spawn-y":true,
         "grid-coin_channels-spawn-x":50.0,
         "grid-coin_channels-spawn-y":0.0,
         "grid-coin_spawn-x":0.5,
         "grid-coin_spawn-y":0.0,
-        "grid-coin_template":"coin-bomb"
+        "grid-coin_template":"coin-bomb",
+        "grid-coin_use-preview":true,
+        "grid-coin_use-snap-h":true,
+        "grid-coin_use-snap-v":true,
+        "grid-coin_use-spawn-x":true
       },
-      "color":"#FFFF00",
       "name":"bomb",
-      "type":"brush_grid_coin"
+      "color":"#FFFF00"
     },
     {
       "texture":"texture_bazyl",
+      "type":"brush_grid_coin",
       "properties":{
-        "grid-coin_use-preview":true,
-        "grid-coin_use-snap-h":true,
-        "grid-coin_use-snap-v":true,
-        "grid-coin_use-spawn-x":true,
         "grid-coin_use-spawn-y":true,
         "grid-coin_channels-spawn-x":50.0,
         "grid-coin_channels-spawn-y":0.0,
         "grid-coin_spawn-x":0.5,
         "grid-coin_spawn-y":0.0,
-        "grid-coin_template":"coin-force"
+        "grid-coin_template":"coin-force",
+        "grid-coin_use-preview":true,
+        "grid-coin_use-snap-h":true,
+        "grid-coin_use-snap-v":true,
+        "grid-coin_use-spawn-x":true
       },
-      "color":"#FF0000",
       "name":"force",
-      "type":"brush_grid_coin"
+      "color":"#FF0000"
     },
     {
       "texture":"texture_bazyl",
+      "type":"brush_grid_coin",
       "properties":{
-        "grid-coin_use-preview":true,
-        "grid-coin_use-snap-h":true,
-        "grid-coin_use-snap-v":true,
-        "grid-coin_use-spawn-x":true,
         "grid-coin_use-spawn-y":true,
         "grid-coin_channels-spawn-x":50.0,
         "grid-coin_channels-spawn-y":0.0,
         "grid-coin_spawn-x":0.5,
         "grid-coin_spawn-y":0.0,
-        "grid-coin_template":"coin-life"
+        "grid-coin_template":"coin-life",
+        "grid-coin_use-preview":true,
+        "grid-coin_use-snap-h":true,
+        "grid-coin_use-snap-v":true,
+        "grid-coin_use-spawn-x":true
       },
-      "color":"#00FF00",
       "name":"life",
-      "type":"brush_grid_coin"
+      "color":"#00FF00"
     },
     {
       "texture":"texture_bazyl",
+      "type":"brush_grid_coin",
       "properties":{
-        "grid-coin_use-preview":true,
-        "grid-coin_use-snap-h":true,
-        "grid-coin_use-snap-v":true,
-        "grid-coin_use-spawn-x":true,
         "grid-coin_use-spawn-y":true,
         "grid-coin_channels-spawn-x":50.0,
         "grid-coin_channels-spawn-y":0.0,
         "grid-coin_spawn-x":0.5,
         "grid-coin_spawn-y":0.0,
-        "grid-coin_template":"coin-point"
+        "grid-coin_template":"coin-point",
+        "grid-coin_use-preview":true,
+        "grid-coin_use-snap-h":true,
+        "grid-coin_use-snap-v":true,
+        "grid-coin_use-spawn-x":true
       },
-      "color":"#006EFF",
       "name":"point",
-      "type":"brush_grid_coin"
+      "color":"#006EFF"
     }
   ],
+  "version":"1",
   "model":"Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>"
 }

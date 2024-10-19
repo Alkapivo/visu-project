@@ -34,7 +34,7 @@ function FollowPlayerFeature(json = {}) {
 
       this.transformer.value = 0
       this.transformer.finished = false
-      this.transformer.target = angle_difference(item.angle, Math.fetchAngle(item.x, item.y, player.x, player.y))
+      this.transformer.target = Math.fetchPointsAngleDiff(item.angle, Math.fetchPointsAngle(item.x, item.y, player.x, player.y))
       this.transformer.factor = abs(this.value.factor) * sign(this.transformer.target)
       item.setAngle(item.angle - this.transformer.update().value)
     },

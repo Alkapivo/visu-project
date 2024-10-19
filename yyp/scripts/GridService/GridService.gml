@@ -325,24 +325,24 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
   executor = new TaskExecutor(this)
 
   ///@private
-  ///@type {DebugOSTimer}
-  moveGridItemsTimer = new DebugOSTimer("MoveGridItems")
+  ///@type {DebugTimer}
+  moveGridItemsTimer = new DebugTimer("MoveGridItems")
 
   ///@private
-  ///@type {DebugOSTimer}
-  signalGridItemsCollisionTimer = new DebugOSTimer("GrdCollission")
+  ///@type {DebugTimer}
+  signalGridItemsCollisionTimer = new DebugTimer("GrdCollission")
 
   ///@private
-  ///@type {DebugOSTimer}
-  updatePlayerServiceTimer = new DebugOSTimer("PlayerService")
+  ///@type {DebugTimer}
+  updatePlayerServiceTimer = new DebugTimer("PlayerService")
 
   ///@private
-  ///@type {DebugOSTimer}
-  updateShroomServiceTimer = new DebugOSTimer("ShroomService")
+  ///@type {DebugTimer}
+  updateShroomServiceTimer = new DebugTimer("ShroomService")
 
   ///@private
-  ///@type {DebugOSTimer}
-  updateBulletServiceTimer = new DebugOSTimer("BulletService")
+  ///@type {DebugTimer}
+  updateBulletServiceTimer = new DebugTimer("BulletService")
   
   ///@private
   ///@return {GridService}

@@ -1,128 +1,79 @@
 {
-  "version":"1",
   "data":[
     {
       "texture":"texture_visu_editor_icon_event_grid_config",
+      "type":"brush_grid_config",
       "properties":{
-        "grid-config_use-clear-frame":0.0,
-        "grid-config_clear-color":"#FFEFFF",
-        "grid-config_clear-frame":1.0,
-        "grid-config_use-clear-frame-alpha":0.0,
         "grid-config_clear-frame-alpha":{
-          "finished":0.0,
-          "factor":0.029999999999999999,
           "increase":2.0,
           "target":5.0,
+          "factor":0.029999999999999999,
+          "startValue":0.0,
           "value":0.0,
-          "startValue":0.0
+          "finished":0.0
         },
         "grid-config_use-render-grid":1.0,
         "grid-config_render-grid":1.0,
         "grid-config_use-speed":0.0,
         "grid-config_speed":{
-          "finished":0.0,
-          "factor":0.5,
           "increase":0.0,
           "target":32.0,
+          "factor":0.5,
+          "startValue":4.166666666666667,
           "value":4.166666666666667,
-          "startValue":4.166666666666667
+          "finished":0.0
         },
-        "grid-config_use-clear-color":0.0
+        "grid-config_use-clear-color":0.0,
+        "grid-config_clear-color":"#FFEFFF",
+        "grid-config_use-clear-frame":0.0,
+        "grid-config_use-clear-frame-alpha":0.0,
+        "grid-config_clear-frame":1.0
       },
-      "color":"#6EFF22",
       "name":"enable",
-      "type":"brush_grid_config"
+      "color":"#6EFF22"
     },
     {
       "texture":"texture_visu_editor_icon_event_grid_config",
+      "type":"brush_grid_config",
       "properties":{
-        "grid-config_use-clear-frame":0.0,
-        "grid-config_clear-color":"#FFEFFF",
-        "grid-config_clear-frame":1.0,
-        "grid-config_use-clear-frame-alpha":0.0,
         "grid-config_clear-frame-alpha":{
-          "finished":0.0,
-          "factor":0.029999999999999999,
           "increase":2.0,
           "target":5.0,
+          "factor":0.029999999999999999,
+          "startValue":0.0,
           "value":0.0,
-          "startValue":0.0
+          "finished":0.0
         },
         "grid-config_use-render-grid":1.0,
         "grid-config_render-grid":0.0,
         "grid-config_use-speed":0.0,
         "grid-config_speed":{
-          "finished":0.0,
-          "factor":0.5,
           "increase":0.0,
           "target":32.0,
+          "factor":0.5,
+          "startValue":4.166666666666667,
           "value":4.166666666666667,
-          "startValue":4.166666666666667
+          "finished":0.0
         },
-        "grid-config_use-clear-color":0.0
+        "grid-config_use-clear-color":0.0,
+        "grid-config_clear-color":"#FFEFFF",
+        "grid-config_use-clear-frame":0.0,
+        "grid-config_use-clear-frame-alpha":0.0,
+        "grid-config_clear-frame":1.0
       },
-      "color":"#FF392C",
       "name":"disable",
-      "type":"brush_grid_config"
+      "color":"#FF392C"
     },
     {
       "texture":"texture_visu_editor_icon_event_grid_config",
+      "type":"brush_grid_config",
       "properties":{
-        "grid-config_border-bottom-alpha":{
-          "increase":0.0,
-          "value":0.0,
-          "factor":0.01,
-          "target":1.0
-        },
-        "grid-config_border-bottom-color":"#FFEFFFED",
-        "grid-config_border-bottom-color-speed":0.01,
-        "grid-config_border-bottom-size":{
-          "increase":0.0,
-          "value":0.0,
-          "factor":0.01,
-          "target":1.0
-        },
-        "grid-config_border-horizontal-alpha":{
-          "increase":0.0,
-          "value":0.0,
-          "factor":0.01,
-          "target":1.0
-        },
-        "grid-config_border-horizontal-color":"#FFEFFFED",
-        "grid-config_border-horizontal-color-speed":0.01,
-        "grid-config_border-horizontal-height":{
-          "increase":0.0,
-          "value":0.0,
-          "factor":0.01,
-          "target":2.0
-        },
-        "grid-config_border-horizontal-size":{
-          "increase":0.0,
-          "value":0.0,
-          "factor":0.01,
-          "target":1.0
-        },
-        "grid-config_border-horizontal-width":{
-          "increase":0.0,
-          "value":0.0,
-          "factor":0.01,
-          "target":2.0
-        },
-        "grid-config_clear-color":"#000000",
-        "grid-config_clear-frame":1.0,
-        "grid-config_clear-frame-alpha":{
-          "increase":0.0,
-          "value":0.0,
-          "factor":999.0,
-          "target":0.0
-        },
-        "grid-config_gamemode":"BULLETHELL",
         "grid-config_render-grid":0.0,
         "grid-config_render-grid-elements":false,
         "grid-config_speed":{
-          "increase":0.0,
-          "value":4.166666666666667,
           "factor":0.5,
+          "value":4.166666666666667,
+          "increase":0.0,
           "target":32.0
         },
         "grid-config_use-border-bottom-alpha":false,
@@ -139,102 +90,102 @@
         "grid-config_use-gamemode":false,
         "grid-config_use-render-grid":0.0,
         "grid-config_use-render-grid-elements":false,
-        "grid-config_use-speed":0.0
-      },
-      "color":"#38FF61",
-      "name":"clear frame ON",
-      "type":"brush_grid_config"
-    },
-    {
-      "texture":"texture_visu_editor_icon_event_grid_config",
-      "properties":{
-        "grid-config_use-clear-frame":1.0,
-        "grid-config_clear-color":"#FFEFFF",
-        "grid-config_clear-frame":0.0,
-        "grid-config_use-clear-frame-alpha":0.0,
-        "grid-config_clear-frame-alpha":{
-          "finished":0.0,
-          "factor":0.029999999999999999,
-          "increase":2.0,
-          "target":5.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-config_use-render-grid":0.0,
-        "grid-config_render-grid":0.0,
         "grid-config_use-speed":0.0,
-        "grid-config_speed":{
-          "finished":0.0,
-          "factor":0.5,
-          "increase":0.0,
-          "target":32.0,
-          "value":4.166666666666667,
-          "startValue":4.166666666666667
-        },
-        "grid-config_use-clear-color":0.0
-      },
-      "color":"#FC3E1E",
-      "name":"clear frame OFF",
-      "type":"brush_grid_config"
-    },
-    {
-      "texture":"texture_visu_editor_icon_event_grid_config",
-      "properties":{
         "grid-config_border-bottom-alpha":{
-          "increase":0.0,
-          "value":0.0,
           "factor":0.01,
+          "value":0.0,
+          "increase":0.0,
           "target":1.0
         },
         "grid-config_border-bottom-color":"#FFEFFFED",
         "grid-config_border-bottom-color-speed":0.01,
         "grid-config_border-bottom-size":{
-          "increase":0.0,
-          "value":0.0,
           "factor":0.01,
+          "value":0.0,
+          "increase":0.0,
           "target":1.0
         },
         "grid-config_border-horizontal-alpha":{
-          "increase":0.0,
-          "value":0.0,
           "factor":0.01,
+          "value":0.0,
+          "increase":0.0,
           "target":1.0
         },
         "grid-config_border-horizontal-color":"#FFEFFFED",
         "grid-config_border-horizontal-color-speed":0.01,
         "grid-config_border-horizontal-height":{
-          "increase":0.0,
-          "value":0.0,
           "factor":0.01,
+          "value":0.0,
+          "increase":0.0,
           "target":2.0
         },
         "grid-config_border-horizontal-size":{
-          "increase":0.0,
-          "value":0.0,
           "factor":0.01,
+          "value":0.0,
+          "increase":0.0,
           "target":1.0
         },
         "grid-config_border-horizontal-width":{
-          "increase":0.0,
-          "value":0.0,
           "factor":0.01,
+          "value":0.0,
+          "increase":0.0,
           "target":2.0
         },
         "grid-config_clear-color":"#000000",
-        "grid-config_clear-frame":0.0,
+        "grid-config_clear-frame":1.0,
         "grid-config_clear-frame-alpha":{
-          "increase":0.0,
-          "value":0.0,
           "factor":999.0,
-          "target":0.10000000000000001
+          "value":0.0,
+          "increase":0.0,
+          "target":0.0
         },
-        "grid-config_gamemode":"BULLETHELL",
+        "grid-config_gamemode":"BULLETHELL"
+      },
+      "name":"clear frame ON",
+      "color":"#38FF61"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_grid_config",
+      "type":"brush_grid_config",
+      "properties":{
+        "grid-config_clear-frame-alpha":{
+          "increase":2.0,
+          "target":5.0,
+          "factor":0.029999999999999999,
+          "startValue":0.0,
+          "value":0.0,
+          "finished":0.0
+        },
+        "grid-config_use-render-grid":0.0,
+        "grid-config_render-grid":0.0,
+        "grid-config_use-speed":0.0,
+        "grid-config_speed":{
+          "increase":0.0,
+          "target":32.0,
+          "factor":0.5,
+          "startValue":4.166666666666667,
+          "value":4.166666666666667,
+          "finished":0.0
+        },
+        "grid-config_use-clear-color":0.0,
+        "grid-config_clear-color":"#FFEFFF",
+        "grid-config_use-clear-frame":1.0,
+        "grid-config_use-clear-frame-alpha":0.0,
+        "grid-config_clear-frame":0.0
+      },
+      "name":"clear frame OFF",
+      "color":"#FC3E1E"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_grid_config",
+      "type":"brush_grid_config",
+      "properties":{
         "grid-config_render-grid":0.0,
         "grid-config_render-grid-elements":false,
         "grid-config_speed":{
-          "increase":0.0,
-          "value":4.166666666666667,
           "factor":0.5,
+          "value":4.166666666666667,
+          "increase":0.0,
           "target":32.0
         },
         "grid-config_use-border-bottom-alpha":false,
@@ -251,15 +202,75 @@
         "grid-config_use-gamemode":false,
         "grid-config_use-render-grid":0.0,
         "grid-config_use-render-grid-elements":false,
-        "grid-config_use-speed":0.0
+        "grid-config_use-speed":0.0,
+        "grid-config_border-bottom-alpha":{
+          "factor":0.01,
+          "value":0.0,
+          "increase":0.0,
+          "target":1.0
+        },
+        "grid-config_border-bottom-color":"#FFEFFFED",
+        "grid-config_border-bottom-color-speed":0.01,
+        "grid-config_border-bottom-size":{
+          "factor":0.01,
+          "value":0.0,
+          "increase":0.0,
+          "target":1.0
+        },
+        "grid-config_border-horizontal-alpha":{
+          "factor":0.01,
+          "value":0.0,
+          "increase":0.0,
+          "target":1.0
+        },
+        "grid-config_border-horizontal-color":"#FFEFFFED",
+        "grid-config_border-horizontal-color-speed":0.01,
+        "grid-config_border-horizontal-height":{
+          "factor":0.01,
+          "value":0.0,
+          "increase":0.0,
+          "target":2.0
+        },
+        "grid-config_border-horizontal-size":{
+          "factor":0.01,
+          "value":0.0,
+          "increase":0.0,
+          "target":1.0
+        },
+        "grid-config_border-horizontal-width":{
+          "factor":0.01,
+          "value":0.0,
+          "increase":0.0,
+          "target":2.0
+        },
+        "grid-config_clear-color":"#000000",
+        "grid-config_clear-frame":0.0,
+        "grid-config_clear-frame-alpha":{
+          "factor":999.0,
+          "value":0.0,
+          "increase":0.0,
+          "target":0.10000000000000001
+        },
+        "grid-config_gamemode":"BULLETHELL"
       },
-      "color":"#C13E47",
       "name":"clear frame alpha OFF",
-      "type":"brush_grid_config"
+      "color":"#C13E47"
     },
     {
       "texture":"texture_visu_editor_icon_event_grid_config",
+      "type":"brush_grid_config",
       "properties":{
+        "grid-config_render-grid":1.0,
+        "grid-config_render-grid-elements":0.0,
+        "grid-config_speed":{
+          "increase":0.0,
+          "target":2.0,
+          "factor":999.0,
+          "startValue":4.166666666666667,
+          "value":4.166666666666667,
+          "finished":0.0
+        },
+        "grid-config_use-clear-color":0.0,
         "grid-config_use-clear-frame":0.0,
         "grid-config_use-clear-frame-alpha":0.0,
         "grid-config_use-gamemode":0.0,
@@ -269,89 +280,31 @@
         "grid-config_clear-color":"#FFFFFF",
         "grid-config_clear-frame":1.0,
         "grid-config_clear-frame-alpha":{
-          "finished":0.0,
-          "factor":999.0,
           "increase":0.0,
           "target":0.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-config_gamemode":"RACING",
-        "grid-config_render-grid":1.0,
-        "grid-config_render-grid-elements":0.0,
-        "grid-config_speed":{
-          "finished":0.0,
           "factor":999.0,
-          "increase":0.0,
-          "target":2.0,
-          "value":4.166666666666667,
-          "startValue":4.166666666666667
+          "startValue":0.0,
+          "value":0.0,
+          "finished":0.0
         },
-        "grid-config_use-clear-color":0.0
+        "grid-config_gamemode":"RACING"
       },
-      "color":"#26DCFF",
       "name":"speed 2.0",
-      "type":"brush_grid_config"
+      "color":"#26DCFF"
     },
     {
       "texture":"texture_visu_editor_icon_event_grid_config",
+      "type":"brush_grid_config",
       "properties":{
-        "grid-config_border-bottom-alpha":{
-          "finished":false,
-          "factor":0.01,
-          "increase":0.0,
-          "target":1.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-config_border-bottom-color":"#FFEFFF",
-        "grid-config_border-bottom-color-speed":0.01,
-        "grid-config_border-bottom-size":{
-          "finished":false,
-          "factor":0.01,
-          "increase":0.0,
-          "target":1.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-config_border-horizontal-alpha":{
-          "finished":false,
-          "factor":0.01,
-          "increase":0.0,
-          "target":0.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-config_border-horizontal-color":"#FFEFFF",
-        "grid-config_border-horizontal-color-speed":0.01,
-        "grid-config_border-horizontal-size":{
-          "finished":false,
-          "factor":0.01,
-          "increase":0.0,
-          "target":0.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-config_clear-color":"#FFFFFF",
-        "grid-config_clear-frame":1.0,
-        "grid-config_clear-frame-alpha":{
-          "finished":false,
-          "factor":999.0,
-          "increase":0.0,
-          "target":0.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-config_gamemode":"RACING",
         "grid-config_render-grid":1.0,
         "grid-config_render-grid-elements":0.0,
         "grid-config_speed":{
-          "finished":false,
-          "factor":999.0,
           "increase":0.0,
           "target":2.0,
+          "factor":999.0,
+          "startValue":4.166666666666667,
           "value":4.166666666666667,
-          "startValue":4.166666666666667
+          "finished":false
         },
         "grid-config_use-border-bottom-alpha":false,
         "grid-config_use-border-bottom-color":false,
@@ -365,90 +318,137 @@
         "grid-config_use-gamemode":0.0,
         "grid-config_use-render-grid":0.0,
         "grid-config_use-render-grid-elements":0.0,
-        "grid-config_use-speed":false
-      },
-      "color":"#8B6EFF",
-      "name":"border horizontal fade out",
-      "type":"brush_grid_config"
-    },
-    {
-      "texture":"texture_visu_editor_icon_event_grid_config",
-      "properties":{
+        "grid-config_use-speed":false,
         "grid-config_border-bottom-alpha":{
-          "finished":false,
-          "factor":0.01,
           "increase":0.0,
           "target":1.0,
+          "factor":0.01,
+          "startValue":0.0,
           "value":0.0,
-          "startValue":0.0
+          "finished":false
         },
         "grid-config_border-bottom-color":"#FFEFFF",
         "grid-config_border-bottom-color-speed":0.01,
         "grid-config_border-bottom-size":{
-          "finished":false,
-          "factor":0.01,
           "increase":0.0,
           "target":1.0,
+          "factor":0.01,
+          "startValue":0.0,
           "value":0.0,
-          "startValue":0.0
+          "finished":false
         },
         "grid-config_border-horizontal-alpha":{
-          "finished":false,
-          "factor":0.01,
           "increase":0.0,
-          "target":1.0,
+          "target":0.0,
+          "factor":0.01,
+          "startValue":0.0,
           "value":0.0,
-          "startValue":0.0
+          "finished":false
         },
         "grid-config_border-horizontal-color":"#FFEFFF",
         "grid-config_border-horizontal-color-speed":0.01,
         "grid-config_border-horizontal-size":{
-          "finished":false,
+          "increase":0.0,
+          "target":0.0,
           "factor":0.01,
+          "startValue":0.0,
+          "value":0.0,
+          "finished":false
+        },
+        "grid-config_clear-color":"#FFFFFF",
+        "grid-config_clear-frame":1.0,
+        "grid-config_clear-frame-alpha":{
+          "increase":0.0,
+          "target":0.0,
+          "factor":999.0,
+          "startValue":0.0,
+          "value":0.0,
+          "finished":false
+        },
+        "grid-config_gamemode":"RACING"
+      },
+      "name":"border horizontal fade out",
+      "color":"#8B6EFF"
+    },
+    {
+      "texture":"texture_visu_editor_icon_event_grid_config",
+      "type":"brush_grid_config",
+      "properties":{
+        "grid-config_render-grid":1.0,
+        "grid-config_render-grid-elements":0.0,
+        "grid-config_speed":{
+          "increase":0.0,
+          "target":2.0,
+          "factor":999.0,
+          "startValue":4.166666666666667,
+          "value":4.166666666666667,
+          "finished":false
+        },
+        "grid-config_use-border-bottom-alpha":false,
+        "grid-config_use-border-bottom-color":false,
+        "grid-config_use-border-bottom-size":false,
+        "grid-config_use-border-horizontal-alpha":true,
+        "grid-config_use-border-horizontal-color":false,
+        "grid-config_use-border-horizontal-size":false,
+        "grid-config_use-clear-color":0.0,
+        "grid-config_use-clear-frame":0.0,
+        "grid-config_use-clear-frame-alpha":0.0,
+        "grid-config_use-gamemode":0.0,
+        "grid-config_use-render-grid":0.0,
+        "grid-config_use-render-grid-elements":0.0,
+        "grid-config_use-speed":false,
+        "grid-config_border-bottom-alpha":{
+          "increase":0.0,
+          "target":1.0,
+          "factor":0.01,
+          "startValue":0.0,
+          "value":0.0,
+          "finished":false
+        },
+        "grid-config_border-bottom-color":"#FFEFFF",
+        "grid-config_border-bottom-color-speed":0.01,
+        "grid-config_border-bottom-size":{
+          "increase":0.0,
+          "target":1.0,
+          "factor":0.01,
+          "startValue":0.0,
+          "value":0.0,
+          "finished":false
+        },
+        "grid-config_border-horizontal-alpha":{
+          "increase":0.0,
+          "target":1.0,
+          "factor":0.01,
+          "startValue":0.0,
+          "value":0.0,
+          "finished":false
+        },
+        "grid-config_border-horizontal-color":"#FFEFFF",
+        "grid-config_border-horizontal-color-speed":0.01,
+        "grid-config_border-horizontal-size":{
           "increase":0.0,
           "target":96.0,
+          "factor":0.01,
+          "startValue":0.0,
           "value":0.0,
-          "startValue":0.0
+          "finished":false
         },
         "grid-config_clear-color":"#FFFFFF",
         "grid-config_clear-frame":1.0,
         "grid-config_clear-frame-alpha":{
-          "finished":false,
-          "factor":999.0,
           "increase":0.0,
           "target":0.0,
-          "value":0.0,
-          "startValue":0.0
-        },
-        "grid-config_gamemode":"RACING",
-        "grid-config_render-grid":1.0,
-        "grid-config_render-grid-elements":0.0,
-        "grid-config_speed":{
-          "finished":false,
           "factor":999.0,
-          "increase":0.0,
-          "target":2.0,
-          "value":4.166666666666667,
-          "startValue":4.166666666666667
+          "startValue":0.0,
+          "value":0.0,
+          "finished":false
         },
-        "grid-config_use-border-bottom-alpha":false,
-        "grid-config_use-border-bottom-color":false,
-        "grid-config_use-border-bottom-size":false,
-        "grid-config_use-border-horizontal-alpha":true,
-        "grid-config_use-border-horizontal-color":false,
-        "grid-config_use-border-horizontal-size":false,
-        "grid-config_use-clear-color":0.0,
-        "grid-config_use-clear-frame":0.0,
-        "grid-config_use-clear-frame-alpha":0.0,
-        "grid-config_use-gamemode":0.0,
-        "grid-config_use-render-grid":0.0,
-        "grid-config_use-render-grid-elements":0.0,
-        "grid-config_use-speed":false
+        "grid-config_gamemode":"RACING"
       },
-      "color":"#8BB2FF",
       "name":"border horizontal fade in",
-      "type":"brush_grid_config"
+      "color":"#8BB2FF"
     }
   ],
+  "version":"1",
   "model":"Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>"
 }

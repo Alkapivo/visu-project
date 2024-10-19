@@ -63,7 +63,7 @@ function ShootFeature(json) {
       if (this.targetPlayer) {
         var player = Beans.get(BeanVisuController).playerService.player
         if (Core.isType(player, Player)) {
-          angle = Math.fetchAngle(item.x, item.y, player.x, player.y) 
+          angle = Math.fetchPointsAngle(item.x, item.y, player.x, player.y) 
             + this.angle
         }
       }

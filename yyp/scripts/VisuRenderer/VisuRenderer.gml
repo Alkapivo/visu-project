@@ -25,12 +25,12 @@ function VisuRenderer() constructor {
   })
 
   ///@private
-  ///@type {DebugOSTimer}
-  renderTimer = new DebugOSTimer("Render")
+  ///@type {DebugTimer}
+  renderTimer = new DebugTimer("Render")
   
   ///@private
-  ///@type {DebugOSTimer}
-  renderGUITimer = new DebugOSTimer("RenderGUI")
+  ///@type {DebugTimer}
+  renderGUITimer = new DebugTimer("RenderGUI")
 
   ///@private
   ///@type {Sprite}
@@ -57,6 +57,10 @@ function VisuRenderer() constructor {
     factor: 0.5,
     increase: 0.005,
   })
+
+  ///@private
+  ///@type {Font}
+  font = new Font(font_kodeo_mono_18_bold)
 
   ///@private
   ///@return {VisuRenderer}
@@ -215,6 +219,16 @@ function VisuRenderer() constructor {
       this.lyricsRenderer.renderGUI(_layout)  
       if (Visu.settings.getValue("visu.interface.render-hud")) {
         this.hudRenderer.renderGUI(_layout)
+      }
+      if (editor != null && !editor.renderUI) {
+        var _x = _layout.x()
+        var _y = _layout.y()
+        var _width = _layout.width()
+        var _height = _layout.height()
+        var xStart = _width * (1.0 - 0.061)
+        var yStart = _height * (1.0 - 0.08)
+        var text = "EDITOR MODE [F5]"
+        GPU.render.text(_x + xStart, _y + yStart, text, c_white, c_lime, 0.6, this.font, HAlign.RIGHT, VAlign.BOTTOM, 8.0) 
       }
       this.dialogueRenderer.render()
     } else {

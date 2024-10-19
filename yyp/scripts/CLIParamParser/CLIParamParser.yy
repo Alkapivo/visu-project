@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"CLIParamParser",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"CLIParamParser",
+  "parent":{
+    "name":"util",
+    "path":"folders/core/src/util.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

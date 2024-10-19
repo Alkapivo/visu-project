@@ -52,6 +52,20 @@ function brush_shader_spawn(json = null) {
           return clamp(NumberUtil.parse(value, this.value), 0.0, 1.0) 
         },
       },
+      "shader-spawn_use-merge-properties": {
+        type: Boolean,
+        value: Struct.getDefault(json, "grid-config_use-merge-properties", false),
+      },
+      "shader-spawn_merge-properties": {
+        type: String,
+        value: JSON.stringify(Struct.getDefault(json, "shader-spawn_merge-properties", {}), { pretty: true }),
+        serialize: function() {
+          return JSON.parse(this.get())
+        },
+        validate: function(value) {
+          Assert.isType(JSON.parse(value), Struct)
+        },
+      },
     }),
     components: new Array(Struct, [
       {
@@ -116,6 +130,37 @@ function brush_shader_spawn(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Max alpha" },
           field: { store: { key: "shader-spawn_alpha-max" } },
+        },
+      },
+      {
+        name: "shader-spawn_use-merge-properties",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Merge properties",
+            enable: { key: "shader-spawn_use-merge-properties" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "shader-spawn_use-merge-properties" },
+          },
+        },
+      },
+      {
+        name: "shader-spawn_merge-properties",
+        template: VEComponents.get("text-area"),
+        layout: VELayouts.get("text-area"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          field: { 
+            v_grow: true,
+            w_min: 570,
+            store: { key: "shader-spawn_merge-properties" },
+            enable: { key: "shader-spawn_use-merge-properties" },
+          },
         },
       },
     ]),

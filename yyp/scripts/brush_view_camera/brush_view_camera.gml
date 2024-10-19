@@ -235,7 +235,7 @@ function brush_view_camera(json = null) {
           },
           increment: {
             label: {
-              text: "Increment",
+              text: "Increase",
               enable: { key: "view-config_use-movement" },
             },
             field: {
@@ -279,7 +279,7 @@ function brush_view_camera(json = null) {
           },
           increment: {
             label: {
-              text: "Increment",
+              text: "Increase",
               enable: { key: "view-config_use-movement" },
             },
             field: {
@@ -448,7 +448,7 @@ function brush_view_camera(json = null) {
           },
           increment: {
             label: { 
-              text: "Increment",
+              text: "Increase",
               enable: { key: "view-config_use-transform-x" },
             },
             field: { 
@@ -497,7 +497,7 @@ function brush_view_camera(json = null) {
           },
           increment: {
             label: {
-              text: "Increment",
+              text: "Increase",
               enable: { key: "view-config_use-transform-y" },
             },
             field: {
@@ -546,7 +546,7 @@ function brush_view_camera(json = null) {
           },
           increment: {
             label: {
-              text: "Increment",
+              text: "Increase",
               enable: { key: "view-config_use-transform-z" },
             },
             field: {
@@ -595,7 +595,7 @@ function brush_view_camera(json = null) {
           },
           increment: {
             label: {
-              text: "Increment",
+              text: "Increase",
               enable: { key: "view-config_use-transform-zoom" },
             },
             field: {
@@ -644,7 +644,7 @@ function brush_view_camera(json = null) {
           },
           increment: {
             label: {
-              text: "Increment",
+              text: "Increase",
               enable: { key: "view-config_use-transform-angle" },
             },
             field: {
@@ -693,7 +693,7 @@ function brush_view_camera(json = null) {
           },
           increment: {
             label: {
-              text: "Increment",
+              text: "Increase",
               enable: { key: "view-config_use-transform-pitch" },
             },
             field: {

@@ -255,7 +255,7 @@ function brush_grid_config(json = null) {
           },
           increment: {
             label: {
-              text: "Increment",
+              text: "Increase",
               enable: { key: "grid-config_use-speed" },
             },
             field: { 
@@ -402,7 +402,7 @@ function brush_grid_config(json = null) {
           },
           increment: {
             label: { 
-              text: "Increment",
+              text: "Increase",
               enable: { key: "grid-config_use-clear-frame-alpha" },
             },
             field: { 
@@ -492,7 +492,7 @@ function brush_grid_config(json = null) {
           },
           increment: {
             label: {
-              text: "Increment",
+              text: "Increase",
               enable: { key: "grid-config_use-border-horizontal-width" },
             },
             field: {
@@ -632,7 +632,7 @@ function brush_grid_config(json = null) {
           },
           increment: {
             label: {
-              text: "Increment",
+              text: "Increase",
               enable: { key: "grid-config_use-border-bottom-alpha" },
             },
             field: {
@@ -681,7 +681,7 @@ function brush_grid_config(json = null) {
           },
           increment: {
             label: {
-              text: "Increment",
+              text: "Increase",
               enable: { key: "grid-config_use-border-bottom-size" },
             },
             field: {
@@ -730,7 +730,7 @@ function brush_grid_config(json = null) {
           },
           increment: {
             label: {
-              text: "Increment",
+              text: "Increase",
               enable: { key: "grid-config_use-border-horizontal-height" },
             },
             field: {
@@ -870,7 +870,7 @@ function brush_grid_config(json = null) {
           },
           increment: {
             label: {
-              text: "Increment",
+              text: "Increase",
               enable: { key: "grid-config_use-border-horizontal-alpha" },
             },
             field: {
@@ -919,7 +919,7 @@ function brush_grid_config(json = null) {
           },
           increment: {
             label: {
-              text: "Increment",
+              text: "Increase",
               enable: { key: "grid-config_use-border-horizontal-size" },
             },
             field: {

@@ -411,7 +411,7 @@ function PlayerStats(_player, json) constructor {
         repeat (forceCoinAmount) {
           var _x = this.stats.player.x + (choose(0.33, -0.33) * (random(view.width) / view.width))
           var _y = min(view.y + (view.height / 1.5), this.stats.player.y) - 0.5 - (0.2 * (random(view.height) / view.height))
-          var angle = Math.fetchAngle(
+          var angle = Math.fetchPointsAngle(
             _x,
             _y,
             view.x + (view.width / 2.0),

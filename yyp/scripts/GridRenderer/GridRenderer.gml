@@ -209,7 +209,7 @@ function GridRenderer() constructor {
     var viewWidth = view.width
     var viewHeight = view.height
     var channels = properties.channels
-    var channelPxWidth = round((viewWidth / channels) * GRID_SERVICE_PIXEL_WIDTH)
+    var channelPxWidth = (viewWidth / channels) * GRID_SERVICE_PIXEL_WIDTH
     var viewBorder = 5
     var viewCurrent = floor(viewX / viewWidth)
     var viewXOffset = viewX - viewCurrent
@@ -1140,7 +1140,7 @@ function GridRenderer() constructor {
         .render(configX + _x, configY + _y)
         .setAlpha(alpha)
 
-      var angle = Math.fetchAngle(_x, _y, this.player2DCoords.x, this.player2DCoords.y)
+      var angle = Math.fetchPointsAngle(_x, _y, this.player2DCoords.x, this.player2DCoords.y)
       this.playerHintPointer
         .setAngle(angle)
         .setAlpha(0.8)

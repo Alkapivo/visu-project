@@ -131,7 +131,7 @@ function Coin(config) constructor {
   static move = function(player = null) {
     var value = (this.speed.update().value / 100.0) 
     if (player != null && Math.fetchLength(this.x, this.y, player.x, player.y) < 0.4) {
-      var to = Math.fetchAngle(this.x, this.y, player.x, player.y)
+      var to = Math.fetchPointsAngle(this.x, this.y, player.x, player.y)
       this.magnet = true
       this.magnetSpeed = clamp(this.magnetSpeed + DeltaTime.apply(0.000004), 0.0, 0.005)
       this.speed.value = (abs(value) * 100.0)

@@ -199,12 +199,10 @@ global.__EVENT_DISPATCHERS = {
         ? event.data.angleTransformer 
         : null
       if (Optional.is(angleTransformer)) {
-        angleTransformer = new NumberTransformer(angleTransformer)
-        angleTransformer.value = 0
-        angleTransformer.startValue = 0
-        angleTransformer.target = angle_difference(angleTransformer.target, angle)
-        angleTransformer.factor = abs(angleTransformer.factor)
-        
+        angleTransformer = new NumberTransformer(Struct
+          .set(angleTransformer, "target", Math
+          .fetchPointsAngleDiff(Math.normalizeAngle(abs(Struct
+          .getIfType(angleTransformer, "target", Number, 0))), angle)))
       }
 
       var xScale = Core.isType(Struct.get(event.data, "xScale"), Number) ? event.data.xScale : 1

@@ -243,8 +243,15 @@ function _Math() constructor {
   ///@param {Number} toX
   ///@param {Number} toY
   ///@return {Number}
-  fetchAngle = function(fromX, fromY, toX, toY) {
+  fetchPointsAngle = function(fromX, fromY, toX, toY) {
     return point_direction(fromX, fromY, toX, toY)
+  }
+
+  ///@param {Number} source
+  ///@param {Number} target
+  ///@return {Number}
+  fetchPointsAngleDiff = function(source, target) {
+    return angle_difference(source, target)
   }
 
   ///@param {Number} angle

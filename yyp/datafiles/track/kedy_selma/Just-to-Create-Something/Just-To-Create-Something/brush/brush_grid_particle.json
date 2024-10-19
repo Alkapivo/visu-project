@@ -1,8 +1,8 @@
 {
-  "version":"1",
   "data":[
     {
       "texture":"texture_visu_editor_icon_event_grid_particle",
+      "type":"brush_grid_particle",
       "properties":{
         "grid-particle_amount":30.0,
         "grid-particle_beginX":-1.5,
@@ -16,10 +16,10 @@
         "grid-particle_template":"particle-default",
         "grid-particle_use-preview":true
       },
-      "color":"#146CFF",
       "name":"particle default",
-      "type":"brush_grid_particle"
+      "color":"#146CFF"
     }
   ],
+  "version":"1",
   "model":"Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>"
 }

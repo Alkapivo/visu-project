@@ -1,12 +1,5 @@
 {
-  "version":"1",
   "data":{
-    "lyrics_alkapivo":{
-      "lines":[
-        "Alkapivo",
-        "2024"
-      ]
-    },
     "lyrics-default":{
       "lines":[
         "Lorem ipsum"
@@ -80,7 +73,14 @@
       "lines":[
         "Just To Create Something | Just To Create Something | Just To Create Something"
       ]
+    },
+    "lyrics_alkapivo":{
+      "lines":[
+        "Alkapivo",
+        "2024"
+      ]
     }
   },
+  "version":"1",
   "model":"Collection<io.alkapivo.visu.service.lyrics.LyricsTemplate>"
 }

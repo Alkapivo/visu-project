@@ -3,6 +3,10 @@ varying vec2 v_vTexcoord;
 varying vec4 v_vColour;
 uniform float iTime;
 uniform float iIterations;
+uniform float iWidth;
+uniform float iHeight;
+uniform float iDepth;
+uniform float iFactor;
 uniform vec2 iResolution;
 uniform vec3 iTint; //vec3(0.0, 0.2, 0.2)
 
@@ -22,7 +26,7 @@ float sdBox( vec3 p, vec3 b )
 
 float box(vec3 pos, float scale) {
 	pos *= scale;
-	float base = sdBox(pos, vec3(.4,.4,.1)) /1.5;
+	float base = sdBox(pos, vec3(iWidth, iHeight, iDepth)) / iFactor;
 	pos.xy *= 5.;
 	pos.y -= 3.5;
 	pos.xy *= rot(.75);

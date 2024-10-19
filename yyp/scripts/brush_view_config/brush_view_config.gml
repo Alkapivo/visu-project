@@ -105,7 +105,7 @@ function brush_view_config(json = null) {
           },
           increment: {
             label: {
-              text: "Increment",
+              text: "Increase",
               enable: { key: "view-config_use-transform-particles-z" },
             },
             field: {

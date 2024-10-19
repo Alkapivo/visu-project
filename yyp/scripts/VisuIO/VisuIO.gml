@@ -139,11 +139,11 @@ function VisuIO() constructor {
   }
 
   ///@return {VisuIO}
-  update = function() {
+  updateBegin = function() {
     try {
       this.keyboard.update()
       this.mouse.update()  
-      GMTFContext.update()
+      GMTFContext.updateBegin()
       
       var controller = Beans.get(BeanVisuController)
       if (!Core.isType(controller, VisuController)) {

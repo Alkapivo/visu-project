@@ -5,37 +5,47 @@ function VisuEditorIO() constructor {
 
   ///@type {Keyboard}
   keyboard = new Keyboard({ 
+    controlLeft: KeyboardKeyType.CONTROL_LEFT,
+    shiftLeft: KeyboardKeyType.SHIFT_LEFT,
+
+    undo: "Z",
+
+    exitModal: KeyboardKeyType.ESC,
+
+    newProject: "N", // + ctrl
+    editProject: "E", // + ctrl
+    openProject: "O", // + ctrl
+    saveProject: "S", // + ctrl
+
+    previewEvent: "A", // + ctrl
+    saveTemplate: "A", // + ctrl + shift
+
+    previewBrush: "D", // + ctrl
+    saveBrush: "D", // + ctrl + shift
+
+    selectTool: "V",
+    eraseTool: "E",
+    brushTool: "B",
+    cloneTool: "C",
+    snapToGrid: "Q", // + shift
+    zoomIn: KeyboardKeyType.PLUS,
+    zoomOut: KeyboardKeyType.MINUS,
+    numZoomIn: KeyboardKeyType.NUM_PLUS,
+    numZoomOut: KeyboardKeyType.NUM_MINUS,
+
+    controlTrack: KeyboardKeyType.SPACE,
+    controlTrackBackward: 188, // + ctrl
+    controlTrackForward: 190, // + ctrl
+    
     renderLeftPane: KeyboardKeyType.F1,
     renderBottomPane: KeyboardKeyType.F2,
     renderRightPane: KeyboardKeyType.F3,
     renderTrackControl: KeyboardKeyType.F4,
     renderUI: KeyboardKeyType.F5,
-    cameraKeyboardLook: KeyboardKeyType.F6,
-    cameraMouseLook: KeyboardKeyType.F7,
-    exitModal: KeyboardKeyType.ESC,
-    controlTrack: KeyboardKeyType.SPACE,
-    controlTrackBackward: KeyboardKeyType.ARROW_LEFT,
-    controlTrackForward: KeyboardKeyType.ARROW_RIGHT,
-    newProject: "N",
-    editProject: 188,
-    openProject: "O",
-    saveProject: "S",
-    saveTemplate: "T",
-    saveBrush: "U",
-    selectTool: "S",
-    eraseTool: "E",
-    brushTool: "B",
-    cloneTool: "C",
-    previewBrush: "P",
-    previewEvent: "I",
-    snapToGrid: "G",
-    zoomIn: KeyboardKeyType.PLUS,
-    zoomOut: KeyboardKeyType.MINUS,
-    numZoomIn: KeyboardKeyType.NUM_PLUS,
-    numZoomOut: KeyboardKeyType.NUM_MINUS,
-    controlLeft: KeyboardKeyType.CONTROL_LEFT,
-    shiftLeft: KeyboardKeyType.SHIFT_LEFT,
-    undo: "Z",
+    renderEventInspector: KeyboardKeyType.F6,
+    renderTemplateToolbar: KeyboardKeyType.F7,
+    cameraKeyboardLook: KeyboardKeyType.F8,
+    cameraMouseLook: KeyboardKeyType.F9,
   })
 
   ///@type {Mouse}
@@ -67,15 +77,11 @@ function VisuEditorIO() constructor {
       }
     }
 
-    if (!editor.renderUI) {
-      return this
-    }
-
     if (this.keyboard.keys.controlLeft.on) {
       if (this.keyboard.keys.controlTrackBackward.pressed) {
         controller.send(new Event("rewind").setData({
           timestamp: clamp(
-            controller.trackService.time - 10.0, 
+            controller.trackService.time - 5.0, 
             0, 
             controller.trackService.duration),
         }))
@@ -84,7 +90,7 @@ function VisuEditorIO() constructor {
       if (this.keyboard.keys.controlTrackForward.pressed) {
         controller.send(new Event("rewind").setData({
           timestamp: clamp(
-            controller.trackService.time + 10.0, 
+            controller.trackService.time + 5.0, 
             0, 
             controller.trackService.duration),
         }))
@@ -124,7 +130,9 @@ function VisuEditorIO() constructor {
       editor.store.get("tool").set("tool_select")
     }
 
-    if (this.keyboard.keys.eraseTool.pressed) {
+    if (!this.keyboard.keys.controlLeft.on
+      && !this.keyboard.keys.controlLeft.released
+      && this.keyboard.keys.eraseTool.pressed) {
       editor.store.get("tool").set("tool_erase")
     }
 
@@ -150,7 +158,8 @@ function VisuEditorIO() constructor {
       item.set(clamp(item.get() + 1, 5, 20))
     }
 
-    if (this.keyboard.keys.snapToGrid.pressed) {
+    if (this.keyboard.keys.shiftLeft.on
+        && this.keyboard.keys.snapToGrid.pressed) {
       var item = editor.store.get("snap")
       item.set(!item.get())
     }
@@ -168,6 +177,16 @@ function VisuEditorIO() constructor {
       if (loaderState == "idle" || loaderState == "loaded") {
         editor.renderUI = !editor.renderUI
       }
+    }
+
+    if (this.keyboard.keys.renderEventInspector.pressed) {
+      editor.accordion.store.get("render-event-inspector")
+        .set(!editor.accordion.store.getValue("render-event-inspector"))
+    }
+
+    if (this.keyboard.keys.renderTemplateToolbar.pressed) {
+      editor.accordion.store.get("render-template-toolbar")
+        .set(!editor.accordion.store.getValue("render-template-toolbar"))
     }
 
     if (this.keyboard.keys.renderTrackControl.pressed) {
@@ -342,23 +361,28 @@ function VisuEditorIO() constructor {
   ///@param {VisuEditorController} editor
   ///@return {VisuEditorIO}
   templateToolbarKeyboardEvent = function(controller, editor) {
-    if (GMTFContext.isFocused() || !editor.renderUI) {
+    if (GMTFContext.isFocused() 
+      || !editor.renderUI 
+      || !this.keyboard.keys.controlLeft.on) {
       return this
     }
 
-    if (this.keyboard.keys.saveTemplate.pressed 
-      && editor.store.getValue("render-event")) {
-      
-      editor.accordion.templateToolbar.send(new Event("save-template"))
-    }
-
-    if (this.keyboard.keys.previewEvent.pressed) {
-      var event = editor.accordion.eventInspector.store.getValue("event")
-      if (Core.isType(event, VEEvent)) {
-        var handler = controller.trackService.handlers.get(event.type)
-        handler(event.toTemplate().event.data)
+    if (this.keyboard.keys.shiftLeft.on) {
+      if (this.keyboard.keys.saveTemplate.pressed 
+        && editor.store.getValue("render-event")) {
+        
+        editor.accordion.templateToolbar.send(new Event("save-template"))
+      }
+    } else {
+      if (this.keyboard.keys.previewEvent.pressed) {
+        var event = editor.accordion.eventInspector.store.getValue("event")
+        if (Core.isType(event, VEEvent)) {
+          var handler = controller.trackService.handlers.get(event.type)
+          handler(event.toTemplate().event.data)
+        }
       }
     }
+    
     return this
   }
 
@@ -367,22 +391,25 @@ function VisuEditorIO() constructor {
   ///@param {VisuEditorController} editor
   ///@return {VisuEditorIO}
   brushToolbarKeyboardEvent = function(controller, editor) {
-    if (GMTFContext.isFocused() || !editor.renderUI) {
+    if (GMTFContext.isFocused() 
+      || !editor.renderUI
+      || !this.keyboard.keys.controlLeft.on) {
       return this
     }
     
-    if (this.keyboard.keys.saveBrush.pressed 
-      && editor.store.getValue("render-brush")) {
-      
-      editor.brushToolbar.send(new Event("save-brush"))
-    }
-
-    if (!this.keyboard.keys.controlLeft.on 
-      && this.keyboard.keys.previewBrush.pressed) {
-      var brush = editor.brushToolbar.store.getValue("brush")
-      if (Core.isType(brush, VEBrush)) {
-        var handler = controller.trackService.handlers.get(brush.type)
-        handler(brush.toTemplate().properties)
+    if (this.keyboard.keys.shiftLeft.on) {
+      if (this.keyboard.keys.saveBrush.pressed 
+        && editor.store.getValue("render-brush")) {
+        
+        editor.brushToolbar.send(new Event("save-brush"))
+      }
+    } else {
+      if (this.keyboard.keys.previewBrush.pressed) {
+        var brush = editor.brushToolbar.store.getValue("brush")
+        if (Core.isType(brush, VEBrush)) {
+          var handler = controller.trackService.handlers.get(brush.type)
+          handler(brush.toTemplate().properties)
+        }
       }
     }
 
@@ -474,7 +501,7 @@ function VisuEditorIO() constructor {
   }
 
   ///@return {VisuEditorIO}
-  update = function() {
+  updateBegin = function() {
     try {
       this.keyboard.update()
       this.mouse.update()

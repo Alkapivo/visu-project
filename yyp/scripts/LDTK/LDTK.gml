@@ -9,7 +9,6 @@ global.__LDTKLayerType = new _LDTKLayerType()
 #macro LDTKLayerType global.__LDTKLayerType
 
 
-
 ///@param {Struct} json
 function LDTKWorld(json) constructor {
 
@@ -58,7 +57,7 @@ function LDTKWorld(json) constructor {
     return level.layers.map(function(ldtkLayer, index, acc) {
       switch (ldtkLayer.type) {
         case LDTKLayerType.TILE:
-          var layerId = layer_create(acc.depth - index, ldtkLayer.name)
+          var layerId = Scene.fetchLayer(ldtkLayer.name, acc.depth - index)
           var tileset = acc.world.tilesets.get(ldtkLayer.tilesetUid)
           var tilemap = layer_tilemap_create(layerId, 0, 0, tileset, ldtkLayer.cellWidth, ldtkLayer.cellHeight)
           ldtkLayer.tiles.forEach(function(tile, index, tilemap) {
@@ -66,14 +65,13 @@ function LDTKWorld(json) constructor {
           }, tilemap)
           break
         case LDTKLayerType.ENTITY:
-          var layerId = layer_create(acc.depth - index, ldtkLayer.name)
+          var layerId = Scene.fetchLayer(ldtkLayer.name, acc.depth - index)
           ldtkLayer.entities.forEach(function(entity, index, acc) {
             if (entity.type != "entity_npc") {
               return
             }
 
             var factory = acc.world.entities.get(entity.type)
-            Core.print("entity.type", entity.type)
             if (!Core.isType(Struct.get(acc.levelState, "dynamic"), Struct)) {
               factory(acc.layerId, entity)
             } else {
@@ -197,5 +195,3 @@ function LDTKEntity(json) constructor {
     }, this)
   }
 }
-
-

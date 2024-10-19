@@ -31,7 +31,7 @@ function TexturedLine(json = null) constructor {
   ///@param {Number} toY
   ///@return {TexturedLine}
   render = function(fromX, fromY, toX, toY) {
-    var angle = Math.fetchAngle(fromX, fromY, toX, toY)
+    var angle = Math.fetchPointsAngle(fromX, fromY, toX, toY)
     var scale = Math.fetchLength(fromX, fromY, toX, toY) / this.line.texture.width
     this.cornerFrom
       .setScaleX(this.thickness).setScaleY(this.thickness)

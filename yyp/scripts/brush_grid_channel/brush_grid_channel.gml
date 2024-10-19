@@ -143,7 +143,7 @@ function brush_grid_channel(json = null) {
           },
           increment: {
             label: {
-              text: "Increment",
+              text: "Increase",
               enable: { key: "grid-channel_use-transform-amount" },
             },
             field: {
@@ -192,7 +192,7 @@ function brush_grid_channel(json = null) {
           },
           increment: {
             label: {
-              text: "Increment",
+              text: "Increase",
               enable: { key: "grid-channel_use-transform-z" },
             },
             field: {
@@ -332,7 +332,7 @@ function brush_grid_channel(json = null) {
           },
           increment: {
             label: {
-              text: "Increment",
+              text: "Increase",
               enable: { key: "grid-channel_use-transform-primary-alpha" },
             },
             field: {
@@ -381,7 +381,7 @@ function brush_grid_channel(json = null) {
           },
           increment: {
             label: {
-              text: "Increment",
+              text: "Increase",
               enable: { key: "grid-channel_use-transform-primary-size" },
             },
             field: {
@@ -521,7 +521,7 @@ function brush_grid_channel(json = null) {
           },
           increment: {
             label: {
-              text: "Increment",
+              text: "Increase",
               enable: { key: "grid-channel_use-transform-secondary-alpha" },
             },
             field: {
@@ -570,7 +570,7 @@ function brush_grid_channel(json = null) {
           },
           increment: {
             label: {
-              text: "Increment",
+              text: "Increase",
               enable: { key: "grid-channel_use-transform-secondary-size" },
             },
             field: {
