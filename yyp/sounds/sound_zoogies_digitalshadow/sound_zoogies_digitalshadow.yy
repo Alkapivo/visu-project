@@ -1,0 +1,25 @@
+{
+  "$GMSound":"",
+  "%Name":"sound_zoogies_digitalshadow",
+  "audioGroupId":{
+    "name":"audiogroup_default",
+    "path":"audiogroups/audiogroup_default",
+  },
+  "bitDepth":1,
+  "bitRate":128,
+  "compression":0,
+  "conversionMode":0,
+  "duration":84.2107,
+  "name":"sound_zoogies_digitalshadow",
+  "parent":{
+    "name":"ost",
+    "path":"folders/io.alkapivo.visu/resource/sound/ost.yy",
+  },
+  "preload":false,
+  "resourceType":"GMSound",
+  "resourceVersion":"2.0",
+  "sampleRate":44100,
+  "soundFile":"sound_zoogies_digitalshadow.ogg",
+  "type":0,
+  "volume":1.0,
+}

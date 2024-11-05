@@ -1,0 +1,12 @@
+{
+  "$GMShader":"",
+  "%Name":"shader_star_nest",
+  "name":"shader_star_nest",
+  "parent":{
+    "name":"shadertoy",
+    "path":"folders/io.alkapivo.core/resource/shader/shadertoy.yy",
+  },
+  "resourceType":"GMShader",
+  "resourceVersion":"2.0",
+  "type":1,
+}

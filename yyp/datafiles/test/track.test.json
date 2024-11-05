@@ -12,7 +12,7 @@
           "trackName": "kedy_selma - Just To Create Something",
           "timeout": 10.0,
           "cooldown": 1.5,
-          "path": "track/kedy_selma/Just-To-Create-Something/Just-To-Create-Something/manifest.visu"
+          "path": "track/kedy_selma/Just-To-Create-Something/manifest.visu"
         }
       },
       {
@@ -21,6 +21,15 @@
         "data": {
           "timeout": 265.0,
           "duration": 245.0,
+          "cooldown": 1.5
+        }
+      },
+      {
+        "handler": "TestEvent_VisuController_playback",
+        "description": "Play first 3 sec of kedy_selma - Just To Create Something (4:05)",
+        "data": {
+          "timeout": 10.0,
+          "duration": 3.0,
           "cooldown": 1.5
         }
       },
@@ -38,6 +47,102 @@
       {
         "handler": "TestEvent_BrushToolbar_save",
         "description": "Save one brush in every category and type on kedy_selma - Just To Create Something",
+        "data": {
+          "timeout": 60.0,
+          "cooldown": 0.5
+        }
+      },
+
+      {
+        "handler": "TestEvent_VisuController_load",
+        "description": "Load kedy_selma - Passion",
+        "data": {
+          "trackName": "kedy_selma - Passion",
+          "timeout": 10.0,
+          "cooldown": 1.5,
+          "path": "track/kedy_selma/Passion/manifest.visu"
+        }
+      },
+      {
+        "handler": "TestEvent_VisuController_playback",
+        "description": "Play whole kedy_selma - Passion (2:55)",
+        "data": {
+          "timeout": 200.0,
+          "duration": 175.0,
+          "cooldown": 1.5
+        }
+      },
+      {
+        "handler": "TestEvent_VisuController_playback",
+        "description": "Play first 3 sec of kedy_selma - Passion",
+        "data": {
+          "timeout": 10.0,
+          "duration": 3.0,
+          "cooldown": 1.5
+        }
+      },
+      {
+        "handler": "TestEvent_VisuController_rewind",
+        "description": "Rewind on kedy_selma - Passion (15 times)",
+        "data": {
+          "timeout": 40.0,
+          "amount": 15.0,
+          "cooldown": 1.0,
+          "minDuration": 0.3,
+          "maxDuration": 1.4
+        }
+      },
+      {
+        "handler": "TestEvent_BrushToolbar_save",
+        "description": "Save one brush in every category and type on kedy_selma - Passion",
+        "data": {
+          "timeout": 60.0,
+          "cooldown": 0.5
+        }
+      },
+
+      {
+        "handler": "TestEvent_VisuController_load",
+        "description": "Load zoogies - digitalshadow",
+        "data": {
+          "trackName": "zoogies - digitalshadow",
+          "timeout": 10.0,
+          "cooldown": 1.5,
+          "path": "track/zoogies/digitalshadow/manifest.visu"
+        }
+      },
+      {
+        "handler": "TestEvent_VisuController_playback",
+        "description": "Play whole zoogies - digitalshadow (1:24)",
+        "data": {
+          "timeout": 100.0,
+          "duration": 84.0,
+          "cooldown": 1.5
+        }
+      },
+      {
+        "handler": "TestEvent_VisuController_playback",
+        "description": "Play first 3 sec of zoogies - digitalshadow",
+        "data": {
+          "timeout": 10.0,
+          "duration": 3.0,
+          "cooldown": 1.5
+        }
+      },
+      {
+        "handler": "TestEvent_VisuController_rewind",
+        "description": "Rewind on zoogies - digitalshadow (15 times)",
+        "data": {
+          "timeout": 40.0,
+          "amount": 15.0,
+          "cooldown": 1.0,
+          "minDuration": 0.3,
+          "maxDuration": 1.4
+        }
+      },
+      {
+        "handler": "TestEvent_BrushToolbar_save",
+        "description": "Save one brush in every category and type on zoogies - digitalshadow",
         "data": {
           "timeout": 60.0,
           "cooldown": 0.5

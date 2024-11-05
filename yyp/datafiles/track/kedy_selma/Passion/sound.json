@@ -1,0 +1,9 @@
+{
+  "data":{
+    "sound_external":{
+      "file":"Passion.ogg"
+    }
+  },
+  "version":"1",
+  "model":"Collection<io.alkapivo.core.service.sound.SoundIntent>"
+}

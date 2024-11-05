@@ -7,6 +7,8 @@ varying vec4 vColor;
 uniform float iTime;
 uniform vec2 iResolution;
 uniform float iFactor;
+uniform vec3 iTint;
+uniform float iMix;
 
 const float RADIANS = 0.017453292519943295;
 const float BRIGHTNESS = 0.975;
@@ -44,5 +46,6 @@ void main() {
   extrusion *= 1.5;
   extrusion *= vignette;
   
+  col = mix(col, iTint, iMix);
 	gl_FragColor = vec4(col.r, col.g, col.b, min(vColor.a, vColor.a * extrusion));
 }

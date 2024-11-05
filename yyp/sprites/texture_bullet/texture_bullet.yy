@@ -30,7 +30,7 @@
   "origin":4,
   "parent":{
     "name":"texture",
-    "path":"folders/visu/resource/texture.yy",
+    "path":"folders/io.alkapivo.visu/resource/texture.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",

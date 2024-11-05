@@ -6,7 +6,7 @@
   "name":"brush_grid_channel",
   "parent":{
     "name":"grid",
-    "path":"folders/visu/src/editor/service/brush/grid.yy",
+    "path":"folders/io.alkapivo.visu/src/editor/service/brush/grid.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

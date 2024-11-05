@@ -6,7 +6,7 @@
   "name":"LyricsServiceTest",
   "parent":{
     "name":"lyrics",
-    "path":"folders/visu/test/lyrics.yy",
+    "path":"folders/io.alkapivo.visu/test/lyrics.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

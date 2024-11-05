@@ -64,6 +64,10 @@ function brush_shroom_config(json = null) {
           { value: 0, target: 2047, factor: 1.0, increase: 0.2 }
         )),
       },
+      "shroom-config_clear-shrooms": {
+        type: Boolean,
+        value: Struct.getDefault(json, "shroom-config_clear-shrooms", false),
+      },
     }),
     components: new Array(Struct, [
       {
@@ -280,6 +284,23 @@ function brush_shroom_config(json = null) {
               enable: { key: "shroom-config_use-transform-coin-z" },
             },
           },
+        },
+      },
+      {
+        name: "shroom-config_clear-shrooms",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Clear shrooms",
+            enable: { key: "shroom-config_clear-shrooms" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "shroom-config_clear-shrooms" },
+          }
         },
       },
     ]),

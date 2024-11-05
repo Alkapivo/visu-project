@@ -14,34 +14,52 @@
               "node": "root.artists.kedy_selma"
             }
           }
-        }
-      ]
-    },
-    "root.artists.kedy_selma": {
-      "title": "Select album",
-      "back": "root.artists",
-      "entries": [
+        },
         {
-          "name": "Just To Create Something",
+          "name": "zoogies",
           "event": {
             "type": "open-node",
             "data": {
-              "node": "root.artists.kedy_selma.just-to-create-something"
+              "node": "root.artists.zoogies"
             }
           }
         }
       ]
     },
-    "root.artists.kedy_selma.just-to-create-something": {
+    "root.artists.kedy_selma": {
       "title": "Select track",
-      "back": "root.artists.kedy_selma",
+      "back": "root.artists",
       "entries": [
         {
           "name": "Just To Create Something",
           "event": {
             "type": "load-track",
             "data": {
-              "path": "track/kedy_selma/Just-To-Create-Something/Just-To-Create-Something/manifest.visu"
+              "path": "track/kedy_selma/Just-To-Create-Something/manifest.visu"
+            }
+          }
+        },
+        {
+          "name": "Passion",
+          "event": {
+            "type": "load-track",
+            "data": {
+              "path": "track/kedy_selma/Passion/manifest.visu"
+            }
+          }
+        }
+      ]
+    },
+    "root.artists.zoogies": {
+      "title": "Select track",
+      "back": "root.artists",
+      "entries": [
+        {
+          "name": "digitalshadow",
+          "event": {
+            "type": "load-track",
+            "data": {
+              "path": "track/zoogies/digitalshadow/manifest.visu"
             }
           }
         }

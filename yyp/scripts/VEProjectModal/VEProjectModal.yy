@@ -6,7 +6,7 @@
   "name":"VEProjectModal",
   "parent":{
     "name":"controller",
-    "path":"folders/visu/src/editor/ui/controller.yy",
+    "path":"folders/io.alkapivo.visu/src/editor/ui/controller.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

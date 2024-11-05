@@ -120,7 +120,7 @@
   "name":"font_consolas_28_regular",
   "parent":{
     "name":"regular",
-    "path":"folders/core/resource/font/font_consolas/regular.yy",
+    "path":"folders/io.alkapivo.core/resource/font/font_consolas/regular.yy",
   },
   "pointRounding":0,
   "ranges":[

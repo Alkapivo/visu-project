@@ -6,7 +6,7 @@
   "name":"SoundService",
   "parent":{
     "name":"sound",
-    "path":"folders/core/src/service/sound.yy",
+    "path":"folders/io.alkapivo.core/src/service/sound.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

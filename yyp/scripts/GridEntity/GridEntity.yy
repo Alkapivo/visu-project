@@ -6,7 +6,7 @@
   "name":"GridEntity",
   "parent":{
     "name":"grid",
-    "path":"folders/visu/src/ecs/grid.yy",
+    "path":"folders/io.alkapivo.visu/src/ecs/grid.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

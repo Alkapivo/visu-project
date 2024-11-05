@@ -6,7 +6,7 @@
   "name":"FontService",
   "parent":{
     "name":"font",
-    "path":"folders/core/src/service/font.yy",
+    "path":"folders/io.alkapivo.core/src/service/font.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

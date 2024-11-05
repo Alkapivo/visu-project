@@ -6,7 +6,7 @@
   "name":"Tree",
   "parent":{
     "name":"collection",
-    "path":"folders/core/src/collection.yy",
+    "path":"folders/io.alkapivo.core/src/collection.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

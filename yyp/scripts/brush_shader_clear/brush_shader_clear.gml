@@ -43,20 +43,6 @@ function brush_shader_clear(json = null) {
     }),
     components: new Array(Struct, [
       {
-        name: "shader-clear_pipeline",
-        template: VEComponents.get("spin-select"),
-        layout: VELayouts.get("spin-select"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Pipeline" },
-          previous: { store: { key: "shader-clear_pipeline" } },
-          preview: Struct.appendRecursive({ 
-            store: { key: "shader-clear_pipeline" },
-          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
-          next: { store: { key: "shader-clear_pipeline" } },
-        },
-      },
-      {
         name: "shader-clear_use-clear-all-shaders",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
@@ -137,6 +123,20 @@ function brush_shader_clear(json = null) {
             store: { key: "shader-clear_fade-out" },
             enable: { key: "shader-clear_use-fade-out" },
           },
+        },
+      },
+      {
+        name: "shader-clear_pipeline",
+        template: VEComponents.get("spin-select"),
+        layout: VELayouts.get("spin-select"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "Pipeline" },
+          previous: { store: { key: "shader-clear_pipeline" } },
+          preview: Struct.appendRecursive({ 
+            store: { key: "shader-clear_pipeline" },
+          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
+          next: { store: { key: "shader-clear_pipeline" } },
         },
       },
     ]),

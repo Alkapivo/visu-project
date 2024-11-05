@@ -26,7 +26,7 @@
   "origin":0,
   "parent":{
     "name":"VEEventInspector",
-    "path":"folders/visu/resource/texture/editor/containers/VEEventInspector.yy",
+    "path":"folders/io.alkapivo.visu/resource/texture/editor/containers/VEEventInspector.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",

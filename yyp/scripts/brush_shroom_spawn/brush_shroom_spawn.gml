@@ -27,6 +27,17 @@ function brush_shroom_spawn(json = null) {
           return clamp(NumberUtil.parse(value, this.value), 0.01, 99.0) 
         },
       },
+      "shroom-spawn_use-angle": {
+        type: Boolean,
+        value: Struct.getDefault(json, "shroom-spawn_use-angle", true),
+      },
+      "shroom-spawn_angle": {
+        type: Number,
+        value: Struct.getDefault(json, "shroom-spawn_angle", 0.0),
+        passthrough: function(value) {
+          return clamp(NumberUtil.parse(value, this.value), 0, 360.0) 
+        },
+      },
       "shroom-spawn_use-spawn-x": {
         type: Boolean,
         value: Struct.getDefault(json, "shroom-spawn_use-spawn-x", true),
@@ -67,7 +78,7 @@ function brush_shroom_spawn(json = null) {
         type: Number,
         value: Struct.getDefault(json, "shroom-spawn_spawn-y", 0.0),
         passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), -2.5, 1.5) 
+          return clamp(NumberUtil.parse(value, this.value), -4.5, 3.5) 
         },
       },
       "shroom-spawn_channels-spawn-y": {
@@ -98,17 +109,6 @@ function brush_shroom_spawn(json = null) {
       "shroom-spawn_use-snap-v": {
         type: Boolean,
         value: Struct.getDefault(json, "shroom-spawn_use-snap-v", true),
-      },
-      "shroom-spawn_use-angle": {
-        type: Boolean,
-        value: Struct.getDefault(json, "shroom-spawn_use-angle", true),
-      },
-      "shroom-spawn_angle": {
-        type: Number,
-        value: Struct.getDefault(json, "shroom-spawn_angle", 0.0),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0, 360.0) 
-        },
       },
     }),
     components: new Array(Struct, [
@@ -238,6 +238,86 @@ function brush_shroom_spawn(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Speed" },
           field: { store: { key: "shroom-spawn_speed" } },
+        },
+      },
+      {
+        name: "shroom-spawn_use-angle",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Angle",
+            enable: { key: "shroom-spawn_use-angle" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "shroom-spawn_use-angle" },
+          },
+          input: {
+            store: { 
+              key: "shroom-spawn_angle",
+              callback: function(value, data) { 
+                var sprite = Struct.get(data, "sprite")
+                if (!Core.isType(sprite, Sprite)) {
+                  sprite = SpriteUtil.parse({ name: "visu_texture_ui_spawn_arrow" })
+                  Struct.set(data, "sprite", sprite)
+                }
+                sprite.setAngle(value)
+              },
+              set: function(value) { return },
+            },
+            enable: { key: "shroom-spawn_use-angle" },
+            render: function() {
+              if (this.backgroundColor != null) {
+                var _x = this.context.area.getX() + this.area.getX()
+                var _y = this.context.area.getY() + this.area.getY()
+                var color = this.backgroundColor
+                draw_rectangle_color(
+                  _x, _y, 
+                  _x + this.area.getWidth(), _y + this.area.getHeight(),
+                  color, color, color, color,
+                  false
+                )
+              }
+
+              var sprite = Struct.get(this, "sprite")
+              if (!Core.isType(sprite, Sprite)) {
+                sprite = SpriteUtil.parse({ name: "visu_texture_ui_spawn_arrow" })
+                Struct.set(this, "sprite", sprite)
+              }
+              sprite.scaleToFit(this.area.getWidth(), this.area.getHeight())
+                .render(
+                  this.context.area.getX() + this.area.getX() + sprite.texture.offsetX * sprite.getScaleX(),
+                  this.context.area.getY() + this.area.getY() + sprite.texture.offsetY * sprite.getScaleY()
+                )
+              
+              return this
+            },
+          }
+        },
+      },
+      {
+        name: "shroom-spawn_angle",  
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Angle",
+            enable: { key: "shroom-spawn_use-angle" },
+          },
+          field: { 
+            store: { key: "shroom-spawn_angle" },
+            enable: { key: "shroom-spawn_use-angle" },
+          },
+          slider: { 
+            minValue: 0.0,
+            maxValue: 360.0,
+            store: { key: "shroom-spawn_angle" },
+            enable: { key: "shroom-spawn_use-angle" },
+          },
         },
       },
       {
@@ -482,12 +562,12 @@ function brush_shroom_spawn(json = null) {
             callback: function() { 
               var channels = clamp(this.store.getStore().get("shroom-spawn_channels-spawn-y").get(), 1, 50)
               var spawnY = this.store.getStore().get("shroom-spawn_spawn-y").get()
-              this.store.set(clamp(spawnY - (8.0 / channels), -3.5, 4.5))
+              this.store.set(clamp(spawnY - (8.0 / channels), -4.5, 3.5))
             },
           },
           slider: { 
-            minValue: -2.5,
-            maxValue: 1.5,
+            minValue: -4.5,
+            maxValue: 3.5,
             store: { key: "shroom-spawn_spawn-y" },
             enable: { key: "shroom-spawn_use-spawn-y" },
             customKey: "shroom-spawn_channels-spawn-y",
@@ -527,7 +607,7 @@ function brush_shroom_spawn(json = null) {
             callback: function() { 
               var channels = clamp(this.store.getStore().get("shroom-spawn_channels-spawn-y").get(), 1, 50)
               var spawnY = this.store.getStore().get("shroom-spawn_spawn-y").get()
-              this.store.set(clamp(spawnY + (8.0 / channels), -3.5, 4.5))
+              this.store.set(clamp(spawnY + (8.0 / channels), -4.5, 3.5))
             },
           },
         },
@@ -569,8 +649,8 @@ function brush_shroom_spawn(json = null) {
             enable: { key: "shroom-spawn_use-spawn-y", negate: true },
           },
           slider: {
-            minValue: -3.5,
-            maxValue: 4.5,
+            minValue: -4.5,
+            maxValue: 3.5,
             store: { key: "shroom-spawn_spawn-y-random-from" },
             enable: { key: "shroom-spawn_use-spawn-y", negate: true },
           },
@@ -629,86 +709,6 @@ function brush_shroom_spawn(json = null) {
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
             store: { key: "shroom-spawn_use-snap-v" },
-          },
-        },
-      },
-      {
-        name: "shroom-spawn_use-angle",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Angle",
-            enable: { key: "shroom-spawn_use-angle" },
-          },
-          checkbox: { 
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "shroom-spawn_use-angle" },
-          },
-          input: {
-            store: { 
-              key: "shroom-spawn_angle",
-              callback: function(value, data) { 
-                var sprite = Struct.get(data, "sprite")
-                if (!Core.isType(sprite, Sprite)) {
-                  sprite = SpriteUtil.parse({ name: "visu_texture_ui_spawn_arrow" })
-                  Struct.set(data, "sprite", sprite)
-                }
-                sprite.setAngle(value)
-              },
-              set: function(value) { return },
-            },
-            enable: { key: "shroom-spawn_use-angle" },
-            render: function() {
-              if (this.backgroundColor != null) {
-                var _x = this.context.area.getX() + this.area.getX()
-                var _y = this.context.area.getY() + this.area.getY()
-                var color = this.backgroundColor
-                draw_rectangle_color(
-                  _x, _y, 
-                  _x + this.area.getWidth(), _y + this.area.getHeight(),
-                  color, color, color, color,
-                  false
-                )
-              }
-
-              var sprite = Struct.get(this, "sprite")
-              if (!Core.isType(sprite, Sprite)) {
-                sprite = SpriteUtil.parse({ name: "visu_texture_ui_spawn_arrow" })
-                Struct.set(this, "sprite", sprite)
-              }
-              sprite.scaleToFit(this.area.getWidth(), this.area.getHeight())
-                .render(
-                  this.context.area.getX() + this.area.getX() + sprite.texture.offsetX * sprite.getScaleX(),
-                  this.context.area.getY() + this.area.getY() + sprite.texture.offsetY * sprite.getScaleY()
-                )
-              
-              return this
-            },
-          }
-        },
-      },
-      {
-        name: "shroom-spawn_angle",  
-        template: VEComponents.get("numeric-slider-field"),
-        layout: VELayouts.get("numeric-slider-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Angle",
-            enable: { key: "shroom-spawn_use-angle" },
-          },
-          field: { 
-            store: { key: "shroom-spawn_angle" },
-            enable: { key: "shroom-spawn_use-angle" },
-          },
-          slider: { 
-            minValue: 0.0,
-            maxValue: 360.0,
-            store: { key: "shroom-spawn_angle" },
-            enable: { key: "shroom-spawn_use-angle" },
           },
         },
       },

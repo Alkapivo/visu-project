@@ -6,7 +6,7 @@
   "name":"BooleanFeature",
   "parent":{
     "name":"feature",
-    "path":"folders/visu/src/service/grid/feature.yy",
+    "path":"folders/io.alkapivo.visu/src/service/grid/feature.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

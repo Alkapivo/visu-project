@@ -6,7 +6,7 @@
   "name":"Shader",
   "parent":{
     "name":"shader",
-    "path":"folders/core/src/renderer/shader.yy",
+    "path":"folders/io.alkapivo.core/src/renderer/shader.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

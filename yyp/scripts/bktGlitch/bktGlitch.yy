@@ -6,7 +6,7 @@
   "name":"bktGlitch",
   "parent":{
     "name":"src",
-    "path":"folders/gmtf/src.yy",
+    "path":"folders/io.mk-cz.gmtf/src.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

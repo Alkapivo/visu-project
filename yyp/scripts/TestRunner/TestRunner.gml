@@ -29,7 +29,7 @@ function TestRunner() constructor {
     this.restoreHooks.set("Logger.error", method(this, Logger.error))
     Logger.info(BeanTestRunner, "install hook 'Logger.error'")
     Logger.error = function(context, message) {
-      global.__Log(context, "ERROR ", message)
+      Logger.log(context, "ERROR ", message)
 
       var runner = Beans.get(BeanTestRunner)
       if (!Core.isType(runner, TestRunner)) {

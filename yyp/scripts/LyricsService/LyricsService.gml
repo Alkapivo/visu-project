@@ -115,7 +115,7 @@ function LyricsService(config = null): Service() constructor {
       this.executor.add(task)
     },
     "clear-lyrics": function(event) {
-      this.templates.clear()
+      this.executor.tasks.clear()
     },
     "reset-templates": function(event) {
       this.templates.clear()

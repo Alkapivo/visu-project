@@ -27,7 +27,7 @@
   "origin":4,
   "parent":{
     "name":"ui",
-    "path":"folders/core/resource/texture/ui.yy",
+    "path":"folders/io.alkapivo.core/resource/texture/ui.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",

@@ -30,7 +30,7 @@
   "origin":0,
   "parent":{
     "name":"VETitleBar",
-    "path":"folders/visu/resource/texture/editor/containers/VETitleBar.yy",
+    "path":"folders/io.alkapivo.visu/resource/texture/editor/containers/VETitleBar.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",

@@ -1,5 +1,7 @@
+///@package io.mh-cz.gmtf
 ///@description https://github.com/mh-cz/Gamemaker-Multiline-Text-Field/tree/main
 
+///@type {Number}
 #macro GMTF_DECIMAL 6
 
 

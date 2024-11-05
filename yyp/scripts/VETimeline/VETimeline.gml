@@ -757,6 +757,11 @@ function VETimeline(_editor) constructor {
             return
           }
 
+          if (!mouse_check_button(mb_left) && !mouse_check_button_released(mb_left)) {
+            MouseUtil.clearClipboard()
+            return
+          }
+
           var timestamp = this.getTimestampFromMouseX(MouseUtil.getMouseX())
           var store = Beans.get(BeanVisuEditorController).store
           if (store.getValue("snap")) {
@@ -1862,12 +1867,13 @@ function VETimeline(_editor) constructor {
               : clamp(time - _time, 0, duration)
             this.state.set("mouseXTime", time)
           }
-          
+
           var position = time == null ? spd * trackService.time : spd * time
           var camera = this.state.get("camera")
           var cameraPrevious = this.state.get("cameraPrevious")
           var maxWidth = spd * duration
-          if (position > camera + width) || (position < camera) {
+          if (controller.fsm.getStateName() == "play" || time != null) 
+            && ((position > camera + width) || (position < camera)) {
             camera = clamp(position - width / 2, 0, maxWidth - width)
           }
           this.state.set("camera", camera)

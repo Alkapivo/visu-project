@@ -17,8 +17,12 @@ function TestEvent_BrushToolbar_save(json = {}) {
           }
         },
         setup: function(task) {
+          
+
           Beans.get(BeanTestRunner).exceptions.clear()
           var editor = Beans.get(BeanVisuEditorController)
+          editor.renderUI = true
+
           var acc = {
             currentCategory: null,
             types: new Stack(Struct)
@@ -108,6 +112,23 @@ function TestEvent_BrushToolbar_save(json = {}) {
     .whenStart(function(executor) {
       Logger.test("BrushToolbarTest", "Start TestEvent_BrushToolbar_save")
       Beans.get(BeanTestRunner).installHooks()
+
+      Visu.settings.setValue("visu.god-mode", true)
+      if (!Optional.is(Beans.get(BeanVisuEditorIO))) {
+        Beans.add(Beans.factory(BeanVisuEditorIO, GMServiceInstance,
+          Beans.get(BeanVisuController).layerId, new VisuEditorIO()))
+      }
+
+      if (!Optional.is(Beans.get(BeanVisuEditorController))) {
+        Beans.add(Beans.factory(BeanVisuEditorController, GMServiceInstance,
+          Beans.get(BeanVisuController).layerId, new VisuEditorController()))
+
+        var editor = Beans.get(BeanVisuEditorController)
+        if (Optional.is(editor)) {
+          editor.send(new Event("open"))
+        }
+      }
+
       Beans.get(BeanVisuEditorController).store.get("render-brush").set(true)
     })
     .whenFinish(function(data) {

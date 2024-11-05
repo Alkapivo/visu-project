@@ -6,7 +6,7 @@
   "name":"TimerTest",
   "parent":{
     "name":"util",
-    "path":"folders/core/test/util.yy",
+    "path":"folders/io.alkapivo.core/test/util.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

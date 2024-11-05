@@ -41,8 +41,58 @@ function brush_view_config(json = null) {
         type: Boolean,
         value: Struct.getDefault(json, "view-config_render-HUD", false),
       },
+      "view-config_clear-lyrics": {
+        type: Boolean,
+        value: Struct.getDefault(json, "view-config_clear-lyrics", false),
+      },
     }),
     components: new Array(Struct, [
+      {
+        name: "view-config_use-render-HUD",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Render HUD",
+            enable: { key: "view-config_use-render-HUD" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "view-config_use-render-HUD" },
+          },
+          input: {
+            spriteOn: { name: "visu_texture_checkbox_switch_on" },
+            spriteOff: { name: "visu_texture_checkbox_switch_off" },
+            store: { key: "view-config_render-HUD" },
+            enable: { key: "view-config_use-render-HUD" },
+          }
+        },
+      },
+      {
+        name: "view-config_use-render-videos",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Render video",
+            enable: { key: "view-config_use-render-video" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "view-config_use-render-video" },
+          },
+          input: {
+            spriteOn: { name: "visu_texture_checkbox_switch_on" },
+            spriteOff: { name: "visu_texture_checkbox_switch_off" },
+            store: { key: "view-config_render-video" },
+            enable: { key: "view-config_use-render-video" },
+          }
+        },
+      },
       {
         name: "view-config_use-render-particles",
         template: VEComponents.get("property"),
@@ -116,48 +166,19 @@ function brush_view_config(json = null) {
         },
       },
       {
-        name: "view-config_use-render-videos",
+        name: "view-config_clear-lyrics",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Render video",
-            enable: { key: "view-config_use-render-video" },
+            text: "Clear lyrics",
+            enable: { key: "view-config_clear-lyrics" },
           },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "view-config_use-render-video" },
-          },
-          input: {
-            spriteOn: { name: "visu_texture_checkbox_switch_on" },
-            spriteOff: { name: "visu_texture_checkbox_switch_off" },
-            store: { key: "view-config_render-video" },
-            enable: { key: "view-config_use-render-video" },
-          }
-        },
-      },
-      {
-        name: "view-config_use-render-HUD",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Render HUD",
-            enable: { key: "view-config_use-render-HUD" },
-          },
-          checkbox: { 
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "view-config_use-render-HUD" },
-          },
-          input: {
-            spriteOn: { name: "visu_texture_checkbox_switch_on" },
-            spriteOff: { name: "visu_texture_checkbox_switch_off" },
-            store: { key: "view-config_render-HUD" },
-            enable: { key: "view-config_use-render-HUD" },
+            store: { key: "view-config_clear-lyrics" },
           }
         },
       },

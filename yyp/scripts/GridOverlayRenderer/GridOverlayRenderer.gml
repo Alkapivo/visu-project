@@ -141,7 +141,7 @@ function GridOverlayRenderer() constructor {
         gc.add(index)
       }
     }
-
+    
     this.backgrounds.forEach(gcFilter, this.backgrounds.gc).runGC()
     this.foregrounds.forEach(gcFilter, this.foregrounds.gc).runGC()
     this.backgroundColors.forEach(gcColorFilter, this.backgroundColors.gc).runGC()

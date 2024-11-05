@@ -6,7 +6,7 @@
   "name":"TextureService",
   "parent":{
     "name":"texture",
-    "path":"folders/core/src/service/texture.yy",
+    "path":"folders/io.alkapivo.core/src/service/texture.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

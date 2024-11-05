@@ -166,6 +166,12 @@ function VETitleBar(_editor) constructor {
             layout: layout.nodes.file,
             options: new Array(),
             callback: function() {
+              if (Core.getRuntimeType() == RuntimeType.GXGAMES) {
+                Beans.get(BeanVisuController).send(new Event("spawn-popup", 
+                  { message: $"Feature 'visu.title-bar.new' is not available on wasm-yyc target" }))
+                return
+              }
+
               var editor = Beans.get(BeanVisuEditorController)
               if (Core.isType(editor.uiService.find("visu-project-modal"), UI)) {
                 editor.projectModal.send(new Event("close"))
@@ -192,6 +198,12 @@ function VETitleBar(_editor) constructor {
             layout: layout.nodes.edit,
             options: new Array(),
             callback: function() {
+              if (Core.getRuntimeType() == RuntimeType.GXGAMES) {
+                Beans.get(BeanVisuController).send(new Event("spawn-popup", 
+                  { message: $"Feature 'visu.title-bar.edit' is not available on wasm-yyc target" }))
+                return
+              }
+
               var editor = Beans.get(BeanVisuEditorController)
               if (Core.isType(editor.uiService.find("visu-new-project-modal"), UI)) {
                 editor.newProjectModal.send(new Event("close"))

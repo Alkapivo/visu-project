@@ -49,7 +49,9 @@ global.__shaders = {
     "uniforms": {
       "iTime": "FLOAT",
       "iResolution": "VECTOR2",
-      "iFactor": "FLOAT"
+      "iFactor": "FLOAT",
+      "iTint": "VECTOR3",
+      "iMix": "FLOAT",
     }
   },
   "shader_warp": {
@@ -264,7 +266,9 @@ global.__shaders = {
     "type": "GLSL_ES",
     "uniforms": {
       "iTime": "FLOAT",
-      "iResolution": "VECTOR2"
+      "iResolution": "VECTOR2",
+      "iSize": "FLOAT",
+      "iDistance": "FLOAT"
     }
   },
   "shader_grid_space": {
@@ -331,6 +335,14 @@ global.__shaders = {
       "iSize": "VECTOR2",
       "iFactor": "FLOAT",
       "iSeed": "VECTOR3"
+    }
+  },
+  "shader_star_nest": {
+    "type": "GLSL_ES",
+    "uniforms": {
+      "iTime": "FLOAT",
+      "iResolution": "VECTOR2",
+      "iAngle": "FLOAT"
     }
   },
 }

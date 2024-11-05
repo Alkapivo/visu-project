@@ -6,7 +6,7 @@
   "name":"template_texture",
   "parent":{
     "name":"template",
-    "path":"folders/visu/src/editor/service/template.yy",
+    "path":"folders/io.alkapivo.visu/src/editor/service/template.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

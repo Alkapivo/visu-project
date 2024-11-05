@@ -17,7 +17,7 @@
   "overriddenProperties":[],
   "parent":{
     "name":"lang",
-    "path":"folders/core/src/lang.yy",
+    "path":"folders/io.alkapivo.core/src/lang.yy",
   },
   "parentObjectId":{
     "name":"GMInstance",

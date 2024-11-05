@@ -6,7 +6,7 @@
   "name":"Chunk",
   "parent":{
     "name":"chunk",
-    "path":"folders/core/src/service/chunk.yy",
+    "path":"folders/io.alkapivo.core/src/service/chunk.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

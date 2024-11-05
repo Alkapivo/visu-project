@@ -26,7 +26,7 @@
   "origin":0,
   "parent":{
     "name":"timeline",
-    "path":"folders/visu/resource/texture/editor/icon/timeline.yy",
+    "path":"folders/io.alkapivo.visu/resource/texture/editor/icon/timeline.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",

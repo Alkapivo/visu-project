@@ -5,11 +5,13 @@ global.__VISU_FONT = [
   "font_kodeo_mono_12_regular",
   "font_kodeo_mono_18_regular",
   "font_kodeo_mono_28_regular",
+  "font_kodeo_mono_48_regular",
 
   "font_kodeo_mono_10_bold",
   "font_kodeo_mono_12_bold",
   "font_kodeo_mono_18_bold",
   "font_kodeo_mono_28_bold",
+  "font_kodeo_mono_48_bold",
 
   "font_inter_8_regular",
   "font_inter_10_regular",
@@ -213,30 +215,6 @@ function brush_view_lyrics(json = null) {
         },
       },
       {
-        name: "view-lyrics_font",
-        template: VEComponents.get("spin-select"),
-        layout: VELayouts.get("spin-select"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Font" },
-          previous: { store: { key: "view-lyrics_font" } },
-          preview: Struct.appendRecursive({ 
-            store: { key: "view-lyrics_font" },
-          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
-          next: { store: { key: "view-lyrics_font" } },
-        },
-      },
-      {
-        name: "view-lyrics_font-height",  
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Font H" },
-          field: { store: { key: "view-lyrics_font-height" } },
-        },
-      },
-      {
         name: "view-lyrics_char-speed",  
         template: VEComponents.get("text-field"),
         layout: VELayouts.get("text-field"),
@@ -244,6 +222,27 @@ function brush_view_lyrics(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Speed" },
           field: { store: { key: "view-lyrics_char-speed" } },
+        },
+      },
+      
+      {
+        name: "view-lyrics_fade-in",  
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "Fade in" },
+          field: { store: { key: "view-lyrics_fade-in" } },
+        },
+      },
+      {
+        name: "view-lyrics_fade-out",  
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "Fade out" },
+          field: { store: { key: "view-lyrics_fade-out" } },
         },
       },
       {
@@ -346,13 +345,37 @@ function brush_view_lyrics(json = null) {
         },
       },
       {
+        name: "view-lyrics_font",
+        template: VEComponents.get("spin-select"),
+        layout: VELayouts.get("spin-select"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "Font" },
+          previous: { store: { key: "view-lyrics_font" } },
+          preview: Struct.appendRecursive({ 
+            store: { key: "view-lyrics_font" },
+          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
+          next: { store: { key: "view-lyrics_font" } },
+        },
+      },
+      {
+        name: "view-lyrics_font-height",  
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "Height" },
+          field: { store: { key: "view-lyrics_font-height" } },
+        },
+      },
+      {
         name: "view-lyrics_color",
         template: VEComponents.get("color-picker"),
         layout: VELayouts.get("color-picker"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           title: {
-            label: { text: "Text color" },  
+            label: { text: "Font color" },  
             input: { store: { key: "view-lyrics_color" } }
           },
           red: {
@@ -384,7 +407,7 @@ function brush_view_lyrics(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           title: {
             label: { 
-              text: "Outline color",
+              text: "Font outline",
               enable: { key: "view-lyrics_use-outline" },
             },  
             checkbox: { 
@@ -466,7 +489,7 @@ function brush_view_lyrics(json = null) {
         layout: VELayouts.get("spin-select"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Type" },
+          label: { text: "Vertical" },
           previous: { store: { key: "view-lyrics_align-v" } },
           preview: Struct.appendRecursive({ 
             store: { key: "view-lyrics_align-v" },
@@ -480,7 +503,7 @@ function brush_view_lyrics(json = null) {
         layout: VELayouts.get("spin-select"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Type" },
+          label: { text: "Horizontal" },
           previous: { store: { key: "view-lyrics_align-h" } },
           preview: Struct.appendRecursive({ 
             store: { key: "view-lyrics_align-h" },
@@ -558,65 +581,6 @@ function brush_view_lyrics(json = null) {
         },
       },
       {
-        name: "view-lyrics_transform-angle",
-        template: VEComponents.get("transform-numeric-uniform"),
-        layout: VELayouts.get("transform-numeric-uniform"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          title: {
-            label: {
-              text: "Transform angle",
-              enable: { key: "view-lyrics_use-transform-angle" },
-            },
-            checkbox: { 
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "view-lyrics_use-transform-angle" },
-            },
-          },
-          value: {
-            label: {
-              text: "Value",
-              enable: { key: "view-lyrics_use-transform-angle" },
-            },
-            field: {
-              store: { key: "view-lyrics_transform-angle" },
-              enable: { key: "view-lyrics_use-transform-angle" },
-            },
-          },
-          target: {
-            label: {
-              text: "Target",
-              enable: { key: "view-lyrics_use-transform-angle" },
-            },
-            field: {
-              store: { key: "view-lyrics_transform-angle" },
-              enable: { key: "view-lyrics_use-transform-angle" },
-            },
-          },
-          factor: {
-            label: {
-              text: "Factor",
-              enable: { key: "view-lyrics_use-transform-angle" },
-            },
-            field: {
-              store: { key: "view-lyrics_transform-angle" },
-              enable: { key: "view-lyrics_use-transform-angle" },
-            },
-          },
-          increase: {
-            label: {
-              text: "Increase",
-              enable: { key: "view-lyrics_use-transform-angle" },
-            },
-            field: {
-              store: { key: "view-lyrics_transform-angle" },
-              enable: { key: "view-lyrics_use-transform-angle" },
-            },
-          },
-        },
-      }, 
-      {
         name: "view-lyrics_transform-speed",
         template: VEComponents.get("transform-numeric-uniform"),
         layout: VELayouts.get("transform-numeric-uniform"),
@@ -675,27 +639,65 @@ function brush_view_lyrics(json = null) {
           },
         },
       },
-
       {
-        name: "view-lyrics_fade-in",  
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        name: "view-lyrics_transform-angle",
+        template: VEComponents.get("transform-numeric-uniform"),
+        layout: VELayouts.get("transform-numeric-uniform"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Fade in" },
-          field: { store: { key: "view-lyrics_fade-in" } },
+          title: {
+            label: {
+              text: "Transform angle",
+              enable: { key: "view-lyrics_use-transform-angle" },
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "view-lyrics_use-transform-angle" },
+            },
+          },
+          value: {
+            label: {
+              text: "Value",
+              enable: { key: "view-lyrics_use-transform-angle" },
+            },
+            field: {
+              store: { key: "view-lyrics_transform-angle" },
+              enable: { key: "view-lyrics_use-transform-angle" },
+            },
+          },
+          target: {
+            label: {
+              text: "Target",
+              enable: { key: "view-lyrics_use-transform-angle" },
+            },
+            field: {
+              store: { key: "view-lyrics_transform-angle" },
+              enable: { key: "view-lyrics_use-transform-angle" },
+            },
+          },
+          factor: {
+            label: {
+              text: "Factor",
+              enable: { key: "view-lyrics_use-transform-angle" },
+            },
+            field: {
+              store: { key: "view-lyrics_transform-angle" },
+              enable: { key: "view-lyrics_use-transform-angle" },
+            },
+          },
+          increase: {
+            label: {
+              text: "Increase",
+              enable: { key: "view-lyrics_use-transform-angle" },
+            },
+            field: {
+              store: { key: "view-lyrics_transform-angle" },
+              enable: { key: "view-lyrics_use-transform-angle" },
+            },
+          },
         },
-      },
-      {
-        name: "view-lyrics_fade-out",  
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Fade out" },
-          field: { store: { key: "view-lyrics_fade-out" } },
-        },
-      },
+      }, 
     ]),
   }
 }

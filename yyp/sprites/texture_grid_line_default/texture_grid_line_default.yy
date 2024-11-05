@@ -26,7 +26,7 @@
   "origin":3,
   "parent":{
     "name":"line",
-    "path":"folders/core/resource/texture/line.yy",
+    "path":"folders/io.alkapivo.core/resource/texture/line.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",

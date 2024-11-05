@@ -6,7 +6,7 @@
   "name":"brush_shroom_clear",
   "parent":{
     "name":"shroom",
-    "path":"folders/visu/src/editor/service/brush/shroom.yy",
+    "path":"folders/io.alkapivo.visu/src/editor/service/brush/shroom.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

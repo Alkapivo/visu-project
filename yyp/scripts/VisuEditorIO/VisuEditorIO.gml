@@ -102,7 +102,7 @@ function VisuEditorIO() constructor {
       try {
         if (Core.getRuntimeType() == RuntimeType.GXGAMES) {
           controller.send(new Event("spawn-popup", 
-            { message: $"Feature 'visu.open' is not available on wasm-yyc target" }))
+            { message: $"Feature 'visu.editor.open' is not available on wasm-yyc target" }))
           return this
         }
 
@@ -265,6 +265,12 @@ function VisuEditorIO() constructor {
     if (!GMTFContext.isFocused() 
       && this.keyboard.keys.controlLeft.on 
       && this.keyboard.keys.newProject.pressed) {
+        
+      if (Core.getRuntimeType() == RuntimeType.GXGAMES) {
+        editor.send(new Event("spawn-popup", 
+          { message: $"Feature 'visu.editor.new' is not available on wasm-yyc target" }))
+        return this
+      }
 
       if (Core.isType(editor.uiService.find("visu-project-modal"), UI)) {
         editor.projectModal.send(new Event("close"))
@@ -288,6 +294,12 @@ function VisuEditorIO() constructor {
     if (!GMTFContext.isFocused() 
       && this.keyboard.keys.controlLeft.on 
       && this.keyboard.keys.editProject.pressed) {
+
+      if (Core.getRuntimeType() == RuntimeType.GXGAMES) {
+        editor.send(new Event("spawn-popup", 
+          { message: $"Feature 'visu.editor.edit' is not available on wasm-yyc target" }))
+        return this
+      }
 
       if (Core.isType(editor.uiService.find("visu-new-project-modal"), UI)) {
         editor.newProjectModal.send(new Event("close"))

@@ -121,13 +121,10 @@ function GridRenderer() constructor {
       var beginY = ((-6.0 * view.height) + (index * separatorHeight) + offset + time) * GRID_SERVICE_PIXEL_HEIGHT
       var endX = (view.width + 4.0) * GRID_SERVICE_PIXEL_WIDTH
       var endY = beginY
-      var _alpha = secondaryAlpha;//index == (-1 * primaryBegin) ? secondaryAlpha * (1.0 - borderRatio) : secondaryAlpha
-      //if (index + 1 > primaryBegin) {
-      //  _alpha = secondaryAlpha * borderRatio
-      //} else if (index < 0.0) {
-      //  _alpha = ((primaryBegin - abs(index)) / primaryBegin) * _alpha
-      //}
-      if (index < 0.0) {
+      var _alpha = index == (-1 * primaryBegin) ? secondaryAlpha * (1.0 - borderRatio) : secondaryAlpha
+      if (index + 1 > primaryBegin) {
+        _alpha = secondaryAlpha * borderRatio
+      } else if (index < 0.0) {
         _alpha = ((primaryBegin - abs(index)) / primaryBegin) * _alpha
       }
 
@@ -146,10 +143,10 @@ function GridRenderer() constructor {
       var beginY = ((-6 * view.height) + (index * separatorHeight) + offset + time) * GRID_SERVICE_PIXEL_HEIGHT
       var endX = (view.width + 4.0) * GRID_SERVICE_PIXEL_WIDTH
       var endY = beginY
-      var _alpha = secondaryAlpha;//index == primaryEnd ? secondaryAlpha * (1.0 - borderRatio) : secondaryAlpha
-      //if (index + 1 > size) {
-      //  _alpha = secondaryAlpha * borderRatio
-      //}
+      var _alpha = index == primaryEnd ? secondaryAlpha * (1.0 - borderRatio) : secondaryAlpha
+      if (index + 1 > size) {
+        _alpha = secondaryAlpha * borderRatio
+      }
 
       GPU.render.texturedLineSimple(
         beginX, beginY, 
@@ -166,10 +163,12 @@ function GridRenderer() constructor {
       var beginY = ((-6 * view.height) + (index * separatorHeight) + offset + time) * GRID_SERVICE_PIXEL_HEIGHT
       var endX = (view.width + 4.0) * GRID_SERVICE_PIXEL_WIDTH
       var endY = beginY
-      var alpha = index == primaryBegin ? primaryAlpha * (1.0 - borderRatio) : primaryAlpha
-      if (index + 1 > primaryEnd) {
-        alpha = primaryAlpha * borderRatio
-      }
+      //var alpha = index == primaryBegin ? primaryAlpha * (1.0 - borderRatio) : primaryAlpha
+      //if (index + 1 > primaryEnd) {
+      //  alpha = primaryAlpha * borderRatio
+      //}
+      var alpha = primaryAlpha
+
       var thickness = index == primaryBegin ? primaryThickness * (1.0 - borderRatio) : primaryThickness
       if (index + 1 > primaryEnd) {
         thickness = primaryThickness * borderRatio
@@ -178,7 +177,7 @@ function GridRenderer() constructor {
       GPU.render.texturedLineSimple(
         beginX, beginY, 
         endX, endY, 
-        max(thickness, secondaryThickness), 
+        thickness,//max(thickness, secondaryThickness), 
         alpha, 
         primaryColor,
         this.textureLine
@@ -241,14 +240,14 @@ function GridRenderer() constructor {
         GPU.render.texturedLineSimple(beginX, beginY, endX, endY, secondaryThickness, secondaryAlpha * clamp((size - index + (channels * viewXOffset)) / (channels * viewBorder), 0.0, 1.0), secondaryColor, this.textureLine)
       }else if (index == indexLeft) {
         var factor = 1.0 - ((offset - (floor(offset / channelPxWidth) * channelPxWidth)) / channelPxWidth)
-        GPU.render.texturedLineSimple(beginX, beginY, endX, endY, secondaryThickness, secondaryAlpha, secondaryColor, this.textureLine)
+        GPU.render.texturedLineSimple(beginX, beginY, endX, endY, secondaryThickness, secondaryAlpha * (1.0 - factor), secondaryColor, this.textureLine)
         if (indexLeft != indexRight) {
-          GPU.render.texturedLineSimple(beginX, beginY, endX, endY, primaryThickness * factor, primaryAlpha * factor, primaryColor, this.textureLine)
+          GPU.render.texturedLineSimple(beginX, beginY, endX, endY, primaryThickness * factor, primaryAlpha, primaryColor, this.textureLine)
         }
       } else if (index == indexRight) {
         var factor = ((offset - (floor(offset / channelPxWidth) * channelPxWidth)) / channelPxWidth)
-        GPU.render.texturedLineSimple(beginX, beginY, endX, endY, secondaryThickness, secondaryAlpha, secondaryColor, this.textureLine)
-        GPU.render.texturedLineSimple(beginX, beginY, endX, endY, primaryThickness * factor, primaryAlpha * factor, primaryColor, this.textureLine)
+        GPU.render.texturedLineSimple(beginX, beginY, endX, endY, secondaryThickness, secondaryAlpha * (1.0 - factor), secondaryColor, this.textureLine)
+        GPU.render.texturedLineSimple(beginX, beginY, endX, endY, primaryThickness * factor, primaryAlpha, primaryColor, this.textureLine)
       } else if (index > indexLeft && index < indexRight) {
         GPU.render.texturedLineSimple(beginX, beginY, endX, endY, primaryThickness, primaryAlpha, primaryColor, this.textureLine)
       }
@@ -305,7 +304,7 @@ function GridRenderer() constructor {
       var beginX = (0.5 + gridService.properties.borderHorizontalLength) * GRID_SERVICE_PIXEL_WIDTH
       var beginY = -3.0 * GRID_SERVICE_PIXEL_HEIGHT
       var endX = beginX
-      var endY = (3.0 + view.height) * GRID_SERVICE_PIXEL_HEIGHT
+      var endY = (5.0 + view.height) * GRID_SERVICE_PIXEL_HEIGHT
 
       GPU.render.texturedLineSimple(
         beginX, beginY, endX, endY, 
@@ -321,7 +320,7 @@ function GridRenderer() constructor {
       var beginX = (0.5 - gridService.properties.borderHorizontalLength) * GRID_SERVICE_PIXEL_WIDTH
       var beginY = -3.0 * GRID_SERVICE_PIXEL_HEIGHT
       var endX = beginX
-      var endY = (3.0 + view.height) * GRID_SERVICE_PIXEL_HEIGHT
+      var endY = (5.0 + view.height) * GRID_SERVICE_PIXEL_HEIGHT
       
       GPU.render.texturedLineSimple(
         beginX, beginY, endX, endY, 
@@ -819,7 +818,7 @@ function GridRenderer() constructor {
     var properties = Beans.get(BeanVisuController).gridService.properties
     var width = layout.width()
     var height = layout.height()
-    GPU.render.clear(properties.backgroundColor)
+    GPU.render.clear(ColorUtil.BLACK_TRANSPARENT)
     if (properties.renderVideo) {
       this.overlayRenderer.renderVideo(width, height) 
     }
@@ -904,7 +903,7 @@ function GridRenderer() constructor {
       1, 1, 1
     ))
     this.renderChannels(gridService)
-    
+
     matrix_set(matrix_world, matrix_build(
       baseX, baseY, depths.separatorZ, 
       0, 0, 0, 
@@ -912,19 +911,21 @@ function GridRenderer() constructor {
     ))
     this.renderSeparators(gridService)
 
+    if (Visu.settings.getValue("visu.graphics.particle")) {
+      matrix_set(matrix_world, matrix_build(
+        baseX, baseY, depths.particleZ, 
+        0, 0, 0, 
+        1, 1, 1
+      ))
+      this.renderParticles(gridService, particleService)
+    }
+
     matrix_set(matrix_world, matrix_build(
       baseX, baseY, depths.coinZ, 
       0, 0, 0, 
       1, 1, 1
     ))
     _renderCoins(gridService, coinService)
-
-    matrix_set(matrix_world, matrix_build(
-      baseX, baseY, depths.bulletZ, 
-      0, 0, 0, 
-      1, 1, 1
-    ))
-    _renderBullets(gridService, bulletService)
 
     gpu_set_alphatestenable(true)
     matrix_set(matrix_world, matrix_build(
@@ -952,7 +953,7 @@ function GridRenderer() constructor {
       draw_sprite_ext(
         texture_white, 
         0.0, 
-        xx, 
+        xx,
         yy, 
         ((GRID_SERVICE_PIXEL_WIDTH * GRID_ITEM_CHUNK_SERVICE_SIZE) / 64) * 0.9,
         ((GRID_SERVICE_PIXEL_HEIGHT * GRID_ITEM_CHUNK_SERVICE_SIZE) / 64) * 0.9,
@@ -981,14 +982,13 @@ function GridRenderer() constructor {
     
     this.renderSpawners(gridService, shroomService)
     gpu_set_alphatestenable(false)
-    if (Visu.settings.getValue("visu.graphics.particle")) {
-      matrix_set(matrix_world, matrix_build(
-        baseX, baseY, depths.particleZ, 
-        0, 0, 0, 
-        1, 1, 1
-      ))
-      this.renderParticles(gridService, particleService)
-    }
+
+    matrix_set(matrix_world, matrix_build(
+      baseX, baseY, depths.bulletZ, 
+      0, 0, 0, 
+      1, 1, 1
+    ))
+    _renderBullets(gridService, bulletService)
     
     matrix_set(matrix_world, matrix_build(
       baseX, baseY, depths.playerZ, 
@@ -1051,9 +1051,9 @@ function GridRenderer() constructor {
     if (properties.renderSupportGrid 
       && size >= properties.renderSupportGridTreshold) {
 
-      GPU.set.blendMode(BlendMode.ADD)
+      //GPU.set.blendMode(BlendMode.ADD)
       this.gridSurface.renderStretched(width, height, 0, 0, properties.renderSupportGridAlpha)
-      GPU.reset.blendMode()
+      //GPU.reset.blendMode()
     }
 
     return this

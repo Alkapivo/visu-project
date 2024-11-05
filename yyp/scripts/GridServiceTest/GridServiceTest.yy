@@ -6,7 +6,7 @@
   "name":"GridServiceTest",
   "parent":{
     "name":"grid",
-    "path":"folders/visu/test/grid.yy",
+    "path":"folders/io.alkapivo.visu/test/grid.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

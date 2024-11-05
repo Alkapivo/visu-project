@@ -110,7 +110,7 @@
     "9647":{"character":9647,"h":17,"offset":2,"shift":13,"w":8,"x":12,"y":59,},
   },
   "hinting":0,
-  "includeTTF":false,
+  "includeTTF":true,
   "interpreter":0,
   "italic":false,
   "kerningPairs":[],
@@ -120,7 +120,7 @@
   "name":"font_kodeo_mono_10_regular",
   "parent":{
     "name":"regular",
-    "path":"folders/core/resource/font/font_kodeo/regular.yy",
+    "path":"folders/io.alkapivo.visu/resource/font/font_kodeo/regular.yy",
   },
   "pointRounding":0,
   "ranges":[
@@ -138,6 +138,6 @@
     "name":"Default",
     "path":"texturegroups/Default",
   },
-  "TTFName":"",
+  "TTFName":"C:\\Users\\1\\projects\\io.alkapivo\\visu-project\\yyp\\fonts\\font_kodeo_mono_10_regular\\KodeMono-Regular.ttf",
   "usesSDF":false,
 }

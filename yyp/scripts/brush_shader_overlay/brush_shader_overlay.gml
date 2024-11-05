@@ -69,7 +69,7 @@ function brush_shader_overlay(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           title: {
             label: { 
-              text: "Transform treshold",
+              text: "Transform support grid treshold",
               enable: { key: "shader-overlay_use-transform-support-grid-treshold" },
             },  
             checkbox: { 
@@ -118,7 +118,7 @@ function brush_shader_overlay(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           title: {
             label: { 
-              text: "Transform support alpha",
+              text: "Transform support grid alpha",
               enable: { key: "shader-overlay_use-transform-support-grid-alpha" },
             },  
             checkbox: { 

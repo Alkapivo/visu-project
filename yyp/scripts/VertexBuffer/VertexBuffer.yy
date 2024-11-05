@@ -6,7 +6,7 @@
   "name":"VertexBuffer",
   "parent":{
     "name":"renderer",
-    "path":"folders/core/src/renderer.yy",
+    "path":"folders/io.alkapivo.core/src/renderer.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

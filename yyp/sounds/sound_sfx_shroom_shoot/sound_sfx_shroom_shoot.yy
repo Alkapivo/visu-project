@@ -13,7 +13,7 @@
   "name":"sound_sfx_shroom_shoot",
   "parent":{
     "name":"sfx",
-    "path":"folders/visu/resource/sound/sfx.yy",
+    "path":"folders/io.alkapivo.visu/resource/sound/sfx.yy",
   },
   "preload":false,
   "resourceType":"GMSound",

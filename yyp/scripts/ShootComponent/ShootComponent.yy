@@ -6,7 +6,7 @@
   "name":"ShootComponent",
   "parent":{
     "name":"component",
-    "path":"folders/visu/src/ecs/grid/component.yy",
+    "path":"folders/io.alkapivo.visu/src/ecs/grid/component.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

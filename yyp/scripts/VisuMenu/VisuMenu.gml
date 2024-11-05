@@ -318,7 +318,7 @@ function VisuMenu(_config = null) constructor {
           config: {
             layout: { type: UILayoutType.VERTICAL },
             label: { 
-              text: "Play",
+              text: "New game",
               callback: new BindIntent(function() {
                 var controller = Beans.get(BeanVisuController)
                 var menu = controller.menu
@@ -487,6 +487,7 @@ function VisuMenu(_config = null) constructor {
         audio: this.factoryOpenAudioSettingsMenuEvent,
         interface: this.factoryOpenInterfaceSettingsMenuEvent,
         controls: this.factoryOpenControlsMenuEvent,
+        developer: this.factoryOpenDeveloperMenuEvent,
         back: this.factoryOpenMainMenuEvent, 
       }
     )
@@ -582,114 +583,18 @@ function VisuMenu(_config = null) constructor {
           }
         },
         {
-          name: "settings_menu-button-input-entry_god-mode",
-          template: VisuComponents.get("menu-button-input-entry"),
-          layout: VisuLayouts.get("menu-button-input-entry"),
-          config: {
-            layout: { type: UILayoutType.VERTICAL },
-            label: { 
-              text: "God mode",
-              callback: new BindIntent(function() {
-                var value = Visu.settings.getValue("visu.god-mode")
-                Visu.settings.setValue("visu.god-mode", !value)
-                Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
-              }),
-              onMouseReleasedLeft: function() {
-                this.callback()
-              },
-            },
-            input: {
-              label: { text: "Enabled" },
-              callback: function() {
-                var value = Visu.settings.getValue("visu.god-mode")
-                Visu.settings.setValue("visu.god-mode", !value)
-                Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
-              },
-              updateCustom: function() {
-                this.label.text = Visu.settings.getValue("visu.god-mode") ? "Enabled" : "Disabled"
-              },
-              onMouseReleasedLeft: function() {
-                this.callback()
-              },
-            }
-          }
-        },
-        {
-          name: "settings_menu-button-input-entry_editor",
-          template: VisuComponents.get("menu-button-input-entry"),
-          layout: VisuLayouts.get("menu-button-input-entry"),
-          config: {
-            layout: { type: UILayoutType.VERTICAL },
-            label: { 
-              text: "Editor",
-              callback: function() {
-                Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
-                
-                if (Optional.is(Beans.get(BeanVisuEditorIO))) {
-                  Beans.kill(BeanVisuEditorIO)
-                } else {
-                  Beans.add(Beans.factory(BeanVisuEditorIO, GMServiceInstance, 
-                    Beans.get(BeanVisuController).layerId, new VisuEditorIO()))
-                }
-
-                if (Optional.is(Beans.get(BeanVisuEditorController))) {
-                  Beans.kill(BeanVisuEditorController)
-                } else {
-                  Beans.add(Beans.factory(BeanVisuEditorController, GMServiceInstance, 
-                    Beans.get(BeanVisuController).layerId, new VisuEditorController()))
-
-                  var editor = Beans.get(BeanVisuEditorController)
-                  if (Optional.is(editor)) {
-                    editor.send(new Event("open"))
-                  }
-                }
-              },
-              onMouseReleasedLeft: function() {
-                this.callback()
-              },
-            },
-            input: {
-              label: { text: "" },
-              updateCustom: function() {
-                this.label.text = Optional.is(Beans.get(BeanVisuEditorController)) ? "Enabled" : "Disabled"
-              },
-              callback: function() {
-                Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
-                
-                if (Optional.is(Beans.get(BeanVisuEditorIO))) {
-                  Beans.kill(BeanVisuEditorIO)
-                } else {
-                  Beans.add(Beans.factory(BeanVisuEditorIO, GMServiceInstance, 
-                    Beans.get(BeanVisuController).layerId, new VisuEditorIO()))
-                }
-
-                if (Optional.is(Beans.get(BeanVisuEditorController))) {
-                  Beans.kill(BeanVisuEditorController)
-                } else {
-                  Beans.add(Beans.factory(BeanVisuEditorController, GMServiceInstance, 
-                    Beans.get(BeanVisuController).layerId, new VisuEditorController()))
-
-                  var editor = Beans.get(BeanVisuEditorController)
-                  if (Optional.is(editor)) {
-                    editor.send(new Event("open"))
-                  }
-                }
-              },
-            }
-          }
-        },
-        {
-          name: "settings_menu-button-entry_restart",
+          name: "settings_menu-button-entry_developer",
           template: VisuComponents.get("menu-button-entry"),
           layout: VisuLayouts.get("menu-button-entry"),
           config: {
             layout: { type: UILayoutType.VERTICAL },
             label: { 
-              text: "Restart",
+              text: "Developer",
               callback: new BindIntent(function() {
-                Scene.open("scene_visu")
+                Beans.get(BeanVisuController).sfxService.play("menu-select-entry")
+                Beans.get(BeanVisuController).menu.send(Callable.run(this.callbackData))
               }),
-              callbackData: config,
+              callbackData: config.developer,
               onMouseReleasedLeft: function() {
                 this.callback()
               },
@@ -1485,6 +1390,242 @@ function VisuMenu(_config = null) constructor {
         },
         {
           name: "settings_menu-button-entry_back",
+          template: VisuComponents.get("menu-button-entry"),
+          layout: VisuLayouts.get("menu-button-entry"),
+          config: {
+            layout: { type: UILayoutType.VERTICAL },
+            label: { 
+              text: "Back",
+              callback: new BindIntent(function() {
+                Beans.get(BeanVisuController).menu.send(Callable.run(this.callbackData))
+                Beans.get(BeanVisuController).sfxService.play("menu-select-entry")
+              }),
+              callbackData: config.back,
+              onMouseReleasedLeft: function() {
+                this.callback()
+              },
+            },
+          }
+        }
+      ])
+    })
+
+    return event
+  }
+
+  ///@param {?Struct} [_config]
+  ///@return {Event}
+  factoryOpenDeveloperMenuEvent = function(_config = null) {
+    var config = Struct.appendUnique(
+      _config,
+      {
+        back: this.factoryOpenSettingsMenuEvent, 
+      }
+    )
+
+    var event = new Event("open").setData({
+      back: config.back,
+      layout: Beans.get(BeanVisuController).visuRenderer.layout,
+      title: {
+        name: "controls_title",
+        template: VisuComponents.get("menu-title"),
+        layout: VisuLayouts.get("menu-title"),
+        config: {
+          label: { 
+            text: "Developer",
+          },
+        },
+      },
+      content: new Array(Struct, [
+        {
+          name: "developer_menu-button-input-entry_god-mode",
+          template: VisuComponents.get("menu-button-input-entry"),
+          layout: VisuLayouts.get("menu-button-input-entry"),
+          config: {
+            layout: { type: UILayoutType.VERTICAL },
+            label: { 
+              text: "God mode",
+              callback: new BindIntent(function() {
+                var value = Visu.settings.getValue("visu.god-mode")
+                Visu.settings.setValue("visu.god-mode", !value)
+                Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
+              }),
+              onMouseReleasedLeft: function() {
+                this.callback()
+              },
+            },
+            input: {
+              label: { text: "Enabled" },
+              callback: function() {
+                var value = Visu.settings.getValue("visu.god-mode")
+                Visu.settings.setValue("visu.god-mode", !value)
+                Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
+              },
+              updateCustom: function() {
+                this.label.text = Visu.settings.getValue("visu.god-mode") ? "Enabled" : "Disabled"
+              },
+              onMouseReleasedLeft: function() {
+                this.callback()
+              },
+            }
+          }
+        },
+        {
+          name: "developer_menu-button-input-entry_editor",
+          template: VisuComponents.get("menu-button-input-entry"),
+          layout: VisuLayouts.get("menu-button-input-entry"),
+          config: {
+            layout: { type: UILayoutType.VERTICAL },
+            label: { 
+              text: "Editor",
+              callback: function() {
+                Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
+                
+                if (Optional.is(Beans.get(BeanVisuEditorIO))) {
+                  Beans.kill(BeanVisuEditorIO)
+                } else {
+                  Beans.add(Beans.factory(BeanVisuEditorIO, GMServiceInstance, 
+                    Beans.get(BeanVisuController).layerId, new VisuEditorIO()))
+                }
+
+                if (Optional.is(Beans.get(BeanVisuEditorController))) {
+                  Beans.kill(BeanVisuEditorController)
+                } else {
+                  Beans.add(Beans.factory(BeanVisuEditorController, GMServiceInstance, 
+                    Beans.get(BeanVisuController).layerId, new VisuEditorController()))
+
+                  var editor = Beans.get(BeanVisuEditorController)
+                  if (Optional.is(editor)) {
+                    editor.send(new Event("open"))
+                  }
+                }
+              },
+              onMouseReleasedLeft: function() {
+                this.callback()
+              },
+            },
+            input: {
+              label: { text: "" },
+              updateCustom: function() {
+                this.label.text = Optional.is(Beans.get(BeanVisuEditorController)) ? "Enabled" : "Disabled"
+              },
+              callback: function() {
+                Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
+                
+                if (Optional.is(Beans.get(BeanVisuEditorIO))) {
+                  Beans.kill(BeanVisuEditorIO)
+                } else {
+                  Beans.add(Beans.factory(BeanVisuEditorIO, GMServiceInstance, 
+                    Beans.get(BeanVisuController).layerId, new VisuEditorIO()))
+                }
+
+                if (Optional.is(Beans.get(BeanVisuEditorController))) {
+                  Beans.kill(BeanVisuEditorController)
+                } else {
+                  Beans.add(Beans.factory(BeanVisuEditorController, GMServiceInstance, 
+                    Beans.get(BeanVisuController).layerId, new VisuEditorController()))
+
+                  var editor = Beans.get(BeanVisuEditorController)
+                  if (Optional.is(editor)) {
+                    editor.send(new Event("open"))
+                  }
+                }
+              },
+            }
+          }
+        },
+        {
+          name: "developer_menu-button-input-entry_debug",
+          template: VisuComponents.get("menu-button-input-entry"),
+          layout: VisuLayouts.get("menu-button-input-entry"),
+          config: {
+            layout: { type: UILayoutType.VERTICAL },
+            label: { 
+              text: "Debug",
+              callback: new BindIntent(function() {
+                Core.debugOverlay(!is_debug_overlay_open())
+                Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
+              }),
+              onMouseReleasedLeft: function() {
+                this.callback()
+              },
+            },
+            input: {
+              label: { text: "Enabled" },
+              callback: function() {
+                Core.debugOverlay(!is_debug_overlay_open())
+                Beans.get(BeanVisuController).sfxService.play("menu-use-entry")
+              },
+              updateCustom: function() {
+                this.label.text = is_debug_overlay_open() ? "Enabled" : "Disabled"
+              },
+              onMouseReleasedLeft: function() {
+                this.callback()
+              },
+            }
+          }
+        },
+        {
+          name: "developer_menu-button-input-entry_ws",
+          template: VisuComponents.get("menu-button-input-entry"),
+          layout: VisuLayouts.get("menu-button-input-entry"),
+          config: {
+            layout: { type: UILayoutType.VERTICAL },
+            label: { 
+              text: "WebSocket",
+              callback: new BindIntent(function() {
+                var controller = Beans.get(BeanVisuController)
+                if (controller.server.isRunning()) {
+                  controller.server.free()
+                } else {
+                  controller.server.run()
+                }
+                controller.sfxService.play("menu-use-entry")
+              }),
+              onMouseReleasedLeft: function() {
+                this.callback()
+              },
+            },
+            input: {
+              label: { text: "Enabled" },
+              callback: function() {
+                var controller = Beans.get(BeanVisuController)
+                if (controller.server.isRunning()) {
+                  controller.server.free()
+                } else {
+                  controller.server.run()
+                }
+                controller.sfxService.play("menu-use-entry")
+              },
+              updateCustom: function() {
+                this.label.text = Beans.get(BeanVisuController).server.isRunning() ? "Enabled" : "Disabled"
+              },
+              onMouseReleasedLeft: function() {
+                this.callback()
+              },
+            }
+          }
+        },
+        {
+          name: "developer_menu-button-entry_restart",
+          template: VisuComponents.get("menu-button-entry"),
+          layout: VisuLayouts.get("menu-button-entry"),
+          config: {
+            layout: { type: UILayoutType.VERTICAL },
+            label: { 
+              text: "Restart",
+              callback: new BindIntent(function() {
+                Scene.open("scene_visu")
+              }),
+              callbackData: config,
+              onMouseReleasedLeft: function() {
+                this.callback()
+              },
+            },
+          }
+        },
+        {
+          name: "developer_menu-button-entry_back",
           template: VisuComponents.get("menu-button-entry"),
           layout: VisuLayouts.get("menu-button-entry"),
           config: {

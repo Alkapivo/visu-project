@@ -6,7 +6,7 @@
   "name":"EventDispatcherTest",
   "parent":{
     "name":"event",
-    "path":"folders/core/test/event.yy",
+    "path":"folders/io.alkapivo.core/test/event.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

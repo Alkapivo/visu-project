@@ -53,7 +53,8 @@ function LyricsRenderer() constructor {
 
         var line = lyrics.lines.get(index)
         var _x = lyrics.area.getX() // HAlign.LEFT by default
-        var _y = lyrics.area.getY() + (index * (lyrics.fontHeight / guiHeight)) // VAlign.TOP by default
+        var _y = lyrics.area.getY() + ((index - lineStartPointer)
+          * (lyrics.fontHeight / guiHeight)) // VAlign.TOP by default
         var text = index == linePointer ? String.copy(line, 0, floor(charPointer)) : line
         var color = lyrics.color
         var outline = lyrics.outline
@@ -63,13 +64,16 @@ function LyricsRenderer() constructor {
         } else if (lyrics.align.h == HAlign.RIGHT) {
           _x = _x + (lyrics.area.getWidth())
         }
+
         if (lyrics.align.v == VAlign.BOTTOM) {
-          _y = lyrics.area.getY() + lyrics.area.getHeight() - (index * (lyrics.fontHeight / guiHeight))
+          _y = lyrics.area.getY() + lyrics.area.getHeight()  - ((index - lineStartPointer)
+            * (lyrics.fontHeight / guiHeight))
         }
         
         _x = guiX + (_x * guiWidth)
         _y = guiY + (_y * guiHeight)
-        GPU.render.text(_x, _y, text, color, outline, alpha, lyrics.font, lyrics.align.h, lyrics.align.v)
+
+        GPU.render.text(_x, _y, text, color, outline, alpha, lyrics.font, lyrics.align.h, lyrics.align.v, (1.0 - alpha) * 8.0)
       }
     }, canvas)
 

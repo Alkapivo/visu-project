@@ -6,7 +6,7 @@
   "name":"FileService",
   "parent":{
     "name":"file",
-    "path":"folders/core/src/service/file.yy",
+    "path":"folders/io.alkapivo.core/src/service/file.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

@@ -6,7 +6,7 @@
   "name":"Event",
   "parent":{
     "name":"event",
-    "path":"folders/core/src/util/event.yy",
+    "path":"folders/io.alkapivo.core/src/util/event.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

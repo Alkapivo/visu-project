@@ -46,7 +46,7 @@ function brush_grid_coin(json = null) {
         type: Number,
         value: Struct.getDefault(json, "grid-coin_spawn-y", 0.0),
         passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), -2.5, 1.5) 
+          return clamp(NumberUtil.parse(value, this.value), -4.5, 3.5) 
         },
       },
       "grid-coin_channels-spawn-y": {
@@ -289,8 +289,8 @@ function brush_grid_coin(json = null) {
             enable: { key: "grid-coin_use-spawn-y" },
           },
           slider: { 
-            minValue: -2.5,
-            maxValue: 1.5,
+            minValue: -4.5,
+            maxValue: 3.5,
             store: { key: "grid-coin_spawn-y" },
             enable: { key: "grid-coin_use-spawn-y" },
             customKey: "grid-coin_channels-spawn-y",

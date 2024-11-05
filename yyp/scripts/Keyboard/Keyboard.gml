@@ -127,6 +127,12 @@ function Keyboard(json) constructor {
   })
 
   ///@param {String} name
+  ///@return {?KeyboardKey}
+  getKey = function(name) {
+    return Struct.getIfType(keys, name, KeyboardKey)
+  }
+
+  ///@param {String} name
   ///@param {Number|String} key
   ///@return {Keyboard}
   setKey = function(name, key) {
