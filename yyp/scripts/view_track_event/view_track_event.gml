@@ -5,6 +5,15 @@
 global.__view_track_event = {
   "brush_view_wallpaper": function(data) {
     var controller = Beans.get(BeanVisuController)
+    if (Struct.get(data, "view-wallpaper_clear-color") == true) {
+      controller.gridService.executor.tasks.forEach(function(task, iterator, type) {
+        Core.print("type", type, "task.name", task.name, "task.type", task.state.get("type"))
+        if (task.name == "fade-color" && task.state.get("type") == type) {
+          task.state.set("stage", "fade-out")
+        }
+      }, Struct.get(data, "view-wallpaper_type"))
+    }
+
     if (Struct.get(data, "view-wallpaper_use-color") == true) {
       controller.gridService.send(new Event("fade-color", {
         color: ColorUtil.fromHex(Struct.get(data, "view-wallpaper_color")),
@@ -21,9 +30,9 @@ global.__view_track_event = {
       }))
     }
 
-    if (Struct.get(data, "view-wallpaper_clear-color") == true) {
+    if (Struct.get(data, "view-wallpaper_clear-texture") == true) {
       controller.gridService.executor.tasks.forEach(function(task, iterator, type) {
-        if (task.name == "fade-color" && task.state.get("type") == type) {
+        if (task.name == "fade-sprite" && task.state.get("type") == type) {
           task.state.set("stage", "fade-out")
         }
       }, Struct.get(data, "view-wallpaper_type"))
@@ -35,6 +44,12 @@ global.__view_track_event = {
       if (animate) {
         Struct.set(sprite, "animate", animate)
         Struct.set(sprite, "speed", Struct.get(data, "view-wallpaper_texture-speed"))
+      }
+
+      if (Struct.get(data, "view-wallpaper_use-texture-blend")) {
+        Struct.set(sprite, "blend", Struct.get(data, "view-wallpaper_texture-blend"))
+      } else {
+        Struct.remove(sprite, "blend")
       }
 
       controller.gridService.send(new Event("fade-sprite", {
@@ -66,14 +81,6 @@ global.__view_track_event = {
           : null,
         executor: controller.gridService.executor,
       }))
-    }
-
-    if (Struct.get(data, "view-wallpaper_clear-texture") == true) {
-      controller.gridService.executor.tasks.forEach(function(task, iterator, type) {
-        if (task.name == "fade-sprite" && task.state.get("type") == type) {
-          task.state.set("stage", "fade-out")
-        }
-      }, Struct.get(data, "view-wallpaper_type"))
     }
   },
   "brush_view_camera": function(data) {
@@ -382,6 +389,10 @@ global.__view_track_event = {
     if (Struct.get(data, "view-config_use-render-HUD")) {
       controller.visuRenderer.hudRenderer.enabled = Struct
         .get(data, "view-config_render-HUD")
+    }
+
+    if (Struct.get(data, "view-config_clear-lyrics")) {
+      controller.lyricsService.send(new Event("clear-lyrics"))
     }
   },
 }

@@ -11,7 +11,7 @@ global.__GRID_SERVICE_PIXEL_HEIGHT = 2048
 
 
 ///@type {Number}
-global.__GRID_ITEM_FRUSTUM_RANGE = 5
+global.__GRID_ITEM_FRUSTUM_RANGE = 8
 #macro GRID_ITEM_FRUSTUM_RANGE global.__GRID_ITEM_FRUSTUM_RANGE
 
 
@@ -175,9 +175,7 @@ function GridItemChunkService(_size) constructor {
 
   ///@return {GridItemChunkService}
   clear = function() {
-    this.chunks.forEach(function(chunk, key) {
-      chunk.clear()
-    })
+    this.chunks.clear()
     return this
   }
 }

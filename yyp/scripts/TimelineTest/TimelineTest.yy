@@ -6,7 +6,7 @@
   "name":"TimelineTest",
   "parent":{
     "name":"test",
-    "path":"folders/visu/test.yy",
+    "path":"folders/io.alkapivo.visu/test.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

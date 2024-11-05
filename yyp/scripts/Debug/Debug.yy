@@ -6,7 +6,7 @@
   "name":"Debug",
   "parent":{
     "name":"util",
-    "path":"folders/core/src/util.yy",
+    "path":"folders/io.alkapivo.core/src/util.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

@@ -4,7 +4,7 @@
   "name":"shader_sincos_3d",
   "parent":{
     "name":"shadertoy",
-    "path":"folders/core/resource/shader/shadertoy.yy",
+    "path":"folders/io.alkapivo.core/resource/shader/shadertoy.yy",
   },
   "resourceType":"GMShader",
   "resourceVersion":"2.0",

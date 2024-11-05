@@ -26,7 +26,7 @@
   "origin":4,
   "parent":{
     "name":"particle",
-    "path":"folders/core/resource/texture/particle.yy",
+    "path":"folders/io.alkapivo.core/resource/texture/particle.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",

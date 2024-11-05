@@ -364,20 +364,6 @@ function brush_view_wallpaper(json = null) {
         },
       },
       {
-        name: "view-wallpaper_clear-color",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Remove color" },
-          checkbox: { 
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "view-wallpaper_clear-color" },
-          },
-        },
-      },
-      {
         name: "view-wallpaper_texture",
         template: VEComponents.get("texture-field"),
         layout: VELayouts.get("texture-field"),
@@ -473,27 +459,13 @@ function brush_view_wallpaper(json = null) {
         },
       },
       {
-        name: "view-wallpaper_clear-texture",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Remove texture" },
-          checkbox: { 
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "view-wallpaper_clear-texture" },
-          },
-        },
-      },
-      {
         name: "view-wallpaper_use-texture-speed",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Texture speed",
+            text: "Animation speed",
             enable: { key: "view-wallpaper_use-texture-speed" },
           },
           checkbox: { 
@@ -595,6 +567,34 @@ function brush_view_wallpaper(json = null) {
         },
       },
       {
+        name: "view-wallpaper_clear-color",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "Remove color" },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "view-wallpaper_clear-color" },
+          },
+        },
+      },
+      {
+        name: "view-wallpaper_clear-texture",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "Remove texture" },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "view-wallpaper_clear-texture" },
+          },
+        },
+      },
+      {
         name: "view-wallpaper_tiled",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
@@ -643,6 +643,105 @@ function brush_view_wallpaper(json = null) {
               return this
             },
           }
+        },
+      },
+      
+      {
+        name: "view-wallpaper_speed",  
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "Speed" },
+          field: { store: { key: "view-wallpaper_speed" } },
+        },
+      },
+      {
+        name: "view-wallpaper_angle",  
+        template: VEComponents.get("numeric-slider-field"),
+        layout: VELayouts.get("numeric-slider-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Angle",
+          },
+          field: { 
+            store: { key: "view-wallpaper_angle" },
+          },
+          slider: { 
+            minValue: 0.0,
+            maxValue: 360.0,
+            store: { key: "view-wallpaper_angle" },
+          },
+        },
+      },
+      {
+        name: "view-wallpaper_xScale",  
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "xScale" },
+          field: { store: { key: "view-wallpaper_xScale" } },
+        },
+      },
+      {
+        name: "view-wallpaper_yScale",  
+        template: VEComponents.get("text-field"),
+        layout: VELayouts.get("text-field"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "yScale" },
+          field: { store: { key: "view-wallpaper_yScale" } },
+        },
+      }, 
+      {
+        name: "view-wallpaper_speed-transform",
+        template: VEComponents.get("transform-numeric-property"),
+        layout: VELayouts.get("transform-numeric-property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          title: {
+            label: { 
+              text: "Transform speed",
+              enable: { key: "view-wallpaper_use-speed-transform" },
+            },  
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "view-wallpaper_use-speed-transform"}
+            },
+          },
+          target: {
+            label: {
+              text: "Target",
+              enable: { key: "view-wallpaper_use-speed-transform" },
+            },
+            field: {
+              store: { key: "view-wallpaper_speed-transform" },
+              enable: { key: "view-wallpaper_use-speed-transform" },
+            },
+          },
+          factor: {
+            label: {
+              text: "Factor",
+              enable: { key: "view-wallpaper_use-speed-transform" },
+            },
+            field: {
+              store: { key: "view-wallpaper_speed-transform" },
+              enable: { key: "view-wallpaper_use-speed-transform" },
+            },
+          },
+          increment: {
+            label: { 
+              text: "Increase",
+              enable: { key: "view-wallpaper_use-speed-transform" },
+            },
+            field: { 
+              store: { key: "view-wallpaper_speed-transform" },
+              enable: { key: "view-wallpaper_use-speed-transform" },
+            },
+          },
         },
       },
       {
@@ -695,84 +794,6 @@ function brush_view_wallpaper(json = null) {
         },
       },
       {
-        name: "view-wallpaper_angle",  
-        template: VEComponents.get("numeric-slider-field"),
-        layout: VELayouts.get("numeric-slider-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Angle",
-          },
-          field: { 
-            store: { key: "view-wallpaper_angle" },
-          },
-          slider: { 
-            minValue: 0.0,
-            maxValue: 360.0,
-            store: { key: "view-wallpaper_angle" },
-          },
-        },
-      },
-      {
-        name: "view-wallpaper_speed-transform",
-        template: VEComponents.get("transform-numeric-property"),
-        layout: VELayouts.get("transform-numeric-property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          title: {
-            label: { 
-              text: "Transform speed",
-              enable: { key: "view-wallpaper_use-speed-transform" },
-            },  
-            checkbox: { 
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "view-wallpaper_use-speed-transform"}
-            },
-          },
-          target: {
-            label: {
-              text: "Target",
-              enable: { key: "view-wallpaper_use-speed-transform" },
-            },
-            field: {
-              store: { key: "view-wallpaper_speed-transform" },
-              enable: { key: "view-wallpaper_use-speed-transform" },
-            },
-          },
-          factor: {
-            label: {
-              text: "Factor",
-              enable: { key: "view-wallpaper_use-speed-transform" },
-            },
-            field: {
-              store: { key: "view-wallpaper_speed-transform" },
-              enable: { key: "view-wallpaper_use-speed-transform" },
-            },
-          },
-          increment: {
-            label: { 
-              text: "Increase",
-              enable: { key: "view-wallpaper_use-speed-transform" },
-            },
-            field: { 
-              store: { key: "view-wallpaper_speed-transform" },
-              enable: { key: "view-wallpaper_use-speed-transform" },
-            },
-          },
-        },
-      },
-      {
-        name: "view-wallpaper_speed",  
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Speed" },
-          field: { store: { key: "view-wallpaper_speed" } },
-        },
-      },
-      {
         name: "view-wallpaper_xScale-transform",
         template: VEComponents.get("transform-numeric-property"),
         layout: VELayouts.get("transform-numeric-property"),
@@ -822,16 +843,6 @@ function brush_view_wallpaper(json = null) {
         },
       },
       {
-        name: "view-wallpaper_xScale",  
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "xScale" },
-          field: { store: { key: "view-wallpaper_xScale" } },
-        },
-      },
-      {
         name: "view-wallpaper_yScale-transform",
         template: VEComponents.get("transform-numeric-property"),
         layout: VELayouts.get("transform-numeric-property"),
@@ -878,16 +889,6 @@ function brush_view_wallpaper(json = null) {
               enable: { key: "view-wallpaper_use-yScale-transform" },
             },
           },
-        },
-      },
-      {
-        name: "view-wallpaper_yScale",  
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "yScale" },
-          field: { store: { key: "view-wallpaper_yScale" } },
         },
       },
     ]),

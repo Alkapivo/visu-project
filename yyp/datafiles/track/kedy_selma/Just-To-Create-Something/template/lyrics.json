@@ -1,0 +1,35 @@
+{
+  "model":"Collection<io.alkapivo.visu.service.lyrics.LyricsTemplate>",
+  "version":"1",
+  "data":{
+    "lyrics_alkapivo":{
+      "lines":[
+        "Alkapivo",
+        "2024"
+      ]
+    },
+    "lyrics_kedy_selma_jtcs_poem":{
+      "lines":[
+        "If it was easier,",
+        "it wouldn't feel this rewarding,",
+        "when somebody finally notice.",
+        "I struggle this much,",
+        "just to create something.",
+        "",
+        "kedy_selma"
+      ]
+    },
+    "lyrics_kedy_selma":{
+      "lines":[
+        "kedy_selma",
+        ""
+      ]
+    },
+    "lyrics_kedy_selma_jtcs":{
+      "lines":[
+        "",
+        "Just To Create Something"
+      ]
+    }
+  }
+}

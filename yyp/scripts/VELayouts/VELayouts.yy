@@ -6,7 +6,7 @@
   "name":"VELayouts",
   "parent":{
     "name":"ui",
-    "path":"folders/visu/src/editor/ui.yy",
+    "path":"folders/io.alkapivo.visu/src/editor/ui.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

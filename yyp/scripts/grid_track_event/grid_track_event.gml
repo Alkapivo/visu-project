@@ -323,6 +323,18 @@ global.__grid_track_event = {
         })
       }))
     }
+
+    if (Struct.get(data, "grid-config_clear-player")) {
+      controller.playerService.send(new Event("clear-player"))
+    }
+
+    if (Struct.get(data, "grid-config_clear-bullets")) {
+      controller.bulletService.send(new Event("clear-bullets"))
+    }
+
+    if (Struct.get(data, "grid-config_clear-coins")) {
+      controller.coinService.send(new Event("clear-coins"))
+    }
   },
   "brush_grid_particle": function(data) {
     var particleService = Beans.get(BeanVisuController).particleService

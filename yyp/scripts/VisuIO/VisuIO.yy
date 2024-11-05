@@ -6,7 +6,7 @@
   "name":"VisuIO",
   "parent":{
     "name":"src",
-    "path":"folders/visu/src.yy",
+    "path":"folders/io.alkapivo.visu/src.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

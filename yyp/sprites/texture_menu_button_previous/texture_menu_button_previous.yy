@@ -26,7 +26,7 @@
   "origin":0,
   "parent":{
     "name":"menu",
-    "path":"folders/visu/resource/texture/ui/menu.yy",
+    "path":"folders/io.alkapivo.visu/resource/texture/ui/menu.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",

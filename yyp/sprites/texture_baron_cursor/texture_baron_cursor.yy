@@ -26,7 +26,7 @@
   "origin":9,
   "parent":{
     "name":"baron",
-    "path":"folders/core/resource/texture/baron.yy",
+    "path":"folders/io.alkapivo.core/resource/texture/baron.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",

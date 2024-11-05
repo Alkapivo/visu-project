@@ -37,7 +37,7 @@
   "origin":9,
   "parent":{
     "name":"icon",
-    "path":"folders/visu/resource/texture/editor/icon.yy",
+    "path":"folders/io.alkapivo.visu/resource/texture/editor/icon.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",

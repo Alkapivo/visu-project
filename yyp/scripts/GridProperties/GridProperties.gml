@@ -19,10 +19,6 @@ function GridProperties(config = {}) constructor {
   speed = Assert.isType(Struct
     .getDefault(config, "properties.speed", (FRAME_MS / 4) * 1000), Number)
 
-  ///@type {Color}
-  backgroundColor = Assert.isType(ColorUtil.fromHex(Struct
-    .getDefault(config, "properties.backgroundColor", "#1e1e1e")), Color)
-
   #region channels
   ///@type {Number}
   channels = Assert.isType(Struct

@@ -6,7 +6,7 @@
   "name":"PlayerService",
   "parent":{
     "name":"player",
-    "path":"folders/visu/src/service/player.yy",
+    "path":"folders/io.alkapivo.visu/src/service/player.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

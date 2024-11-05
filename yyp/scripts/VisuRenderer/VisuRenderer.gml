@@ -63,6 +63,10 @@ function VisuRenderer() constructor {
   font = new Font(font_kodeo_mono_18_bold)
 
   ///@private
+  ///@type {Boolean}
+  renderEditorMode = Core.getProperty("visu.editor.renderEditorMode", false)
+
+  ///@private
   ///@return {VisuRenderer}
   init = function() {
     return this
@@ -220,7 +224,8 @@ function VisuRenderer() constructor {
       if (Visu.settings.getValue("visu.interface.render-hud")) {
         this.hudRenderer.renderGUI(_layout)
       }
-      if (editor != null && !editor.renderUI) {
+
+      if (this.renderEditorMode && editor != null && !editor.renderUI) {
         var _x = _layout.x()
         var _y = _layout.y()
         var _width = _layout.width()

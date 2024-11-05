@@ -23,61 +23,17 @@ function VisuNewProjectForm(json = null) constructor {
       type: Optional.of(String),
       value: Struct.getDefault(json, "file-video", ""),
     },
-    "use-shader": {
+    "use-include-templates": {
       type: Boolean,
-      value: Struct.getDefault(json, "use-shader", false),
+      value: Core.isType(track, VisuTrack),
     },
-    "shader": {
-      type: Optional.of(String),
-      value: Struct.getDefault(json, "shader", track != null ? $"{track.path}{track.shader}" : ""),
-    },
-    "use-shroom": {
+    "include-templates": {
       type: Boolean,
-      value: Struct.getDefault(json, "use-shroom", false),
+      value: Struct.getDefault(json, "include-templates", false),
     },
-    "shroom": {
-      type: Optional.of(String),
-      value: Struct.getDefault(json, "shroom", track != null ? $"{track.path}{track.shroom}" : ""),
-    },
-    "use-bullet": {
+    "use-include-brushes": {
       type: Boolean,
-      value: Struct.getDefault(json, "use-bullet", false),
-    },
-    "bullet": {
-      type: Optional.of(String),
-      value: Struct.getDefault(json, "bullet", track != null ? $"{track.path}{track.bullet}" : ""),
-    },
-    "use-coin": {
-      type: Boolean,
-      value: Struct.getDefault(json, "use-coin", false),
-    },
-    "coin": {
-      type: Optional.of(String),
-      value: Struct.getDefault(json, "coin", track != null ? $"{track.path}{track.coin}" : ""),
-    },
-    "use-lyrics": {
-      type: Boolean,
-      value: Struct.getDefault(json, "use-lyrics", false),
-    },
-    "lyrics": {
-      type: Optional.of(String),
-      value: Struct.getDefault(json, "lyrics", track != null ? $"{track.path}{track.lyrics}" : ""),
-    },
-    "use-particle": {
-      type: Boolean,
-      value: Struct.getDefault(json, "use-particle", false),
-    },
-    "particle": {
-      type: Optional.of(String),
-      value: Struct.getDefault(json, "particle", track != null ? $"{track.path}{track.particle}" : ""),
-    },
-    "use-texture": {
-      type: Boolean,
-      value: Struct.getDefault(json, "use-texture", false),
-    },
-    "texture": {
-      type: Optional.of(String),
-      value: Struct.getDefault(json, "texture", track != null ? $"{track.path}{track.texture}" : ""),
+      value: Core.isType(track, VisuTrack),
     },
     "include-brushes": {
       type: Boolean,
@@ -98,8 +54,8 @@ function VisuNewProjectForm(json = null) constructor {
     },
     {
       name: "project-name",
-      template: VEComponents.get("text-field-checkbox"),
-      layout: VELayouts.get("text-field-checkbox"),
+      template: VEComponents.get("text-field"),
+      layout: VELayouts.get("text-field"),
       config: { 
         layout: { type: UILayoutType.VERTICAL },
         label: { text: "Name" },
@@ -108,8 +64,8 @@ function VisuNewProjectForm(json = null) constructor {
     },
     {
       name: "file-audio",  
-      template: VEComponents.get("text-field-button-checkbox"),
-      layout: VELayouts.get("text-field-button-checkbox"),
+      template: VEComponents.get("text-field-button"),
+      layout: VELayouts.get("text-field-button"),
       config: { 
         layout: { type: UILayoutType.VERTICAL },
         label: { text: "Audio" },
@@ -152,16 +108,10 @@ function VisuNewProjectForm(json = null) constructor {
     },
     {
       name: "file-video",  
-      template: VEComponents.get("text-field-button-checkbox"),
-      layout: VELayouts.get("text-field-button-checkbox"),
+      template: VEComponents.get("text-field-button"),
+      layout: VELayouts.get("text-field-button"),
       config: { 
         layout: { type: UILayoutType.VERTICAL },
-        checkbox: { 
-          store: { key: "use-file-video" },
-          spriteOn: { name: "visu_texture_checkbox_switch_on" },
-          spriteOff: { name: "visu_texture_checkbox_switch_off" },
-          
-        },
         label: { 
           text: "Video",
           enable: { key: "use-file-video" },
@@ -209,422 +159,57 @@ function VisuNewProjectForm(json = null) constructor {
       },
     },
     {
-      name: "shader",  
-      template: VEComponents.get("text-field-button-checkbox"),
-      layout: VELayouts.get("text-field-button-checkbox"),
+      name: "use-file-video",
+      template: VEComponents.get("property"),
+      layout: VELayouts.get("property"),
       config: { 
         layout: { type: UILayoutType.VERTICAL },
-        checkbox: { 
-          store: { key: "use-shader" },
-          spriteOn: { name: "visu_texture_checkbox_switch_on" },
-          spriteOff: { name: "visu_texture_checkbox_switch_off" },
-          
-        },
         label: { 
-          text: "Shaders",
-          enable: { key: "use-shader" },
+          text: "Use video",
+          enable: { key: "use-file-video" },
         },
-        field: { 
-          read_only: true,
-          updateCustom: function() {
-            var text = this.context.state.get("store").getValue("shader")
-            if (Core.isType(text, String)) {
-              this.textField.setText(FileUtil.getFilenameFromPath(text))
-            } else {
-              this.textField.setText("")
-            }
-          },
-          enable: { key: "use-shader"},
-        },
-        button: { 
-          label: { text: "Open" },
-          enable: { key: "use-shader"},
-          callback: function() {
-            var path = FileUtil.getPathToOpenWithDialog({
-              description: "JSON file",
-              extension: "json",
-            })
-            if (!FileUtil.fileExists(path)) {
-              return
-            }
-
-            this.context.state.get("store")
-              .get("shader")
-              .set(path)
-          },
-          colorHoverOver: VETheme.color.accent,
-          colorHoverOut: VETheme.color.accentShadow,
-          onMouseHoverOver: function(event) {
-            if (!this.enable.value) {
-              return 
-            }
-            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
-          },
-          onMouseHoverOut: function(event) {
-            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
-          },
+        checkbox: { 
+          store: { key: "use-file-video" },
+          spriteOn: { name: "visu_texture_checkbox_on" },
+          spriteOff: { name: "visu_texture_checkbox_off" },
+          scaleToFillStretched: false,
         },
       },
     },
     {
-      name: "shroom",  
-      template: VEComponents.get("text-field-button-checkbox"),
-      layout: VELayouts.get("text-field-button-checkbox"),
+      name: "include-templates",
+      template: VEComponents.get("property"),
+      layout: VELayouts.get("property"),
       config: { 
         layout: { type: UILayoutType.VERTICAL },
-        checkbox: { 
-          store: { key: "use-shroom" },
-          spriteOn: { name: "visu_texture_checkbox_switch_on" },
-          spriteOff: { name: "visu_texture_checkbox_switch_off" },
-          
-        },
         label: { 
-          text: "Shrooms",
-          enable: { key: "use-shroom" },
+          text: "Include templates",
+          enable: { key: "use-include-templates"},
         },
-        field: { 
-          read_only: true,
-          updateCustom: function() {
-            var text = this.context.state.get("store").getValue("shroom")
-            if (Core.isType(text, String)) {
-              this.textField.setText(FileUtil.getFilenameFromPath(text))
-            } else {
-              this.textField.setText("")
-            }
-          },
-          enable: { key: "use-shroom"},
-        },
-        button: { 
-          label: { text: "Open" },
-          enable: { key: "use-shroom"},
-          callback: function() {
-            var path = FileUtil.getPathToOpenWithDialog({
-              description: "JSON file",
-              extension: "json",
-            })
-            if (!FileUtil.fileExists(path)) {
-              return
-            }
-
-            this.context.state.get("store")
-              .get("shroom")
-              .set(path)
-          },
-          colorHoverOver: VETheme.color.accent,
-          colorHoverOut: VETheme.color.accentShadow,
-          onMouseHoverOver: function(event) {
-            if (!this.enable.value) {
-              return 
-            }
-            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
-          },
-          onMouseHoverOut: function(event) {
-            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
-          },
-        },
-      },
-    },
-    {
-      name: "bullet",  
-      template: VEComponents.get("text-field-button-checkbox"),
-      layout: VELayouts.get("text-field-button-checkbox"),
-      config: { 
-        layout: { type: UILayoutType.VERTICAL },
         checkbox: { 
-          store: { key: "use-bullet" },
-          spriteOn: { name: "visu_texture_checkbox_switch_on" },
-          spriteOff: { name: "visu_texture_checkbox_switch_off" },
-          
-        },
-        label: { 
-          text: "Bullets",
-          enable: { key: "use-bullet" },
-        },
-        field: { 
-          read_only: true,
-          updateCustom: function() {
-            var text = this.context.state.get("store").getValue("bullet")
-            if (Core.isType(text, String)) {
-              this.textField.setText(FileUtil.getFilenameFromPath(text))
-            } else {
-              this.textField.setText("")
-            }
-          },
-          enable: { key: "use-bullet"},
-        },
-        button: { 
-          label: { text: "Open" },
-          enable: { key: "use-bullet"},
-          callback: function() {
-            var path = FileUtil.getPathToOpenWithDialog({
-              description: "JSON file",
-              extension: "json",
-            })
-            if (!FileUtil.fileExists(path)) {
-              return
-            }
-
-            this.context.state.get("store")
-              .get("bullet")
-              .set(path)
-          },
-          colorHoverOver: VETheme.color.accent,
-          colorHoverOut: VETheme.color.accentShadow,
-          onMouseHoverOver: function(event) {
-            if (!this.enable.value) {
-              return 
-            }
-            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
-          },
-          onMouseHoverOut: function(event) {
-            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
-          },
-        },
-      },
-    },
-    {
-      name: "coin",  
-      template: VEComponents.get("text-field-button-checkbox"),
-      layout: VELayouts.get("text-field-button-checkbox"),
-      config: { 
-        layout: { type: UILayoutType.VERTICAL },
-        checkbox: { 
-          store: { key: "use-coin" },
-          spriteOn: { name: "visu_texture_checkbox_switch_on" },
-          spriteOff: { name: "visu_texture_checkbox_switch_off" },
-          
-        },
-        label: { 
-          text: "Coins",
-          enable: { key: "use-coin" },
-        },
-        field: { 
-          read_only: true,
-          updateCustom: function() {
-            var text = this.context.state.get("store").getValue("coin")
-            if (Core.isType(text, String)) {
-              this.textField.setText(FileUtil.getFilenameFromPath(text))
-            } else {
-              this.textField.setText("")
-            }
-          },
-          enable: { key: "use-coin"},
-        },
-        button: { 
-          label: { text: "Open" },
-          enable: { key: "use-coin"},
-          callback: function() {
-            var path = FileUtil.getPathToOpenWithDialog({
-              description: "JSON file",
-              extension: "json",
-            })
-            if (!FileUtil.fileExists(path)) {
-              return
-            }
-
-            this.context.state.get("store")
-              .get("coin")
-              .set(path)
-          },
-          colorHoverOver: VETheme.color.accent,
-          colorHoverOut: VETheme.color.accentShadow,
-          onMouseHoverOver: function(event) {
-            if (!this.enable.value) {
-              return 
-            }
-            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
-          },
-          onMouseHoverOut: function(event) {
-            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
-          },
-        },
-      },
-    },
-    {
-      name: "lyrics",  
-      template: VEComponents.get("text-field-button-checkbox"),
-      layout: VELayouts.get("text-field-button-checkbox"),
-      config: { 
-        layout: { type: UILayoutType.VERTICAL },
-        checkbox: { 
-          store: { key: "use-lyrics" },
-          spriteOn: { name: "visu_texture_checkbox_switch_on" },
-          spriteOff: { name: "visu_texture_checkbox_switch_off" },
-          
-        },
-        label: { 
-          text: "Lyrics",
-          enable: { key: "use-lyrics" },
-        },
-        field: { 
-          read_only: true,
-          updateCustom: function() {
-            var text = this.context.state.get("store").getValue("lyrics")
-            if (Core.isType(text, String)) {
-              this.textField.setText(FileUtil.getFilenameFromPath(text))
-            } else {
-              this.textField.setText("")
-            }
-          },
-          enable: { key: "use-lyrics"},
-        },
-        button: { 
-          label: { text: "Open" },
-          enable: { key: "use-lyrics"},
-          callback: function() {
-            var path = FileUtil.getPathToOpenWithDialog({
-              description: "JSON file",
-              extension: "json",
-            })
-            if (!FileUtil.fileExists(path)) {
-              return
-            }
-
-            this.context.state.get("store")
-              .get("lyrics")
-              .set(path)
-          },
-          colorHoverOver: VETheme.color.accent,
-          colorHoverOut: VETheme.color.accentShadow,
-          onMouseHoverOver: function(event) {
-            if (!this.enable.value) {
-              return 
-            }
-            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
-          },
-          onMouseHoverOut: function(event) {
-            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
-          },
-        },
-      },
-    },
-    {
-      name: "particle",  
-      template: VEComponents.get("text-field-button-checkbox"),
-      layout: VELayouts.get("text-field-button-checkbox"),
-      config: { 
-        layout: { type: UILayoutType.VERTICAL },
-        checkbox: { 
-          store: { key: "use-particle" },
-          spriteOn: { name: "visu_texture_checkbox_switch_on" },
-          spriteOff: { name: "visu_texture_checkbox_switch_off" },
-          
-        },
-        label: { 
-          text: "Particles",
-          enable: { key: "use-particle" },
-        },
-        field: { 
-          read_only: true,
-          updateCustom: function() {
-            var text = this.context.state.get("store").getValue("particle")
-            if (Core.isType(text, String)) {
-              this.textField.setText(FileUtil.getFilenameFromPath(text))
-            } else {
-              this.textField.setText("")
-            }
-          },
-          enable: { key: "use-particle"},
-        },
-        button: { 
-          label: { text: "Open" },
-          enable: { key: "use-particle"},
-          callback: function() {
-            var path = FileUtil.getPathToOpenWithDialog({
-              description: "JSON file",
-              extension: "json",
-            })
-            if (!FileUtil.fileExists(path)) {
-              return
-            }
-
-            this.context.state.get("store")
-              .get("particle")
-              .set(path)
-          },
-          colorHoverOver: VETheme.color.accent,
-          colorHoverOut: VETheme.color.accentShadow,
-          onMouseHoverOver: function(event) {
-            if (!this.enable.value) {
-              return 
-            }
-            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
-          },
-          onMouseHoverOut: function(event) {
-            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
-          },
-        },
-      },
-    },
-    {
-      name: "texture",  
-      template: VEComponents.get("text-field-button-checkbox"),
-      layout: VELayouts.get("text-field-button-checkbox"),
-      config: { 
-        layout: { type: UILayoutType.VERTICAL },
-        checkbox: { 
-          store: { key: "use-texture" },
-          spriteOn: { name: "visu_texture_checkbox_switch_on" },
-          spriteOff: { name: "visu_texture_checkbox_switch_off" },
-          
-        },
-        label: { 
-          text: "Textures",
-          enable: { key: "use-texture" },
-        },
-        field: { 
-          read_only: true,
-          updateCustom: function() {
-            var text = this.context.state.get("store").getValue("texture")
-            if (Core.isType(text, String)) {
-              this.textField.setText(FileUtil.getFilenameFromPath(text))
-            } else {
-              this.textField.setText("")
-            }
-          },
-          enable: { key: "use-texture"},
-        },
-        button: { 
-          label: { text: "Open" },
-          enable: { key: "use-texture"},
-          callback: function() {
-            var path = FileUtil.getPathToOpenWithDialog({
-              description: "JSON file",
-              extension: "json",
-            })
-            if (!FileUtil.fileExists(path)) {
-              return
-            }
-
-            this.context.state.get("store")
-              .get("texture")
-              .set(path)
-          },
-          colorHoverOver: VETheme.color.accent,
-          colorHoverOut: VETheme.color.accentShadow,
-          onMouseHoverOver: function(event) {
-            if (!this.enable.value) {
-              return 
-            }
-            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
-          },
-          onMouseHoverOut: function(event) {
-            this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
-          },
+          store: { key: "include-templates" },
+          enable: { key: "use-include-templates"},
+          spriteOn: { name: "visu_texture_checkbox_on" },
+          spriteOff: { name: "visu_texture_checkbox_off" },
+          scaleToFillStretched: false,
         },
       },
     },
     {
       name: "include-brushes",
-      template: VEComponents.get("boolean-field"),
-      layout: VELayouts.get("text-field-checkbox"),
+      template: VEComponents.get("property"),
+      layout: VELayouts.get("property"),
       config: { 
         layout: { type: UILayoutType.VERTICAL },
-        label: { text: "Include brushes" },
-        field: { 
+        label: { 
+          text: "Include brushes",
+          enable: { key: "use-include-brushes"},
+        },
+        checkbox: {
           store: { key: "include-brushes" },
-          spriteOn: { name: "visu_texture_checkbox_switch_on" },
-          spriteOff: { name: "visu_texture_checkbox_switch_off" },
+          enable: { key: "use-include-brushes"},
+          spriteOn: { name: "visu_texture_checkbox_on" },
+          spriteOff: { name: "visu_texture_checkbox_off" },
           scaleToFillStretched: false,
         },
       },
@@ -751,47 +336,15 @@ function VisuNewProjectForm(json = null) constructor {
     var json = {
       name: Assert.isType(this.store.getValue("project-name"), String),
       audio: Assert.isType(this.store.getValue("file-audio"), String),
-      includeBrushes: Assert.isType(this.store.getValue("include-brushes"), Boolean), 
+      includeTemplates: Assert.isType(this.store.getValue("use-include-templates"), Boolean) 
+        && Assert.isType(this.store.getValue("include-templates"), Boolean), 
+      includeBrushes: Assert.isType(this.store.getValue("use-include-brushes"), Boolean) 
+        && Assert.isType(this.store.getValue("include-brushes"), Boolean),
     }
 
     if (this.store.getValue("use-file-video") 
       && Core.isType(this.store.getValue("file-video"), String)) {
       Struct.set(json, "video", this.store.getValue("file-video"))
-    }
-
-    if (this.store.getValue("use-shader")
-      && Core.isType(this.store.getValue("shader"), String)) {
-      Struct.set(json, "shader", this.store.getValue("shader"))
-    }
-
-    if (this.store.getValue("use-shroom")
-      && Core.isType(this.store.getValue("shroom"), String)) {
-      Struct.set(json, "shroom", this.store.getValue("shroom"))
-    }
-
-    if (this.store.getValue("use-bullet")
-      && Core.isType(this.store.getValue("bullet"), String)) {
-      Struct.set(json, "bullet", this.store.getValue("bullet"))
-    }
-
-    if (this.store.getValue("use-coin")
-      && Core.isType(this.store.getValue("coin"), String)) {
-      Struct.set(json, "coin", this.store.getValue("coin"))
-    }
-
-    if (this.store.getValue("use-lyrics")
-      && Core.isType(this.store.getValue("lyrics"), String)) {
-      Struct.set(json, "lyrics", this.store.getValue("lyrics"))
-    }
-
-    if (this.store.getValue("use-particle")
-      && Core.isType(this.store.getValue("particle"), String)) {
-      Struct.set(json, "particle", this.store.getValue("particle"))
-    }
-
-    if (this.store.getValue("use-texture")
-      && Core.isType(this.store.getValue("texture"), String)) {
-      Struct.set(json, "texture", this.store.getValue("texture"))
     }
 
     return json
@@ -877,286 +430,162 @@ function VisuNewProjectForm(json = null) constructor {
           "audio": "sound_external",
           "channels":[
             {
-              "name":"shader",
+              "name":"shader 1",
               "events":[
-                {
-                  "callable":"brush_shader_clear",
-                  "timestamp":0.0,
-                  "data":{
-                    "shader-clear_pipeline":"All",
-                    "shader-clear_use-clear-all-shaders":1.0,
-                    "shader-clear_use-clear-amount":0.0,
-                    "shader-clear_clear-amount":1.0,
-                    "shader-clear_use-fade-out":false,
-                    "icon":{
-                      "name":"texture_visu_editor_icon_event_shader_clear",
-                      "blend":"#FF0000"
-                    },
-                    "shader-clear_fade-out":0.0
-                  }
-                }
               ]
             },
             {
-              "name":"shroom",
+              "name":"shader 2",
               "events":[
-                {
-                  "callable":"brush_shroom_clear",
-                  "timestamp":0.0,
-                  "data":{
-                    "shroom-clear_use-clear-all-shrooms":1.0,
-                    "shroom-clear_use-clear-amount":0.0,
-                    "icon":{
-                      "name":"texture_visu_editor_icon_event_shroom_clear",
-                      "blend":"#FF0000"
-                    },
-                    "shroom-clear_clear-amount":1.0
-                  }
-                }
               ]
             },
             {
-              "name":"shader config",
+              "name":"shroom 1",
               "events":[
-                {
-                  "callable":"brush_shader_config",
-                  "timestamp":0.0,
-                  "data":{
-                    "shader-config_use-render-grid-shaders":1.0,
-                    "shader-config_render-grid-shaders":1.0,
-                    "shader-config_use-background-grid-shaders":1.0,
-                    "shader-config_background-grid-shaders":1.0,
-                    "shader-config_use-clear-frame":1.0,
-                    "shader-config_clear-frame":true,
-                    "shader-config_use-clear-color":true,
-                    "shader-config_clear-color":"#FFFFFF",
-                    "shader-config_use-transform-clear-frame-alpha":true,
-                    "shader-config_transform-clear-frame-alpha":{
-                      "value":0.0,
-                      "factor":999.0,
-                      "overrideValue":false,
-                      "target":0.0,
-                      "increase":0.0,
-                      "startValue":0.0,
-                      "finished":false
-                    },
-                    "icon":{
-                      "name":"texture_visu_editor_icon_event_shader_config",
-                      "blend":"#FFFF00"
-                    }
-                  }
-                }
               ]
             },
             {
-              "name":"shroom config",
+              "name":"shroom 2",
               "events":[
-                {
-                  "callable":"brush_shroom_config",
-                  "timestamp":0.0,
-                  "data":{
-                    "shroom-config_use-render-bullets":true,
-                    "shroom-config_render-bullets":true,
-                    "shroom-config_use-transform-bullet-z":true,
-                    "shroom-config_transform-bullet-z":{
-                      "value":0.0,
-                      "factor":9999.0,
-                      "overrideValue":false,
-                      "target":2048.0,
-                      "increase":0.0,
-                      "startValue":0.0,
-                      "finished":false
-                    },
-                    "shroom-config_use-render-shrooms":1.0,
-                    "shroom-config_render-shrooms":1.0,
-                    "shroom-config_use-transform-shroom-z":true,
-                    "icon":{
-                      "name":"texture_visu_editor_icon_event_shroom_config",
-                      "blend":"#FFFF00"
-                    },
-                    "shroom-config_transform-shroom-z":{
-                      "value":0.0,
-                      "factor":9999.0,
-                      "overrideValue":false,
-                      "target":2049.0,
-                      "increase":0.0,
-                      "startValue":0.0,
-                      "finished":false
-                    },
-                    "shroom-config_use-render-coins":true,
-                    "shroom-config_render-coins":true,
-                    "shroom-config_use-transform-coin-z":true,
-                    "shroom-config_transform-coin-z":{
-                      "value":0.0,
-                      "factor":9999.0,
-                      "overrideValue":false,
-                      "target":2047.0,
-                      "increase":0.0,
-                      "startValue":0.0,
-                      "finished":false
-                    },
-                  }
-                }
               ]
             },
             {
-              "name":"grid channel",
+              "name":"shroom 3",
+              "events":[
+              ]
+            },
+            {
+              "name":"shroom 4",
+              "events":[
+              ]
+            },
+            {
+              "name":"glitch",
+              "events":[
+              ]
+            },
+            {
+              "name":"grid columns",
               "events":[
                 {
                   "callable":"brush_grid_channel",
                   "timestamp":0.0,
                   "data":{
+                    "grid-channel_secondary-color":"#2C7C80",
+                    "grid-channel_secondary-color-speed":1.0,
                     "grid-channel_transform-amount":{
-                      "value":0.0,
-                      "factor":9999.0,
-                      "overrideValue":false,
-                      "target":1.0,
-                      "increase":0.0,
-                      "startValue":0.0,
-                      "finished":false
-                    },
-                    "grid-channel_use-transform-secondary-size":1.0,
-                    "grid-channel_use-transform-z":1.0,
-                    "grid-channel_transform-secondary-size":{
-                      "value":0.0,
                       "factor":999.0,
-                      "overrideValue":false,
-                      "target":8.0,
-                      "increase":0.0,
-                      "startValue":0.0,
-                      "finished":false
-                    },
-                    "grid-channel_transform-z":{
-                      "value":0.0,
-                      "factor":9999.0,
-                      "overrideValue":false,
                       "target":1.0,
                       "increase":0.0,
-                      "startValue":0.0,
-                      "finished":false
+                      "value":0.0
                     },
-                    "grid-channel_use-primary-color":1.0,
-                    "grid-channel_primary-color":"#0045B1",
-                    "grid-channel_primary-color-speed":0.01,
-                    "grid-channel_use-transform-primary-alpha":1.0,
                     "grid-channel_transform-primary-alpha":{
-                      "value":0.0,
-                      "factor":9999.0,
-                      "overrideValue":false,
-                      "target":1.0,
-                      "increase":0.0,
-                      "startValue":0.0,
-                      "finished":false
-                    },
-                    "grid-channel_use-transform-primary-size":1.0,
-                    "grid-channel_transform-primary-size":{
-                      "value":0.0,
                       "factor":999.0,
-                      "overrideValue":false,
-                      "target":8.0,
+                      "target":0.59999999999999998,
                       "increase":0.0,
-                      "startValue":0.0,
-                      "finished":false
+                      "value":0.0
                     },
-                    "grid-channel_use-secondary-color":1.0,
-                    "grid-channel_secondary-color":"#C93B9C",
-                    "grid-channel_secondary-color-speed":0.01,
-                    "grid-channel_use-transform-secondary-alpha":1.0,
-                    "grid-channel_use-transform-amount":1.0,
-                    "icon":{
-                      "name":"texture_visu_editor_icon_event_grid_channel",
-                      "blend":"#FFFF00"
+                    "grid-channel_transform-primary-size":{
+                      "factor":999.0,
+                      "target":5.0,
+                      "increase":0.0,
+                      "value":0.0
                     },
                     "grid-channel_transform-secondary-alpha":{
-                      "value":0.0,
                       "factor":999.0,
-                      "overrideValue":false,
-                      "target":0.80000000000000004,
+                      "target":0.59999999999999998,
                       "increase":0.0,
-                      "startValue":0.0,
-                      "finished":false
-                    }
+                      "value":0.0
+                    },
+                    "grid-channel_transform-secondary-size":{
+                      "factor":999.0,
+                      "target":5.0,
+                      "increase":0.0,
+                      "value":0.0
+                    },
+                    "grid-channel_transform-z":{
+                      "factor":9999.0,
+                      "target":2088.0,
+                      "increase":0.0,
+                      "value":0.0
+                    },
+                    "grid-channel_use-primary-color":1.0,
+                    "grid-channel_use-secondary-color":1.0,
+                    "grid-channel_use-transform-amount":1.0,
+                    "grid-channel_use-transform-primary-alpha":1.0,
+                    "grid-channel_use-transform-primary-size":1.0,
+                    "grid-channel_use-transform-secondary-alpha":1.0,
+                    "grid-channel_use-transform-secondary-size":1.0,
+                    "grid-channel_use-transform-z":1.0,
+                    "icon":{
+                      "blend":"#2C7C80",
+                      "name":"texture_visu_editor_icon_event_grid_channel"
+                    },
+                    "grid-channel_primary-color":"#2C7C80",
+                    "grid-channel_primary-color-speed":1.0
                   }
                 }
               ]
             },
             {
-              "name":"grid separator",
+              "name":"grid rows",
               "events":[
                 {
                   "callable":"brush_grid_separator",
                   "timestamp":0.0,
                   "data":{
-                    "grid-separator_secondary-color":"#C93B9C",
-                    "grid-separator_secondary-color-speed":0.01,
-                    "grid-separator_use-transform-secondary-alpha":1.0,
-                    "grid-separator_transform-secondary-alpha":{
-                      "value":0.0,
-                      "factor":9999.0,
-                      "overrideValue":false,
-                      "target":0.80000000000000004,
-                      "increase":0.0,
-                      "startValue":0.0,
-                      "finished":false
-                    },
-                    "grid-separator_use-transform-secondary-size":1.0,
-                    "grid-separator_use-transform-amount":1.0,
-                    "grid-separator_transform-secondary-size":{
-                      "value":0.0,
-                      "factor":9999.0,
-                      "overrideValue":false,
-                      "target":8.0,
-                      "increase":0.0,
-                      "startValue":0.0,
-                      "finished":false
-                    },
+                    "grid-separator_primary-color":"#FFB2F4",
+                    "grid-separator_primary-color-speed":1.0,
+                    "grid-separator_secondary-color":"#FFB2F4",
+                    "grid-separator_secondary-color-speed":1.0,
                     "grid-separator_transform-amount":{
-                      "value":0.0,
-                      "factor":9999.0,
-                      "overrideValue":false,
+                      "factor":999.0,
                       "target":2.0,
                       "increase":0.0,
-                      "startValue":0.0,
-                      "finished":false
+                      "value":0.0
                     },
-                    "grid-separator_use-transform-z":1.0,
-                    "grid-separator_transform-z":{
-                      "value":0.0,
-                      "factor":9999.0,
-                      "overrideValue":false,
-                      "target":1.0,
+                    "grid-separator_transform-primary-alpha":{
+                      "factor":999.0,
+                      "target":0.59999999999999998,
                       "increase":0.0,
-                      "startValue":0.0,
-                      "finished":false
+                      "value":0.0
+                    },
+                    "grid-separator_transform-primary-size":{
+                      "factor":999.0,
+                      "target":16.0,
+                      "increase":0.0,
+                      "value":0.0
+                    },
+                    "grid-separator_transform-secondary-alpha":{
+                      "factor":999.0,
+                      "target":0.59999999999999998,
+                      "increase":0.0,
+                      "value":0.0
+                    },
+                    "grid-separator_transform-secondary-size":{
+                      "factor":999.0,
+                      "target":16.0,
+                      "increase":0.0,
+                      "value":0.0
+                    },
+                    "grid-separator_transform-z":{
+                      "factor":9999.0,
+                      "target":2090.0,
+                      "increase":0.0,
+                      "value":0.0
                     },
                     "grid-separator_use-primary-color":1.0,
-                    "grid-separator_primary-color":"#0045B1",
-                    "grid-separator_primary-color-speed":0.01,
+                    "grid-separator_use-secondary-color":1.0,
+                    "grid-separator_use-transform-amount":1.0,
                     "grid-separator_use-transform-primary-alpha":1.0,
-                    "grid-separator_transform-primary-alpha":{
-                      "value":0.0,
-                      "factor":9999.0,
-                      "overrideValue":false,
-                      "target":1.0,
-                      "increase":0.0,
-                      "startValue":0.0,
-                      "finished":false
-                    },
                     "grid-separator_use-transform-primary-size":1.0,
-                    "grid-separator_transform-primary-size":{
-                      "value":0.0,
-                      "factor":9999.0,
-                      "overrideValue":false,
-                      "target":8.0,
-                      "increase":0.0,
-                      "startValue":0.0,
-                      "finished":false
-                    },
+                    "grid-separator_use-transform-secondary-alpha":1.0,
+                    "grid-separator_use-transform-secondary-size":1.0,
                     "icon":{
-                      "name":"texture_visu_editor_icon_event_grid_separator",
-                      "blend":"#FFFF00"
+                      "blend":"#FFB2F4",
+                      "name":"texture_visu_editor_icon_event_grid_separator"
                     },
-                    "grid-separator_use-secondary-color":1.0
+                    "grid-separator_use-transform-z":1.0
                   }
                 }
               ]
@@ -1168,123 +597,85 @@ function VisuNewProjectForm(json = null) constructor {
                   "callable":"brush_grid_config",
                   "timestamp":0.0,
                   "data":{
-                    "grid-config_speed":{
-                      "value":4.166666666666667,
-                      "factor":0.5,
-                      "overrideValue":false,
-                      "target":10.0,
-                      "increase":0.0,
-                      "startValue":4.166666666666667,
-                      "finished":false
-                    },
-                    "grid-config_use-clear-frame":true,
-                    "grid-config_clear-frame":1.0,
-                    "grid-config_use-clear-color":true,
-                    "grid-config_clear-color":"#FFFFFF",
-                    "grid-config_use-clear-frame-alpha":true,
-                    "grid-config_clear-frame-alpha":{
-                      "value":0.0,
+                    "grid-config_border-bottom-alpha":{
                       "factor":999.0,
-                      "overrideValue":false,
                       "target":0.0,
                       "increase":0.0,
-                      "startValue":0.0,
-                      "finished":false
+                      "value":0.0
                     },
-                    "grid-config_use-gamemode":true,
-                    "grid-config_gamemode":"BULLETHELL",
-                    "grid-config_use-border-bottom-color":true,
-                    "grid-config_border-bottom-color":"#FF0000ED",
+                    "grid-config_border-bottom-color":"#FFB2F4",
                     "grid-config_border-bottom-color-speed":1.0,
-                    "grid-config_use-border-bottom-alpha":true,
-                    "grid-config_border-bottom-alpha":{
-                      "value":0.0,
-                      "factor":999.0,
-                      "overrideValue":false,
-                      "target":1.0,
-                      "increase":0.0,
-                      "startValue":0.0,
-                      "finished":false
-                    },
-                    "icon":{
-                      "name":"texture_visu_editor_icon_event_grid_config",
-                      "blend":"#FFFF00"
-                    },
-                    "grid-config_use-border-bottom-size":true,
                     "grid-config_border-bottom-size":{
-                      "value":0.0,
                       "factor":999.0,
-                      "overrideValue":false,
-                      "target":32.0,
+                      "target":20.0,
                       "increase":0.0,
-                      "startValue":0.0,
-                      "finished":false
+                      "value":0.0
                     },
-                    "grid-config_use-border-horizontal-color":true,
-                    "grid-config_border-horizontal-color":"#FF0000ED",
-                    "grid-config_border-horizontal-color-speed":1.0,
-                    "grid-config_use-border-horizontal-alpha":true,
                     "grid-config_border-horizontal-alpha":{
-                      "value":0.0,
                       "factor":999.0,
-                      "overrideValue":false,
-                      "target":1.0,
+                      "target":0.0,
                       "increase":0.0,
-                      "startValue":0.0,
-                      "finished":false
+                      "value":0.0
                     },
-                    "grid-config_use-border-horizontal-size":true,
-                    "grid-config_border-horizontal-size":{
-                      "value":0.0,
+                    "grid-config_border-horizontal-color":"#FFB2F4",
+                    "grid-config_border-horizontal-color-speed":1.0,
+                    "grid-config_border-horizontal-height":{
                       "factor":999.0,
-                      "overrideValue":false,
-                      "target":32.0,
-                      "increase":0.0,
-                      "startValue":0.0,
-                      "finished":false
-                    },
-                    "grid-config_use-render-grid":1.0,
-                    "grid-config_render-grid":1.0,
-                    "grid-config_use-render-grid-elements":true,
-                    "grid-config_render-grid-elements":true,
-                    "grid-config_use-speed":true
-                  }
-                }
-              ]
-            },
-            {
-              "name":"shader overlay",
-              "events":[
-                {
-                  "callable":"brush_shader_overlay",
-                  "timestamp":0.0,
-                  "data":{
-                    "shader-overlay_use-transform-support-grid-alpha":true,
-                    "shader-overlay_transform-support-grid-alpha":{
-                      "value":0.0,
-                      "factor":999.0,
-                      "overrideValue":false,
-                      "target":0.5,
-                      "increase":1.0,
-                      "startValue":0.0,
-                      "finished":false
-                    },
-                    "shader-overlay_use-render-support-grid":1.0,
-                    "shader-overlay_render-support-grid":1.0,
-                    "shader-overlay_use-transform-support-grid-treshold":true,
-                    "icon":{
-                      "name":"texture_visu_editor_icon_event_shader_overlay",
-                      "blend":"#FFFF00"
-                    },
-                    "shader-overlay_transform-support-grid-treshold":{
-                      "value":0.0,
-                      "factor":0.01,
-                      "overrideValue":false,
                       "target":3.0,
                       "increase":0.0,
-                      "startValue":0.0,
-                      "finished":false
-                    }
+                      "value":0.0
+                    },
+                    "grid-config_border-horizontal-size":{
+                      "factor":999.0,
+                      "target":20.0,
+                      "increase":0.0,
+                      "value":0.0
+                    },
+                    "grid-config_border-horizontal-width":{
+                      "factor":999.0,
+                      "target":2.0,
+                      "increase":0.0,
+                      "value":0.0
+                    },
+                    "grid-config_clear-bullets":true,
+                    "grid-config_clear-coins":true,
+                    "grid-config_clear-color":"#0000FF",
+                    "grid-config_clear-frame":1.0,
+                    "grid-config_clear-frame-alpha":{
+                      "factor":999.0,
+                      "target":0.0,
+                      "increase":0.0,
+                      "value":0.0
+                    },
+                    "grid-config_clear-player":true,
+                    "grid-config_gamemode":"BULLETHELL",
+                    "grid-config_render-grid":1.0,
+                    "grid-config_render-grid-elements":true,
+                    "grid-config_speed":{
+                      "factor":999.0,
+                      "target":6.25,
+                      "increase":0.0,
+                      "value":4.166666666666667
+                    },
+                    "grid-config_use-border-bottom-alpha":true,
+                    "grid-config_use-border-bottom-color":true,
+                    "icon":{
+                      "blend":"#FFB2F4",
+                      "name":"texture_visu_editor_icon_event_grid_config"
+                    },
+                    "grid-config_use-border-bottom-size":true,
+                    "grid-config_use-border-horizontal-alpha":true,
+                    "grid-config_use-border-horizontal-color":true,
+                    "grid-config_use-border-horizontal-height":true,
+                    "grid-config_use-border-horizontal-size":true,
+                    "grid-config_use-border-horizontal-width":true,
+                    "grid-config_use-clear-color":true,
+                    "grid-config_use-clear-frame":true,
+                    "grid-config_use-clear-frame-alpha":true,
+                    "grid-config_use-gamemode":true,
+                    "grid-config_use-render-grid":1.0,
+                    "grid-config_use-render-grid-elements":true,
+                    "grid-config_use-speed":true
                   }
                 }
               ]
@@ -1296,33 +687,69 @@ function VisuNewProjectForm(json = null) constructor {
                   "callable":"brush_view_wallpaper",
                   "timestamp":0.0,
                   "data":{
+                    "view-wallpaper_angle":0.0,
+                    "view-wallpaper_angle-transform":{
+                      "factor":1.0,
+                      "target":0.0,
+                      "increase":0.0,
+                      "value":0.0
+                    },
+                    "view-wallpaper_blend-equation":"ADD",
+                    "view-wallpaper_blend-mode-source":"SRC_ALPHA",
+                    "view-wallpaper_blend-mode-target":"INV_SRC_ALPHA",
+                    "view-wallpaper_clear-color":1.0,
+                    "view-wallpaper_clear-texture":true,
+                    "view-wallpaper_color":"#10101A",
+                    "view-wallpaper_fade-in-duration":0.016,
+                    "view-wallpaper_fade-out-duration":0.016,
+                    "view-wallpaper_speed":0.0,
+                    "view-wallpaper_speed-transform":{
+                      "factor":1.0,
+                      "target":0.0,
+                      "increase":0.0,
+                      "value":0.0
+                    },
                     "view-wallpaper_texture":{
-                      "alpha":1.0,
-                      "angle":0.0,
-                      "scaleX":0.23225806451612904,
-                      "animate":false,
+                      "blend":"#FFFFFF",
                       "name":"texture_empty",
-                      "scaleY":0.23225806451612904,
-                      "speed":30.0,
+                      "randomFrame":false,
+                      "angle":0.0,
                       "frame":0.0,
-                      "blend":"#FFFFFF"
+                      "speed":30.0,
+                      "alpha":1.0,
+                      "animate":false,
+                      "scaleX":0.23225806451612904,
+                      "scaleY":0.23225806451612904
+                    },
+                    "view-wallpaper_texture-blend":"#BC2EFC",
+                    "view-wallpaper_texture-speed":1.0,
+                    "view-wallpaper_type":"Background",
+                    "view-wallpaper_use-angle-transform":false,
+                    "view-wallpaper_use-color":true,
+                    "view-wallpaper_use-speed-transform":false,
+                    "view-wallpaper_use-texture":0.0,
+                    "view-wallpaper_use-texture-blend":0.0,
+                    "icon":{
+                      "blend":"#FF0000",
+                      "name":"texture_visu_editor_icon_event_view_background"
                     },
                     "view-wallpaper_use-texture-speed":0.0,
-                    "view-wallpaper_texture-speed":1.0,
-                    "view-wallpaper_use-texture-blend":0.0,
-                    "view-wallpaper_texture-blend":"#BC2EFC",
-                    "view-wallpaper_clear-texture":true,
-                    "view-wallpaper_type":"Background",
-                    "view-wallpaper_fade-in-duration":0.0,
-                    "view-wallpaper_fade-out-duration":0.0,
-                    "view-wallpaper_use-color":0.0,
-                    "view-wallpaper_color":"#00FFF7",
-                    "view-wallpaper_clear-color":1.0,
-                    "icon":{
-                      "name":"texture_visu_editor_icon_event_view_background",
-                      "blend":"#FFFF00"
+                    "view-wallpaper_use-xScale-transform":false,
+                    "view-wallpaper_use-yScale-transform":false,
+                    "view-wallpaper_xScale":1.0,
+                    "view-wallpaper_xScale-transform":{
+                      "factor":1.0,
+                      "target":0.0,
+                      "increase":0.0,
+                      "value":0.0
                     },
-                    "view-wallpaper_use-texture":0.0
+                    "view-wallpaper_yScale":1.0,
+                    "view-wallpaper_yScale-transform":{
+                      "factor":1.0,
+                      "target":0.0,
+                      "increase":0.0,
+                      "value":0.0
+                    }
                   }
                 }
               ]
@@ -1334,33 +761,69 @@ function VisuNewProjectForm(json = null) constructor {
                   "callable":"brush_view_wallpaper",
                   "timestamp":0.0,
                   "data":{
-                    "view-wallpaper_texture":{
-                      "alpha":1.0,
-                      "angle":0.0,
-                      "scaleX":0.23225806451612904,
-                      "animate":false,
-                      "name":"texture_empty",
-                      "scaleY":0.23225806451612904,
-                      "speed":30.0,
-                      "frame":0.0,
-                      "blend":"#FFFFFF"
+                    "view-wallpaper_angle":0.0,
+                    "view-wallpaper_angle-transform":{
+                      "factor":1.0,
+                      "target":0.0,
+                      "increase":0.0,
+                      "value":0.0
                     },
-                    "view-wallpaper_use-texture-speed":0.0,
-                    "view-wallpaper_texture-speed":1.0,
-                    "view-wallpaper_use-texture-blend":0.0,
-                    "view-wallpaper_texture-blend":"#BC2EFC",
-                    "view-wallpaper_clear-texture":true,
-                    "view-wallpaper_type":"Foreground",
-                    "view-wallpaper_fade-in-duration":0.0,
-                    "view-wallpaper_fade-out-duration":0.0,
-                    "view-wallpaper_use-color":0.0,
-                    "view-wallpaper_color":"#00FFF7",
+                    "view-wallpaper_blend-equation":"ADD",
+                    "view-wallpaper_blend-mode-source":"SRC_ALPHA",
+                    "view-wallpaper_blend-mode-target":"ONE",
                     "view-wallpaper_clear-color":1.0,
-                    "icon":{
-                      "name":"texture_visu_editor_icon_event_view_background",
-                      "blend":"#FFFF00"
+                    "view-wallpaper_clear-texture":true,
+                    "view-wallpaper_color":"#00FFF7",
+                    "view-wallpaper_fade-in-duration":0.016,
+                    "view-wallpaper_fade-out-duration":0.016,
+                    "view-wallpaper_speed":0.0,
+                    "view-wallpaper_speed-transform":{
+                      "factor":1.0,
+                      "target":0.0,
+                      "increase":0.0,
+                      "value":0.0
                     },
-                    "view-wallpaper_use-texture":0.0
+                    "view-wallpaper_texture":{
+                      "blend":"#FFFFFF",
+                      "name":"texture_empty",
+                      "randomFrame":false,
+                      "angle":0.0,
+                      "frame":0.0,
+                      "alpha":1.0,
+                      "speed":30.0,
+                      "animate":false,
+                      "scaleX":0.23225806451612904,
+                      "scaleY":0.23225806451612904
+                    },
+                    "view-wallpaper_texture-blend":"#BC2EFC",
+                    "view-wallpaper_texture-speed":1.0,
+                    "view-wallpaper_type":"Foreground",
+                    "view-wallpaper_use-angle-transform":false,
+                    "view-wallpaper_use-color":0.0,
+                    "view-wallpaper_use-speed-transform":false,
+                    "view-wallpaper_use-texture":0.0,
+                    "view-wallpaper_use-texture-blend":0.0,
+                    "view-wallpaper_use-texture-speed":0.0,
+                    "icon":{
+                      "blend":"#FF0000",
+                      "name":"texture_visu_editor_icon_event_view_foreground"
+                    },
+                    "view-wallpaper_use-xScale-transform":false,
+                    "view-wallpaper_use-yScale-transform":false,
+                    "view-wallpaper_xScale":1.0,
+                    "view-wallpaper_xScale-transform":{
+                      "factor":1.0,
+                      "target":0.0,
+                      "increase":0.0,
+                      "value":0.0
+                    },
+                    "view-wallpaper_yScale":1.0,
+                    "view-wallpaper_yScale-transform":{
+                      "factor":1.0,
+                      "target":0.0,
+                      "increase":0.0,
+                      "value":0.0
+                    }
                   }
                 }
               ]
@@ -1372,74 +835,74 @@ function VisuNewProjectForm(json = null) constructor {
                   "callable":"brush_view_camera",
                   "timestamp":0.0,
                   "data":{
+                    "view-config_follow-margin-x":0.5,
+                    "view-config_follow-margin-y":0.5,
+                    "view-config_follow-smooth":1.0,
                     "view-config_lock-target-x":false,
-                    "view-config_use-lock-target-y":true,
                     "view-config_lock-target-y":false,
-                    "view-config_use-transform-x":1.0,
-                    "view-config_transform-x":{
-                      "value":0.0,
-                      "factor":9999.0,
-                      "overrideValue":false,
-                      "target":4096.0,
-                      "increase":0.0,
-                      "startValue":0.0,
-                      "finished":false
-                    },
-                    "view-config_use-transform-y":1.0,
-                    "view-config_transform-y":{
-                      "value":0.0,
-                      "factor":9999.0,
-                      "overrideValue":false,
-                      "target":5356.0,
-                      "increase":0.0,
-                      "startValue":0.0,
-                      "finished":false
-                    },
-                    "view-config_use-transform-z":1.0,
-                    "view-config_transform-z":{
-                      "value":0.0,
-                      "factor":9999.0,
-                      "overrideValue":false,
-                      "target":5000.0,
-                      "increase":0.0,
-                      "startValue":0.0,
-                      "finished":false
-                    },
-                    "view-config_use-transform-zoom":1.0,
-                    "view-config_transform-zoom":{
-                      "value":0.0,
-                      "factor":9999.0,
-                      "overrideValue":false,
+                    "view-config_movement-angle":{
+                      "factor":999.0,
                       "target":0.0,
                       "increase":0.0,
-                      "startValue":0.0,
-                      "finished":false
+                      "value":90.0
                     },
-                    "view-config_use-transform-angle":1.0,
+                    "view-config_movement-enable":false,
+                    "view-config_movement-speed":{
+                      "factor":999.0,
+                      "target":0.0,
+                      "increase":0.0,
+                      "value":0.0
+                    },
                     "view-config_transform-angle":{
-                      "value":0.0,
                       "factor":9999.0,
-                      "overrideValue":false,
                       "target":270.0,
                       "increase":0.0,
-                      "startValue":0.0,
-                      "finished":false
+                      "value":0.0
                     },
-                    "view-config_use-transform-pitch":1.0,
                     "view-config_transform-pitch":{
-                      "value":0.0,
                       "factor":9999.0,
-                      "overrideValue":false,
-                      "target":-70.0,
+                      "target":-45.0,
                       "increase":0.0,
-                      "startValue":0.0,
-                      "finished":false
+                      "value":0.0
                     },
+                    "view-config_transform-x":{
+                      "factor":9999.0,
+                      "target":4096.0,
+                      "increase":0.0,
+                      "value":0.0
+                    },
+                    "view-config_transform-y":{
+                      "factor":9999.0,
+                      "target":7296.0,
+                      "increase":0.0,
+                      "value":0.0
+                    },
+                    "view-config_transform-z":{
+                      "factor":9999.0,
+                      "target":7000.0,
+                      "increase":0.0,
+                      "value":0.0
+                    },
+                    "view-config_transform-zoom":{
+                      "factor":9999.0,
+                      "target":0.0,
+                      "increase":0.0,
+                      "value":0.0
+                    },
+                    "view-config_use-follow-properties":true,
+                    "view-config_use-lock-target-x":true,
+                    "view-config_use-lock-target-y":true,
+                    "view-config_use-movement":true,
+                    "view-config_use-transform-angle":1.0,
+                    "view-config_use-transform-pitch":1.0,
+                    "view-config_use-transform-x":1.0,
+                    "view-config_use-transform-y":1.0,
+                    "view-config_use-transform-z":1.0,
+                    "view-config_use-transform-zoom":1.0,
                     "icon":{
-                      "name":"texture_visu_editor_icon_event_view_camera",
-                      "blend":"#FFFF01"
-                    },
-                    "view-config_use-lock-target-x":true
+                      "blend":"#00FF01",
+                      "name":"texture_visu_editor_icon_event_view_camera"
+                    }
                   }
                 }
               ]
@@ -1451,31 +914,262 @@ function VisuNewProjectForm(json = null) constructor {
                   "callable":"brush_view_config",
                   "timestamp":0.0,
                   "data":{
-                    "view-config_bkt-factor":0.00050000000000000001,
+                    "icon":{
+                      "blend":"#00FF00",
+                      "name":"texture_visu_editor_icon_event_view_config"
+                    },
+                    "view-config_use-render-HUD":true,
                     "view-config_use-render-particles":true,
+                    "view-config_use-render-video":1.0,
+                    "view-config_render-HUD":false,
                     "view-config_render-particles":true,
                     "view-config_use-transform-particles-z":true,
+                    "view-config_render-video":true,
                     "view-config_transform-particles-z":{
-                      "value":0.0,
                       "factor":9999.0,
-                      "overrideValue":false,
-                      "target":1024.0,
+                      "target":2094.0,
                       "increase":0.0,
-                      "startValue":0.0,
-                      "finished":false
+                      "value":0.0
                     },
-                    "view-config_use-render-video":1.0,
-                    "view-config_render-video":1.0,
-                    "view-config_bkt-trigger":false,
-                    "view-config_bkt-use-config":true,
-                    "view-config_bkt-config":"easy",
-                    "icon":{
-                      "name":"texture_visu_editor_icon_event_view_config",
-                      "blend":"#FFFF00"
-                    },
-                    "view-config_bkt-use-factor":true
+                    "view-config_clear-lyrics":true
                   }
                 }
+              ]
+            },
+            {
+              "name":"shader config",
+              "events":[
+                {
+                  "callable":"brush_shader_config",
+                  "timestamp":0.0,
+                  "data":{
+                    "shader-config_clear-frame":true,
+                    "shader-config_clear-shaders":true,
+                    "shader-config_render-grid-shaders":1.0,
+                    "shader-config_transform-clear-frame-alpha":{
+                      "factor":999.0,
+                      "target":0.0,
+                      "increase":0.0,
+                      "value":0.0
+                    },
+                    "shader-config_use-background-grid-shaders":1.0,
+                    "shader-config_use-clear-color":true,
+                    "shader-config_use-clear-frame":1.0,
+                    "shader-config_use-render-grid-shaders":1.0,
+                    "shader-config_use-transform-clear-frame-alpha":true,
+                    "icon":{
+                      "blend":"#00FF00",
+                      "name":"texture_visu_editor_icon_event_shader_config"
+                    },
+                    "shader-config_background-grid-shaders":1.0,
+                    "shader-config_clear-bkg-shaders":true,
+                    "shader-config_clear-color":"#000000"
+                  }
+                }
+              ]
+            },
+            {
+              "name":"shader overlay",
+              "events":[
+                {
+                  "callable":"brush_shader_overlay",
+                  "timestamp":0.0,
+                  "data":{
+                    "icon":{
+                      "blend":"#FF0000",
+                      "name":"texture_visu_editor_icon_event_shader_overlay"
+                    },
+                    "shader-overlay_render-support-grid":false,
+                    "shader-overlay_transform-support-grid-alpha":{
+                      "factor":999.0,
+                      "target":0.0,
+                      "increase":0.0,
+                      "value":0.0
+                    },
+                    "shader-overlay_transform-support-grid-treshold":{
+                      "factor":999.0,
+                      "target":1.0,
+                      "increase":0.0,
+                      "value":0.0
+                    },
+                    "shader-overlay_use-render-support-grid":1.0,
+                    "shader-overlay_use-transform-support-grid-alpha":true,
+                    "shader-overlay_use-transform-support-grid-treshold":true
+                  }
+                }
+              ]
+            },
+            {
+              "name":"shroom config",
+              "events":[
+                {
+                  "callable":"brush_shroom_config",
+                  "timestamp":0.0,
+                  "data":{
+                    "shroom-config_render-coins":true,
+                    "shroom-config_render-shrooms":1.0,
+                    "shroom-config_transform-bullet-z":{
+                      "factor":9999.0,
+                      "target":2098.0,
+                      "increase":0.0,
+                      "value":0.0
+                    },
+                    "shroom-config_transform-coin-z":{
+                      "factor":9999.0,
+                      "target":2094.0,
+                      "increase":0.0,
+                      "value":0.0
+                    },
+                    "shroom-config_transform-shroom-z":{
+                      "factor":9999.0,
+                      "target":2096.0,
+                      "increase":0.0,
+                      "value":0.0
+                    },
+                    "shroom-config_use-render-bullets":true,
+                    "shroom-config_use-render-coins":true,
+                    "shroom-config_use-render-shrooms":1.0,
+                    "shroom-config_use-transform-bullet-z":true,
+                    "shroom-config_use-transform-coin-z":true,
+                    "shroom-config_use-transform-shroom-z":true,
+                    "icon":{
+                      "blend":"#00FF00",
+                      "name":"texture_visu_editor_icon_event_shroom_config"
+                    },
+                    "shroom-config_clear-shrooms":true,
+                    "shroom-config_render-bullets":true
+                  }
+                }
+              ]
+            },
+            {
+              "name":"player",
+              "events":[
+                {
+                  "callable":"brush_grid_player",
+                  "timestamp":0.0,
+                  "data":{
+                    "grid-player_bullet-hell":{
+                      "x":{
+                        "speedMax":0.0,
+                        "acceleration":0.0,
+                        "friction":9.0
+                      },
+                      "y":{
+                        "speedMax":0.0,
+                        "acceleration":0.0,
+                        "friction":9.0
+                      },
+                      "guns":[
+                      ]
+                    },
+                    "grid-player_margin-bottom":0.35999999999999999,
+                    "grid-player_margin-left":3.0,
+                    "grid-player_margin-right":2.7360000000000002,
+                    "grid-player_margin-top":2.0880000000000001,
+                    "grid-player_mask":{
+                      "x":20.0,
+                      "height":106.0,
+                      "width":126.0,
+                      "y":20.0
+                    },
+                    "grid-player_platformer":{
+                      "x":{
+                        "speedMax":0.0,
+                        "acceleration":0.0,
+                        "friction":9.0
+                      },
+                      "y":{
+                        "speedMax":0.0,
+                        "acceleration":0.0,
+                        "friction":9.0
+                      },
+                      "jump":{
+                        "size":0.0
+                      }
+                    },
+                    "grid-player_racing":{
+                      "throttle":{
+                        "speedMax":0.0,
+                        "acceleration":0.0,
+                        "friction":0.5
+                      },
+                      "nitro":{
+                        "speedMax":0.0,
+                        "acceleration":0.0,
+                        "friction":9.0
+                      },
+                      "wheel":{
+                        "speedMax":0.0,
+                        "acceleration":0.0,
+                        "friction":9.0
+                      }
+                    },
+                    "grid-player_reset-position":true,
+                    "grid-player_stats":{
+                      "force":{
+                        "maxValue":250.0,
+                        "value":0.0,
+                        "minValue":0.0
+                      },
+                      "bomb":{
+                        "maxValue":10.0,
+                        "value":5.0,
+                        "minValue":0.0
+                      },
+                      "life":{
+                        "maxValue":10.0,
+                        "value":4.0,
+                        "minValue":0.0
+                      },
+                      "point":{
+                        "maxValue":9999999.0,
+                        "value":0.0,
+                        "minValue":0.0
+                      }
+                    },
+                    "grid-player_texture":{
+                      "blend":"#FFFFFF",
+                      "name":"texture_empty",
+                      "randomFrame":false,
+                      "angle":0.0,
+                      "frame":0.0,
+                      "speed":10.0,
+                      "alpha":1.0,
+                      "animate":1.0,
+                      "scaleX":2.0,
+                      "scaleY":2.0
+                    },
+                    "grid-player_transform-player-z":{
+                      "factor":9999.0,
+                      "target":2100.0,
+                      "increase":0.0,
+                      "value":0.0
+                    },
+                    "grid-player_use-bullet-hell":1.0,
+                    "grid-player_use-margin":true,
+                    "grid-player_use-mask":true,
+                    "grid-player_use-platformer":1.0,
+                    "grid-player_use-racing":1.0,
+                    "grid-player_use-reset-position":true,
+                    "grid-player_use-stats":true,
+                    "grid-player_use-transform-player-z":1.0,
+                    "icon":{
+                      "blend":"#FFFF00",
+                      "name":"texture_visu_editor_icon_event_grid_player"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "name":"particle",
+              "events":[
+              ]
+            },
+            {
+              "name":"lyrics",
+              "events":[
               ]
             }
           ]
@@ -1487,44 +1181,32 @@ function VisuNewProjectForm(json = null) constructor {
     FileUtil.createDirectory($"{path}template")
     FileUtil.createDirectory($"{path}texture")
 
-    if (Struct.contains(json, "shader")) {
+    var visuTrack = controller.track
+    if (Struct.get(json, "includeTemplates") && Core.isType(visuTrack, VisuTrack)) {
       templates.remove("shader")
-      FileUtil.copyFile(json.shader, $"{path}{manifest.data.shader}")
-    }
-    if (Struct.contains(json, "shroom")) {
       templates.remove("shroom")
-      FileUtil.copyFile(json.shroom, $"{path}{manifest.data.shroom}")
-    }
-    if (Struct.contains(json, "bullet")) {
       templates.remove("bullet")
-      FileUtil.copyFile(json.bullet, $"{path}{manifest.data.bullet}")
-    }
-    if (Struct.contains(json, "coin")) {
       templates.remove("coin")
-      FileUtil.copyFile(json.coin, $"{path}{manifest.data.coin}")
-    }
-    if (Struct.contains(json, "lyrics")) {
       templates.remove("lyrics")
-      FileUtil.copyFile(json.lyrics, $"{path}{manifest.data.lyrics}")
-    }
-    if (Struct.contains(json, "particle")) {
       templates.remove("particle")
-      FileUtil.copyFile(json.particle, $"{path}{manifest.data.particle}")
-    }
-    if (Struct.contains(json, "texture")) {
       templates.remove("texture")
-      var textures = JSON.parse(FileUtil.readFileSync(json.texture).getData()).data
+      FileUtil.copyFile(FileUtil.get($"{visuTrack.path}{visuTrack.shader}"), $"{path}{manifest.data.shader}")
+      FileUtil.copyFile(FileUtil.get($"{visuTrack.path}{visuTrack.shroom}"), $"{path}{manifest.data.shroom}")
+      FileUtil.copyFile(FileUtil.get($"{visuTrack.path}{visuTrack.bullet}"), $"{path}{manifest.data.bullet}")
+      FileUtil.copyFile(FileUtil.get($"{visuTrack.path}{visuTrack.coin}"), $"{path}{manifest.data.coin}")
+      FileUtil.copyFile(FileUtil.get($"{visuTrack.path}{visuTrack.lyrics}"), $"{path}{manifest.data.lyrics}")
+      FileUtil.copyFile(FileUtil.get($"{visuTrack.path}{visuTrack.particle}"), $"{path}{manifest.data.particle}")
+      var textures = JSON.parse(FileUtil.readFileSync(FileUtil.get($"{visuTrack.path}{visuTrack.texture}")).getData()).data
       Struct.forEach(textures, function(config, name, acc) {
         var filename = String.replaceAll(config.file, "texture/", "")
         FileUtil.copyFile($"{acc.sourceDirectory}{filename}", $"{acc.targetDirectory}{filename}")
       }, {
-        sourceDirectory: Assert.isType(FileUtil.getDirectoryFromPath(json.texture), String),
+        sourceDirectory: Assert.isType(FileUtil.getDirectoryFromPath(FileUtil.get($"{visuTrack.path}{visuTrack.texture}")), String),
         targetDirectory: $"{path}texture/",
       })
-      FileUtil.copyFile(json.texture, $"{path}{manifest.data.texture}")
+      FileUtil.copyFile(FileUtil.get($"{visuTrack.path}{visuTrack.texture}"), $"{path}{manifest.data.texture}")
     }
-
-    var visuTrack = controller.track
+    
     if (json.includeBrushes && Core.isType(visuTrack, VisuTrack)) {
       visuTrack.editor.forEach(function(brush, index, acc) {
         acc.manifest.data.editor = GMArray.add(acc.manifest.data.editor, brush)
@@ -1596,8 +1278,8 @@ function VENewProjectModal(_config = null) constructor {
         name: "visu-new-project-modal",
         x: function() { return (this.context.width() - this.width()) / 2 },
         y: function() { return (this.context.height() - this.height()) / 2 },
-        width: function() { return 500 },
-        height: function() { return 572 },
+        width: function() { return 480 },
+        height: function() { return 352 },
       },
       parent
     )
@@ -1613,7 +1295,7 @@ function VENewProjectModal(_config = null) constructor {
       "visu-new-project-modal": new UI({
         name: "visu-new-project-modal",
         state: new Map(String, any, {
-          "background-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+          "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
         }),
         modal: modal,
         layout: layout,

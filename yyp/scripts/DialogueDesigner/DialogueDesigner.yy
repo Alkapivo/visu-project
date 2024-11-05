@@ -6,7 +6,7 @@
   "name":"DialogueDesigner",
   "parent":{
     "name":"dialogue-designer",
-    "path":"folders/core/src/service/dialogue-designer.yy",
+    "path":"folders/io.alkapivo.core/src/service/dialogue-designer.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

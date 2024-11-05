@@ -6,7 +6,7 @@
   "name":"UIItem",
   "parent":{
     "name":"ui",
-    "path":"folders/core/src/service/ui.yy",
+    "path":"folders/io.alkapivo.core/src/service/ui.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

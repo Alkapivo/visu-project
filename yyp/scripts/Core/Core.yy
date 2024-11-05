@@ -6,7 +6,7 @@
   "name":"Core",
   "parent":{
     "name":"src",
-    "path":"folders/core/src.yy",
+    "path":"folders/io.alkapivo.core/src.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

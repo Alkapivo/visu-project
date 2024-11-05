@@ -6,7 +6,7 @@
   "name":"StoreTest",
   "parent":{
     "name":"store",
-    "path":"folders/core/test/util/store.yy",
+    "path":"folders/io.alkapivo.core/test/util/store.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

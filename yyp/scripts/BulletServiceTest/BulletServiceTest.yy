@@ -6,7 +6,7 @@
   "name":"BulletServiceTest",
   "parent":{
     "name":"bullet",
-    "path":"folders/visu/test/bullet.yy",
+    "path":"folders/io.alkapivo.visu/test/bullet.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

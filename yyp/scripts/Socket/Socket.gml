@@ -26,18 +26,27 @@ function Socket(config = {}) constructor {
   ///@type {any}
   socket = null
 
+  ///@return {Boolean}
+  isConnected = function() {
+    return this.socket != null
+  }
+
+  ///@return {Socket}
   connect = function() {
     try {
-      Core.print("Connect", this.host, this.port)
+      Logger.debug("Socket", $"Connect to {this.host}:{this.port}")
       this.socket = network_create_socket(this.type)
       network_connect_raw(this.socket, this.host, this.port)   
     } catch (exception) {
-      Core.print("ConnectException", exception.message)
+      Logger.error("Socket", exception.message)
       this.socket = null
     }
+
+    return this
   }
 
   ///@param {String} message
+  ///@return {Socket}
   send = function(message) {
     try {
       Core.print("Send ", message)
@@ -50,6 +59,8 @@ function Socket(config = {}) constructor {
     } catch (exception) {
       Core.print("SendException", exception.message)
     }
+
+    return this
   }
 
   free = function() {

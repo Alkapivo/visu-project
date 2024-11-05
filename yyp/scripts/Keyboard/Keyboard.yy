@@ -6,7 +6,7 @@
   "name":"Keyboard",
   "parent":{
     "name":"input",
-    "path":"folders/core/src/service/input.yy",
+    "path":"folders/io.alkapivo.core/src/service/input.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

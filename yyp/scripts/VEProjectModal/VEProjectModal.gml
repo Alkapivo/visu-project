@@ -61,8 +61,8 @@ function VisuProjectForm(json = null) constructor {
     },
     {
       name: "project-name",
-      template: VEComponents.get("text-field-checkbox"),
-      layout: VELayouts.get("text-field-checkbox"),
+      template: VEComponents.get("text-field"),
+      layout: VELayouts.get("text-field"),
       config: { 
         layout: { type: UILayoutType.VERTICAL },
         label: { text: "Name" },
@@ -71,8 +71,8 @@ function VisuProjectForm(json = null) constructor {
     },
     {
       name: "file-audio",  
-      template: VEComponents.get("text-field-button-checkbox"),
-      layout: VELayouts.get("text-field-button-checkbox"),
+      template: VEComponents.get("text-field-button"),
+      layout: VELayouts.get("text-field-button"),
       config: { 
         layout: { type: UILayoutType.VERTICAL },
         label: { text: "Audio" },
@@ -115,16 +115,10 @@ function VisuProjectForm(json = null) constructor {
     },
     {
       name: "file-video",  
-      template: VEComponents.get("text-field-button-checkbox"),
-      layout: VELayouts.get("text-field-button-checkbox"),
+      template: VEComponents.get("text-field-button"),
+      layout: VELayouts.get("text-field-button"),
       config: { 
         layout: { type: UILayoutType.VERTICAL },
-        checkbox: { 
-          store: { key: "use-file-video" },
-          spriteOn: { name: "visu_texture_checkbox_switch_on" },
-          spriteOff: { name: "visu_texture_checkbox_switch_off" },
-          
-        },
         label: { 
           text: "Video",
           enable: { key: "use-file-video" },
@@ -165,6 +159,24 @@ function VisuProjectForm(json = null) constructor {
           onMouseHoverOut: function(event) {
             this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
           },
+        },
+      },
+    },
+    {
+      name: "use-file-video",
+      template: VEComponents.get("property"),
+      layout: VELayouts.get("property"),
+      config: { 
+        layout: { type: UILayoutType.VERTICAL },
+        label: { 
+          text: "Use video",
+          enable: { key: "use-file-video" },
+        },
+        checkbox: { 
+          store: { key: "use-file-video" },
+          spriteOn: { name: "visu_texture_checkbox_on" },
+          spriteOff: { name: "visu_texture_checkbox_off" },
+          scaleToFillStretched: false,
         },
       },
     },
@@ -338,8 +350,8 @@ function VEProjectModal(_config = null) constructor {
         name: "visu-project-modal",
         x: function() { return (this.context.width() - this.width()) / 2 },
         y: function() { return (this.context.height() - this.height()) / 2 },
-        width: function() { return 500 },
-        height: function() { return 218 },
+        width: function() { return 480 },
+        height: function() { return 236 },
       },
       parent
     )
@@ -355,7 +367,7 @@ function VEProjectModal(_config = null) constructor {
       "visu-project-modal": new UI({
         name: "visu-project-modal",
         state: new Map(String, any, {
-          "background-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+          "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
         }),
         modal: modal,
         layout: layout,

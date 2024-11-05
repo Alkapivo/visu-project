@@ -17,6 +17,10 @@ function VisuHUDRenderer() constructor {
   ///@type {Font}
   font = new Font(font_kodeo_mono_18_bold)
 
+  ///@private
+  ///@type {Font}
+  fontGodMode = new Font(font_kodeo_mono_48_bold)
+
   ///@type {Number}
   fadeIn = 0.0
 
@@ -196,6 +200,13 @@ function VisuHUDRenderer() constructor {
       GPU.render.text(_x + xStart + offset, _y + _height - yStart, textMask,  c_white,   null, 0.33 * this.fadeIn, this.font, HAlign.LEFT, VAlign.BOTTOM)  
       GPU.render.text(_x + xStart, _y + _height - yStart + offset, textLife,  c_lime,    null, 0.33 * this.fadeIn, this.font, HAlign.LEFT, VAlign.BOTTOM)  
       GPU.render.text(_x + xStart, _y + _height - yStart + offset, textBomb,  c_yellow,  null, 0.33 * this.fadeIn, this.font, HAlign.LEFT, VAlign.BOTTOM)
+
+      if (player.stats.godModeCooldown > 0) {
+        var textHeight = string_height(textMask)
+        var factor = 1.0 - (ceil(player.stats.godModeCooldown) - player.stats.godModeCooldown)
+        GPU.render.text(_x + (_width / 2.0), _y + _height - yStart - (textHeight / 2.0), $"{ceil(player.stats.godModeCooldown)}", c_white, c_black, 0.7 * this.fadeIn * factor, this.fontGodMode, HAlign.CENTER, VAlign.CENTER)
+        GPU.render.text(_x + (_width / 2.0), _y + _height - yStart, "INVINCIBILITY", c_white, c_black, 0.4 * this.fadeIn * (player.stats.godModeCooldown < 1.0 ? factor : 1.0), this.font, HAlign.CENTER, VAlign.BOTTOM)
+      }
     }
 
     return this

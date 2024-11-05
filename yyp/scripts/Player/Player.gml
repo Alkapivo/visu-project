@@ -393,6 +393,11 @@ function PlayerStats(_player, json) constructor {
 
         controller.visuRenderer.hudRenderer.sendGlitchEvent()
         controller.sfxService.play("player-die")
+
+        if (this.stats.bomb.get() < 5) {
+          this.stats.bomb.set(5)
+        }
+
         controller.particleService.send(controller.particleService
           .factoryEventSpawnParticleEmitter({
             particleName: "particle-player-death",

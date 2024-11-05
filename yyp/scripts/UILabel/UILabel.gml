@@ -50,7 +50,7 @@ function UILabel(json) constructor {
     var enableBlend = gpu_get_blendenable()
     gpu_set_blendenable(true)
     if (this.enableColorWrite) {
-      gpu_set_colorwriteenable(true, true, true, false)
+      GPU.set.colorWrite(true, true, true, false)
     }
 
     if (this.font.asset != draw_get_font()) {
@@ -78,8 +78,7 @@ function UILabel(json) constructor {
 
     draw_text_color(_x, _y, this.text, this.color, this.color, this.color, this.color, this.alpha)
     
-    gpu_set_colorwriteenable(config[0], config[1], config[2], config[3])
-    gpu_set_blendenable(enableBlend)
+    GPU.set.colorWrite(config[0], config[1], config[2], config[3]).set.blendEnable(enableBlend)
     return this
   }
 }

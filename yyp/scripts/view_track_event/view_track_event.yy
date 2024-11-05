@@ -6,7 +6,7 @@
   "name":"view_track_event",
   "parent":{
     "name":"track",
-    "path":"folders/visu/src/service/track.yy",
+    "path":"folders/io.alkapivo.visu/src/service/track.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

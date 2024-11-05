@@ -372,7 +372,7 @@ global.__VELayouts = new Map(String, Callable, {
     return {
       name: "text-field-button-checkbox",
       type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
-      height: function() { return 40 },
+      height: function() { return 32 },
       nodes: {
         checkbox: {
           name: "text-field-button-checkbox.checkbox",

@@ -6,7 +6,7 @@
   "name":"brush_shader_config",
   "parent":{
     "name":"shader",
-    "path":"folders/visu/src/editor/service/brush/shader.yy",
+    "path":"folders/io.alkapivo.visu/src/editor/service/brush/shader.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

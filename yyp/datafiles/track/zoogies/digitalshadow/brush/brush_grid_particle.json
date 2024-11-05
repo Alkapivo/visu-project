@@ -1,0 +1,25 @@
+{
+  "model":"Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>",
+  "version":"1",
+  "data":[
+    {
+      "color":"#146CFF",
+      "texture":"texture_visu_editor_icon_event_grid_particle",
+      "properties":{
+        "grid-particle_use-preview":true,
+        "grid-particle_amount":30.0,
+        "grid-particle_beginX":0.0,
+        "grid-particle_beginY":-1.0,
+        "grid-particle_distribution":"INVERTEDGAUSSIAN",
+        "grid-particle_duration":1.5,
+        "grid-particle_endX":1.0,
+        "grid-particle_endY":0.0,
+        "grid-particle_interval":0.16,
+        "grid-particle_shape":"ELLIPSE",
+        "grid-particle_template":"particle-default"
+      },
+      "type":"brush_grid_particle",
+      "name":"particle default"
+    }
+  ]
+}

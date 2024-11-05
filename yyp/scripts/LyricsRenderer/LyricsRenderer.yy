@@ -6,7 +6,7 @@
   "name":"LyricsRenderer",
   "parent":{
     "name":"renderer",
-    "path":"folders/visu/src/renderer.yy",
+    "path":"folders/io.alkapivo.visu/src/renderer.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

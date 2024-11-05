@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"Server",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"Server",
+  "parent":{
+    "name":"network",
+    "path":"folders/io.alkapivo.core/src/service/network.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

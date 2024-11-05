@@ -6,7 +6,7 @@
   "name":"GridCamera",
   "parent":{
     "name":"grid",
-    "path":"folders/visu/src/renderer/grid.yy",
+    "path":"folders/io.alkapivo.visu/src/renderer/grid.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

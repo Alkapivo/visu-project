@@ -46,8 +46,16 @@ function brush_shader_config(json = null) {
         type: NumberTransformer,
         value: new NumberTransformer(Struct.getDefault(json, 
           "shader-config_transform-clear-frame-alpha", 
-          { value: 0, target: 5, factor: 0.03, increase: 2 }
+          { value: 0.0, target: 0.0, factor: 0.01, increase: 0 }
         )),
+      },
+      "shader-config_clear-shaders": {
+        type: Boolean,
+        value: Struct.getDefault(json, "shader-config_clear-shaders", false),
+      },
+      "shader-config_clear-bkg-shaders": {
+        type: Boolean,
+        value: Struct.getDefault(json, "shader-config_clear-bkg-shaders", false),
       },
     }),
     components: new Array(Struct, [
@@ -95,6 +103,40 @@ function brush_shader_config(json = null) {
             store: { key: "shader-config_background-grid-shaders" },
             enable: { key: "shader-config_use-background-grid-shaders" },
           },
+        },
+      },
+      {
+        name: "shader-config_clear-shaders",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Clear grid shaders",
+            enable: { key: "shader-config_clear-shaders" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "shader-config_clear-shaders" },
+          }
+        },
+      },
+      {
+        name: "shader-config_clear-bkg-shaders",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Clear background shaders",
+            enable: { key: "shader-config_clear-bkg-shaders" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "shader-config_clear-bkg-shaders" },
+          }
         },
       },
       {

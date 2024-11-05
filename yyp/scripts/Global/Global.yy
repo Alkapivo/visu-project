@@ -6,7 +6,7 @@
   "name":"Global",
   "parent":{
     "name":"lang",
-    "path":"folders/core/src/lang.yy",
+    "path":"folders/io.alkapivo.core/src/lang.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

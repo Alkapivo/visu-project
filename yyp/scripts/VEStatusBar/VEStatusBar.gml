@@ -34,7 +34,7 @@ function VEStatusBar(_editor) constructor {
             name: "status-bar.timestampLabel",
             x: function() { return this.context.nodes.fpsValue.right() + this.margin.left },
             y: function() { return 0 },
-            width: function() { return 70 },
+            width: function() { return 34 },
           },
           timestampValue: {
             name: "status-bar.timestampValue",
@@ -63,17 +63,18 @@ function VEStatusBar(_editor) constructor {
             x: function() { return this.context.nodes.durationValue.right()
               + this.margin.left },
             y: function() { return 0 },
-            width: function() { return 26 },
+            width: function() { return 30 },
           },
           bpmValue: {
             name: "status-bar.bpmValue",
             x: function() { return this.context.nodes.bpmLabel.right() + this.margin.left },
             y: function() { return 0 },
             margin: { left: 2 },
-            width: function() { return 40 },
+            width: function() { return 32 },
           },
           bpmCountLabel: {
             name: "status-bar.bpmCountLabel",
+            margin: { left: 4 },
             x: function() { return this.context.nodes.bpmValue.right()
               + this.margin.left },
             y: function() { return 0 },
@@ -84,10 +85,11 @@ function VEStatusBar(_editor) constructor {
             x: function() { return this.context.nodes.bpmCountLabel.right() + this.margin.left },
             y: function() { return 0 },
             margin: { left: 2 },
-            width: function() { return 40 },
+            width: function() { return 32 },
           },
           bpmSubLabel: {
             name: "status-bar.bpmSubLabel",
+            margin: { left: 4 },
             x: function() { return this.context.nodes.bpmCountValue.right()
               + this.margin.left },
             y: function() { return 0 },
@@ -98,21 +100,21 @@ function VEStatusBar(_editor) constructor {
             x: function() { return this.context.nodes.bpmSubLabel.right() + this.margin.left },
             y: function() { return 0 },
             margin: { left: 2 },
-            width: function() { return 40 },
+            width: function() { return 32 },
           },
           gameModeLabel: {
             name: "status-bar.gameModeLabel",
             x: function() { return this.context.nodes.bpmSubValue.right()
               + this.margin.left },
             y: function() { return 0 },
-            width: function() { return 86 },
+            width: function() { return 46 },
           },
           gameModeValue: {
             name: "status-bar.gameModeValue",
             x: function() { return this.context.nodes.gameModeLabel.right() + this.margin.left },
             y: function() { return 0 },
             margin: { left: 2 },
-            width: function() { return 80 },
+            width: function() { return 74 },
           },
           autosaveLabel: {
             name: "status-bar.autosaveLabel",
@@ -127,6 +129,14 @@ function VEStatusBar(_editor) constructor {
             y: function() { return 0 },
             width: function() { return 24 },
           },
+          ws: {
+            name: "status-bar.ws",
+            x: function() { return this.context.nodes.stateLabel.left() 
+              - this.width() },
+            y: function() { return 0 },
+            margin: { left: 4 },
+            width: function() { return 58 },
+          },
           stateLabel: {
             name: "status-bar.stateLabel",
             x: function() { return this.context.nodes.stateValue.left() 
@@ -140,7 +150,7 @@ function VEStatusBar(_editor) constructor {
               - this.width() },
             y: function() { return 0 },
             margin: { left: 4 },
-            width: function() { return 48 },
+            width: function() { return 52 },
           },
           videoLabel: {
             name: "status-bar.videoLabel",
@@ -405,7 +415,7 @@ function VEStatusBar(_editor) constructor {
               ,
           }),
           "text_ve-status-bar_timestampLabel": factoryLabel({
-            text: "Timestamp:",
+            text: "Time:",
             layout: layout.nodes.timestampLabel,
           }),
           "text_ve-status-bar_timestampValue": factoryValue({
@@ -455,7 +465,7 @@ function VEStatusBar(_editor) constructor {
             layout: layout.nodes.bpmSubValue,
           }),
           "text_ve-status-bar_gameModeLabel": factoryLabel({
-            text: "Game mode:",
+            text: "Mode:",
             layout: layout.nodes.gameModeLabel,
             onMouseReleasedLeft: function() {
               var controller = Beans.get(BeanVisuController)
@@ -509,6 +519,18 @@ function VEStatusBar(_editor) constructor {
               Visu.settings.setValue("visu.editor.autosave", this.value).save()
               if (!editor.autosave.value) {
                 editor.autosave.timer.time = 0
+              }
+            },
+          }),
+          "text_ve-status-ws": factoryValue({
+            layout: layout.nodes.ws,
+            updateCustom: function() {
+              try {
+                var server = Beans.get(BeanVisuController).server
+                this.label.text = server.isRunning() ? $"ws: {server.port}" : ""
+              } catch (exception) {
+                Logger.error("VEStatusBar", exception.message)
+                this.label.text = ""
               }
             },
           }),

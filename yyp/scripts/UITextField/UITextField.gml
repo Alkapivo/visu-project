@@ -149,7 +149,7 @@ function UITextField(name, json = null) {
 
       var config = gpu_get_colorwriteenable()
       if (this.enableColorWrite) {
-        gpu_set_colorwriteenable(true, true, true, false)
+        GPU.set.colorWrite(true, true, true, false)
       }
 
       this.textField.draw(
@@ -157,7 +157,7 @@ function UITextField(name, json = null) {
         this.context.area.getY() + this.area.getY() 
       )
       
-      gpu_set_colorwriteenable(config[0], config[1], config[2], config[3])
+      GPU.set.colorWrite(config[0], config[1], config[2], config[3])
       return this
     }),
   }, false))

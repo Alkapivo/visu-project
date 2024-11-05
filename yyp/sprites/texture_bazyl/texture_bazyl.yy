@@ -26,7 +26,7 @@
   "origin":0,
   "parent":{
     "name":"bazyl",
-    "path":"folders/core/resource/texture/bazyl.yy",
+    "path":"folders/io.alkapivo.core/resource/texture/bazyl.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",

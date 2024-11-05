@@ -26,7 +26,7 @@
   "origin":4,
   "parent":{
     "name":"coin",
-    "path":"folders/visu/resource/texture/coin.yy",
+    "path":"folders/io.alkapivo.visu/resource/texture/coin.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",

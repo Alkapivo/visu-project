@@ -69,11 +69,29 @@ function VisuTrackLoader(_controller): Service() constructor {
             controller.gridService.dispatcher.execute(new Event("clear-grid"))
             controller.playerService.dispatcher.execute(new Event("clear-player"))
             controller.shaderPipeline.dispatcher.execute(new Event("clear-shaders")).execute(new Event("reset-templates"))
+            controller.shaderBackgroundPipeline.dispatcher.execute(new Event("clear-shaders")).execute(new Event("reset-templates"))
             controller.shroomService.dispatcher.execute(new Event("clear-shrooms")).execute(new Event("reset-templates"))
             controller.bulletService.dispatcher.execute(new Event("clear-bullets")).execute(new Event("reset-templates"))
             controller.coinService.dispatcher.execute(new Event("clear-coins")).execute(new Event("reset-templates"))
             controller.lyricsService.dispatcher.execute(new Event("clear-lyrics")).execute(new Event("reset-templates"))
             controller.particleService.dispatcher.execute(new Event("clear-particles")).execute(new Event("reset-templates"))
+            controller.gridService.executor.tasks.forEach(function(task, iterator, type) {
+              if (task.name == "fade-color" 
+                  && task.state.get("type") == type 
+                  && task.status != TaskStatus.FULLFILLED 
+                  && task.status != TaskStatus.REJECTED) {
+                task.fullfill()
+              }
+            }, "Background")
+            controller.gridService.executor.tasks.forEach(function(task, iterator, type) {
+              if ((task.name == "fade-color" || task.name == "fade-sprite")
+                  && task.state.get("type") == type 
+                  && task.status != TaskStatus.FULLFILLED 
+                  && task.status != TaskStatus.REJECTED) {
+                task.fullfill()
+              }
+            }, "Foreground")
+            
 
             Beans.get(BeanTextureService).dispatcher.execute(new Event("free"))
 
@@ -188,7 +206,22 @@ function VisuTrackLoader(_controller): Service() constructor {
                         var soundIntent = new prototype(json)
                         var soundService = acc.soundService
                         if (Core.getRuntimeType() == RuntimeType.GXGAMES) {
-                          var sound = sound_visu_wasm
+                          var sound = null
+                          switch (soundIntent.file) {
+                            case "4-Just-To-Create-Something.ogg": 
+                              sound = sound_kedy_selma_just_to_create_something
+                              break
+                            case "Passion.ogg":
+                              sound = sound_kedy_selma_passion
+                              break
+                            case "digitalshadowfinalunmixed.ogg": 
+                              sound = sound_zoogies_digitalshadow
+                              break
+                            default:
+                              throw new Exception($"Couldn't find sound for wasm target, {soundIntent.file}")
+                              break
+                          }
+                          
                           soundService.sounds.add(sound, key)
                           return
                         }

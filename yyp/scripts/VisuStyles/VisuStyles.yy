@@ -6,7 +6,7 @@
   "name":"VisuStyles",
   "parent":{
     "name":"ui",
-    "path":"folders/visu/src/ui.yy",
+    "path":"folders/io.alkapivo.visu/src/ui.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

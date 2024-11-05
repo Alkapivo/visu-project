@@ -13,7 +13,7 @@
   "name":"sound_sfx_player_use_bomb",
   "parent":{
     "name":"sfx",
-    "path":"folders/visu/resource/sound/sfx.yy",
+    "path":"folders/io.alkapivo.visu/resource/sound/sfx.yy",
   },
   "preload":false,
   "resourceType":"GMSound",

@@ -6,7 +6,7 @@
   "name":"VisuEditorIO",
   "parent":{
     "name":"editor",
-    "path":"folders/visu/src/editor.yy",
+    "path":"folders/io.alkapivo.visu/src/editor.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

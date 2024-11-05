@@ -6,7 +6,7 @@
   "name":"ShroomServiceTest",
   "parent":{
     "name":"shroom",
-    "path":"folders/visu/test/shroom.yy",
+    "path":"folders/io.alkapivo.visu/test/shroom.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

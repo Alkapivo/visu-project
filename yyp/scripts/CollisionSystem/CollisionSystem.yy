@@ -6,7 +6,7 @@
   "name":"CollisionSystem",
   "parent":{
     "name":"system",
-    "path":"folders/visu/src/ecs/grid/system.yy",
+    "path":"folders/io.alkapivo.visu/src/ecs/grid/system.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

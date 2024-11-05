@@ -6,7 +6,7 @@
   "name":"GridItem",
   "parent":{
     "name":"grid",
-    "path":"folders/visu/src/service/grid.yy",
+    "path":"folders/io.alkapivo.visu/src/service/grid.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

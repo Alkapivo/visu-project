@@ -228,6 +228,14 @@ global.__shader_track_event = {
         })
       }))
     }
+
+    if (Struct.get(data, "shader-config_clear-shaders")) {
+      controller.shaderPipeline.send(new Event("clear-shaders"))
+    }
+
+    if (Struct.get(data, "shader-config_clear-bkg-shaders")) {
+      controller.shaderBackgroundPipeline.send(new Event("clear-shaders"))
+    }
   },
 }
 #macro shader_track_event global.__shader_track_event

@@ -6,7 +6,7 @@
   "name":"StoreItemSubscriber",
   "parent":{
     "name":"store",
-    "path":"folders/core/src/util/store.yy",
+    "path":"folders/io.alkapivo.core/src/util/store.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

@@ -6,7 +6,7 @@
   "name":"VideoService",
   "parent":{
     "name":"video",
-    "path":"folders/core/src/service/video.yy",
+    "path":"folders/io.alkapivo.core/src/service/video.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

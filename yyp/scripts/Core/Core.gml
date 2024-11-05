@@ -106,7 +106,8 @@ function _Core() constructor {
         case GMTexture: return (result == "ref" || result == "number") && sprite_exists(object)
         ///@todo bug, ref will be returned only when gamemaker is initalizing
         case NonNull: return object != null
-        case Number: return result == "number"
+        case Number: return result == "number" || result == "int64"
+        case NetworkSocketID: return result == "number" && object >= 0
         case Prototype: return result == "ref" && is_callable(object)
         case String: return result == "string"
         case Struct: return result == "struct"

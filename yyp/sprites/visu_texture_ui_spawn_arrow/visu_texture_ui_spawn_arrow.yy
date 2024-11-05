@@ -26,7 +26,7 @@
   "origin":4,
   "parent":{
     "name":"checkbox",
-    "path":"folders/visu/resource/texture/editor/checkbox.yy",
+    "path":"folders/io.alkapivo.visu/resource/texture/editor/checkbox.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",

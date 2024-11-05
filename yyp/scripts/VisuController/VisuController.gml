@@ -435,6 +435,13 @@ function VisuController(layerName) constructor {
 
   ///@type {GridECS}
   //gridECS = new GridECS(this) ///@ecs
+  
+  ///@type {Server}
+  server = new Server({
+    type: SocketType.WS,
+    port: int64(Core.getProperty("visu.server.port", "8082")),
+    maxClients: Core.getProperty("visu.server.maxClients", 2),
+  })
 
   ///@type {VisuMenu}
   menu = new VisuMenu()
@@ -559,11 +566,17 @@ function VisuController(layerName) constructor {
         _editor.popupQueue.send(new Event("push", event.data))
       }
     },
+    "spawn-track-event": function(event) {
+      Core.print("event.data.callable", event.data.callable)
+      var callable = Assert.isType(this.trackService.handlers
+        .get(event.data.callable), Callable)
+      callable(event.data.data)
+    },
     "fade-sprite": Callable.run(Struct.get(EVENT_DISPATCHERS, "fade-sprite")),
-  }, {
+  }), {
     enableLogger: true,
     catchException: false,
-  }))
+  })
 
   ///@private
   ///@type {Array<Struct>}
@@ -633,6 +646,10 @@ function VisuController(layerName) constructor {
       .set("menu-select-entry", new SFX("sound_sfx_player_shoot"), 1)
       .set("menu-use-entry", new SFX("sound_sfx_shroom_damage"), 1)
     
+
+    if (Core.getProperty("visu.server.enable", false)) {
+      this.server.run()
+    }
     return this
   }
 
@@ -716,7 +733,7 @@ function VisuController(layerName) constructor {
 
   ///@return {VisuController}
   render = function() {
-    gpu_set_colorwriteenable(true, true, true, true)
+    GPU.set.colorWrite(true, true, true, true)
     if (!this.renderEnabled) {
       return this
     }
@@ -797,11 +814,16 @@ function VisuController(layerName) constructor {
   ///@return {VisuController}
   onNetworkEvent = function() {
     try {
-      var json = json_encode(async_load)
-      var event = JSON.parse(json)
-      var message = buffer_read(event.buffer, buffer_string)
-      Core.print("[onNetworkEvent] event:", event)
-      Core.print("[onNetworkEvent] message:", message)
+      var event = JSON.parse(json_encode(async_load))
+      Logger.debug("onNetworkEvent", "event:", event)
+      if (!Optional.is(Struct.getIfType(event, "buffer", GMBuffer))) {
+        return this
+      }
+
+      var json = JSON.parse(buffer_read(event.buffer, buffer_string))
+      Logger.debug("onNetworkEvent", "json:", json)
+
+      this.send(new Event(json.event, json.data.data))
     } catch (exception) {
       var message = $"'onNetworkEvent' fatal error: {exception.message}"
       this.send(new Event("spawn-popup", { message: message }))

@@ -6,7 +6,7 @@
   "name":"brush_view_wallpaper",
   "parent":{
     "name":"view",
-    "path":"folders/visu/src/editor/service/brush/view.yy",
+    "path":"folders/io.alkapivo.visu/src/editor/service/brush/view.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

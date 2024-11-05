@@ -168,6 +168,18 @@ function brush_grid_config(json = null) {
           { value: 0, target: 2, factor: 0.01, increase: 0 }
         )),
       },
+      "grid-config_clear-player": {
+        type: Boolean,
+        value: Struct.getDefault(json, "grid-config_clear-player", false),
+      },
+      "grid-config_clear-bullets": {
+        type: Boolean,
+        value: Struct.getDefault(json, "grid-config_clear-bullets", false),
+      },
+      "grid-config_clear-coins": {
+        type: Boolean,
+        value: Struct.getDefault(json, "grid-config_clear-coins", false),
+      },
     }),
     components: new Array(Struct, [
       {
@@ -454,6 +466,71 @@ function brush_grid_config(json = null) {
         },
       },
       {
+        name: "grid-config_clear-player",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Clear player",
+            enable: { key: "grid-config_clear-player" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "grid-config_clear-player" },
+          }
+        },
+      },
+      {
+        name: "grid-config_clear-bullets",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Clear bullets",
+            enable: { key: "grid-config_clear-bullets" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "grid-config_clear-bullets" },
+          }
+        },
+      },
+      {
+        name: "grid-config_clear-coins",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Clear coins",
+            enable: { key: "grid-config_clear-coins" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "grid-config_clear-coins" },
+          }
+        },
+      },
+      {
+        name: "horizontal-border",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Horizontal border",
+            backgroundColor: VETheme.color.accentShadow,
+          },
+          checkbox: { backgroundColor: VETheme.color.accentShadow },
+          input: { backgroundColor: VETheme.color.accentShadow },
+        },
+      },
+      {
         name: "grid-config_border-horizontal-width",
         template: VEComponents.get("transform-numeric-property"),
         layout: VELayouts.get("transform-numeric-property"),
@@ -461,7 +538,7 @@ function brush_grid_config(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           title: {
             label: {
-              text: "Vertical border length",
+              text: "Horizontal border length",
               enable: { key: "grid-config_use-border-horizontal-width" },
             },
             checkbox: { 
@@ -510,7 +587,7 @@ function brush_grid_config(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           title: { 
             label: {
-              text: "Vertical border color",
+              text: "Horizontal border color",
               enable: { key: "grid-config_use-border-bottom-color" },
             },
             checkbox: { 
@@ -601,7 +678,7 @@ function brush_grid_config(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           title: {
             label: {
-              text: "Vertical border alpha",
+              text: "Horizontal border alpha",
               enable: { key: "grid-config_use-border-bottom-alpha" },
             },
             checkbox: { 
@@ -650,7 +727,7 @@ function brush_grid_config(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           title: {
             label: {
-              text: "Vertical border size",
+              text: "Horizontal border size",
               enable: { key: "grid-config_use-border-bottom-size" },
             },
             checkbox: { 
@@ -692,6 +769,20 @@ function brush_grid_config(json = null) {
         },
       },
       {
+        name: "vertical-border",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Vertical border",
+            backgroundColor: VETheme.color.accentShadow,
+          },
+          checkbox: { backgroundColor: VETheme.color.accentShadow },
+          input: { backgroundColor: VETheme.color.accentShadow },
+        },
+      },
+      {
         name: "grid-config_border-horizontal-height",
         template: VEComponents.get("transform-numeric-property"),
         layout: VELayouts.get("transform-numeric-property"),
@@ -699,7 +790,7 @@ function brush_grid_config(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           title: {
             label: {
-              text: "Horizontal border length",
+              text: "Vertical border length",
               enable: { key: "grid-config_use-border-horizontal-height" },
             },
             checkbox: { 
@@ -748,7 +839,7 @@ function brush_grid_config(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           title: { 
             label: {
-              text: "Horizontal border color",
+              text: "Vertical border color",
               enable: { key: "grid-config_use-border-horizontal-color" },
             },
             checkbox: { 
@@ -839,7 +930,7 @@ function brush_grid_config(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           title: {
             label: {
-              text: "Horizontal border alpha",
+              text: "Vertical border alpha",
               enable: { key: "grid-config_use-border-horizontal-alpha" },
             },
             checkbox: { 
@@ -888,7 +979,7 @@ function brush_grid_config(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           title: {
             label: {
-              text: "Horizontal border size",
+              text: "Vertical border size",
               enable: { key: "grid-config_use-border-horizontal-size" },
             },
             checkbox: { 

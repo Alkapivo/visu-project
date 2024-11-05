@@ -121,6 +121,10 @@ global.__shroom_track_event = {
         })
       }))
     }
+
+    if (Struct.get(data, "shroom-config_clear-shrooms")) {
+      Beans.get(BeanVisuController).shroomService.send(new Event("clear-shrooms"))
+    }
   },
 }
 #macro shroom_track_event global.__shroom_track_event

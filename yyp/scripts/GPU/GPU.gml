@@ -191,6 +191,7 @@ function _GPU() constructor {
     ///@param {Font} [font]
     ///@param {HAlign} [h]
     ///@param {VAlign} [v]
+    ///@param {Number} [outlineAlphaFactor]
     ///@return {Struct}
     ///@return {GPU}
     text: function(_x, _y, text, color = c_white, outline = null, alpha = 1.0, font = GPU_DEFAULT_FONT, h = HAlign.LEFT, v = VAlign.TOP, outlineAlphaFactor = 1.0) {
@@ -208,14 +209,14 @@ function _GPU() constructor {
 
       if (outline != null) {
         var _alpha = alpha / outlineAlphaFactor
-        draw_text_color(_x + 1, _y + 1, text, outline, outline, outline, outline, alpha / _alpha)
-        draw_text_color(_x - 1, _y - 1, text, outline, outline, outline, outline, alpha / _alpha)
-        draw_text_color(_x    , _y + 1, text, outline, outline, outline, outline, alpha / _alpha)
-        draw_text_color(_x + 1, _y    , text, outline, outline, outline, outline, alpha / _alpha)
-        draw_text_color(_x    , _y - 1, text, outline, outline, outline, outline, alpha / _alpha)
-        draw_text_color(_x - 1, _y    , text, outline, outline, outline, outline, alpha / _alpha)
-        draw_text_color(_x - 1, _y + 1, text, outline, outline, outline, outline, alpha / _alpha)
-        draw_text_color(_x + 1, _y - 1, text, outline, outline, outline, outline, alpha / _alpha)
+        draw_text_color(_x + 1, _y + 1, text, outline, outline, outline, outline, _alpha)
+        draw_text_color(_x - 1, _y - 1, text, outline, outline, outline, outline, _alpha)
+        draw_text_color(_x    , _y + 1, text, outline, outline, outline, outline, _alpha)
+        draw_text_color(_x + 1, _y    , text, outline, outline, outline, outline, _alpha)
+        draw_text_color(_x    , _y - 1, text, outline, outline, outline, outline, _alpha)
+        draw_text_color(_x - 1, _y    , text, outline, outline, outline, outline, _alpha)
+        draw_text_color(_x - 1, _y + 1, text, outline, outline, outline, outline, _alpha)
+        draw_text_color(_x + 1, _y - 1, text, outline, outline, outline, outline, _alpha)
       }
 
       draw_text_color(_x, _y, text, color, color, color, color, alpha)
@@ -291,6 +292,16 @@ function _GPU() constructor {
         return GPU
       },
     },
+
+    ///@param {Boolean} [red]
+    ///@param {Boolean} [green]
+    ///@param {Boolean} [blue]
+    ///@param {Boolean} [alpha]
+    ///@return {GPU}
+    colorWrite: function(red = true, green = true, blue = true, alpha = true) {
+      gpu_set_colorwriteenable(red, green, blue, alpha)
+      return GPU
+    },
   }
 
   ///@type {Struct}
@@ -304,6 +315,17 @@ function _GPU() constructor {
     ///@return {Boolean}
     blendEnable: function() {
       return gpu_get_blendenable()
+    },
+
+    ///@return {Struct}
+    colorWrite: function() {
+      var array = gpu_get_colorwriteenable()
+      return {
+        red: array[0],
+        green: array[1],
+        blue: array[2],
+        alpha: array[3],
+      }
     },
   }
 

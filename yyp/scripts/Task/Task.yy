@@ -6,7 +6,7 @@
   "name":"Task",
   "parent":{
     "name":"task",
-    "path":"folders/core/src/util/task.yy",
+    "path":"folders/io.alkapivo.core/src/util/task.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

@@ -41,9 +41,7 @@ function Track(json, config = null) constructor {
         //Logger.debug("Track", $"Parse channel '{channel.name}' at index {index}")
         return new TrackChannel({ 
           name: Assert.isType(Struct.get(channel, "name"), String),
-          events: GMArray.sort(Assert.isType(Struct.get(channel, "events"), GMArray), function(a, b) {
-            return sign(a.timestamp - b.timestamp) * ceil(abs(a.timestamp - b.timestamp))
-          }),
+          events: Assert.isType(Struct.get(channel, "events"), GMArray),
           index: index,
         }, config)
       }
@@ -182,7 +180,7 @@ function Track(json, config = null) constructor {
               return channel  
             }, null, any)
             .sort(function(a, b) { 
-              return a.index < b.index
+              return a.index <= b.index
             })
             .map(function(channel) { 
               return channel.serialize()
@@ -216,7 +214,7 @@ function TrackChannel(json, config = null) constructor {
   compareEvents = Core.isType(Struct.get(config, "compareEvents"), Callable)
     ? method(this, config.compareEvents)
     : function(a, b) { 
-        return a.timestamp < b.timestamp
+        return a.timestamp <= b.timestamp
       }
 
   ///@type {String}

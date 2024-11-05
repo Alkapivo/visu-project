@@ -1,5 +1,74 @@
 ///@package io.alkapivo.visu
 
+///@param {Struct} [config]
+function TestKeypress(config = {}) constructor {
+
+  ///@type {String}
+  key = Assert.isType(Struct.get(config, "key"), String)
+
+  ///@type {Boolean}
+  enable = false
+
+  ///@type {Array<Number>}
+  durations = new Array(Number, Struct.get(config, "durations"))
+
+  ///@type {Number}
+  luck = clamp(Assert.isType(Struct.get(config, "luck"), Number), 0.0, 1.0)
+
+  ///@type {Timer}
+  timer = new Timer(this.durations.getRandom())
+
+  ///@return {TestKeypress}
+  update = function() {
+    if (!this.timer.finished && this.timer.update().finished) {
+      this.enable = this.luck >= random(1.0)
+      this.timer.reset().setDuration(this.durations.getRandom())
+    }
+
+    return this
+  }
+
+  ///@param {Keyboard}
+  ///@return {TestKeypress}
+  updateKeyboard = function(keyboard) {
+    var key = keyboard.getKey(this.key)
+    if (!Optional.is(key)) {
+      return this
+    }
+
+    if (this.enable) {
+      if (key.pressed && key.on) {
+        key.pressed = false
+      }
+
+      if (key.released) {
+        key.released = false
+      }
+
+      if (!key.on) {
+        key.on = true
+        key.pressed = true
+      }
+    } else {
+      if (key.pressed) {
+        key.pressed = false
+      } 
+
+      if (key.released) {
+        key.released = false
+      }
+
+      if (key.on) {
+        key.on = false
+        key.released = true
+      }
+    }
+
+    return this
+  }
+}
+
+
 ///@param {Struct} [json]
 ///@return {Task}
 function TestEvent_VisuController_load(json = {}) {
@@ -60,6 +129,7 @@ function TestEvent_VisuController_load(json = {}) {
     .whenStart(function(executor) {
       Logger.test("VisuControllerTest", "Start TestEvent_VisuController_load")
       Beans.get(BeanTestRunner).installHooks()
+      Visu.settings.setValue("visu.god-mode", true)
     })
     .whenFinish(function(data) {
       Logger.test("VisuControllerTest", $"TestEvent_VisuController_load: {data}")
@@ -117,12 +187,50 @@ function TestEvent_VisuController_playback(json = {}) {
           if (Core.isType(player, Player)) {
             if (!Struct.getDefault(player, "keyboardHook", false)) {
               Struct.set(player, "keyboardHook", true)
+
+              var keypressMap = new Map(String, TestKeypress, {
+                up: new TestKeypress({
+                  durations: [ 0.1, 0.2, 0.3, 0.5, 0.7, 1.0, 1.1, 1.25, 1.5, 1.7, 2.0 ],
+                  luck: 0.66,
+                  key: "up"
+                }),
+                down: new TestKeypress({
+                  durations: [ 0.1, 0.2, 0.3, 0.5, 0.7, 1.0, 1.1, 1.25, 1.5, 1.7, 2.0 ],
+                  luck: 0.66,
+                  key: "down"
+                }),
+                left: new TestKeypress({
+                  durations: [ 0.1, 0.2, 0.3, 0.5, 0.7, 1.0, 1.1, 1.25, 1.5, 1.7, 2.0 ],
+                  luck: 0.66,
+                  key: "left"
+                }),
+                right: new TestKeypress({
+                  durations: [ 0.1, 0.2, 0.3, 0.5, 0.7, 1.0, 1.1, 1.25, 1.5, 1.7, 2.0 ],
+                  luck: 0.66,
+                  key: "right"
+                }),
+                action: new TestKeypress({
+                  durations: [ 0.1, 0.2, 0.3, 0.5, 0.7, 1.0, 1.1, 1.25, 1.5, 1.7, 2.0 ],
+                  luck: 0.33,
+                  key: "action"
+                }),
+                bomb: new TestKeypress({
+                  durations: [ 0.1, 0.2, 0.3, 0.5, 0.7, 1.0, 1.1, 1.25, 1.5, 1.7, 2.0 ],
+                  luck: 0.15,
+                  key: "bomb"
+                }),
+                focus: new TestKeypress({
+                  durations: [ 0.1, 0.2, 0.3, 0.5, 0.7, 1.0, 1.1, 1.25, 1.5, 1.7, 2.0 ],
+                  luck: 0.50,
+                  key: "focus"
+                }),
+              })
+              Struct.set(player.keyboard, "keypressMap", keypressMap)
               player.keyboard.update = method(player.keyboard, function() {
-                Struct.forEach(this.keys, function(key) {
-                  key.on = choose(true, false)
-                  key.pressed = choose(true, false)
-                  key.released = choose(true, false)
-                })
+                this.keypressMap.forEach(function(keypress, name, keyboard) {
+                  keypress.update().updateKeyboard(keyboard)
+                }, this)
+
                 return this
               })
             }
@@ -148,6 +256,7 @@ function TestEvent_VisuController_playback(json = {}) {
     .whenStart(function(executor) {
       Logger.test("VisuControllerTest", "Start TestEvent_VisuController_playback")
       Beans.get(BeanTestRunner).installHooks()
+      Visu.settings.setValue("visu.god-mode", true)
     })
     .whenFinish(function(data) {
       Logger.test("VisuControllerTest", $"TestEvent_VisuController_playback: {data}")
@@ -238,6 +347,7 @@ function TestEvent_VisuController_rewind(json = {}) {
     .whenStart(function(executor) {
       Logger.test("VisuControllerTest", "TestEvent_VisuController_rewind started")
       Beans.get(BeanTestRunner).installHooks()
+      Visu.settings.setValue("visu.god-mode", true)
     })
     .whenFinish(function(data) {
       Logger.test("VisuControllerTest", $"TestEvent_VisuController_rewind: {data}")
