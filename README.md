@@ -15,13 +15,3 @@ And synced with this repository using [gm-cli](https://github.com/Alkapivo/gm-cl
 # Documentation
 
 Work on the [documentation](https://github.com/Alkapivo/visu-project/wiki/1.-UI-overview) is ongoing, but some of the articles are already pushed to github wiki.
-
-# Releases
-
-| **YouTube** | **Song** | **Date** | **Download track** |
-|:-:|:-:|:-:|:-:|
-| [![IMAGE ALT TEXT](http://img.youtube.com/vi/mSURl1Ab1dA/0.jpg)](http://www.youtube.com/watch?v=mSURl1Ab1dA "Perturbator - Sentient") | [Perturbator - Sentient](https://www.youtube.com/watch?v=oTN6cGmH2yM) | *Released* `2024.06.07`<br>*Updated* `2024.06.26` | TBD |
-| [![IMAGE ALT TEXT](http://img.youtube.com/vi/EXu2Jr_6CNQ/0.jpg)](http://www.youtube.com/watch?v=EXu2Jr_6CNQ "Midbooze - Mare") | [Midbooze - Mare](https://www.youtube.com/watch?v=cTiIiiLs34A) | *Released* `2024.05.31`<br>*Updated* `2024.06.06` | TBD |
-| [![IMAGE ALT TEXT](http://img.youtube.com/vi/FxSHhKtvFsA/0.jpg)](http://www.youtube.com/watch?v=FxSHhKtvFsA "lolratz - KAIDECA") | [lolratz - KAIDECA](https://www.youtube.com/watch?v=uPurp7ijr14) | *Released* `2024.04.30`<br>*Updated* `2024.06.06` | TBD |
-
-
