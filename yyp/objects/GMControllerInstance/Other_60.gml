@@ -7,6 +7,6 @@
       status: async_load[? "status"],
       httpStatus: async_load[? "http_status"],
     }
-    Logger.debug("whyy onTextureLoadedEvent", JSON.stringify(json, { pretty: true }))
+    Logger.debug("onTextureLoadedEvent", JSON.stringify(json, { pretty: true }))
 		this.__onTextureLoadedEvent(new Event("texture-loaded", json))
 	}

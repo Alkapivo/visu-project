@@ -107,14 +107,23 @@ function Surface(config = null) constructor {
   ///@param {Number} [x]
   ///@param {Number} [y]
   ///@param {Number} [alpha]
+  ///@param {GMColor} [blend]
+  ///@param {?BlendConfig} [blendConfig]
   ///@return {Surface}
-  static renderStretched = function(width, height, x = 0, y = 0, alpha = 1.0) {
+  static renderStretched = function(width, height, x = 0, y = 0, alpha = 1.0, blend = c_white, blendConfig = null) {
     if (!Core.isType(this.asset, GMSurface)) {
       Logger.error("Surface", "render fatal error")
       return this
     }
 
-    draw_surface_stretched_ext(this.asset, x, y, width, height, c_white, alpha)
+    if (Optional.is(blendConfig)) {
+      blendConfig.set()
+      draw_surface_stretched_ext(this.asset, x, y, width, height, blend, alpha)
+      blendConfig.reset()
+    } else {
+      draw_surface_stretched_ext(this.asset, x, y, width, height, blend, alpha)
+    }
+
     return this
   }
 

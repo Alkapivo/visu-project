@@ -3,7 +3,7 @@
 varying vec2 v_vTexcoord;
 varying vec4 v_vColour;
 
-uniform vec3 iResolution;
+uniform vec2 iResolution;
 uniform float iTime;
 
 // uv https://www.shadertoy.com/view/M3cSDS

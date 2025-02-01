@@ -83,6 +83,14 @@ function Map(_keyType = any, _valueType = any, _container = null, config = { val
     return this.contains(key) ? this.get(key) : defaultValue
   }
 
+  ///@param {any} key
+  ///@param {Type} type
+  ///@param {any} [defaultValue]
+  ///@return {any}
+  static getIfType = function(key, type, defaultValue = null) {
+    return Struct.getIfType(this.container, key, type, defaultValue)
+  }
+
   ///@param map
   ///@param key
   ///@return {Boolean}

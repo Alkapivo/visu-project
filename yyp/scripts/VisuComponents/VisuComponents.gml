@@ -161,7 +161,7 @@ global.__VisuComponents = new Map(String, Callable, {
             { 
               increment: -1,
               onMouseHoverOver: function(event) {
-                this.sprite.setBlend(ColorUtil.fromHex(VETheme.color.accent).toGMColor())
+                this.sprite.setBlend(ColorUtil.fromHex(VETheme.color.accentLight).toGMColor())
               },
               onMouseHoverOut: function(event) {
                 this.sprite.setBlend(c_white)
@@ -191,7 +191,7 @@ global.__VisuComponents = new Map(String, Callable, {
             { 
               increment: 1,
               onMouseHoverOver: function(event) {
-                this.sprite.setBlend(ColorUtil.fromHex(VETheme.color.accent).toGMColor())
+                this.sprite.setBlend(ColorUtil.fromHex(VETheme.color.accentLight).toGMColor())
               },
               onMouseHoverOut: function(event) {
                 this.sprite.setBlend(c_white)

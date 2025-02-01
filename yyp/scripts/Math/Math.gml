@@ -322,7 +322,7 @@ function _Math() constructor {
   ///@return {Number}
   transformNumber = function(source, target, factor = 1.0) {
     var dir = source < target ? 1 : -1
-    var value = source + DeltaTime.apply(factor * dir)
+    var value = source + (dir * factor)
     return dir > 0
       ? clamp(value, source, target)
       : clamp(value, target, source)

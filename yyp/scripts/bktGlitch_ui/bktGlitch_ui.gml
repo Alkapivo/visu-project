@@ -285,24 +285,24 @@ function __bktgtlich_ui_init() {
 		gpu_set_blendmode(bm_normal);
 	}
 
-	function __bktgtlich_ui_step(rng, factor) {
-		if (rng) {
-		  for (var i = 0; i < array_length(attr); i++) {
+  function __bktgtlich_ui_step(rng, factor) {
+    if (rng) {
+      for (var i = 0; i < array_length(attr); i++) {
         if (i == prop.intensity) {
           continue 
         }
-		    valTo[i]  = random_range(limit[i, 0], limit[i, 1]);
+        valTo[i]  = random_range(limit[i, 0], limit[i, 1]);
         attr[i] = valTo[i] 
-		  }
-		} else {
-			for (var i = 0; i < array_length(attr); i++){
-				if (i == prop.intensity) {
-						continue 
-					}
-					attr[i] = clamp(attr[i] - factor, 0, 1000.0)
-			}
-		}
-	}
+      }
+    } else {
+      for (var i = 0; i < array_length(attr); i++) {
+        if (i == prop.intensity) {
+          continue 
+        }
+        attr[i] = clamp(attr[i] - factor, 0, 1000.0)
+      }
+    }
+  }
 
 	function __bktgtlich_ui_alarm() {
 		logoSeed = random(1);

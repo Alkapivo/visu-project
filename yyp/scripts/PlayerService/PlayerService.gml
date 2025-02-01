@@ -24,15 +24,6 @@ function PlayerService(_controller, config = {}): Service() constructor {
         }),
         mask: Struct.get(event.data, "mask"),
         stats: Struct.get(event.data, "stats"),
-        //keyboard: {
-        //  up: KeyboardKeyType.ARROW_UP,
-        //  down: KeyboardKeyType.ARROW_DOWN,
-        //  left: KeyboardKeyType.ARROW_LEFT,
-        //  right: KeyboardKeyType.ARROW_RIGHT,
-        //  action: "Z",
-        //  bomb: "X",
-        //  focus: KeyboardKeyType.SHIFT,
-        //},
         keyboard: Beans.get(BeanVisuIO).keyboards.get("player"),
         gameModes: {
           racing: JSON.clone(Struct.getDefault(event.data, "racing", {})),
@@ -45,7 +36,6 @@ function PlayerService(_controller, config = {}): Service() constructor {
       var view = gridService.view
       var _x = view.x + (view.width / 2.0)
       var _y = gridService.height - (view.height * 0.25)
-
 
       if (Core.isType(this.player, Player)) {
         if (Struct.get(event.data, "reset-position") != true) {

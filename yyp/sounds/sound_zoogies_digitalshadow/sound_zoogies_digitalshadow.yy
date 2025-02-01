@@ -2,8 +2,8 @@
   "$GMSound":"",
   "%Name":"sound_zoogies_digitalshadow",
   "audioGroupId":{
-    "name":"audiogroup_default",
-    "path":"audiogroups/audiogroup_default",
+    "name":"audiogroup_visu_wasm",
+    "path":"audiogroups/audiogroup_visu_wasm",
   },
   "bitDepth":1,
   "bitRate":128,

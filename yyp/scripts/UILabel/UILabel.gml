@@ -40,10 +40,16 @@ function UILabel(json) constructor {
     ? json.enableColorWrite
     : Core.getProperty("core.ui-service.use-surface-optimalization", false)
 
+  ///@type {Boolean}
+  useScale = Struct.getIfType(json, "useScale", Boolean, true)
+
   ///@param {Number} x
   ///@param {Number} y
+  ///@param {Number} maxWidth
+  ///@param {Number} maxHeight
+  ///@param {Number} [forceScale]
   ///@return {UILabel}
-  render = function(x, y) {  
+  render = function(x, y, maxWidth, maxHeight, forceScale = 1.0) {  
     var _x = x + this.offset.x
     var _y = y + this.offset.y
     var config = gpu_get_colorwriteenable()
@@ -55,7 +61,7 @@ function UILabel(json) constructor {
 
     if (this.font.asset != draw_get_font()) {
       draw_set_font(this.font.asset)
-    }
+    }    
 
     if (this.align.v != draw_get_valign()) {
       draw_set_valign(this.align.v)
@@ -65,18 +71,30 @@ function UILabel(json) constructor {
       draw_set_halign(this.align.h)
     }
 
-    if (this.outline) {
-      draw_text_color(_x + 1, _y + 1, this.text, this.outlineColor, this.outlineColor, this.outlineColor, this.outlineColor, this.alpha)
-      draw_text_color(_x - 1, _y - 1, this.text, this.outlineColor, this.outlineColor, this.outlineColor, this.outlineColor, this.alpha)
-      draw_text_color(_x    , _y + 1, this.text, this.outlineColor, this.outlineColor, this.outlineColor, this.outlineColor, this.alpha)
-      draw_text_color(_x + 1, _y    , this.text, this.outlineColor, this.outlineColor, this.outlineColor, this.outlineColor, this.alpha)
-      draw_text_color(_x    , _y - 1, this.text, this.outlineColor, this.outlineColor, this.outlineColor, this.outlineColor, this.alpha)
-      draw_text_color(_x - 1, _y    , this.text, this.outlineColor, this.outlineColor, this.outlineColor, this.outlineColor, this.alpha)
-      draw_text_color(_x - 1, _y + 1, this.text, this.outlineColor, this.outlineColor, this.outlineColor, this.outlineColor, this.alpha)
-      draw_text_color(_x + 1, _y - 1, this.text, this.outlineColor, this.outlineColor, this.outlineColor, this.outlineColor, this.alpha)
+    var width = string_width(this.text)
+    var height = string_height(this.text)
+    var scale = min(
+      (width > maxWidth ? maxWidth / width : 1.0),
+      (height > maxHeight ? maxHeight / height : 1.0)
+    )
+    if (scale < 1.0) {
+      scale = floor((scale * 0.95) / 0.125) * 0.125
     }
 
-    draw_text_color(_x, _y, this.text, this.color, this.color, this.color, this.color, this.alpha)
+    scale = this.useScale ? scale : forceScale
+
+    if (this.outline) {
+      draw_text_transformed_colour(_x + 1, _y + 1, this.text, scale, scale, 0.0, this.outlineColor, this.outlineColor, this.outlineColor, this.outlineColor, this.alpha)
+      draw_text_transformed_colour(_x - 1, _y - 1, this.text, scale, scale, 0.0, this.outlineColor, this.outlineColor, this.outlineColor, this.outlineColor, this.alpha)
+      draw_text_transformed_colour(_x    , _y + 1, this.text, scale, scale, 0.0, this.outlineColor, this.outlineColor, this.outlineColor, this.outlineColor, this.alpha)
+      draw_text_transformed_colour(_x + 1, _y    , this.text, scale, scale, 0.0, this.outlineColor, this.outlineColor, this.outlineColor, this.outlineColor, this.alpha)
+      draw_text_transformed_colour(_x    , _y - 1, this.text, scale, scale, 0.0, this.outlineColor, this.outlineColor, this.outlineColor, this.outlineColor, this.alpha)
+      draw_text_transformed_colour(_x - 1, _y    , this.text, scale, scale, 0.0, this.outlineColor, this.outlineColor, this.outlineColor, this.outlineColor, this.alpha)
+      draw_text_transformed_colour(_x - 1, _y + 1, this.text, scale, scale, 0.0, this.outlineColor, this.outlineColor, this.outlineColor, this.outlineColor, this.alpha)
+      draw_text_transformed_colour(_x + 1, _y - 1, this.text, scale, scale, 0.0, this.outlineColor, this.outlineColor, this.outlineColor, this.outlineColor, this.alpha)
+    }
+
+    draw_text_transformed_colour(_x, _y, this.text, scale, scale, 0.0, this.color, this.color, this.color, this.color, this.alpha)
     
     GPU.set.colorWrite(config[0], config[1], config[2], config[3]).set.blendEnable(enableBlend)
     return this

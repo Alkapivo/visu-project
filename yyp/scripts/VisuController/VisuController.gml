@@ -78,6 +78,7 @@ function VisuController(layerName) constructor {
             audio_stop_all()
             Beans.get(BeanSoundService).free()
             Beans.get(BeanTextureService).free()
+            controller.trackService.dispatcher.execute(new Event("close-track"))
           },
         },
         update: function(fsm) {
@@ -90,9 +91,9 @@ function VisuController(layerName) constructor {
               }))
             }
           } catch (exception) {
-            var message = $"'load' fatal error: {exception.message}"
+            var message = $"'fsm::update' (state: 'load') fatal error: {exception.message}"
             Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
-            Logger.error("VisuController::FSM", message)
+            Logger.error(BeanVisuController, message)
             fsm.dispatcher.send(new Event("transition", { name: "idle" }))
             fsm.context.loader.fsm.dispatcher.send(new Event("transition", { name: "idle" }))
           }
@@ -147,9 +148,9 @@ function VisuController(layerName) constructor {
             //Assert.areEqual(fsm.context.videoService.getVideo().getStatus(), VideoStatus.PLAYING)
             //Assert.areEqual(fsm.context.trackService.track.getStatus(), TrackStatus.PLAYING)
           } catch (exception) {
-            var message = $"'play': {exception.message}"
+            var message = $"'fsm::update' (state: 'play') fatal error: {exception.message}"
             Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
-            Logger.error("VisuController::FSM", message)
+            Logger.error(BeanVisuController, message)
             fsm.dispatcher.send(new Event("transition", { name: "idle" }))
           }
         },
@@ -197,9 +198,9 @@ function VisuController(layerName) constructor {
             //Assert.areEqual(fsm.context.videoService.video.getStatus(), VideoStatus.PAUSED)
             //Assert.areEqual(fsm.context.trackService.track.getStatus(), TrackStatus.PAUSED)
           } catch (exception) {
-            var message = $"'pause' fatal error: {exception.message}"
+            var message = $"'fsm::update' (state: 'pause') fatal error: {exception.message}"
             Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
-            Logger.error("VisuController", message)
+            Logger.error(BeanVisuController, message)
             fsm.dispatcher.send(new Event("transition", { name: "idle" }))
           }
         },
@@ -307,9 +308,9 @@ function VisuController(layerName) constructor {
               return
             }
           } catch (exception) {
-            var message = $"'rewind' fatal error: {exception.message}"
+            var message = $"'fsm::update' (state: 'rewind') fatal error: {exception.message}"
             Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
-            Logger.error("VisuController", message)
+            Logger.error(BeanVisuController, message)
             fsm.dispatcher.send(new Event("transition", {
               name: this.state.get("resume") ? "play" : "pause",
             }))
@@ -355,8 +356,54 @@ function VisuController(layerName) constructor {
     },
   })
 
+  ///@param {String} name
+  ///@return {Boolean}
+  shaderTemplateExists = function(name) {
+    return this.shaderPipeline.templates.contains(name)
+        || Visu.assets().shaderTemplates.contains(name)  
+  }
+
+  ///@param {String} name
+  ///@return {Boolean}
+  particleTemplateExists = function(name) {
+    return this.particleService.templates.contains(name) 
+        || Visu.assets().particleTemplates.contains(name)  
+  }
+
+  ///@param {String} name
+  ///@return {Boolean}
+  shroomTemplateExists = function(name) {
+    return this.shroomService.templates.contains(name) 
+        || Visu.assets().shroomTemplates.contains(name)
+  }
+
+  ///@param {String} name
+  ///@return {Boolean}
+  coinTemplateExists = function(name) {
+    return this.coinService.templates.contains(name) 
+        || Visu.assets().coinTemplates.contains(name)
+  }   
+
+  ///@param {String} name
+  ///@return {Boolean}
+  subtitleTemplateExists = function(name) {
+    return this.subtitleService.templates.contains(name) 
+        || Visu.assets().subtitleTemplates.contains(name)
+  }   
+
   ///@type {ShaderPipeline}
   shaderBackgroundPipeline = new ShaderPipeline({
+    templates: this.shaderPipeline.templates,
+    getLimit: function() {
+      return Beans.get(BeanVisuController).shaderPipeline.getLimit()
+    },
+    getTemplate: function(name) {
+      return Beans.get(BeanVisuController).shaderPipeline.getTemplate(name)
+    },
+  })
+
+  ///@type {ShaderPipeline}
+  shaderCombinedPipeline = new ShaderPipeline({
     templates: this.shaderPipeline.templates,
     getLimit: function() {
       return Beans.get(BeanVisuController).shaderPipeline.getLimit()
@@ -386,20 +433,31 @@ function VisuController(layerName) constructor {
 
   ///@type {TrackService}
   trackService = new TrackService(this, {
-    handlers: new Map(String, Callable)
+    handlers: new Map(String, Struct)
       .merge(
         DEFAULT_TRACK_EVENT_HANDLERS,
-        new Map(String, Callable, grid_track_event),
-        new Map(String, Callable, shader_track_event),
-        new Map(String, Callable, shroom_track_event),
-        new Map(String, Callable, view_track_event)
-      ),
+        #region Old API
+        new Map(String, Struct, grid_old_track_event),
+        new Map(String, Struct, shader_track_event),
+        new Map(String, Struct, shroom_track_event),
+        new Map(String, Struct, view_old_track_event),
+        #endregion
+        new Map(String, Struct, effect_track_event),
+        new Map(String, Struct, entity_track_event),
+        new Map(String, Struct, grid_track_event),
+        new Map(String, Struct, view_track_event)
+      )
+      .forEach(function(handler) {
+        Struct.set(handler, "parse", Struct.getIfType(handler, "parse", Callable, Lambda.passthrough))
+        Struct.set(handler, "serialize", Struct.getIfType(handler, "serialize", Callable, Struct.serialize))
+        Struct.set(handler, "run", Struct.getIfType(handler, "run", Callable, Lambda.dummy))
+      }),
     isTrackLoaded: function() {
       var stateName = this.context.fsm.getStateName()
       return Core.isType(this.track, Track) 
-        && (stateName == "play" 
-        || stateName == "pause" 
-        || stateName == "paused") 
+          && (stateName == "play" 
+          || stateName == "pause" 
+          || stateName == "paused") 
     },
   })
 
@@ -424,8 +482,8 @@ function VisuController(layerName) constructor {
   ///@type {SFXService}
   sfxService = new SFXService()
 
-  ///@type {LyricsService}
-  lyricsService = new LyricsService(this)
+  ///@type {SubtitleService}
+  subtitleService = new SubtitleService(this)
 
   ///@type {VEBrushService}
   brushService = new VEBrushService()
@@ -434,7 +492,7 @@ function VisuController(layerName) constructor {
   visuRenderer = new VisuRenderer(this)
 
   ///@type {GridECS}
-  //gridECS = new GridECS(this) ///@ecs
+  //gridECS = new GridECS(this) ///@description ecs
   
   ///@type {Server}
   server = new Server({
@@ -493,9 +551,9 @@ function VisuController(layerName) constructor {
         this.menu.send(this.menu.factoryOpenMainMenuEvent())
       }
     } catch (exception) {
-      var message = $"Watchdog throwed an exception: {exception.message}"
+      var message = $"'watchdog' fatal error: {exception.message}"
       this.send(new Event("spawn-popup", { message: message }))
-      Logger.error("VisuController", message)
+      Logger.error(BeanVisuController, message)
     }
 
     return this
@@ -555,7 +613,7 @@ function VisuController(layerName) constructor {
         fsmEvent.setPromise(event.promise)
         event.setPromise(null)
       }
-      this.fsm.dispatcher.send(fsmEvent)
+      this.fsm.dispatcher.execute(fsmEvent)
     },
     "quit": function(event) {
       this.fsm.dispatcher.send(new Event("transition", { name: "quit" }))
@@ -567,7 +625,6 @@ function VisuController(layerName) constructor {
       }
     },
     "spawn-track-event": function(event) {
-      Core.print("event.data.callable", event.data.callable)
       var callable = Assert.isType(this.trackService.handlers
         .get(event.data.callable), Callable)
       callable(event.data.data)
@@ -602,11 +659,12 @@ function VisuController(layerName) constructor {
   gameplayServices = new Array(Struct, GMArray.map([
     "shaderPipeline",
     "shaderBackgroundPipeline",
+    "shaderCombinedPipeline",
     "particleService",
     "trackService",
     "gridService",
-    //"gridECS", ///@ecs
-    "lyricsService",
+    //"gridECS", ///@description ecs
+    "subtitleService",
     "coinService",
   ], function(name, index, controller) {
     Logger.debug(BeanVisuController, $"Load gameplay service '{name}'")
@@ -620,7 +678,7 @@ function VisuController(layerName) constructor {
   ///@return {VisuController}
   init = function() {
     this.displayService.setCaption(game_display_name)
-    Core.debugOverlay(Assert.isType(Core.getProperty("visu.debug", false), Boolean))
+    Core.debugOverlay(Assert.isType(Visu.settings.getValue("visu.debug", false), Boolean))
     var fullscreen = Assert.isType(Visu.settings.getValue("visu.fullscreen", false), Boolean)
     this.displayService
       .resize(
@@ -661,11 +719,24 @@ function VisuController(layerName) constructor {
     try {
       service.struct.update()
     } catch (exception) {
-      var message = $"'update-service-{service.name}' fatal error: {exception.message}"
-      Logger.error("VisuController", message)
+      var message = $"'{service.name}::update' fatal error: {exception.message}"
+      Logger.error(BeanVisuController, message)
       Core.printStackTrace()
       controller.send(new Event("spawn-popup", { message: message }))
-      fsm.dispatcher.send(new Event("transition", { name: "idle" }))
+      controller.fsm.dispatcher.send(new Event("transition", { name: trackService.isTrackLoaded() ? "pause" : "idle" }))
+
+      if (!Beans.exists(BeanVisuEditorIO)) {
+        Beans.add(Beans.factory(BeanVisuEditorIO, GMServiceInstance, layerId,
+          new VisuEditorIO()))
+      }
+      
+      if (!Beans.exists(BeanVisuEditorController)) {
+        Beans.add(Beans.factory(BeanVisuEditorController, GMServiceInstance, layerId,
+          new VisuEditorController()))
+      }
+      var editor = Beans.get(BeanVisuEditorController)
+      editor.renderUI = true
+      editor.send(new Event("open"))
     }
   }
 
@@ -675,7 +746,7 @@ function VisuController(layerName) constructor {
     try {
       if (this.displayService.state == "resized") {
         ///@description reset UI timers after resize to avoid ghost effect
-        this.uiService.containers.forEach(this.resetUIContainerTimer)
+        this.uiService.containers.forEach(this.resetUITimer)
 
         Visu.settings.setValue("visu.fullscreen", this.displayService.getFullscreen()).save()
         if (!this.displayService.getFullscreen()) {
@@ -687,7 +758,7 @@ function VisuController(layerName) constructor {
       }
       this.uiService.update()
     } catch (exception) {
-      var message = $"'updateUIService' set fatal error: {exception.message}"
+      var message = $"'uiService::update' fatal error: {exception.message}"
       Logger.error(BeanVisuController, message)
       Core.printStackTrace()
       this.send(new Event("spawn-popup", { message: message }))
@@ -696,15 +767,35 @@ function VisuController(layerName) constructor {
     return this
   }
 
-  ///@private
-  ///@param {UIContainer}
-  resetUIContainerTimer = function(container) {
-    if (!Optional.is(container.updateTimer)) {
-      return
+  ///@return {VisuController}
+  updateCursor = function() {
+    var cursor = this.displayService.getCursor()
+    var size = this.menu.containers.size()
+    var editor = Beans.get(BeanVisuEditorController)
+    if (Optional.is(editor)) {
+      if (editor.renderUI && cursor == Cursor.NONE) {
+        displayService.setCursor(Cursor.DEFAULT)
+      } else if (!editor.renderUI && size == 0 && cursor != Cursor.NONE) {
+        displayService.setCursor(Cursor.NONE)
+      } else if (!editor.renderUI && size > 0 && cursor == Cursor.NONE) {
+        displayService.setCursor(Cursor.DEFAULT)
+      }
+    } else {
+      if (size == 0 && cursor != Cursor.NONE) {
+        displayService.setCursor(Cursor.NONE)
+      } else if (size > 0 && cursor == Cursor.NONE) {
+        displayService.setCursor(Cursor.DEFAULT)
+      }
     }
 
-    container.surfaceTick.skip()
-    container.updateTimer.time = container.updateTimer.duration
+    return this
+  }
+
+  ///@private
+  ///@param {UI}
+  resetUITimer = function(ui) {
+    ui.surfaceTick.skip()
+    ui.finishUpdateTimer()
   }
 
   ///@param {Event}
@@ -717,12 +808,13 @@ function VisuController(layerName) constructor {
   update = function() {
     this.updateUIService()
     this.services.forEach(this.updateService, this)
+    this.updateCursor()
     var editor = Beans.get(BeanVisuEditorController)
     var state = this.fsm.getStateName()
     if ((this.menu.containers.size() == 0) 
       && (state != "game-over")
       && (state != "paused" 
-      || (Optional.is(editor) && editor.renderUI))) {
+      || (Optional.is(editor) && editor.updateServices))) {
       this.gameplayServices.forEach(this.updateService, this)
     }
     this.visuRenderer.update()
@@ -740,12 +832,12 @@ function VisuController(layerName) constructor {
 
     try {
       //gpu_set_alphatestenable(true) ///@todo investigate
-      //this.gridECS.render() ///@ecs
+      //this.gridECS.render() ///@description ecs
       this.visuRenderer.render()
     } catch (exception) {
-      var message = $"render throws exception: {exception.message}"
+      var message = $"'render' fatal error: {exception.message}"
       Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
-      Logger.error("VisuController", message)
+      Logger.error(BeanVisuController, message)
       GPU.reset.shader()
       GPU.reset.surface()
       GPU.reset.blendMode()
@@ -761,17 +853,17 @@ function VisuController(layerName) constructor {
     }
 
     try {
-      //this.gridECS.renderGUI() ///@ecs
+      //this.gridECS.renderGUI() ///@description ecs
       this.visuRenderer.renderGUI()
     } catch (exception) {
-      var message = $"renderGUI throws exception: {exception.message}"
+      var message = $"'renderGUI' fatal error: {exception.message}"
       Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
-      Logger.error("VisuController", message)
+      Logger.error(BeanVisuController, message)
       GPU.reset.shader()
       GPU.reset.surface()
       GPU.reset.blendMode()
     }
-    
+
     return this
   }
 
@@ -815,19 +907,19 @@ function VisuController(layerName) constructor {
   onNetworkEvent = function() {
     try {
       var event = JSON.parse(json_encode(async_load))
-      Logger.debug("onNetworkEvent", "event:", event)
+      Logger.debug(BeanVisuController, $"'onNetworkEvent' incoming event: {event}")
       if (!Optional.is(Struct.getIfType(event, "buffer", GMBuffer))) {
         return this
       }
 
       var json = JSON.parse(buffer_read(event.buffer, buffer_string))
-      Logger.debug("onNetworkEvent", "json:", json)
+      Logger.debug(BeanVisuController, $"'onNetworkEvent' parse json: {json}")
 
       this.send(new Event(json.event, json.data.data))
     } catch (exception) {
       var message = $"'onNetworkEvent' fatal error: {exception.message}"
       this.send(new Event("spawn-popup", { message: message }))
-      Logger.error("VisuController", message)	
+      Logger.error(BeanVisuController, message)	
     }
 
     return this
@@ -846,10 +938,10 @@ function VisuController(layerName) constructor {
       })
       .forEach(function(struct, key, context) {
         try {
-          Logger.debug(BeanVisuController, $"Free '{key}'")
+          Logger.debug(BeanVisuController, $"'free' (key: '{key}') resolved")
           Callable.run(Struct.get(struct, "free"))
         } catch (exception) {
-          Logger.error(BeanVisuController, $"Unable to free '{key}'. {exception.message}")
+          Logger.error(BeanVisuController, $"'free' (key: '{key}') fatal error: {exception.message}")
         }
       }, this)
     
@@ -858,3 +950,23 @@ function VisuController(layerName) constructor {
 
   this.init()
 }
+
+/*
+Simulate FPS drops with:
+```
+if (keyboard_check(ord("B"))) {
+  if (irandom(100) > 40) {
+    var spd = 15 + irandom(keyboard_check(ord("N")) ? 15 : 45)
+    game_set_speed(spd, gamespeed_fps)
+    Core.print("set spd", spd, "DT", DeltaTime.get())
+  }
+} else {
+  var spd = game_get_speed(gamespeed_fps)
+  if (game_get_speed(gamespeed_fps) < 60) {
+    spd = clamp(spd + choose(1, 0, 1, 0, 0, 2, 0, 1, 0, 0, 0, 0, -1, 0, 1, 1, 0, -1, 1), 15, 60)
+    game_set_speed(spd, gamespeed_fps)
+    Core.print("restore spd60:", spd, "DT", DeltaTime.get())
+  }
+}
+```
+*/

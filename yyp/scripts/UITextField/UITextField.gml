@@ -1,4 +1,4 @@
-///@pacakge io.alkapivo.core.service.ui.item
+///@package io.alkapivo.core.service.ui.item
 
 ///@static
 ///@type {Map<String, String>}
@@ -48,9 +48,7 @@ function UITextField(name, json = null) {
     textField: Core.isType(json, Struct) ? new GMTF(json) : new GMTF(),
 
     ///@type {?Struct}
-    enable: Struct.contains(json, "enable")
-      ? Assert.isType(json.enable, Struct)
-      : null,
+    enable: Struct.getIfType(json, "enable", Struct),
 
     ///@type {Boolean}
     enableColorWrite: Core.getProperty("core.ui-service.use-surface-optimalization", false),
@@ -63,7 +61,7 @@ function UITextField(name, json = null) {
       }
     }), Callable)),
 
-    updateEnable: Assert.isType(Callable.run(UIItemUtils.templates.get("updateEnable")), Callable),
+    updateEnable: Struct.getIfType(json, "updateEnable", Callable, Callable.run(UIItemUtils.templates.get("updateEnable"))),
 
     ///@override
     ///@param {Boolean} [_updateArea]
@@ -109,7 +107,14 @@ function UITextField(name, json = null) {
       var _h = this.textField.style.h
       this.textField.style.w = this.area.getWidth()
       if (this.textField.style.v_grow) {
-        this.area.setHeight(this.textField.style.h)
+        if (this.area.getHeight() != this.textField.style.h) {
+          this.area.setHeight(this.textField.style.h)
+          if (Optional.is(this.context)) {
+            this.context.areaWatchdog.signal()
+            this.context.clampUpdateTimer(0.9500)
+          }
+        }
+
         var layout = Struct.get(this, "layout")
         if (Optional.is(Struct.get(layout, "setHeight"))) {
           layout.setHeight(this.textField.style.h)
@@ -120,6 +125,7 @@ function UITextField(name, json = null) {
 
       if (this.textField.style.w != _w || this.textField.style.h != _h) {
         this.textField.updateStyle()
+        
       }
       
       if (Optional.is(this.context.surface)) {

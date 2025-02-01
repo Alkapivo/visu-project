@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"template_subtitle",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"template_subtitle",
+  "parent":{
+    "name":"template",
+    "path":"folders/io.alkapivo.visu/src/editor/service/template.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

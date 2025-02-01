@@ -21,6 +21,9 @@ function VisuEditorController() constructor {
   ///@type {VEBrushToolbar}
   brushToolbar = new VEBrushToolbar(this)
 
+  ///@type {VESceneConfigPrevie}
+  sceneConfigPreview = new VESceneConfigPreview(this)
+
   ///@type {VEStatusBar}
   statusBar = new VEStatusBar(this)
 
@@ -86,7 +89,7 @@ function VisuEditorController() constructor {
     },
     "render-event": {
       type: Boolean,
-      value: Assert.isType(Visu.settings.getValue("visu.editor.render-event", false), Boolean)
+      value: false,
     },
     "_render-event": {
       type: Boolean,
@@ -94,7 +97,7 @@ function VisuEditorController() constructor {
     },
     "render-timeline": {
       type: Boolean,
-      value:Assert.isType(Visu.settings.getValue("visu.editor.render-timeline", false), Boolean)
+      value: false,
     },
     "_render-timeline": {
       type: Boolean,
@@ -102,7 +105,7 @@ function VisuEditorController() constructor {
     },
     "render-brush": {
       type: Boolean,
-      value: Assert.isType(Visu.settings.getValue("visu.editor.render-brush", false), Boolean)
+      value: false,
     },
     "_render-brush": {
       type: Boolean,
@@ -110,15 +113,41 @@ function VisuEditorController() constructor {
     },
     "render-trackControl": {
       type: Boolean,
-      value: Assert.isType(Visu.settings.getValue("visu.editor.render-track-control", false), Boolean)
+      value: false,
     },
     "_render-trackControl": {
       type: Boolean,
       value: Assert.isType(Visu.settings.getValue("visu.editor.render-track-control", false), Boolean)
     },
+    "render-sceneConfigPreview": {
+      type: Boolean,
+      value: false,
+    },
+    "_render-sceneConfigPreview": {
+      type: Boolean,
+      value: Assert.isType(Visu.settings.getValue("visu.editor.render-scene-config-preview", false), Boolean)
+    },
     "new-channel-name": {
       type: String,
       value: "channel name",
+    },
+    "channel-settings-target": {
+      type: String,
+      value: "",
+    },
+    "channel-settings-name": {
+      type: String,
+      value: "",
+    },
+    "channel-settings-config": {
+      type: String,
+      value: "{}",
+      serialize: function() {
+        return JSON.parse(this.get())
+      },
+      validate: function(value) {
+        Assert.isType(JSON.parse(value), Struct)
+      },
     },
     "selected-event": {
       type: Optional.of(Struct),
@@ -130,17 +159,10 @@ function VisuEditorController() constructor {
     },
     "timeline-zoom": {
       type: Number,
-      value: 10,
+      value: Assert.isType(Visu.settings.getValue("visu.editor.timeline-zoom", 10), Number),
       passthrough: function(value) {
         return clamp(value, 5, 20)
       },
-    },
-    "shader-quality": {
-      type: Number,
-      value: Assert.isType(Visu.settings.getValue("visu.graphics.shader-quality", 0.5), Number),
-      passthrough: function(value) {
-        return clamp(value, 0.2, 1.0)
-      }
     },
   })
 
@@ -180,13 +202,15 @@ function VisuEditorController() constructor {
     }
   }
 
+  updateServices = Core.getProperty("visu.editor.update-services", true)
+
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "open": function(event) {
-      this.store.get("render-event").set(this.store.getValue("_render-event"))
-      this.store.get("render-timeline").set(this.store.getValue("_render-timeline"))
-      this.store.get("render-brush").set(this.store.getValue("_render-brush"))
-      this.store.get("render-trackControl").set(this.store.getValue("_render-trackControl"))
+      //this.store.get("render-event").set(this.store.getValue("_render-event"))
+      //this.store.get("render-timeline").set(this.store.getValue("_render-timeline"))
+      //this.store.get("render-brush").set(this.store.getValue("_render-brush"))
+      //this.store.get("render-trackControl").set(this.store.getValue("_render-trackControl"))
 
       this.requestOpenUI = true
     },
@@ -199,6 +223,8 @@ function VisuEditorController() constructor {
       this.store.get("render-brush").set(false)
       this.store.get("_render-trackControl").set(this.store.getValue("render-trackControl"))
       this.store.get("render-trackControl").set(false)
+      this.store.get("_render-sceneConfigPreview").set(this.store.getValue("render-sceneConfigPreview"))
+      this.store.get("render-sceneConfigPreview").set(false)
       this.store.get("selected-event").set(null)
       this.store.getValue("selected-events").clear()
 
@@ -207,6 +233,7 @@ function VisuEditorController() constructor {
         "trackControl": this.trackControl.send(new Event("close")),
         "brushToolbar": this.brushToolbar.send(new Event("close")),
         "timeline": this.timeline.send(new Event("close")),
+        "sceneConfigPreview": this.sceneConfigPreview.send(new Event("close"))
       }
     },
     "spawn-popup": function(event) {
@@ -230,6 +257,7 @@ function VisuEditorController() constructor {
     "trackControl",
     "brushToolbar",
     "timeline",
+    "sceneConfigPreview",
     "popupQueue",
     "exitModal",
     "newProjectModal",
@@ -247,7 +275,7 @@ function VisuEditorController() constructor {
   layout = null
 
   ///@type {Boolean}
-  renderUI = Assert.isType(Core.getProperty("visu.editor.renderUI", true), Boolean)
+  renderUI = Assert.isType(Core.getProperty("visu.editor.renderUI", false), Boolean)
 
   ///@private
   ///@type {Boolean}
@@ -261,52 +289,96 @@ function VisuEditorController() constructor {
   ///@return {Task}
   factoryInitUITask = function() {
     return new Task("open-editor-ui")
-      .setTimeout(10.0)
-      .setState(new Queue(Struct, [
-        {
-          handler: this.titleBar,
-          event: new Event("open").setData({ 
-            layout: Struct.get(this.layout.nodes, "title-bar")
-          }),
-        },
-        {
-          handler: this.statusBar,
-          event: new Event("open").setData({ 
-            layout: Struct.get(this.layout.nodes, "status-bar")
-          }),
-        },
-        {
-          handler: this.accordion,
-          event: new Event("open").setData({ 
-            layout: Struct.get(this.layout.nodes, "accordion")
-          }),
-        },
-        {
-          handler: this.trackControl,
-          event: new Event("open").setData({ 
-            layout: Struct.get(this.layout.nodes, "track-control")
-          }),
-        },
-        {
-          handler: this.brushToolbar,
-          event: new Event("open").setData({ 
-            layout: Struct.get(this.layout.nodes, "brush-toolbar")
-          }),
-        },
-        {
-          handler: this.timeline,
-          event: new Event("open").setData({ 
-            layout: Struct.get(this.layout.nodes, "timeline")
-          }),
-        }
-      ]))
+      .setTimeout(20.0)
+      .setState({
+        cooldown: new Timer(0., { loop: Infinity }),
+        primary: new Queue(Struct, [
+          {
+            handler: this.titleBar,
+            event: new Event("open").setData({ 
+              layout: Struct.get(this.layout.nodes, "title-bar")
+            }),
+            callback: function(editor) { },
+          },
+          {
+            handler: this.statusBar,
+            event: new Event("open").setData({ 
+              layout: Struct.get(this.layout.nodes, "status-bar")
+            }),
+            callback: function(editor) { },
+          },
+          {
+            handler: this.trackControl,
+            event: new Event("open").setData({ 
+              layout: Struct.get(this.layout.nodes, "track-control")
+            }),
+            callback: function(editor) {
+              editor.store.get("render-trackControl").set(editor.store.getValue("_render-trackControl"))
+            },
+          }
+        ]),
+        events: new Queue(Struct, [
+          {
+            handler: this.accordion,
+            event: new Event("open").setData({ 
+              layout: Struct.get(this.layout.nodes, "accordion")
+            }),
+            cooldown: 0.25,
+            callback: function(editor) {
+              editor.store.get("render-event").set(editor.store.getValue("_render-event"))
+            },
+          },
+          {
+            handler: this.brushToolbar,
+            event: new Event("open").setData({ 
+              layout: Struct.get(this.layout.nodes, "brush-toolbar")
+            }),
+            cooldown: 0.15,
+            callback: function(editor) {
+              editor.store.get("render-brush").set(editor.store.getValue("_render-brush"))
+            },
+          },
+          {
+            handler: this.timeline,
+            event: new Event("open").setData({ 
+              layout: Struct.get(this.layout.nodes, "timeline")
+            }),
+            cooldown: 0.25,
+            callback: function(editor) {
+              editor.store.get("render-timeline").set(editor.store.getValue("_render-timeline"))
+            },
+          },
+          {
+            handler: this.sceneConfigPreview,
+            event: new Event("open").setData({ 
+              layout: Struct.get(this.layout.nodes, "preview-editor")
+            }),
+            cooldown: 0.064,
+            callback: function(editor) {
+              editor.store.get("render-sceneConfigPreview").set(editor.store.getValue("_render-sceneConfigPreview"))
+            },
+          }
+        ]),
+      })
       .whenUpdate(function() {
-        var entry = this.state.pop()
+        if (this.state.primary.size() > 0) {
+          this.state.primary.forEach(function(entry, index, editor) {
+            entry.callback(editor)
+            entry.handler.send(entry.event)
+          }, Beans.get(BeanVisuEditorController))
+        }
+
+        if (!this.state.cooldown.update().finished) {
+          return
+        }
+
+        var entry = this.state.events.pop()
         if (!Optional.is(entry)) {
           this.fullfill()
           return
         }
-
+        this.state.cooldown.duration = entry.cooldown
+        entry.callback(Beans.get(BeanVisuEditorController))
         entry.handler.send(entry.event)
       })
   }
@@ -340,6 +412,12 @@ function VisuEditorController() constructor {
           event: new Event("open").setData({ 
             layout: Struct.get(this.layout.nodes, "timeline")
           }),
+        },
+        {
+          handler: this.sceneConfigPreview,
+          event: new Event("open").setData({ 
+            layout: Struct.get(this.layout.nodes, "preview-editor")
+          }),
         }
       ]))
       .whenUpdate(function() {
@@ -349,6 +427,12 @@ function VisuEditorController() constructor {
           return
         }
 
+        var editor = Beans.get(BeanVisuEditorController)
+        editor.store.get("render-event").set(editor.store.getValue("_render-event"))
+        editor.store.get("render-timeline").set(editor.store.getValue("_render-timeline"))
+        editor.store.get("render-brush").set(editor.store.getValue("_render-brush"))
+        editor.store.get("render-trackControl").set(editor.store.getValue("_render-trackControl"))
+        editor.store.get("render-sceneConfigPreview").set(editor.store.getValue("_render-sceneConfigPreview"))
         entry.handler.send(entry.event)
       })
   }
@@ -356,26 +440,23 @@ function VisuEditorController() constructor {
   ///@private
   ///@return {VisuEditorController}
   init = function() {
-    this.store.get("bpm").addSubscriber(Visu
-      .generateSettingsSubscriber("visu.editor.bpm"))
-    this.store.get("bpm-count").addSubscriber(Visu
-      .generateSettingsSubscriber("visu.editor.bpm-count"))
-    this.store.get("bpm-sub").addSubscriber(Visu
-      .generateSettingsSubscriber("visu.editor.bpm-sub"))
-    this.store.get("snap").addSubscriber(Visu
-      .generateSettingsSubscriber("visu.editor.snap"))
-    this.store.get("render-event").addSubscriber(Visu
-      .generateSettingsSubscriber("visu.editor.render-event"))
-    this.store.get("render-timeline").addSubscriber(Visu
-      .generateSettingsSubscriber("visu.editor.render-timeline"))
-    this.store.get("render-trackControl").addSubscriber(Visu
-      .generateSettingsSubscriber("visu.editor.render-track-control"))
-    this.store.get("render-brush").addSubscriber(Visu
-      .generateSettingsSubscriber("visu.editor.render-brush"))
-    this.store.get("timeline-zoom").addSubscriber(Visu
-      .generateSettingsSubscriber("visu.editor.timeline-zoom"))
+    this.store.get("bpm").addSubscriber(Visu.generateSettingsSubscriber("visu.editor.bpm"))
+    this.store.get("bpm-count").addSubscriber(Visu.generateSettingsSubscriber("visu.editor.bpm-count"))
+    this.store.get("bpm-sub").addSubscriber(Visu.generateSettingsSubscriber("visu.editor.bpm-sub"))
+    this.store.get("snap").addSubscriber(Visu.generateSettingsSubscriber("visu.editor.snap"))
+    this.store.get("render-event").addSubscriber(Visu.generateSettingsSubscriber("visu.editor.render-event"))
+    this.store.get("render-timeline").addSubscriber(Visu.generateSettingsSubscriber("visu.editor.render-timeline"))
+    this.store.get("render-trackControl").addSubscriber(Visu.generateSettingsSubscriber("visu.editor.render-track-control"))
+    this.store.get("render-sceneConfigPreview").addSubscriber(Visu.generateSettingsSubscriber("visu.editor.render-sceneConfigPreview"))
+    this.store.get("render-brush").addSubscriber(Visu.generateSettingsSubscriber("visu.editor.render-brush"))
+    this.store.get("timeline-zoom").addSubscriber(Visu.generateSettingsSubscriber("visu.editor.timeline-zoom"))
 
     this.layout = this.factoryLayout()
+
+    if (this.renderUI) {
+      this.renderUI = Beans.get(BeanVisuController).menu.containers.size() == 0
+    }
+    
     return this
   }
 
@@ -391,18 +472,15 @@ function VisuEditorController() constructor {
       nodes: {
         "title-bar": {
           name: "visu-editor.title-bar",
-          height: function() { return 20 },
+          height: function() { return 24 },
         },
         "accordion": {
           name: "visu-editor.accordion",
           minWidth: 1,
           maxWidth: 1,
           percentageWidth: 0.2,
-          width: function() { 
-            return clamp(this.percentageWidth * this.context.width(), this.minWidth, this.maxWidth)
-          },
-          width: function() { return clamp(max(this.percentageWidth * this.context.width(), 
-            this.minWidth), this.minWidth, this.maxWidth) },
+          width: function() { return round(clamp(max(this.percentageWidth * this.context.width(), 
+            this.minWidth), this.minWidth, this.maxWidth)) },
           height: function() { return Struct.get(this.context.nodes, "timeline").top()
             - Struct.get(this.context.nodes, "title-bar").bottom() },
           y: function() { return Struct.get(this.context.nodes, "title-bar").bottom() },
@@ -431,7 +509,7 @@ function VisuEditorController() constructor {
           name: "visu-editor.track-control",
           percentageHeight: 1.0,
           width: function() { return Struct.get(this.context.nodes, "preview").width() },
-          height: function() { return 76.0 * this.percentageHeight },
+          height: function() { return round(90 * this.percentageHeight) },
           x: function() { return this.context.nodes.preview.x() },
           y: function() { return this.context.nodes.preview.bottom()
             - this.height() },
@@ -442,7 +520,7 @@ function VisuEditorController() constructor {
           maxWidth: 1,
           percentageWidth: 0.2,
           width: function() { 
-            return clamp(this.percentageWidth * this.context.width(), this.minWidth, this.maxWidth)
+            return round(clamp(this.percentageWidth * this.context.width(), this.minWidth, this.maxWidth))
           },
           height: function() { return this.context.height()
             - Struct.get(this.context.nodes, "title-bar").height()
@@ -458,14 +536,14 @@ function VisuEditorController() constructor {
           width: function() { return this.context.width()
             - Struct.get(this.context.nodes, "brush-toolbar").width() },
           height: function() { 
-            return clamp(this.percentageHeight * this.context.height(), this.minHeight, this.maxHeight)
+            return floor(clamp(this.percentageHeight * this.context.height(), this.minHeight, this.maxHeight))
           },
           y: function() { return this.context.height() - this.height()
             - Struct.get(this.context.nodes, "status-bar").height() },
         },
         "status-bar": {
           name: "visu-editor.status-bar",
-          height: function() { return 24 },
+          height: function() { return 28 },
           y: function() { return this.context.height() - this.height() },
         },
       },
@@ -476,19 +554,18 @@ function VisuEditorController() constructor {
   ///@return {VisuEditorController}
   updateLayout = function() {
     static updateAccordion = function(container, key, enable) {
-      if (key == "_ve-accordion_accordion-items") {
+      if (key == "_ve-accordion_accordion-items"
+          || key == "_ve-accordion_accordion-options") {
         container.enable = enable
-      } else {
-        if (!enable) {
-          container.enable = false
-        }
+      } else if (!enable) {
+        container.enable = false
       }
     }
 
     var renderBrush = this.store.getValue("render-brush")
     var brushNode = Struct.get(this.layout.nodes, "brush-toolbar")
-    brushNode.minWidth = renderBrush ? 270 : 0
-    brushNode.maxWidth = renderBrush ? GuiWidth() * 0.37 : 0
+    brushNode.minWidth = renderBrush ? 288 : 0
+    brushNode.maxWidth = renderBrush ? round(GuiWidth() * 0.37) : 0
     this.brushToolbar.containers.forEach(function(container, key, enable) {
       container.enable = enable
     }, renderBrush)
@@ -496,18 +573,28 @@ function VisuEditorController() constructor {
     var renderTimeline = this.store.getValue("render-timeline")
     var timelineNode = Struct.get(this.layout.nodes, "timeline")
     timelineNode.minHeight = renderTimeline ? 96 : 0
-    timelineNode.maxHeight = renderTimeline ? GuiHeight() * 0.41 : 0
-    this.timeline.containers.forEach(function(container, key, enable) {
-      container.enable = enable
-    }, renderTimeline)
+    timelineNode.maxHeight = renderTimeline ? round(GuiHeight() * 0.58) : 0
+    switch (this.timeline.channelsMode) {
+      case "list":
+        this.timeline.containers.forEach(function(container, key, enable) {
+          container.enable = key == "ve-timeline-channel-settings" ? false : enable
+        }, renderTimeline)
+        break
+      case "settings":
+        this.timeline.containers.forEach(function(container, key, enable) {
+          container.enable = key == "ve-timeline-channels" || key == "ve-timeline-form" ? false : enable
+        }, renderTimeline)
+        break
+    }
+    
 
     var renderEvent = this.store.getValue("render-event")
     var accordionNode = Struct.get(this.layout.nodes, "accordion")
-    accordionNode.minWidth = renderEvent ? 270 : 0
-    accordionNode.maxWidth = renderEvent ? GuiWidth() * 0.37 : 0
+    accordionNode.minWidth = renderEvent ? 288 : 0
+    accordionNode.maxWidth = renderEvent ? round(GuiWidth() * 0.37) : 0
     this.accordion.containers.forEach(updateAccordion, renderEvent)
-    this.accordion.eventInspector.containers.forEach(updateAccordion, renderEvent)
     this.accordion.templateToolbar.containers.forEach(updateAccordion, renderEvent)
+    this.accordion.eventInspector.containers.forEach(updateAccordion, renderEvent)
 
     var renderTrackControl = this.store.getValue("render-trackControl")
     var trackControlNode = Struct.get(this.layout.nodes, "track-control")
@@ -515,6 +602,11 @@ function VisuEditorController() constructor {
     this.trackControl.containers.forEach(function(container, key, enable) {
       container.enable = enable
     }, renderTrackControl)
+
+    var renderSceneConfigPreview = this.store.getValue("render-sceneConfigPreview")
+    this.sceneConfigPreview.containers.forEach(function(container, key, enable) {
+      container.enable = enable
+    }, renderSceneConfigPreview)
     
     Struct.set(
       this.layout.nodes, 
@@ -573,6 +665,10 @@ function VisuEditorController() constructor {
   ///@private
   ///@return {VisuEditorController}
   updateUIService = function() {
+    if (this.renderUI) {
+      this.renderUI = Beans.get(BeanVisuController).menu.containers.size() == 0
+    }
+    
     if (this.renderUI && this.requestOpenUI) {
       this.executor.add(this.uiInitialized 
         ? this.factoryOpenUITask()
@@ -586,7 +682,7 @@ function VisuEditorController() constructor {
     try {
       ///@description reset UI timers after resize to avoid ghost effect
       if (Beans.get(BeanVisuController).displayService.state == "resized") {
-        this.uiService.containers.forEach(this.resetUIContainerTimer)
+        this.uiService.containers.forEach(this.resetUITimer)
       }
       this.uiService.update()
     } catch (exception) {
@@ -600,14 +696,10 @@ function VisuEditorController() constructor {
   }
 
   ///@private
-  ///@param {UIContainer}
-  resetUIContainerTimer = function(container) {
-    if (!Optional.is(container.updateTimer)) {
-      return
-    }
-
-    container.surfaceTick.skip()
-    container.updateTimer.time = container.updateTimer.duration
+  ///@param {UI}
+  resetUITimer = function(ui) {
+    ui.surfaceTick.skip()
+    ui.finishUpdateTimer()
   }
 
   ///@param {Event} event
@@ -621,7 +713,7 @@ function VisuEditorController() constructor {
     this.updateDispatcher()
     this.updateExecutor()
     this.updateUIService()
-    this.services.forEach(this.updateService, Beans.get(BeanVisuController))
+    this.services.forEach(this.updateService, this)
     this.updateLayout()
     return this
   }

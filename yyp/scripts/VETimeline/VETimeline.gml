@@ -20,6 +20,9 @@ function VETimeline(_editor) constructor {
   ///@type {Map<String, Containers>}
   containers = new Map(String, UI)
 
+  ///@type {String}
+  channelsMode = "list"
+
   ///@type {TransactionService}
   transactionService = new TransactionService()
 
@@ -176,30 +179,50 @@ function VETimeline(_editor) constructor {
             width: function() { return this.context.width() },
             height: function() { return 7 },
           },
+          resizeHorizontal: {
+            name: "timeline.resizeHorizontal",
+            x: function() { return this.context.nodes.form.right() },
+            y: function() { return 0 },
+            width: function() { return 6 },
+            height: function() { return this.context.height() },
+          },
           form: {
             name: "timeline.form",
             minWidth: 200,
-            maxWidth: 320,
+            maxWidth: 1,
             percentageWidth: 0.2,
-            width: function() { return clamp(
-              max(this.percentageWidth * this.context.context.context.width(), 
-              this.minWidth), this.minWidth, this.maxWidth) },
-            height: function() { return 32 },
+            margin: { top: 2, bottom: 1, left: 3, right: 1 },
+            width: function() { 
+              this.maxWidth = round(GuiWidth() * 0.37) 
+              return ceil(clamp(
+                max(this.percentageWidth * this.context.context.context.width(), this.minWidth), 
+                this.minWidth, 
+                this.maxWidth)) - this.margin.left - this.margin.right - 4
+            },
+            height: function() { return 29 - this.margin.bottom },
             x: function() { return 0 },
-            y: function() { return this.context.y() + this.context.nodes.resize.height() },
-            
+            y: function() { return this.context.y() + this.context.nodes.resize.height() + this.margin.top },
+          },
+          settings: {
+            name: "timeline.settings",
+            margin: { top: 3, bottom: 4, left: 10, right: 0 },
+            width: function() { return this.context.nodes.form.width() - this.margin.left },
+            height: function() { return this.context.height()
+              - this.context.nodes.resize.height() - this.margin.top },
+            x: function() { return this.context.x() + this.margin.left },
+            y: function() { return this.context.y() + this.context.nodes.resize.height() + this.margin.top },
           },
           ruler: {
             name: "timeline.ruler",
-            width: function() { return this.context.width() 
-              - this.context.nodes.form.width()
+            width: function() { return this.context.x() + this.context.width() 
+              - this.context.nodes.resizeHorizontal.right()
               - this.margin.left
               - this.margin.right },
             height: function() { return this.context.nodes.form.height() 
               - this.margin.top
               - this.margin.bottom },
-            margin: { top: 8, bottom: 2, left: 8, right: 8 },
-            x: function() { return this.context.nodes.form.width() + this.margin.left },
+            margin: { top: 8, bottom: 0, left: 2, right: 1 },
+            x: function() { return this.context.nodes.resizeHorizontal.right() + this.margin.left },
             y: function() { return this.context.y() + this.margin.top + this.context.nodes.resize.height() },
           },
           channels: {
@@ -209,25 +232,24 @@ function VETimeline(_editor) constructor {
               - this.margin.left - this.margin.right },
             height: function() { return this.context.height() 
               - this.context.nodes.form.height()
-              - this.context.nodes.resize.height() },
+              - this.context.nodes.form.margin.top
+              - this.context.nodes.form.margin.bottom
+              - this.context.nodes.resize.height()
+              - this.context.nodes.resize.margin.top
+              - this.context.nodes.resize.margin.bottom },
             x: function() { return this.context.x() + this.margin.left },
-            y: function() { return this.context.nodes.ruler.bottom() },
+            y: function() { return this.context.nodes.form.bottom() },
           },
           events: {
             name: "timeline.events",
-            width: function() { return this.context.width() 
-              - this.context.nodes.channels.width()
-              - this.context.nodes.channels.margin.left
-              - this.context.nodes.channels.margin.right
-              - this.margin.left
-              - this.margin.right },
+            width: function() { return this.context.nodes.ruler.width() },
             height: function() { return this.context.height() 
               - this.context.nodes.ruler.height()
               - this.context.nodes.resize.height() - 12 },
-            margin: { top: 0, bottom: 0, left: 8, right: 8 },
-            x: function() { return this.context.nodes.channels.right() 
+            margin: { top: 0, bottom: 0, left: 2, right: 1 },
+            x: function() { return this.context.nodes.resizeHorizontal.right() 
               + this.margin.left},
-            y: function() { return this.context.nodes.ruler.bottom() },
+            y: function() { return this.context.nodes.form.bottom() + this.margin.bottom },
           }
         }
       }, 
@@ -246,11 +268,12 @@ function VETimeline(_editor) constructor {
         name: "_ve-timeline-background",
         state: new Map(String, any, {
           "background-alpha": 1.0,
-          "background-color": ColorUtil.fromHex(VETheme.color.darkShadow).toGMColor(),
+          "background-color": ColorUtil.fromHex(VETheme.color.sideDark).toGMColor(),
 
         }),
         controller: controller,
-        updateTimer: new Timer(FRAME_MS * 6, { loop: Infinity, shuffle: true }),
+        updateTimer: new Timer(FRAME_MS * Core.getProperty("visu.editor.ui.timeline.background.updateTimer", 2.0), { loop: Infinity, shuffle: true }),
+        updateTimerCooldown: Core.getProperty("visu.editor.ui.timeline.background.updateTimer.cooldown", 4.0),
         layout: layout.nodes.background,
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
         render: Callable.run(UIUtil.renderTemplates.get("renderDefault")),
@@ -258,7 +281,7 @@ function VETimeline(_editor) constructor {
           "resize_timeline": {
             type: UIButton,
             layout: layout.nodes.resize,
-            backgroundColor: VETheme.color.primary,
+            backgroundColor: VETheme.color.primaryShadow,
             clipboard: {
               name: "resize_timeline",
               drag: function() {
@@ -275,30 +298,26 @@ function VETimeline(_editor) constructor {
                   return
                 }
 
-                container.surfaceTick.skip()
-                container.updateTimer.time = container.updateTimer.duration
+                //container.surfaceTick.skip()
+                //container.updateTimer.time = container.updateTimer.duration + random(container.updateTimer.duration / 2.0)
+                container.updateTimer.time = clamp(container.updateTimer.time, container.updateTimer.duration * 0.9500, container.updateTimer.duration * 2.0)
               }
 
-              if (MouseUtil.getClipboard() == this.clipboard) {
+              var editorIO = Beans.get(BeanVisuEditorIO)
+              var mouse = editorIO.mouse
+              if (mouse.hasMoved() && mouse.getClipboard() == this.clipboard) {
                 this.updateLayout(MouseUtil.getMouseY())
-                this.context.controller.containers.forEach(function(container) {
-                  if (!Optional.is(container.updateTimer)) {
-                    return
-                  }
-
-                  container.surfaceTick.skip()
-                  container.updateTimer.time = container.updateTimer.duration
-                })
+                this.context.controller.containers.forEach(UIUtil.clampUpdateTimerToCooldown, this.context.updateTimerCooldown)
 
                 // reset accordion timer to avoid ghost effect,
                 // because timeline height is affecting accordion height
                 var accordion = Beans.get(BeanVisuEditorController).accordion
-                accordion.containers.forEach(resetContainerTimer)
-                accordion.eventInspector.containers.forEach(resetContainerTimer)
-                accordion.templateToolbar.containers.forEach(resetContainerTimer)
+                accordion.containers.forEach(UIUtil.clampUpdateTimerToCooldown, this.context.updateTimerCooldown)
+                accordion.eventInspector.containers.forEach(UIUtil.clampUpdateTimerToCooldown, this.context.updateTimerCooldown)
+                accordion.templateToolbar.containers.forEach(UIUtil.clampUpdateTimerToCooldown, this.context.updateTimerCooldown)
 
                 if (!mouse_check_button(mb_left)) {
-                  MouseUtil.clearClipboard()
+                  Beans.get(BeanVisuEditorIO).mouse.clearClipboard()
                   Beans.get(BeanVisuController).displayService.setCursor(Cursor.DEFAULT)
                 }
               }
@@ -311,11 +330,84 @@ function VETimeline(_editor) constructor {
 
               var events = editor.uiService.find("ve-timeline-events")
               if (Core.isType(events, UI) && Optional.is(events.updateTimer)) {
-                events.updateTimer.finish()
+                UIUtil.clampUpdateTimerToCooldown(events, "ve-timeline-events", this.context.updateTimerCooldown)
+                //events.updateTimer.time = events.updateTimer.duration + random(events.updateTimer.duration / 2.0)
               }
             }),
             onMousePressedLeft: function(event) {
-              MouseUtil.setClipboard(this.clipboard)
+              Beans.get(BeanVisuEditorIO).mouse.setClipboard(this.clipboard)
+            },
+            onMouseHoverOver: function(event) {
+              if (!mouse_check_button(mb_left)) {
+                this.clipboard.drag()
+              }
+            },
+            onMouseHoverOut: function(event) {
+              if (!mouse_check_button(mb_left)) {
+                this.clipboard.drop()
+              }
+            },
+          },
+          "resize_horizontal": {
+            type: UIButton,
+            layout: layout.nodes.resizeHorizontal,
+            backgroundColor: VETheme.color.primaryShadow,
+            clipboard: {
+              name: "resize_horizontal",
+              drag: function() {
+                Beans.get(BeanVisuController).displayService.setCursor(Cursor.RESIZE_HORIZONTAL)
+              },
+              drop: function() {
+                Beans.get(BeanVisuController).displayService.setCursor(Cursor.DEFAULT)
+              }
+            },
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            updateCustom: function() {
+              static resetContainerTimer = function(container) {
+                if (!Optional.is(container.updateTimer)) {
+                  return
+                }
+
+                //container.surfaceTick.skip()
+                //container.updateTimer.time = container.updateTimer.duration + random(container.updateTimer.duration / 2.0)
+                container.updateTimer.time = clamp(container.updateTimer.time, container.updateTimer.duration * 0.9500, container.updateTimer.duration * 2.0)
+              }
+
+              var editorIO = Beans.get(BeanVisuEditorIO)
+              var mouse = editorIO.mouse
+              if (mouse.hasMoved() && mouse.getClipboard() == this.clipboard) {
+                this.updateLayout(MouseUtil.getMouseX())
+                this.context.controller.containers.forEach(UIUtil.clampUpdateTimerToCooldown, this.context.updateTimerCooldown)
+
+                // reset accordion timer to avoid ghost effect,
+                // because timeline height is affecting accordion height
+                var accordion = Beans.get(BeanVisuEditorController).accordion
+                accordion.containers.forEach(UIUtil.clampUpdateTimerToCooldown, this.context.updateTimerCooldown)
+                accordion.eventInspector.containers.forEach(UIUtil.clampUpdateTimerToCooldown, this.context.updateTimerCooldown)
+                accordion.templateToolbar.containers.forEach(UIUtil.clampUpdateTimerToCooldown, this.context.updateTimerCooldown)
+
+                if (!mouse_check_button(mb_left)) {
+                  Beans.get(BeanVisuEditorIO).mouse.clearClipboard()
+                  Beans.get(BeanVisuController).displayService.setCursor(Cursor.DEFAULT)
+                }
+              }
+            },
+            updateLayout: new BindIntent(function(position) {
+              var ui = this.context
+              var nodes = ui.layout.context.nodes
+              var percentageWidth = abs(1.0 - ((GuiWidth() - position) / GuiWidth()))
+              if (nodes.form.percentageWidth == percentageWidth 
+                  && nodes.settings.percentageWidth == percentageWidth) {
+                return
+              }
+
+              nodes.form.percentageWidth = percentageWidth
+              nodes.settings.percentageWidth = percentageWidth
+              ui.areaWatchdog.signal()
+              ui.controller.containers.forEach(UIUtil.clampUpdateTimerToCooldown, ui.updateTimerCooldown)
+            }),
+            onMousePressedLeft: function(event) {
+              Beans.get(BeanVisuEditorIO).mouse.setClipboard(this.clipboard)
             },
             onMouseHoverOver: function(event) {
               if (!mouse_check_button(mb_left)) {
@@ -333,10 +425,10 @@ function VETimeline(_editor) constructor {
       "ve-timeline-form": {
         name: "ve-timeline-form",
         state: new Map(String, any, {
-          "background-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+          "background-color": ColorUtil.fromHex(VETheme.color.side).toGMColor(),
           "store": Beans.get(BeanVisuEditorController).store,
         }),
-        updateTimer: new Timer(FRAME_MS * 6, { loop: Infinity, shuffle: true }),
+        updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
         controller: controller,
         layout: layout.nodes.form,
         timeline: controller,
@@ -348,13 +440,19 @@ function VETimeline(_editor) constructor {
               new UIComponent({
                 name: "ve-timeline-form",  
                 template: VEComponents.get("text-field-button"),
-                layout: VELayouts.get("text-field-button"),
+                layout: VELayouts.get("text-field-button-channel"),
                 config: { 
                   layout: { type: UILayoutType.VERTICAL },
                   label: { text: "Name" },
                   field: { store: { key: "new-channel-name" } },
                   button: { 
                     label: { text: "Add" },
+                    onMouseHoverOver: function(event) {
+                      this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+                    },
+                    onMouseHoverOut: function(event) {
+                      this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+                    },
                     callback: function() {
                       var initialized = this.context.controller.containers
                         .get("ve-timeline-events").state
@@ -382,11 +480,11 @@ function VETimeline(_editor) constructor {
       "ve-timeline-channels": {
         name: "ve-timeline-channels",
         state: new Map(String, any, {
-          "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
+          "background-color": ColorUtil.fromHex(VETheme.color.side).toGMColor(),
           "store": Beans.get(BeanVisuEditorController).store,
           "dragItem": null,
         }),
-        updateTimer: new Timer(FRAME_MS * 60, { loop: Infinity, shuffle: true }),
+        updateTimer: new Timer(FRAME_MS * Core.getProperty("visu.editor.ui.timeline.channels.updateTimer", 60), { loop: Infinity, shuffle: true }),
         controller: controller,
         layout: layout.nodes.channels,
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
@@ -428,29 +526,47 @@ function VETimeline(_editor) constructor {
         _onMouseWheelDown: new BindIntent(Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelDownY"))),
         onMousePressedLeft: function(event) {
           this._onMousePressedLeft(event)
-          var events = this.controller.containers.get("ve-timeline-events")
-          events.offset.y = this.offset.y
+          this.finishUpdateTimer()
 
-          if (Optional.is(events.updateTimer)) {
-            events.updateTimer.finish()
+          var events = this.controller.containers.get("ve-timeline-events")
+          if (Optional.is(events)) {
+            events.offset.y = this.offset.y
+            events.finishUpdateTimer()
           }
         },
         onMouseWheelUp: function(event) {
           this._onMouseWheelUp(event)
+          this.finishUpdateTimer()
+
           var events = this.controller.containers.get("ve-timeline-events")
-          events.offset.y = this.offset.y
-          events.updateTimer.finish()
+          if (Optional.is(events)) {
+            events.offset.y = this.offset.y
+            events.finishUpdateTimer()
+          }
         },
         onMouseWheelDown: function(event) {
           this._onMouseWheelDown(event)
+          this.finishUpdateTimer()
+
           var events = this.controller.containers.get("ve-timeline-events")
-          events.offset.y = this.offset.y
-          
-          if (Optional.is(events.updateTimer)) {
-            events.updateTimer.finish()
+          if (Optional.is(events)) {
+            events.offset.y = this.offset.y
+            events.finishUpdateTimer()
           }
         },
         onMouseDragLeft: function(event) {
+          var mouse = Beans.get(BeanVisuEditorIO).mouse
+          var name = Struct.get(mouse.getClipboard(), "name")
+          if (name == "resize_accordion"
+              || name == "resize_brush_toolbar"
+              || name == "resize_brush_inspector"
+              || name == "resize_template_inspector"
+              || name == "resize_timeline"
+              || name == "resize_horizontal"
+              || name == "resize_template_title") {
+            return
+          }
+
           var initialized = this.controller.containers
             .get("ve-timeline-events").state
             .get("initialized")
@@ -470,7 +586,7 @@ function VETimeline(_editor) constructor {
 
           if (Optional.is(component)) {
             this.state.set("dragItem", component)
-            MouseUtil.setClipboard(component)
+            Beans.get(BeanVisuEditorIO).mouse.setClipboard(component)
           }
         },
         onMouseDropLeft: function(event) {
@@ -482,9 +598,9 @@ function VETimeline(_editor) constructor {
           }
 
           var dragItem = this.state.get("dragItem")
-          if (Optional.is(dragItem) && MouseUtil.getClipboard() == dragItem) {
+          if (Optional.is(dragItem) && Beans.get(BeanVisuEditorIO).mouse.getClipboard() == dragItem) {
             this.state.set("dragItem", null)
-            MouseUtil.setClipboard(null)
+            Beans.get(BeanVisuEditorIO).mouse.setClipboard(null)
 
             var component = this.collection.components.find(function(component) {
               var text = component.items.find(function(item) {
@@ -517,17 +633,25 @@ function VETimeline(_editor) constructor {
                 }, track.channels)
 
               this.onInit()
-              if (Optional.is(this.updateTimer)) {
-                this.updateTimer.finish()
-              }
+              this.finishUpdateTimer()
 
               var events = this.controller.containers.get("ve-timeline-events")
-              events.onInit()
-
-              if (Optional.is(events.updateTimer)) {
-                events.updateTimer.finish()
+              if (Optional.is(events)) {
+                events.onInit()
+                events.finishUpdateTimer()
               }
             }
+          } else {
+            var mouse = Beans.get(BeanVisuEditorIO).mouse
+            var dropEvent = mouse.getClipboard()
+            if (Core.isType(dropEvent, Promise)) {
+              dropEvent.fullfill()
+            }
+
+            if (Core.isType(Struct.get(dropEvent, "drop"), Callable)) {
+              dropEvent.drop()
+            }
+            mouse.clearClipboard()
           }
         },
         onInit: function() {
@@ -564,16 +688,43 @@ function VETimeline(_editor) constructor {
             template: VEComponents.get("channel-entry"),
             layout: VELayouts.get("channel-entry"),
             config: {
-              label: { 
-                text: name,
-                colorHoverOver: VETheme.color.accentShadow,
-                colorHoverOut: VETheme.color.primaryShadow,
-              },
-              button: { 
-                sprite: {
-                  name: "texture_ve_icon_trash",
-                  blend: VETheme.color.textShadow,
+              label: { text: name },
+              settings: {
+                sprite: { name: "texture_ve_icon_settings" },
+                callback: function() {
+                  if (!Core.isType(Struct.get(this, "callbackData"), String)) {
+                    return
+                  }
+
+                  var channel = Beans.get(BeanVisuController).trackService.track.channels
+                    .find(function(channel, name, target) {
+                      return name == target
+                    }, this.callbackData)
+                  if (!Core.isType(channel, TrackChannel)) {
+                    return
+                  }
+                  
+                  var editor = Beans.get(BeanVisuEditorController)
+                  var target = editor.store.get("channel-settings-target")
+                  var name = editor.store.get("channel-settings-name")
+                  var config = editor.store.get("channel-settings-config")
+                  if (!Core.isType(target, StoreItem)
+                      || !Core.isType(name, StoreItem)
+                      || !Core.isType(config, StoreItem)) {
+                    return
+                  }
+
+                  config.set(JSON.stringify((Core.isType(Struct.get(channel.settings, "serialize"), Callable)
+                    ? channel.settings.serialize()
+                    : channel.settings), { pretty: true } ))
+                  target.set(this.callbackData)
+                  name.set(this.callbackData)
+                  this.context.controller.channelsMode = "settings"
                 },
+                callbackData: name,
+              },
+              remove: {
+                sprite: { name: "texture_ve_icon_trash" },
                 callback: function() {
                   this.context.removeChannel(this.component.name)
                 },
@@ -613,10 +764,218 @@ function VETimeline(_editor) constructor {
           
         }),
       },
+      "ve-timeline-channel-settings": {
+        name: "ve-timeline-channel-settings",
+        state: new Map(String, any, {
+          "background-color": ColorUtil.fromHex(VETheme.color.side).toGMColor(),
+          "store": Beans.get(BeanVisuEditorController).store,
+        }),
+        updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
+        controller: controller,
+        layout: layout.nodes.settings,
+        timeline: controller,
+        scrollbarY: { align: HAlign.LEFT },
+        updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
+        renderItem: Callable.run(UIUtil.renderTemplates.get("renderItemDefaultScrollable")),
+        render: Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable")),
+        onMousePressedLeft: Callable.run(UIUtil.mouseEventTemplates.get("onMouseScrollbarY")),
+        onMouseWheelUp: Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelUpY")),
+        onMouseWheelDown: Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelDownY")),
+        onInit: function() {
+          this.addUIComponents(
+            new Array(Struct, [
+              new UIComponent({
+                name: "ve-timeline-channel-settings-title",
+                template: VEComponents.get("property"),
+                layout: VELayouts.get("property"),
+                config: { 
+                  layout: { type: UILayoutType.VERTICAL },
+                  label: { text: "Edit channel" },
+                },
+              }),
+              new UIComponent({
+                name: "ve-timeline-channel-settings-name",  
+                template: VEComponents.get("text-field"),
+                layout: VELayouts.get("text-field"),
+                config: { 
+                  layout: { 
+                    type: UILayoutType.VERTICAL,
+                    margin: { top: 4 },
+                  },
+                  label: { text: "Name" },
+                  field: { store: { key: "channel-settings-name" } },
+                },
+              }),
+              new UIComponent({
+                name: "ve-timeline-channel-settings-name-line-h",
+                template: VEComponents.get("line-h"),
+                layout: VELayouts.get("line-h"),
+                config: { layout: { type: UILayoutType.VERTICAL } },
+              }),
+              new UIComponent({
+                name: "ve-timeline-channel-settings-config-title",  
+                template: VEComponents.get("property"),
+                layout: VELayouts.get("property"),
+                config: { 
+                  layout: { type: UILayoutType.VERTICAL },
+                  label: { 
+                    text: "Config",
+                    backgroundColor: VETheme.color.accentShadow,
+                  },
+                  checkbox: {
+                    backgroundColor: VETheme.color.accentShadow,
+                  },
+                  input: {
+                    backgroundColor: VETheme.color.accentShadow,
+                  },
+                },
+              }),
+              new UIComponent({
+                name: "ve-timeline-channel-settings-config",
+                template: VEComponents.get("text-area"),
+                layout: VELayouts.get("text-area"),
+                config: { 
+                  layout: { type: UILayoutType.VERTICAL },
+                  field: { 
+                    v_grow: true,
+                    w_min: 224,
+                    store: { key: "channel-settings-config" },
+                    updateCustom: UIItemUtils.textField.getUpdateJSONTextArea(),
+                  },
+                },
+              }),
+              new UIComponent({
+                name: "ve-timeline-channel-settings-config-line-h",
+                template: VEComponents.get("line-h"),
+                layout: VELayouts.get("line-h"),
+                config: { layout: { type: UILayoutType.VERTICAL } },
+              }),
+              new UIComponent({
+                name: "ve-timeline-channel-settings-apply",
+                template: VEComponents.get("button"),
+                layout: VELayouts.get("button"),
+                config: {
+                  label: {
+                    font: "font_inter_10_bold",
+                    text: "Apply",
+                  },
+                  callback: function() {
+                    this.context.timeline.channelsMode = "list"
+                    if (Core.isType(GMTFContext.get(), GMTF)) {
+                      if (Core.isType(GMTFContext.get().uiItem, UIItem)) {
+                        GMTFContext.get().uiItem.update()
+                      }
+                      GMTFContext.get().unfocus()
+                    }
+
+                    var editor = Beans.get(BeanVisuEditorController)
+                    var target = editor.store.get("channel-settings-target")
+                    var name = editor.store.get("channel-settings-name")
+                    var config = editor.store.get("channel-settings-config")
+                    if (!Core.isType(target, StoreItem)
+                        || !Core.isType(name, StoreItem)
+                        || !Core.isType(config, StoreItem)) {
+                      return
+                    }
+  
+                    var channels = Beans.get(BeanVisuController).trackService.track.channels
+                    var channel = channels.get(target.get())
+                    if (!Core.isType(channel, TrackChannel)) {
+                      return
+                    }
+
+                    var containers = this.context.controller.containers
+                    var channelsContainer = containers.get("ve-timeline-channels")
+                    var eventsContainer = containers.get("ve-timeline-events")
+                    if (!Core.isType(channelsContainer, UI)
+                        || !Core.isType(eventsContainer, UI)) {
+                      return
+                    }
+
+                    var settings = channel.parseSettings(JSON.parse(config.get()))
+                    if (!Core.isType(settings, Struct)) {
+                      return
+                    }
+                    channel.settings = settings
+
+                    if (name.get() != target.get() && !channels.contains(name.get())) {
+                      channels.remove(channel.name)
+                      channel.name = name.get()
+                      channels.set(channel.name, channel)
+                      channelsContainer.onInit()
+                      eventsContainer.onInit()
+                    }
+                  },
+                  layout: { type: UILayoutType.VERTICAL, height: function() { return 28 } },
+                  colorHoverOver: VETheme.color.primaryShadow,
+                  colorHoverOut: VETheme.color.primaryDark,
+                  backgroundColor: VETheme.color.primaryDark,
+                  backgroundMargin: { top: 1, bottom: 2, left: 4, right: 5 },
+                  onMouseHoverOver: function(event) {
+                    this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+                  },
+                  onMouseHoverOut: function(event) {
+                    this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+                  },
+                },
+              }),
+              new UIComponent({
+                name: "ve-timeline-channel-settings-discard",
+                template: VEComponents.get("button"),
+                layout: VELayouts.get("button"),
+                config: {
+                  label: {
+                    font: "font_inter_10_bold",
+                    text: "Discard",
+                  },
+                  callback: function() {
+                    this.context.timeline.channelsMode = "list"
+                    if (Core.isType(GMTFContext.get(), GMTF)) {
+                      if (Core.isType(GMTFContext.get().uiItem, UIItem)) {
+                        GMTFContext.get().uiItem.update()
+                      }
+                      GMTFContext.get().unfocus()
+                    }
+
+                    var editor = Beans.get(BeanVisuEditorController)
+                    var target = editor.store.get("channel-settings-target")
+                    var name = editor.store.get("channel-settings-name")
+                    var config = editor.store.get("channel-settings-config")
+                    if (!Core.isType(target, StoreItem)
+                        || !Core.isType(name, StoreItem)
+                        || !Core.isType(config, StoreItem)) {
+                      return
+                    }
+
+                    target.set("")
+                    name.set("")
+                    config.set("{}")
+                  },
+                  layout: { type: UILayoutType.VERTICAL, height: function() { return 28 } },
+                  colorHoverOver: VETheme.color.deny,
+                  colorHoverOut: VETheme.color.denyShadow,
+                  backgroundColor: VETheme.color.denyShadow,
+                  backgroundMargin: { top: 2, bottom: 3, left: 4, right: 5 },
+                  onMouseHoverOver: function(event) {
+                    this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+                  },
+                  onMouseHoverOut: function(event) {
+                    this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+                  },
+                },
+              })
+            ]),
+            new UILayout({
+              area: this.area,
+              width: function() { return this.area.getWidth() },
+            })
+          )
+        }
+      },
       "ve-timeline-events": {
         name: "ve-timeline-events",
         state: new Map(String, any, {
-          "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
+          "background-color": ColorUtil.fromHex(VETheme.color.side).toGMColor(),
           "store": Beans.get(BeanVisuEditorController).store,
           "chunkService": controller.factoryChunkService(),
           "viewSize": Beans.get(BeanVisuEditorController).store.getValue("timeline-zoom"),
@@ -626,12 +985,13 @@ function VETimeline(_editor) constructor {
           "time": null,
           "lines-alpha": 1.0,
           "lines-thickness": 0.2,
-          "lines-color": ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
-          "bkg-color": ColorUtil.fromHex(VETheme.color.primaryShadow).toGMColor(),
+          "lines-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+          "lines-color-accentLight": ColorUtil.parse(VETheme.color.primaryLight).toGMColor(),
+          "bkg-color": ColorUtil.parse(VETheme.color.sideLight).toGMColor(),//ColorUtil.fromHex(VETheme.color.primaryShadow).toGMColor(),
           "initialized": false,
           "initializeChannels": false,
         }),
-        updateTimer: new Timer(FRAME_MS * 60, { loop: Infinity }),
+        updateTimer: new Timer(FRAME_MS * Core.getProperty("visu.editor.ui.timeline.timeline-events.updateTimer", 60), { loop: Infinity }),
         controller: controller,
         layout: layout.nodes.events,
         lastIndex: 0,
@@ -645,9 +1005,11 @@ function VETimeline(_editor) constructor {
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
         updateCustom: function() {
           var store = Beans.get(BeanVisuEditorController).store
-          if (mouse_check_button(mb_right) 
-            || (mouse_check_button(mb_left) 
-            && store.getValue("tool") == ToolType.ERASE)) {
+          //if ((mouse_check_button(mb_right) && !keyboard_check(vk_control))
+          //    || (mouse_check_button(mb_left) && store.getValue("tool") == ToolType.ERASE)) {
+          if ((mouse_check_button(mb_right))
+              || (mouse_check_button(mb_left) 
+              && store.getValue("tool") == ToolType.ERASE)) {
             var mouseX = device_mouse_x_to_gui(0)
             var mouseY = device_mouse_y_to_gui(0)
             var areaX = this.area.getX()
@@ -655,7 +1017,7 @@ function VETimeline(_editor) constructor {
             var areaWidth = this.area.getWidth()
             var areaHeight = this.area.getHeight()
             if (point_in_rectangle(mouseX, mouseY, areaX, areaY, areaX + areaWidth, areaY + areaHeight)) {
-              this.updateTimer.time = this.updateTimer.duration
+              this.finishUpdateTimer()
               this.items.forEach(this.itemMouseEraseEvent, { 
                 data: {
                   x: mouseX, 
@@ -665,6 +1027,19 @@ function VETimeline(_editor) constructor {
               })
             }
           }
+
+          //if (mouse_check_button(mb_right) && keyboard_check(vk_control)) {
+          //  var mouseX = device_mouse_x_to_gui(0)
+          //  var mouseY = device_mouse_y_to_gui(0)
+          //  var areaX = this.area.getX()
+          //  var areaY = this.area.getY()
+          //  var areaWidth = this.area.getWidth()
+          //  var areaHeight = this.area.getHeight()
+          //  if (point_in_rectangle(mouseX, mouseY, areaX, areaY, areaX + areaWidth, areaY + areaHeight)) {
+          //    this.updateTimer.time = this.updateTimer.duration + random(this.updateTimer.duration / 2.0)
+          //    this.items.forEach(this.itemMouseDeselectEvent, { data: { x: mouseX, y: mouseY } })
+          //  }
+          //}
 
           var trackService = Beans.get(BeanVisuController).trackService
           if (!trackService.isTrackLoaded()) {
@@ -723,7 +1098,8 @@ function VETimeline(_editor) constructor {
                 var uiItem = acc.container.factoryEventUIItem(acc.channel.name, event)
                 acc.container.add(uiItem, uiItem.name)
               }, { channel: channel, container: container })
-              this.updateTimer.finish()
+              
+              this.finishUpdateTimer()
               return
             }
             
@@ -741,14 +1117,36 @@ function VETimeline(_editor) constructor {
           }
         }, 
         renderClipboard: new BindIntent(function() {
-          var trackEvent = MouseUtil.getClipboard()
-          if (!Core.isType(trackEvent, TrackEvent)) {
+          var dropEvent = Beans.get(BeanVisuEditorIO).mouse.getClipboard()
+          if (!Optional.is(dropEvent)) {
             return
+          } else if (Core.isType(dropEvent, Promise) && 
+            Struct.get(Struct.get(dropEvent.state, "event"), "name") == "mouse-select-event") {
+            this.renderClipboardSelectEvent(dropEvent.state.event)
+          } else if (Core.isType(dropEvent, TrackEvent)) {
+            this.renderClipboardTrackEvent(dropEvent)
           }
-
+        }),
+        renderClipboardSelectEvent: new BindIntent(function(selectEvent) { 
           var index = this.getChannelIndexFromMouseY(MouseUtil.getMouseY())
           if (!Optional.is(index)) {
-            index = this.lastIndex
+            index = MouseUtil.getMouseY() < this.area.getY() ? 0 : this.lastIndex
+          }
+          this.lastIndex = index
+          var timestamp = this.getTimestampFromMouseX(MouseUtil.getMouseX())
+          var previousX = this.getXFromTimestamp(selectEvent.data.timestampFrom) + this.offset.x
+          var nextX = this.getXFromTimestamp(timestamp) + this.offset.x
+          var previousY = (selectEvent.data.channelIndexFrom * 32) + this.offset.y + 16
+          var nextY = (index * 32) + this.offset.y + 16
+
+          //rectangle: function(beginX, beginY, endX, endY, outline = false, color1 = null, color2 = null, color3 = null, color4 = null, alpha = null) {
+          GPU.render.rectangle(previousX, previousY, nextX, nextY, false, c_blue, c_blue, c_blue, c_blue, 0.33)
+          GPU.render.rectangle(previousX, previousY, nextX, nextY, true, c_white, c_white, c_white, c_white, 0.33)
+        }),
+        renderClipboardTrackEvent: new BindIntent(function(trackEvent) {
+          var index = this.getChannelIndexFromMouseY(MouseUtil.getMouseY())
+          if (!Optional.is(index)) {
+            index = MouseUtil.getMouseY() < this.area.getY() ? 0 : this.lastIndex
           }
           this.lastIndex = index
 
@@ -758,7 +1156,8 @@ function VETimeline(_editor) constructor {
           }
 
           if (!mouse_check_button(mb_left) && !mouse_check_button_released(mb_left)) {
-            MouseUtil.clearClipboard()
+            Beans.get(BeanVisuEditorIO).mouse.clearClipboard()
+            Beans.get(BeanVisuController).displayService.setCursor(Cursor.DEFAULT)
             return
           }
 
@@ -781,7 +1180,7 @@ function VETimeline(_editor) constructor {
           
           var label = new UILabel({
             text: $"{(timestamp - trackEvent.timestamp > 0 ? "+" : "-")} {String.formatTimestampMilisecond(abs(timestamp - trackEvent.timestamp))}",
-            font: "font_inter_10_regular",
+            font: "font_inter_10_bold",
             color: VETheme.color.textFocus,
             align: { v: VAlign.CENTER, h: HAlign.CENTER },
             outline: true,
@@ -822,13 +1221,12 @@ function VETimeline(_editor) constructor {
         }),
         renderItem: Callable.run(UIUtil.renderTemplates.get("renderItemDefaultScrollable")),
         renderSurface: function() {
-          var trackEvent = MouseUtil.getClipboard()
+          var trackEvent = Beans.get(BeanVisuEditorIO).mouse.getClipboard()
 
           // background
-          var color = this.state.get("background-color")
-          GPU.render.clear(Core.isType(color, GMColor) 
-            ? ColorUtil.fromGMColor(color) 
-            : ColorUtil.BLACK_TRANSPARENT)
+          var color = this.state.getDefault("background-color", c_black)
+          var alpha = this.state.getDefault("background-alpha", 0.0)
+          GPU.render.clear(color, alpha)
 
           var offsetX = this.offset.x
           var offsetY = this.offset.y
@@ -837,6 +1235,7 @@ function VETimeline(_editor) constructor {
           var thickness = this.state.get("lines-thickness")
           var alpha = this.state.get("lines-alpha")
           var color = this.state.get("lines-color")
+          var colorAccent = this.state.get("lines-color-accentLight")
           var bkgColor = this.state.get("bkg-color")
           var editor = Beans.get(BeanVisuEditorController)
           var bpm = editor.store.getValue("bpm")
@@ -846,62 +1245,114 @@ function VETimeline(_editor) constructor {
           var bpmSize = ceil(this.area.getWidth() / bpmWidth)
 
           // background
+          var bkgStartIndex = ((offsetY div 32) mod 2 != 0) ? 1 : 0
           var bkgSize = this.state.get("amount")
-          for (var bkgIndex = 0; bkgIndex < bkgSize; bkgIndex += 2) {
-            var bkgY = (offsetY mod 32) + (bkgIndex * 32)
-            draw_sprite_ext(texture_white, 0.0, 0, bkgY, areaWidth / 64, 0.5, 0.0, bkgColor, 1.0)
-          }
-
-          // lines
-          var linesSize = this.state.get("amount") + 1
-          for (var linesIndex = 0; linesIndex < linesSize; linesIndex++) {
-            var linesY = (offsetY mod 32) + (linesIndex * 32)
-            GPU.render.texturedLine(0, linesY, areaWidth, linesY, thickness, alpha, color)
+          if (areaWidth > 0) {
+            for (var bkgIndex = bkgStartIndex; bkgIndex < bkgSize; bkgIndex += 2) {
+              var bkgY = (offsetY mod 32) + (bkgIndex * 32)
+              draw_sprite_ext(texture_white, 0.0, 0, bkgY, areaWidth / 64, 0.5, 0.0, bkgColor, 1.0)
+            }
           }
 
           // items
           var areaX = this.area.x
           var areaY = this.area.y
           var delta = DeltaTime.deltaTime
-          DeltaTime.deltaTime += this.surfaceTick.delta
+          DeltaTime.deltaTime += this.updateTimer != null && this.updateTimer.finished && this.surfaceTick.previous ? 0.0 : this.surfaceTick.delta
+          this.surfaceTick.previous = this.updateTimer.finished
           this.area.x = this.offset.x
           this.area.y = this.offset.y
           this.items.forEach(this.renderItem, this.area)
           this.area.x = areaX
           this.area.y = areaY
 
+          // lines
+          var linesSize = this.state.get("amount") + 1
+          if (linesSize <= 1.0) {
+            return this
+          }
+
+          var _alpha = draw_get_alpha()
+          draw_set_alpha(alpha)
+          for (var linesIndex = 0; linesIndex < linesSize; linesIndex++) {
+            var linesY = (offsetY mod 32) + (linesIndex * 32)
+            draw_line_color(0, linesY, areaWidth, linesY, color, color)
+            //GPU.render.texturedLine(0, linesY, areaWidth, linesY, thickness, alpha, color)
+          }
+          draw_set_alpha(_alpha)
+
           /// bpm
           var bpmX = 0
           var bpmY = round(clamp((linesSize - 1) * 32, 0, areaHeight))
           var _thickness = thickness
           var bpmCountIndex = floor(abs(this.offset.x) / bpmWidth)
+          _alpha = draw_get_alpha()
+          var isMain = false
+          draw_set_alpha(alpha * 0.66)
           if (bpmSub > 1) {
             var bpmSubLength = round(bpmWidth / bpmSub)
-            for (var bpmIndex = 0; bpmIndex < bpmSize; bpmIndex++) {
-              bpmX = round((bpmIndex * bpmWidth) - (abs(this.offset.x) mod bpmWidth))
+            for (var bpmIndex = 0; bpmIndex <= bpmSize; bpmIndex++) {
+              bpmX = floor((bpmIndex * bpmWidth) - (abs(this.offset.x) mod bpmWidth))
               _thickness = bpmCount > 0 && bpmCountIndex mod bpmCount == 0 ? thickness * 4 : thickness
+              isMain = bpmCount > 0 && bpmCountIndex mod bpmCount == 0
               bpmCountIndex++
-              GPU.render.texturedLine(bpmX, 0, bpmX, bpmY, _thickness, alpha, color)
-              for (var bpmSubIndex = 1; bpmSubIndex <= bpmSub; bpmSubIndex++) {
-                GPU.render.texturedLine(
+              if (isMain) {
+                draw_set_alpha(alpha)
+                draw_line_color(bpmX, 0, bpmX, bpmY, colorAccent, colorAccent)
+                draw_set_alpha(alpha * 0.66)
+              } else {
+                draw_line_color(bpmX, 0, bpmX, bpmY, color, color)
+              }
+            }
+
+            draw_set_alpha(alpha * 0.25)
+            for (var bpmIndex = 0; bpmIndex <= bpmSize; bpmIndex++) {
+              bpmX = floor((bpmIndex * bpmWidth) - (abs(this.offset.x) mod bpmWidth))
+              for (var bpmSubIndex = 1; bpmSubIndex < bpmSub; bpmSubIndex++) {
+                draw_line_color(
                   bpmX + (bpmSubIndex * bpmSubLength), 
                   0, 
                   bpmX + (bpmSubIndex * bpmSubLength), 
-                  bpmY, 
-                  thickness, 
-                  alpha * 0.5, 
+                  bpmY,
+                  color, 
                   color
                 )
               }
             }
+            
+            //for (var bpmIndex = 0; bpmIndex < bpmSize; bpmIndex++) {
+            //  bpmX = round((bpmIndex * bpmWidth) - (abs(this.offset.x) mod bpmWidth))
+            //  _thickness = bpmCount > 0 && bpmCountIndex mod bpmCount == 0 ? thickness * 4 : thickness
+            //  bpmCountIndex++
+            //  GPU.render.texturedLine(bpmX, 0, bpmX, bpmY, _thickness, alpha, color)
+            //  for (var bpmSubIndex = 1; bpmSubIndex <= bpmSub; bpmSubIndex++) {
+            //    GPU.render.texturedLine(
+            //      bpmX + (bpmSubIndex * bpmSubLength), 
+            //      0, 
+            //      bpmX + (bpmSubIndex * bpmSubLength), 
+            //      bpmY, 
+            //      thickness, 
+            //      alpha * 0.5, 
+            //      color
+            //    )
+            //  }
+            //}
           } else {
-            for (var bpmIndex = 0; bpmIndex < bpmSize; bpmIndex++) {
+            for (var bpmIndex = 0; bpmIndex <= bpmSize; bpmIndex++) {
               bpmX = round((bpmIndex * bpmWidth) - (abs(this.offset.x) mod bpmWidth))
               _thickness = bpmCount > 0 && bpmCountIndex mod bpmCount == 0 ? thickness * 4 : thickness
               bpmCountIndex++
-              GPU.render.texturedLine(bpmX, 0, bpmX, bpmY, _thickness, alpha, color)
+              //GPU.render.texturedLine(bpmX, 0, bpmX, bpmY, _thickness, alpha, color)
+              if (isMain) {
+                draw_set_alpha(alpha)
+                draw_line_color(bpmX, 0, bpmX, bpmY, colorAccent, colorAccent)
+                draw_set_alpha(alpha * 0.66)
+              } else {
+                draw_line_color(bpmX, 0, bpmX, bpmY, color, color)
+              }
             }
           }
+          draw_set_alpha(_alpha)
 
           this.renderClipboard()
 
@@ -926,7 +1377,7 @@ function VETimeline(_editor) constructor {
               context: context, 
               index: 0, 
               name: selectedEvent.name, 
-              color: selectedEvents.size() > 1 ? c_lime : c_white,
+              color: c_lime,//selectedEvents.size() > 1 ? c_lime : c_white,
             })
           }
 
@@ -953,29 +1404,80 @@ function VETimeline(_editor) constructor {
         _onMouseWheelDown: new BindIntent(Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelDownY"))),
         onMouseWheelUp: function(event) {
           this._onMouseWheelUp(event)
-          this.controller.containers.get("ve-timeline-channels").offset.y = this.offset.y
-          if (Optional.is(this.updateTimer)) {
-            this.updateTimer.finish()
+          this.finishUpdateTimer()
+
+          var channels = this.controller.containers.get("ve-timeline-channels")
+          if (Optional.is(channels)) {
+            channels.offset.y = this.offset.y
+            channels.finishUpdateTimer()
           }
         },
         onMouseWheelDown: function(event) {
           this._onMouseWheelDown(event)
-          this.controller.containers.get("ve-timeline-channels").offset.y = this.offset.y
-          if (Optional.is(this.updateTimer)) {
-            this.updateTimer.finish()
+          this.finishUpdateTimer()
+
+          var channels = this.controller.containers.get("ve-timeline-channels")
+          if (Optional.is(channels)) {
+            channels.offset.y = this.offset.y
+            channels.finishUpdateTimer()
           }
         },
-        onMouseDropLeft: function(event) {
-          if (Optional.is(this.updateTimer)) {
-            this.updateTimer.finish()
+        handleMouseDropSelectEvent: new BindIntent(function(selectEvent) {
+          var timestampFrom = selectEvent.data.timestampFrom
+          var channelIndexFrom = selectEvent.data.channelIndexFrom
+          var timestampTo = this.getTimestampFromMouseX(MouseUtil.getMouseX())
+          var channelIndexTo = this.getChannelIndexFromMouseY(MouseUtil.getMouseY())
+          if (!Optional.is(channelIndexTo)) {
+            channelIndexTo = MouseUtil.getMouseY() < this.area.getY() ? 0 : this.lastIndex
           }
 
-          var trackEvent = MouseUtil.getClipboard()
-          MouseUtil.clearClipboard()
-          if (!Core.isType(trackEvent, TrackEvent)) {
-            return
+          var from = {
+            channelIndex: min(channelIndexFrom, channelIndexTo),
+            timestamp: min(timestampFrom, timestampTo),
+          }
+          var to = {
+            channelIndex: max(channelIndexFrom, channelIndexTo),
+            timestamp: max(timestampFrom, timestampTo),
           }
 
+          var track = Beans.get(BeanVisuController).trackService.track
+          var channels = track.channels.filter(function(channel, name, acc) {
+            return channel.index >= acc.from && channel.index <= acc.to
+          }, {
+            from: from.channelIndex,
+            to: to.channelIndex,
+          })
+
+          this.deselect()
+
+          var width = (this.state.get("viewSize") * 32) / this.area.getWidth()
+          this.items.forEach(function(item, key, acc) {
+            var timestamp = item.state.get("timestamp")
+            if ((timestamp < acc.from 
+                && timestamp + acc.width < acc.from) 
+                || timestamp > acc.to) {
+              return
+            }
+
+            var channel = item.state.get("channel")
+            if (!acc.channels.contains(channel)) {
+              return
+            }
+
+            acc.select({
+              name: item.name,
+              channel: channel,
+              data: item.state.get("event"),
+            }, true)
+          }, {
+            from: from.timestamp,
+            to: to.timestamp,
+            channels: channels,
+            select: this.select,
+            width: width,
+          })
+        }),
+        handleMouseDropTrackEvent: new BindIntent(function(event, trackEvent) {
           var sourceChannel = Struct.get(trackEvent, "channelName")
           var track = Beans.get(BeanVisuController).trackService.track 
           var store = Beans.get(BeanVisuEditorController).store
@@ -1133,27 +1635,38 @@ function VETimeline(_editor) constructor {
             store.getValue("selected-events").add(newEvent, key)
           }, contextEvent.name)
 
-          var inspector = Beans.get(BeanVisuEditorController).uiService
-            .find("ve-event-inspector-properties")
-          if (Core.isType(inspector, UI) && Optional.is(inspector.updateTimer)) {
-            inspector.updateTimer.finish()
+          var inspector = Beans.get(BeanVisuEditorController).uiService.find("ve-event-inspector-properties")
+          if (Optional.is(inspector)) {
+            inspector.finishUpdateTimer()
+          }
+        }),
+        onMouseDropLeft: function(event) {
+          this.finishUpdateTimer()
+
+          var mouse = Beans.get(BeanVisuEditorIO).mouse
+          var dropEvent = mouse.getClipboard()
+          mouse.clearClipboard()
+          if (Core.isType(dropEvent, Promise)) {
+            dropEvent.fullfill()
+          } else if (Core.isType(dropEvent, TrackEvent)) {
+            this.handleMouseDropTrackEvent(event, dropEvent)
+          } else if (Core.isType(Struct.get(dropEvent, "drop"), Callable)) {
+            dropEvent.drop()
           }
         },
 
         onMousePressedLeft: function(event) {
-          this.updateTimer.time = this.updateTimer.duration
+          this.finishUpdateTimer()
         },
 
         onMousePressedRight: function(event) {
-          this.updateTimer.time = this.updateTimer.duration
+          this.finishUpdateTimer()
         },
         
         onMouseReleasedLeft: function(event) {
           try {
-            if (Optional.is(this.updateTimer)) {
-              this.updateTimer.finish()
-            }
-
+            this.finishUpdateTimer()
+            
             var initialized = this.controller.containers
               .get("ve-timeline-events").state
               .get("initialized")
@@ -1186,13 +1699,13 @@ function VETimeline(_editor) constructor {
                   name: uiItem.name,
                   channel: channel,
                   data: uiItem.state.get("event"),
-                })
+                }, keyboard_check(vk_control))
 
-                var inspector = Beans.get(BeanVisuEditorController).uiService
-                  .find("ve-event-inspector-properties")
-                if (Core.isType(inspector, UI) && Optional.is(inspector.updateTimer)) {
-                  inspector.updateTimer.finish()
+                var inspector = Beans.get(BeanVisuEditorController).uiService.find("ve-event-inspector-properties")
+                if (Optional.is(inspector)) {
+                  inspector.finishUpdateTimer()
                 }
+                
                 break
               case ToolType.CLONE:
                 var selectedEvent = store.getValue("selected-event")
@@ -1335,10 +1848,9 @@ function VETimeline(_editor) constructor {
                   store.getValue("selected-events").add(newEvent, key)
                 }, contextEvent.name)
 
-                var inspector = Beans.get(BeanVisuEditorController).uiService
-                  .find("ve-event-inspector-properties")
-                if (Core.isType(inspector, UI) && Optional.is(inspector.updateTimer)) {
-                  inspector.updateTimer.finish()
+                var inspector = Beans.get(BeanVisuEditorController).uiService.find("ve-event-inspector-properties")
+                if (Optional.is(inspector)) {
+                  inspector.finishUpdateTimer()
                 }
             
                 break
@@ -1351,9 +1863,7 @@ function VETimeline(_editor) constructor {
         },
 
         onMouseReleasedRight: function(event) {
-          if (Optional.is(this.updateTimer)) {
-            this.updateTimer.finish()
-          }
+          this.finishUpdateTimer()
           
           var initialized = this.controller.containers
             .get("ve-timeline-events").state
@@ -1370,9 +1880,44 @@ function VETimeline(_editor) constructor {
             case ToolType.CLONE:
             case ToolType.ERASE:
               ///@description deselect
-              this.deselect()
+              if (!keyboard_check(vk_control)) {
+                this.deselect() 
+              }
               break
           }
+        },
+
+        onMouseDragLeft: function(event) {
+          var mouse = Beans.get(BeanVisuEditorIO).mouse
+          var name = Struct.get(mouse.getClipboard(), "name")
+          if (name == "resize_accordion"
+              || name == "resize_brush_toolbar"
+              || name == "resize_brush_inspector"
+              || name == "resize_template_inspector"
+              || name == "resize_timeline"
+              || name == "resize_horizontal"
+              || name == "resize_template_title") {
+            return
+          }
+
+          var timestampFrom = this.getTimestampFromMouseX(event.data.x)
+          var channelIndexFrom = this.getChannelIndexFromMouseY(event.data.y)
+          if (!Optional.is(channelIndexFrom)) {
+            return
+          }
+
+          var context = this
+          Beans.get(BeanVisuEditorIO).mouse.setClipboard(new Promise()
+            .setState({
+              handler: context.handleMouseDropSelectEvent,
+              event: new Event("mouse-select-event", {
+                timestampFrom: timestampFrom,
+                channelIndexFrom: channelIndexFrom,
+              }),
+            })
+            .whenSuccess(function() {
+              this.state.handler(this.state.event)
+            }))
         },
 
         ///@param {UIItem} item
@@ -1392,6 +1937,18 @@ function VETimeline(_editor) constructor {
           if (Optional.is(selected) && selected.name == item.name) {
             event.data.store.get("selected-event").set(null)
           }
+        }),
+
+        ///@param {UIItem} item
+        ///@param {String} key
+        ///@param {Event} event
+        itemMouseDeselectEvent: new BindIntent(function(item, key, event) {
+          if (!item.collide(event)) {
+            return
+          }
+
+          ///@description deselect
+          item.context.deselect({ name: item.name })
         }),
     
         ///@param {Number} timestamp
@@ -1464,11 +2021,10 @@ function VETimeline(_editor) constructor {
             timestamp = floor(timestamp / (60 / bpm)) * (60 / bpm)
           }
           
-          return this.factoryTrackEventFromBrushTemplate(
-            timestamp,
-            Beans.get(BeanVisuEditorController).brushToolbar.store
-              .getValue("brush")
-              .toTemplate())
+          var brushToolbar = Beans.get(BeanVisuEditorController).brushToolbar
+          return this.factoryTrackEventFromBrushTemplate(timestamp, brushToolbar.store
+            .getValue("brush")
+            .toTemplate())
         }),
 
         ///@param {String} channelName
@@ -1493,11 +2049,23 @@ function VETimeline(_editor) constructor {
                 "channel": channelName,
               }),
               component: component,
-              sprite: event.data.icon,
+              sprite: Struct.getIfType(event.data, "icon", Struct, { name: "texture_missing" }),
               updateArea: function() {
                 this.area.setY(this.component.index * this.area.getHeight())
               },
               onMouseDragLeft: function(event) {
+                var mouse = Beans.get(BeanVisuEditorIO).mouse
+                var name = Struct.get(mouse.getClipboard(), "name")
+                if (name == "resize_accordion"
+                    || name == "resize_brush_toolbar"
+                    || name == "resize_brush_inspector"
+                    || name == "resize_template_inspector"
+                    || name == "resize_timeline"
+                    || name == "resize_horizontal"
+                    || name == "resize_template_title") {
+                  return
+                }
+                
                 var store = Beans.get(BeanVisuEditorController).store
                 var tool = store.getValue("tool")
                 if (tool == ToolType.ERASE) {
@@ -1513,19 +2081,16 @@ function VETimeline(_editor) constructor {
                 if (!Core.isType(trackEvent, TrackEvent)) {
                   return
                 }
+
                 Struct.set(trackEvent, "eventName", this.name)
                 Struct.set(trackEvent, "channelName", channelName)
-                MouseUtil.setClipboard(trackEvent)
+                Beans.get(BeanVisuEditorIO).mouse.setClipboard(trackEvent)
 
                 this.context.select({
                   name: this.name,
                   channel: channelName,
                   data: trackEvent,
-                })
-
-                var events = Beans
-                  .get(BeanVisuEditorController).timeline.containers
-                  .get("ve-timeline-events")
+                }, !keyboard_check(vk_control))
               },
               onMouseReleasedLeft: function(event) {
                 var context = this
@@ -1565,28 +2130,24 @@ function VETimeline(_editor) constructor {
                       name: context.name,
                       channel: channel,
                       data: trackEvent,
-                    })
+                    }, keyboard_check(vk_control))
                     
-                    var inspector = Beans.get(BeanVisuEditorController).uiService
-                      .find("ve-event-inspector-properties")
-                    if (Core.isType(inspector, UI) && Optional.is(inspector.updateTimer)) {
-                      inspector.updateTimer.finish()
+                    var inspector = Beans.get(BeanVisuEditorController).uiService.find("ve-event-inspector-properties")
+                    if (Optional.is(inspector)) {
+                      inspector.finishUpdateTimer()
                     }
+
                     break
                 }
               },
               onMousePressedRight: function(event) {
                 var channelName = this.context.getChannelNameFromMouseY(event.data.y)
-                if (Optional.is(channelName)) {
+                if (Optional.is(channelName) && !keyboard_check(vk_control)) {
                   this.context.removeEvent(channelName, this.name)
                 }
 
-                var store = Beans.get(BeanVisuEditorController).store
-                var selected = store.getValue("selected-event")
-                if (Optional.is(selected) && selected.name == this.name) {
-                  store.get("selected-event").set(null)
-                }
-          },
+                this.context.deselect({ name: this.name })
+              },
             }
           )
         }),
@@ -1630,14 +2191,14 @@ function VETimeline(_editor) constructor {
               this.data.name = uiItem.name
               this.data.uiItem = uiItem
               this.data.event = trackEvent
-              this.data.context.updateTimer.time = this.data.context.updateTimer.duration
+              this.data.context.finishUpdateTimer()
 
               ///@description select
               this.data.context.select({
                 name: uiItem.name,
                 channel: this.data.channelName,
                 data: this.data.event,
-              })
+              }, keyboard_check(vk_control))
 
               return this
             },
@@ -1654,7 +2215,7 @@ function VETimeline(_editor) constructor {
                 data: this.data.event,
               })
 
-              this.data.context.updateTimer.time = this.data.context.updateTimer.duration
+              this.data.context.finishUpdateTimer()
 
               return this
             },
@@ -1698,7 +2259,7 @@ function VETimeline(_editor) constructor {
                 data: this.data.event,
               })
 
-              this.data.context.updateTimer.time = this.data.context.updateTimer.duration
+              this.data.context.finishUpdateTimer()
 
               return this
             },
@@ -1718,14 +2279,15 @@ function VETimeline(_editor) constructor {
               this.data.name = uiItem.name
               this.data.uiItem = uiItem
               this.data.event = trackEvent
-              this.data.context.updateTimer.time = this.data.context.updateTimer.duration
+              
+              this.data.context.finishUpdateTimer()
 
               ///@description select
               this.data.context.select({
                 name: uiItem.name,
                 channel: this.data.channelName,
                 data: this.data.event,
-              })
+              }, keyboard_check(vk_control))
 
               return this
             },
@@ -1745,9 +2307,9 @@ function VETimeline(_editor) constructor {
           
           uiItem = this.factoryEventUIItem(channelName, event, name)
           this.add(uiItem, uiItem.name)
-          if (Optional.is(uiItem.updateArea)) {
-            uiItem.updateArea()
-          }
+          //if (Optional.is(uiItem.updateArea)) {
+          //  uiItem.updateArea()
+          //}
           return uiItem
         }),
 
@@ -1773,11 +2335,11 @@ function VETimeline(_editor) constructor {
 
         ///@param {Struct} contextEvent
         ///@return {UI}
-        select: new BindIntent(function(contextEvent) {
+        select: new BindIntent(function(contextEvent, isControl) {
           var store = Beans.get(BeanVisuEditorController).store
           var selectedEvent = store.getValue("selected-event")
           var selectedEvents = store.getValue("selected-events")
-          if (!keyboard_check(vk_control)) {
+          if (!isControl) {
             selectedEvents.clear().add(contextEvent, contextEvent.name)
             if (!Optional.is(selectedEvent) 
               || contextEvent.name != selectedEvent.name) {
@@ -1816,8 +2378,14 @@ function VETimeline(_editor) constructor {
               && selectedEvent.name == contextEvent.name) {
               store.get("selected-event").set(null)
             }
-
-            store.getValue("selected-events").remove(contextEvent.name)
+            
+            var selectedEvents = store.getValue("selected-events")
+            if (Optional.is(selectedEvents)) {
+              selectedEvents.remove(contextEvent.name)
+              if (selectedEvents.size() > 0) {
+                store.get("selected-event").set(selectedEvents.getFirst())
+              }
+            }
           } else {
             if (Optional.is(store.getValue("selected-event"))) {
               store.get("selected-event").set(null)
@@ -1835,7 +2403,7 @@ function VETimeline(_editor) constructor {
       "ve-timeline-ruler": {
         name: "ve-timeline-ruler",
         state: new Map(String, any, {
-          "background-color": ColorUtil.fromHex(VETheme.color.darkShadow).toGMColor(),
+          "background-color": ColorUtil.fromHex(VETheme.color.sideShadow).toGMColor(),
           "store": Beans.get(BeanVisuEditorController).store,
           "viewSize": Beans.get(BeanVisuEditorController).store.getValue("timeline-zoom"),
           "stepSize": 2,
@@ -1845,7 +2413,9 @@ function VETimeline(_editor) constructor {
           "cameraPrevious": null,
           "time": null,
           "mouseX": null,
-          "mouseXSensitivity": 30,
+          "mouseXSensitivity": 48,
+          "color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+          "textColor": ColorUtil.fromHex(VETheme.color.primaryLight).toGMColor(),
         }),
         updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
         controller: controller,
@@ -1854,12 +2424,12 @@ function VETimeline(_editor) constructor {
         updateCustom: function() {
           var controller = Beans.get(BeanVisuController)
           var trackService = controller.trackService
+          var duration = trackService.duration
           var width = this.area.getWidth()
           var viewSize = this.state.get("store").getValue("timeline-zoom")
           var spd = width / viewSize
           var time = this.state.get("time")
           var mouseX = this.state.get("mouseX")
-          var duration = trackService.duration
           if (mouseX != null) {
             var _time = (mouseX - MouseUtil.getMouseX()) / this.state.get("mouseXSensitivity")
             time = time == null
@@ -1872,28 +2442,36 @@ function VETimeline(_editor) constructor {
           var camera = this.state.get("camera")
           var cameraPrevious = this.state.get("cameraPrevious")
           var maxWidth = spd * duration
-          if (controller.fsm.getStateName() == "play" || time != null) 
-            && ((position > camera + width) || (position < camera)) {
-            camera = clamp(position - width / 2, 0, maxWidth - width)
+          var stateName = controller.fsm.getStateName()
+
+          if ((stateName == "play" || stateName == "paused" || time != null) 
+            && ((position > camera + width) || (position < camera))) {
+            camera = clamp(position - (width / 2), 0, maxWidth - width)
           }
+          
           this.state.set("camera", camera)
           this.state.set("cameraPrevious", camera)
           this.state.set("position", position)
           this.state.set("speed", spd)
-          this.state.set("time", null)
+          if (stateName != "rewind") {
+            this.state.set("time", null)
+          }
           this.offset.x = -1 * camera
 
           var events = this.controller.containers.get("ve-timeline-events")
-          if (Core.isType(events, UI)) {
-            if (camera != cameraPrevious && Core.isType(events.updateTimer, Timer)) {
-              events.updateTimer.finish()
-            }
+          if (Optional.is(events) && camera != cameraPrevious) {
+            events.finishUpdateTimer()
           }
 
           if (Optional.is(mouseX) && !mouse_check_button(mb_left)) {
             var timestamp = this.state.get("mouseXTime")
+            if (timestamp + FRAME_MS >= duration) {
+              timestamp = duration - (FRAME_MS * 4.0)
+            }
             this.state.set("mouseX", null)
-            MouseUtil.clearClipboard()
+            this.state.set("time", timestamp)
+            Beans.get(BeanVisuEditorIO).mouse.clearClipboard()
+            Beans.get(BeanVisuController).displayService.setCursor(Cursor.DEFAULT)
             return controller.send(new Event("rewind", { 
               timestamp: timestamp,
             }))
@@ -1904,10 +2482,9 @@ function VETimeline(_editor) constructor {
           }
         },
         renderSurface: function() {
-          var bkgColor = this.state.get("background-color")
-          GPU.render.clear(Core.isType(bkgColor, GMColor) 
-            ? ColorUtil.fromGMColor(bkgColor) 
-            : ColorUtil.BLACK_TRANSPARENT)
+          var bkgColor = this.state.getDefault("background-color", c_black)
+          var alpha = this.state.getDefault("background-alpha", 0.0)
+          GPU.render.clear(bkgColor, alpha)
 
           var _x = this.area.x
           var _y = this.area.y
@@ -1920,43 +2497,83 @@ function VETimeline(_editor) constructor {
           var timestamp = camera div spd
           var beginX = (timestamp * spd) - camera
           var beginY = 0
-          var color = ColorUtil.fromHex(VETheme.color.accent).toGMColor()
-          var textColor = ColorUtil.fromHex(VETheme.color.textShadow).toGMColor()
+          var color = this.state.get("color")
+          var textColor = this.state.get("textColor")
           var height = this.area.getHeight()
-          draw_set_font(font_inter_10_regular)
+          draw_set_font(font_inter_8_bold)
           draw_set_halign(HAlign.LEFT)
           draw_set_valign(VAlign.BOTTOM)
           for (var index = 0; index < viewSize; index++) {
-            var label = String.formatTimestamp(timestamp + (index * stepSize))
+            var _beginX = beginX + (spd * index * stepSize)
             draw_line_color(
-              beginX + (spd * index * stepSize),
+              _beginX,
               beginY,
-              beginX + (spd * index * stepSize),
-              beginY + height,
-              color, color
+              _beginX,
+              beginY + height + 4,
+              textColor, color
             )
 
             draw_line_color(
-              beginX + (spd * (index + (stepSize / 2.0))),
+              _beginX + (spd * (stepSize * 0.5)),
               beginY,
-              beginX + (spd * (index + (stepSize / 2.0))),
-              beginY + (height / 2),
-              color, color
+              _beginX + (spd * (stepSize * 0.5)),
+              beginY + (height * 0.66),
+              textColor, color
             )
 
             draw_line_color(
-              beginX + (spd * (index + (stepSize / 4.0))),
+              _beginX + (spd * (stepSize * 0.125)),
               beginY,
-              beginX + (spd * (index + (stepSize / 4.0))),
-              beginY + (height / 4),
-              color, color
+              _beginX + (spd * (stepSize * 0.125)),
+              beginY + (height * 0.33),
+              textColor, color
+            )
+
+            draw_line_color(
+              _beginX + (spd * (stepSize * 0.25)),
+              beginY,
+              _beginX + (spd * (stepSize * 0.25)),
+              beginY + (height * 0.5),
+              textColor, color
+            )
+
+            draw_line_color(
+              _beginX + (spd * (stepSize * 0.375)),
+              beginY,
+              _beginX + (spd * (stepSize * 0.375)),
+              beginY + (height * 0.33),
+              textColor, color
+            )
+
+            draw_line_color(
+              _beginX + (spd * (stepSize * 0.625)),
+              beginY,
+              _beginX + (spd * (stepSize * 0.625)),
+              beginY + (height * 0.33),
+              textColor, color
+            )
+
+            draw_line_color(
+              _beginX + (spd * (stepSize * 0.75)),
+              beginY,
+              _beginX + (spd * (stepSize * 0.75)),
+              beginY + (height * 0.5),
+              textColor, color
+            )
+
+            draw_line_color(
+              _beginX + (spd * (stepSize * 0.875)),
+              beginY,
+              _beginX + (spd * (stepSize * 0.875)),
+              beginY + (height * 0.33),
+              textColor, color
             )
             
             draw_text_color(
               beginX + (spd * index * stepSize) + 4, 
-              beginY + height - 2, 
-              label, 
-              textColor, textColor, textColor, textColor, 
+              beginY + height + 1, 
+              String.formatTimestamp(timestamp + (index * stepSize)), 
+              textColor, textColor, color, color, 
               1.0
             )
           }
@@ -1972,7 +2589,16 @@ function VETimeline(_editor) constructor {
             return
           }
 
+          this.area.setHeight(this.area.getHeight() + 8)
+          this.area.setY(this.area.getY() - 6)
           this.renderDefaultScrollable()
+          this.area.setY(this.area.getY() + 6)
+          this.area.setHeight(this.area.getHeight() - 8)
+
+          if (!Beans.get(BeanVisuController).trackService.isTrackLoaded()) {
+            return
+          }
+          
           var position = this.state.get("position")
           var camera = this.state.get("camera")
           var rulerX = this.area.getX() + (position - camera)
@@ -1990,9 +2616,26 @@ function VETimeline(_editor) constructor {
           )
         },
         onMouseDragLeft: function(event) {
+          if (!Beans.get(BeanVisuController).trackService.isTrackLoaded()) {
+            return
+          }
+          
           var context = this
+          var mouse = Beans.get(BeanVisuEditorIO).mouse
+          var name = Struct.get(mouse.getClipboard(), "name")
+          if (name == "resize_accordion"
+              || name == "resize_brush_toolbar"
+              || name == "resize_brush_inspector"
+              || name == "resize_template_inspector"
+              || name == "resize_timeline"
+              || name == "resize_horizontal"
+              || name == "resize_template_title") {
+            return
+          }
+          
           this.state.set("mouseX", event.data.x)
-          MouseUtil.setClipboard(new Promise()
+          
+          mouse.setClipboard(new Promise()
             .setState({
               context: context,
               callback: context.releaseMouseX,
@@ -2003,9 +2646,14 @@ function VETimeline(_editor) constructor {
           )
         },
         releaseMouseX: new BindIntent(function() {
+          var duration = Beans.get(BeanVisuController).trackService.duration
           var timestamp = this.state.get("mouseXTime")
+          if (timestamp + FRAME_MS >= duration) {
+            timestamp = duration - (FRAME_MS * 4.0)
+          }
           this.state.set("mouseX", null)
           this.state.set("mouseXTime", null)
+          this.state.set("time", timestamp)
           return Beans.get(BeanVisuController).send(new Event("rewind", { 
             timestamp: timestamp,
           }))
@@ -2051,7 +2699,7 @@ function VETimeline(_editor) constructor {
     "close": function(event) {
       var context = this
       this.transactionService.clear()
-      this.containers.forEach(function (container, key, uiService) {
+      this.containers.forEach(function(container, key, uiService) {
         uiService.dispatcher.execute(new Event("remove", { 
           name: key, 
           quiet: true,

@@ -62,6 +62,7 @@ function TrackService(_context, config = {}): Service() constructor {
   openTrack = function(track) {
     this.track = Assert.isType(track, Track)
     this.duration = this.track.audio.getLength()
+    Logger.debug("TrackService", "Track was opened successfully")
     return this
   }
 
@@ -69,6 +70,7 @@ function TrackService(_context, config = {}): Service() constructor {
   closeTrack = function() {
     this.stop()
     this.track = null
+    Logger.debug("TrackService", "Track was closed successfully")
     return this
   }
 

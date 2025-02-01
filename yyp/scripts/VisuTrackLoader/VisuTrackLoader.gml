@@ -25,7 +25,13 @@ function VisuTrackLoader(_controller): Service() constructor {
     },
     mapPromiseToTask: function(promise) {
       return Assert.isType(promise.response, Task)
-    }
+    },
+    wasmSounds: new Map(String, String, {
+      "Just-To-Create-Something.ogg": "sound_kedy_selma_just_to_create_something",
+      "Passion.ogg": "sound_kedy_selma_passion",
+      "digitalshadowfinalunmixed.ogg": "sound_zoogies_digitalshadow",
+      "Schnoopy-Destination-Unknown.ogg": "sound_schnoopy_destination_unknown",
+    }),
   }
 
   ///@type {FSM}
@@ -68,21 +74,11 @@ function VisuTrackLoader(_controller): Service() constructor {
             controller.videoService.dispatcher.execute(new Event("close-video"))
             controller.gridService.dispatcher.execute(new Event("clear-grid"))
             controller.playerService.dispatcher.execute(new Event("clear-player"))
-            controller.shaderPipeline.dispatcher.execute(new Event("clear-shaders")).execute(new Event("reset-templates"))
-            controller.shaderBackgroundPipeline.dispatcher.execute(new Event("clear-shaders")).execute(new Event("reset-templates"))
             controller.shroomService.dispatcher.execute(new Event("clear-shrooms")).execute(new Event("reset-templates"))
             controller.bulletService.dispatcher.execute(new Event("clear-bullets")).execute(new Event("reset-templates"))
             controller.coinService.dispatcher.execute(new Event("clear-coins")).execute(new Event("reset-templates"))
-            controller.lyricsService.dispatcher.execute(new Event("clear-lyrics")).execute(new Event("reset-templates"))
+            controller.subtitleService.dispatcher.execute(new Event("clear-subtitle")).execute(new Event("reset-templates"))
             controller.particleService.dispatcher.execute(new Event("clear-particles")).execute(new Event("reset-templates"))
-            controller.gridService.executor.tasks.forEach(function(task, iterator, type) {
-              if (task.name == "fade-color" 
-                  && task.state.get("type") == type 
-                  && task.status != TaskStatus.FULLFILLED 
-                  && task.status != TaskStatus.REJECTED) {
-                task.fullfill()
-              }
-            }, "Background")
             controller.gridService.executor.tasks.forEach(function(task, iterator, type) {
               if ((task.name == "fade-color" || task.name == "fade-sprite")
                   && task.state.get("type") == type 
@@ -90,9 +86,18 @@ function VisuTrackLoader(_controller): Service() constructor {
                   && task.status != TaskStatus.REJECTED) {
                 task.fullfill()
               }
-            }, "Foreground")
-            
-
+            }, WallpaperType.BACKGROUND)
+            controller.gridService.executor.tasks.forEach(function(task, iterator, type) {
+              if ((task.name == "fade-color" || task.name == "fade-sprite")
+                  && task.state.get("type") == type 
+                  && task.status != TaskStatus.FULLFILLED 
+                  && task.status != TaskStatus.REJECTED) {
+                task.fullfill()
+              }
+            }, WallpaperType.FOREGROUND)
+            controller.shaderPipeline.dispatcher.execute(new Event("clear-shaders")).execute(new Event("reset-templates"))
+            controller.shaderBackgroundPipeline.dispatcher.execute(new Event("clear-shaders")).execute(new Event("reset-templates"))
+            controller.shaderCombinedPipeline.dispatcher.execute(new Event("clear-shaders")).execute(new Event("reset-templates"))
             Beans.get(BeanTextureService).dispatcher.execute(new Event("free"))
 
             fsmState.state.set("promise", Beans.get(BeanFileService).send(
@@ -206,22 +211,11 @@ function VisuTrackLoader(_controller): Service() constructor {
                         var soundIntent = new prototype(json)
                         var soundService = acc.soundService
                         if (Core.getRuntimeType() == RuntimeType.GXGAMES) {
-                          var sound = null
-                          switch (soundIntent.file) {
-                            case "4-Just-To-Create-Something.ogg": 
-                              sound = sound_kedy_selma_just_to_create_something
-                              break
-                            case "Passion.ogg":
-                              sound = sound_kedy_selma_passion
-                              break
-                            case "digitalshadowfinalunmixed.ogg": 
-                              sound = sound_zoogies_digitalshadow
-                              break
-                            default:
-                              throw new Exception($"Couldn't find sound for wasm target, {soundIntent.file}")
-                              break
-                          }
-                          
+                          Assert.isTrue(audio_group_is_loaded(audiogroup_visu_wasm), 
+                            "'audiogroup_visu_wasm' must be loaded")
+                          var sound = Assert.isType(SoundUtil
+                            .fetchGMSound(acc.wasmSounds.get(soundIntent.file)), GMSound, 
+                            $"Couldn't find sound for wasm target, {soundIntent.file}")
                           soundService.sounds.add(sound, key)
                           return
                         }
@@ -237,6 +231,7 @@ function VisuTrackLoader(_controller): Service() constructor {
                       acc: {
                         soundService: Beans.get(BeanSoundService),
                         path: controller.track.path,
+                        wasmSounds: fsm.context.utils.wasmSounds,
                       },
                       steps: 1,
                     })
@@ -265,12 +260,160 @@ function VisuTrackLoader(_controller): Service() constructor {
                   .setData({ path: $"{data.path}{data.manifest.track}" })
                   .setPromise(new Promise()
                     .setState({ 
-                      callback: function(prototype, json, key, acc) {
-                        var name = Struct.get(json, "name")
-                        //Logger.debug("VisuTrackLoader", $"Load track '{name}'")
-                        acc.openTrack(new prototype(json, { handlers: acc.handlers }))
-                      },
-                      acc: controller.trackService
+                      callback: (Core.getProperty("visu.editor.migrate", false)
+                        ///@description migration
+                        ? function(prototype, json, key, acc) {
+                          var name = Struct.get(json, "name")
+                          Logger.debug("VisuTrackLoader", $"Migrate track '{name}'")
+                          acc.trackService.openTrack(new prototype(json, { 
+                            handlers: acc.trackService.handlers,
+                            parseEvent: acc.parseEvent,
+                            channelsToMigrate: acc.channelsToMigrate,
+                          }))
+
+                          Logger.debug("VisuTrackLoader", $"Apply support migration channels '{name}'")
+                          acc.channelsToMigrate.forEach(function(events, channelName, acc) {
+                            Logger.debug("VisuTrackLoader", $"Migrate support channel '{channelName}'")
+                            events.forEach(function(event, index, acc) {
+                              acc.track.addEvent(acc.channelName, new TrackEvent(event, acc.config))
+                            }, Struct.set(acc, "channelName", channelName))
+                          }, { 
+                            track: acc.trackService.track,
+                            config: { handlers: acc.trackService.handlers },
+                          })
+                        }
+                        : function(prototype, json, key, acc) {
+                          var name = Struct.get(json, "name")
+                          //Logger.debug("VisuTrackLoader", $"Load track '{name}'")
+                          acc.trackService.openTrack(new prototype(json, { 
+                            handlers: acc.trackService.handlers,
+                          }))
+                        }),
+                      acc: (Core.getProperty("visu.editor.migrate", false)
+                        ///@description migration
+                        ? {
+                          trackService: controller.trackService,
+                          channelsToMigrate: new Map(String, Array),
+                          parseEvent: function(event, index, config) {
+                            switch (Struct.get(event, "callable")) {
+                              case VEBrushType.SHADER_SPAWN:
+                                event.callable = VEBrushType.EFFECT_SHADER
+                                event.data = migrateShaderSpawnEvent(event.data)
+                                break
+                              case VEBrushType.SHADER_OVERLAY:
+                                event.callable = VEBrushType.GRID_CONFIG
+                                event.data = migrateShaderOverlayEvent(event.data)
+                                break
+                              case VEBrushType.SHADER_CLEAR:
+                                event.callable = VEBrushType.EFFECT_CONFIG
+                                event.data = migrateShaderClearEvent(event.data)
+                                break
+                              case VEBrushType.SHADER_CONFIG:
+                                event.callable = VEBrushType.EFFECT_CONFIG
+                                event.data = migrateShaderConfigEvent(event.data)
+                                break
+                              case VEBrushType.SHROOM_SPAWN:
+                                event.callable = VEBrushType.ENTITY_SHROOM
+                                event.data = migrateShroomSpawnEvent(event.data)
+                                break
+                              case VEBrushType.SHROOM_CLEAR:
+                                event.callable = VEBrushType.ENTITY_CONFIG
+                                event.data = migrateShroomClearEvent(event.data)
+                                break
+                              case VEBrushType.SHROOM_CONFIG:
+                                event.callable = VEBrushType.ENTITY_CONFIG
+                                event.data = migrateShroomConfigEvent(event.data)
+                                break
+                              case VEBrushType.GRID_OLD_CHANNEL:
+                                event.callable = VEBrushType.GRID_COLUMN
+                                event.data = migrateGridOldChannelEvent(event.data)
+                                break
+                              case VEBrushType.GRID_OLD_COIN:
+                                event.callable = VEBrushType.ENTITY_COIN
+                                event.data = migrateGridOldCoinEvent(event.data)
+                                break
+                              case VEBrushType.GRID_OLD_CONFIG:
+                                var parsedEvent = JSON.clone(event)
+                                parsedEvent.callable = VEBrushType.GRID_AREA
+                                parsedEvent.data = migrateGridOldConfigToGridAreaEvent(parsedEvent.data)
+                                var eventsToMigrate = config.channelsToMigrate.get($"migrated 1 {config.__channelName}")
+                                eventsToMigrate = Optional.is(eventsToMigrate) ? eventsToMigrate : new Array(Struct)
+                                eventsToMigrate.add(parsedEvent)
+                                config.channelsToMigrate.set($"migrated 1 {config.__channelName}", eventsToMigrate)
+                            
+                                parsedEvent = JSON.clone(event)
+                                parsedEvent.callable = VEBrushType.ENTITY_CONFIG
+                                parsedEvent.data = migrateGridOldConfigToEntityConfigEvent(parsedEvent.data)
+                                eventsToMigrate = config.channelsToMigrate.get($"migrated 2 {config.__channelName}")
+                                eventsToMigrate = Optional.is(eventsToMigrate) ? eventsToMigrate : new Array(Struct)
+                                eventsToMigrate.add(parsedEvent)
+                                config.channelsToMigrate.set($"migrated 2 {config.__channelName}", eventsToMigrate)
+
+                                event.callable = VEBrushType.GRID_CONFIG
+                                event.data = migrateGridOldConfigEvent(event.data)
+                                break
+                              case VEBrushType.GRID_OLD_PARTICLE:
+                                event.callable = VEBrushType.EFFECT_PARTICLE
+                                event.data = migrateGridOldParticleEvent(event.data)
+                                break
+                              case VEBrushType.GRID_OLD_PLAYER:
+                                var parsedEvent = JSON.clone(event)
+                                parsedEvent.callable = VEBrushType.ENTITY_CONFIG
+                                parsedEvent.data = migrateGridOldPlayerToEntityConfigEvent(parsedEvent.data)
+                                var eventsToMigrate = config.channelsToMigrate.get($"migrated 1 {config.__channelName}")
+                                eventsToMigrate = Optional.is(eventsToMigrate) ? eventsToMigrate : new Array(Struct)
+                                eventsToMigrate.add(parsedEvent)
+                                config.channelsToMigrate.set($"migrated 1 {config.__channelName}", eventsToMigrate)
+
+                                event.callable = VEBrushType.ENTITY_PLAYER
+                                event.data = migrateGridOldPlayerEvent(event.data)
+                                break
+                              case VEBrushType.GRID_OLD_SEPARATOR:
+                                event.callable = VEBrushType.GRID_ROW
+                                event.data = migrateGridOldSeparatorEvent(event.data)
+                                break
+                              case VEBrushType.VIEW_OLD_WALLPAPER:
+                                event.callable = VEBrushType.VIEW_WALLPAPER
+                                event.data = migrateViewOldWallpaperEvent(event.data)
+                                break
+                              case VEBrushType.VIEW_OLD_CAMERA:
+                                event.callable = VEBrushType.VIEW_CAMERA
+                                event.data = migrateViewOldCameraEvent(event.data)
+                                break
+                              case VEBrushType.VIEW_OLD_LYRICS:
+                                event.callable = VEBrushType.VIEW_SUBTITLE
+                                event.data = migrateViewOldLyricsEvent(event.data)
+                                break
+                              case VEBrushType.VIEW_OLD_GLITCH:
+                                event.callable = VEBrushType.EFFECT_GLITCH
+                                event.data = migrateViewOldGlitchEvent(event.data)
+                                break
+                              case VEBrushType.VIEW_OLD_CONFIG:
+                                var parsedEvent = JSON.clone(event)
+                                parsedEvent.callable = VEBrushType.GRID_CONFIG
+                                parsedEvent.data = migrateViewOldConfigToGridConfigEvent(parsedEvent.data)
+                                var eventsToMigrate = config.channelsToMigrate.get($"migrated 1 {config.__channelName}")
+                                eventsToMigrate = Optional.is(eventsToMigrate) ? eventsToMigrate : new Array(Struct)
+                                eventsToMigrate.add(parsedEvent)
+                                config.channelsToMigrate.set($"migrated 1 {config.__channelName}", eventsToMigrate)
+                                
+                                parsedEvent = JSON.clone(event)
+                                parsedEvent.callable = VEBrushType.EFFECT_CONFIG
+                                parsedEvent.data = migrateViewOldConfigToEffectConfigEvent(parsedEvent.data)
+                                eventsToMigrate = config.channelsToMigrate.get($"migrated 2 {config.__channelName}")
+                                eventsToMigrate = Optional.is(eventsToMigrate) ? eventsToMigrate : new Array(Struct)
+                                eventsToMigrate.add(parsedEvent)
+                                config.channelsToMigrate.set($"migrated 2 {config.__channelName}", eventsToMigrate)
+
+                                event.callable = VEBrushType.VIEW_CONFIG
+                                event.data = migrateViewOldConfigEvent(event.data)
+                                break
+                            }
+                            
+                            return new TrackEvent(event, config)
+                          },
+                        }
+                        : { trackService: controller.trackService }),
                     })
                     .whenSuccess(function(result) {
                       return Assert.isType(JSON.parserTask(result.data, this.state), Task)
@@ -308,16 +451,16 @@ function VisuTrackLoader(_controller): Service() constructor {
                       return Assert.isType(JSON.parserTask(result.data, this.state), Task)
                     }))
               ),
-              "lyrics": Beans.get(BeanFileService).send(
+              "subtitle": Beans.get(BeanFileService).send(
                 new Event("fetch-file")
-                  .setData({ path: $"{data.path}{data.manifest.lyrics}" })
+                  .setData({ path: $"{data.path}{data.manifest.subtitle}" })
                   .setPromise(new Promise()
                     .setState({ 
                       callback: function(prototype, json, key, acc) {
-                        //Logger.debug("VisuTrackLoader", $"Load lyrics template '{key}'")
+                        //Logger.debug("VisuTrackLoader", $"Load subtitle template '{key}'")
                         acc.set(key, new prototype(key, json))
                       },
-                      acc: controller.lyricsService.templates,
+                      acc: controller.subtitleService.templates,
                       steps: MAGIC_NUMBER_TASK,
                     })
                     .whenSuccess(function(result) {
@@ -369,6 +512,25 @@ function VisuTrackLoader(_controller): Service() constructor {
                 }
               }))
             }
+
+            if (Core.getRuntimeType() == RuntimeType.GXGAMES) {
+              var audioGroupTask = new Task("load-audio-group")
+                .setPromise(new Promise())
+                .setTimeout(10.0)
+                .setState({
+                  isLoading: false
+                })
+                .whenUpdate(function() {
+                  if (!this.state.isLoading) {
+                    this.state.isLoading = Beans.get(BeanSoundService)
+                      .loadAudioGroup(audiogroup_visu_wasm)
+                  } else if (audio_group_is_loaded(audiogroup_visu_wasm)) {
+                    this.fullfill()
+                  }
+                })
+              controller.executor.add(audioGroupTask)
+              fsmState.state.set("audio-group", audioGroupTask.promise)
+            }
             
             data.manifest.editor.forEach(function(file, index, acc) { 
               var promise = Beans.get(BeanFileService).send(
@@ -402,6 +564,15 @@ function VisuTrackLoader(_controller): Service() constructor {
             var filtered = promises.filter(fsm.context.utils.filterPromise)
             if (filtered.size() != promises.size()) {
               return
+            }
+
+            if (Core.getRuntimeType() == RuntimeType.GXGAMES) {
+              var audioGroupPromise = this.state.get("audio-group")
+              if (audioGroupPromise.status == PromiseStatus.PENDING) {
+                return
+              }
+
+              Assert.isTrue(audioGroupPromise.status == PromiseStatus.FULLFILLED)
             }
 
             fsm.dispatcher.send(new Event("transition", {
@@ -525,7 +696,7 @@ function VisuTrackLoader(_controller): Service() constructor {
             var promises = new Map(String, Promise, {
               "bullet": addTask(tasks.get("bullet"), executor),
               "coin": addTask(tasks.get("coin"), executor),
-              "lyrics": addTask(tasks.get("lyrics"), executor),
+              "subtitle": addTask(tasks.get("subtitle"), executor),
               "particle": addTask(tasks.get("particle"), executor),
               "shroom": addTask(tasks.get("shroom"), executor),
               "track": addTask(tasks.get("track"), executor),
@@ -558,7 +729,7 @@ function VisuTrackLoader(_controller): Service() constructor {
             }
 
             audio.pause()
-            fsm.dispatcher.send(new Event("transition", { name: "loaded" }))
+            fsm.dispatcher.send(new Event("transition", { name: "cooldown" }))
           } catch (exception) {
             var message = $"'parse-secondary-assets' fatal error: {exception.message}"
             Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
@@ -568,6 +739,43 @@ function VisuTrackLoader(_controller): Service() constructor {
         },
         transitions: {
           "idle": null, 
+          "cooldown": null,
+        },
+      },
+      "cooldown": {
+        actions: {
+          onStart: function(fsm, fsmState) {
+            fsmState.state.set("cooldown-timer", new Timer(1.0))
+          },
+        },
+        update: function(fsm) {
+          try {
+            var timer = this.state.get("cooldown-timer")
+            var editorIO = Beans.get(BeanVisuEditorIO)
+            if (timer.update().finished) {
+              fsm.dispatcher.send(new Event("transition", { name: "loaded" }))
+            } else if (Optional.is(editorIO) && editorIO.keyboard.keys.renderUI.pressed) {
+              fsm.dispatcher.send(new Event("transition", { name: "loaded" }))
+
+              var controller = Beans.get(BeanVisuController)
+              var editor = Beans.get(BeanVisuEditorController)
+              if (Optional.is(editor)) {
+                editor.renderUI = !editor.renderUI
+                var fsmState = controller.fsm.currentState
+                if (editor.renderUI && Optional.is(fsmState) && fsmState.name == "load") {
+                  fsmState.state.set("autoplay", false)
+                }
+              }
+            }
+          } catch (exception) {
+            var message = $"'cooldown' fatal error: {exception.message}"
+            Beans.get(BeanVisuController).send(new Event("spawn-popup", { message: message }))
+            Logger.error("VisuTrackLoader", message)
+            fsm.dispatcher.send(new Event("transition", { name: "idle" }))
+          }
+        },
+        transitions: {
+          "idle": null,
           "loaded": null,
         },
       },
@@ -576,6 +784,7 @@ function VisuTrackLoader(_controller): Service() constructor {
           onStart: function(fsm, fsmState, tasks) { 
             var controller = Beans.get(BeanVisuController)
             controller.displayService.setCaption($"{game_display_name} | {fsm.context.controller.trackService.track.name} | {fsm.context.controller.track.path}")
+            controller.gridService.avgTime.reset()
 
             var editor = Beans.get(BeanVisuEditorController)
             if (Core.isType(editor, VisuEditorController)) {

@@ -82,6 +82,7 @@ function UI(config = {}) constructor {
     value: irandom(_surfaceTick),
     maxValue: _surfaceTick,
     delta: 0,
+    previous: false,
     get: function() {
       this.value += 1
       this.delta += DeltaTime.deltaTime
@@ -93,8 +94,11 @@ function UI(config = {}) constructor {
     },
     skip: function() {
       this.value = this.maxValue - 1
+      if (this.value < 0) {
+        this.value = 0
+      }
       return this
-    }
+    },
   }
 
   updateArea = Struct.contains(config, "updateArea")
@@ -112,15 +116,54 @@ function UI(config = {}) constructor {
       item.update(acc)
     }
 
+  ///@private
+  ///@type {Rectangle}
+  areaWatchdog = {
+    name: this.name,
+    value: false,
+    force: false,
+    area: new Rectangle({ width: -1, height: -1 }),
+    signal: function() {
+      this.force = true
+      return this
+    },
+    get: function() {
+      return this.value || this.force
+    },
+    update: function(area) {
+      var force = this.force
+      this.force = false
+      if (this.area.getX() == area.getX()
+          && this.area.getY() == area.getY()
+          && this.area.getWidth() == area.getWidth()
+          && this.area.getHeight() == area.getHeight()) {
+        this.value = force
+      } else {
+        this.value = true
+        this.area
+          .setX(area.getX())
+          .setY(area.getY())
+          .setWidth(area.getWidth())
+          .setHeight(area.getHeight())
+      }
+
+      return this
+    },
+  }
+
+
   updateItems = Struct.contains(config, "updateItems")
     ? Assert.isType(method(this, config.updateItems), Callable)
     : function() {
-      var updateItemArea = this.surfaceTick.skip()
-      if (Optional.is(this.updateTimer)) {
-        updateItemArea = this.updateTimer.finished
-      }
+      //var updateItemArea = this.surfaceTick.skip()
+      //if (Optional.is(this.updateTimer)) {
+      //  updateItemArea = this.updateTimer.finished
+      //}
+      var updateItemArea = this.areaWatchdog.update(this.area).get()
       this.items.forEach(this.updateItem, updateItemArea)
     }
+
+  hoverItem = null
 
   ///@param {Event} event
   ///@return {Boolean}
@@ -176,6 +219,11 @@ function UI(config = {}) constructor {
         if (item.isHoverOver) {
           return true
         }
+
+        if (this.hoverItem != item) {
+          this.hoverItem = item
+          this.clampUpdateTimer(0.9500)
+        }
         item.isHoverOver = true
       }
       Callable.run(dispatcher, event)
@@ -188,7 +236,11 @@ function UI(config = {}) constructor {
     ? Assert.isType(method(this, config.add), Callable)
     : function(item) {
       item.context = this //@todo item context constructor
+      //this.areaWatchdog.signal()
       this.items.add(item, item.name)
+      if (Optional.is(item.updateArea)) {
+        item.updateArea()
+      }
       return this
     }
 
@@ -201,6 +253,7 @@ function UI(config = {}) constructor {
       if (Optional.is(item)) {
         item.free()
       }
+      this.areaWatchdog.signal()
       this.items.remove(name)
       return this
     }
@@ -256,20 +309,14 @@ function UI(config = {}) constructor {
     ? Assert.isType(method(this, config.renderSurface), Callable)
     : function() {
 
-      var color = this.state.get("background-color")
-      var alpha = this.state.get("background-alpha")
-      //GPU.render.clear(Core.isType(color, GMColor) 
-      //  ? ColorUtil.fromGMColor(color) 
-      //  : ColorUtil.BLACK_TRANSPARENT)
-      draw_clear_alpha(
-        (Core.isType(color, GMColor) ? color : c_black),
-        (Core.isType(alpha, Number) ? alpha : 0.0)
-      )
+      var color = this.state.getDefault("background-color", c_black)
+      var alpha = this.state.getDefault("background-alpha", 0.0)
+      GPU.render.clear(color, alpha)
 
       var areaX = this.area.x
       var areaY = this.area.y
       var delta = DeltaTime.deltaTime
-      DeltaTime.deltaTime += this.surfaceTick.delta
+      DeltaTime.deltaTime += this.updateTimer != null && this.updateTimer.finished && this.surfaceTick.previous ? 0.0 : this.surfaceTick.delta
       this.area.x = this.offset.x
       this.area.y = this.offset.y
       this.items.forEach(this.renderItem, this.area)
@@ -324,7 +371,40 @@ function UI(config = {}) constructor {
 
     return this
   }
+
+  ///@param {UIItem} item
+  ///@param {String|Number} iterator
+  ///@param {?Struct} [data]
+  addUIItem = function(item, iterator, data = null) {
+    if (item.type == UITextField) {
+      if (Optional.is(Struct.get(data, "textField"))) {
+        data.textField.setNext(item.textField)
+        item.textField.setPrevious(data.textField)
+      }
+      Struct.set(data, "textField", item.textField)
+    }
+
+    this.add(item, item.name)
+    //if (Optional.is(item.updateArea)) {
+    //  item.updateArea()
+    //}
+
+    if (!item.storeSubscribed && Optional.is(item.store)) {
+      item.store.subscribe()
+      item.storeSubscribed = true
+    }
+  }
   
+  ///@param {UIComponent} component
+  ///@param {String|Number} iterator
+  ///@param {?Struct} [data]
+  addUIComponent = function(component, iterator, data) {
+    data.layout = component
+      .toUIItems(data.layout)
+      .forEach(this.addUIItem, data)
+      .getLast().layout.context
+  }
+
   ///@param {Array<UIComponents>} components
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
@@ -332,50 +412,41 @@ function UI(config = {}) constructor {
   addUIComponents = Struct.contains(config, "addUIComponents")
     ? Assert.isType(method(this, config.addUIComponents), Callable)
     : function(components, layout, config = null) {
-    
-    static factoryComponent = function(component, index, acc) {
-      static add = function(item, index, acc) {
-        if (item.type == UITextField) {
-          var textField = item.textField
-          if (Optional.is(acc.textField)) {
-            acc.textField.setNext(textField)
-            textField.setPrevious(acc.textField)
-          }
-          acc.textField = textField
-        }
-
-        acc.context.add(item, item.name)
-        if (Optional.is(item.updateArea())) {
-          item.updateArea()
-        }
-      }
-
-      acc.layout = component
-        .toUIItems(acc.layout)
-        .forEach(add, acc)
-        .getLast().layout.context
-    }
-
-    var context = this
-    components.forEach(
-      factoryComponent, 
-      Struct.append(
-        config,
-        {
+        var context = this
+        components.forEach(this.addUIComponent, Struct.append(config, {
           layout: layout,
           context: context,
           textField: null
-        },
-        false
-      )
-    )
-    return this
-  }
+        }, false))
+
+        return this
+      }
 
   ///@type {?Timer}
   updateTimer = Core.isType(Struct.get(config, "updateTimer"), Timer)
     ? config.updateTimer 
     : null
+
+  ///@return {UI}
+  finishUpdateTimer = method(this, Struct.getIfType(config, "finishRngTimer", Callable, function() {
+    if (!Optional.is(this.updateTimer)) {
+      return this
+    }
+
+    this.updateTimer.time = this.updateTimer.duration + random(this.updateTimer.duration / 2.0)
+    return this
+  }))
+
+  ///@param {Number} [factor]
+  ///@return {UI}
+  clampUpdateTimer = method(this, Struct.getIfType(config, "clampUpdateTimer", Callable, function(factor = 1.0) {
+    if (!Optional.is(this.updateTimer)) {
+      return this
+    }
+
+    this.updateTimer.time = clamp(this.updateTimer.time, this.updateTimer.duration * factor, this.updateTimer.duration)
+    return this
+  }))
   
   ///@type {Struct}
   scrollbarY = Struct.appendRecursive(
@@ -384,7 +455,8 @@ function UI(config = {}) constructor {
       align: HAlign.LEFT,
       width: 10,
       thickness: 3,
-      color: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+      color: ColorUtil.fromHex(VETheme.color.primaryShadow).toGMColor(),
+      alpha: 1.0,
       render: function(context) {
         var x1 = 0, y1 = 0, x2 = 0, y2 = 0
         switch (this.align) {
@@ -408,10 +480,10 @@ function UI(config = {}) constructor {
 
         y1 = y1 + (beginRatio * height)
         y2 = y1 + ((height / length) * height)
-        GPU.render.rectangle(x1, y1, x2, y2, false, this.color)
+        GPU.render.rectangle(x1, y1, x2, y2, false, this.color, this.color, this.color, this.color, this.alpha)
       }
     },
-    Struct.getDefault(config, "scrollbarY", {})
+    Struct.get(config, "scrollbarY")
   )
 
   ///@type {Boolean}
@@ -447,11 +519,12 @@ function UI(config = {}) constructor {
   if (Optional.is(this.updateArea)) {
     this.updateArea()
   }
-  this.items.forEach(function(item) {
-    if (Optional.is(item.updateArea)) {
-      item.updateArea()
-    }
-  }) 
+  this.areaWatchdog.signal()
+  //this.items.forEach(function(item) {
+  //  if (Optional.is(item.updateArea)) {
+  //    item.updateArea()
+  //  }
+  //}) 
 }
 
 
@@ -462,6 +535,10 @@ function _UIUtil() constructor {
   templates = new Map(String, Callable, {
     "removeUIItemfromUICollection": function() {
       return function() {
+        if (this.component == null) {
+          throw new Exception($"removeUIItemfromUICollection require 'component' to be initialized")
+        }
+
         this.context.collection.remove(this.component.index)
       }
     },
@@ -537,6 +614,7 @@ function _UIUtil() constructor {
         this.textField.style.w = this.area.getWidth()
         if (!this.textField.style.v_grow) {
           this.textField.style.h = this.area.getHeight()
+          this.textField.updateStyle()
         }
 
         if (this.textField.style.w != _w || this.textField.style.h != _h) {
@@ -546,6 +624,10 @@ function _UIUtil() constructor {
     },
     "applyCollectionLayout": function() {
       return function() {
+        if (this.component == null) {
+          throw new Exception($"applyCollectionLayout require 'component' to be initialized")
+        }
+
         this.layout.collection.setIndex(this.component.index)
         this.layout.collection.setSize(this.context.collection.size())
         this.area.setX(this.layout.x())
@@ -566,6 +648,10 @@ function _UIUtil() constructor {
     },
     "groupByX": function() {
       return function() {
+        if (!Optional.is(Struct.get(this, "group"))) {
+          throw new Exception($"groupByX require 'group' to be initialized")
+        }
+
         ///@todo group.align support
         ///@todo group.amount support
         ///@todo group.width() support
@@ -581,6 +667,10 @@ function _UIUtil() constructor {
     },
     "groupByXWidth": function() {
       return function() {
+        if (!Optional.is(Struct.get(this, "group"))) {
+          throw new Exception($"groupByXWidth require 'group' to be initialized")
+        }
+
         ///@todo group.align support
         ///@todo group.amount support
         ///@todo group.width() support
@@ -758,15 +848,14 @@ function _UIUtil() constructor {
           
           GPU.set.surface(this.surface)
           var color = this.state.get("background-color")
-          var alpha = this.state.getDefault("background-alpha", 1.0)
-          if (color != null) {
-            draw_clear_alpha(color, alpha)
+          if (Optional.is(color)) {
+            GPU.render.clear(color, this.state.getDefault("background-alpha", 1.0))
           }
           
           var areaX = this.area.x
           var areaY = this.area.y
           var delta = DeltaTime.deltaTime
-          DeltaTime.deltaTime += this.surfaceTick.delta
+          DeltaTime.deltaTime += this.updateTimer != null && this.updateTimer.finished && this.surfaceTick.previous ? 0.0 : this.surfaceTick.delta
           this.area.x = this.offset.x
           this.area.y = this.offset.y
           this.items.forEach(this.renderItem, this.area)
@@ -785,12 +874,28 @@ function _UIUtil() constructor {
               this.area.x + this.area.getWidth(), this.area.y + this.area.getHeight(), 
               false,
               color, color, color, color, 
-              this.state.get("background-alpha")
+              this.state.getIfType("background-alpha", Number, 1.0)
             )
           }
           
           this.items.forEach(this.renderItem, this.area)
         }
+    },
+    "renderDefaultNoSurface": function() {
+      return function() {
+        var color = this.state.get("background-color")
+        if (Core.isType(color, GMColor)) {
+          GPU.render.rectangle(
+            this.area.x, this.area.y, 
+            this.area.x + this.area.getWidth(), this.area.y + this.area.getHeight(), 
+            false,
+            color, color, color, color, 
+            this.state.get("background-alpha")
+          )
+        }
+        
+        this.items.forEach(this.renderItem, this.area)
+      }
     },
     "renderDefaultScrollable": function() {
        return function() {
@@ -812,6 +917,34 @@ function _UIUtil() constructor {
         this.surface.renderOn(this.renderSurface)
         GPU.set.blendEnable(false)
         this.surface.render(this.area.getX(), this.area.getY())
+        GPU.set.blendEnable(true)
+
+        if (this.enableScrollbarY) {
+          this.scrollbarY.render(this)
+        }
+      }
+    },
+    "renderDefaultScrollableAlpha": function() {
+       return function() {
+        if (!Optional.is(this.surface)) {
+          this.surface = new Surface()
+        }
+
+        var alpha = this.state.getIfType("surface-alpha", Number, 1.0)
+        this.surface.update(this.area.getWidth(), this.area.getHeight())
+        if (!this.surfaceTick.get() && !this.surface.updated) {
+          GPU.set.blendEnable(alpha < 1.0)
+          this.surface.render(this.area.getX(), this.area.getY(), alpha)
+          GPU.set.blendEnable(true)
+          if (this.enableScrollbarY) {
+            this.scrollbarY.render(this)
+          }
+          return
+        }
+
+        this.surface.renderOn(this.renderSurface)
+        GPU.set.blendEnable(alpha < 1.0)
+        this.surface.render(this.area.getX(), this.area.getY(), alpha)
         GPU.set.blendEnable(true)
 
         if (this.enableScrollbarY) {
@@ -905,6 +1038,16 @@ function _UIUtil() constructor {
         }
       }
     },
+    "onMouseHoverOverBackground": function() {
+      return function(event) {
+        this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
+      }
+    },
+    "onMouseHoverOutBackground": function() {
+      return function(event) {
+        this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
+      }
+    },
   })
 
   ///@type {Map<String, Callable>}
@@ -975,6 +1118,149 @@ function _UIUtil() constructor {
       this.area.setHeight(height)
     },
   })
+
+  ///@param {UIItem} uiItem
+  ///@param {Type} type
+  ///@param {any} [defaultValue]
+  ///@return {any}
+  getIncreaseUIStoreItem = function(uiItem, type, defaultValue = null) {
+    var factor = Struct.get(uiItem, "factor")
+    if (!Core.isType(factor, Number) || !Core.isType(uiItem.store, UIStore)) {
+      return defaultValue
+    }
+
+    var item = uiItem.store.get()
+    if (!Core.isType(item, StoreItem)) {
+      return defaultValue
+    }
+
+    var value = item.get()
+    return Core.isType(value, type) ? item : defaultValue
+  }
+
+  ///@param {Struct}
+  passthrough = {
+
+    ///@return {Callable}
+    getClampedStringInteger: function() {
+      return function(value) {
+        if (!Core.isType(this.data, Vector2)) {
+          this.data = new Vector2(0.0, 1.0)
+        }
+
+        return round(clamp(NumberUtil.parse(value, this.value), this.data.x, this.data.y))
+      }
+    },
+
+    ///@return {Callable}
+    getClampedStringNumber: function() {
+      return function(value) {
+        if (!Core.isType(this.data, Vector2)) {
+          this.data = new Vector2(0.0, 1.0)
+        }
+
+        return clamp(NumberUtil.parse(value, this.value), this.data.x, this.data.y)
+      }
+    },
+
+    ///@return {Callable}
+    getNormalizedStringNumber: function() {
+      return function(value) {
+        return clamp(NumberUtil.parse(value, this.value), 0.0, 1.0)
+      }
+    },
+
+    ///@return {Callable}
+    getClampedNumberTransformer: function() {
+      return function(value) {
+        if (!Core.isType(value, NumberTransformer)) {
+          return this.value
+        }
+
+        if (!Core.isType(this.data, Vector2)) {
+          this.data = new Vector2(0.0, 1.0)
+        }
+
+        value.value = clamp(value.value, this.data.x, this.data.y)
+        value.target = clamp(value.target, this.data.x, this.data.y)
+        return value
+      }
+    },
+
+    ///@return {Callable}
+    getNormalizedNumberTransformer: function() {
+      return function(value) {
+        if (!Core.isType(value, NumberTransformer)) {
+          return this.value
+        }
+
+        value.value = clamp(value.value, 0.0, 1.0)
+        value.target = clamp(value.target, 0.0, 1.0)
+        return value
+      }
+    },
+
+    ///@return {Callable}
+    getArrayValue: function() {
+      return function(value) {
+        return this.data.contains(value) 
+          ? value 
+          : (this.data.contains(this.value) ? this.value : this.data.getFirst())
+      }
+    },
+
+    ///@return {Callable}
+    getGMArrayValue: function() {
+      return function(value) {
+        return GMArray.contains(this.data, value)
+          ? value 
+          : (GMArray.contains(this.data, this.value) ? this.value : GMArray.getFirst(this.data))
+      }
+    },
+
+    ///@return {Callable}
+    getCallbackValue: function() {
+      return function(value) {
+        var contains = this.data.callback
+        return contains(value) 
+          ? value 
+          : (contains(this.value) ? this.value : Struct.get(this.data, "defaultValue"))
+      }
+    },
+  }
+
+  ///@param {UI} container
+  ///@param {any} iterator
+  ///@param {Number} cooldown
+  ///@return {UI}
+  clampUpdateTimerToCooldown = function(container, iterator, cooldown) {
+    if (!Optional.is(container.updateTimer)) {
+      return container
+    }
+
+    var timer = container.updateTimer
+    var duration = timer.duration
+    timer.time = clamp(timer.time, max(duration - (cooldown * FRAME_MS), 0.0), duration * 2.0)
+    return container
+  }
+
+  ///@param {Struct}
+  serialize = {
+    getStringStruct: function() {
+      return function() {
+        return JSON.parse(this.get())
+      }
+    },
+  }
+  
+  ///@param {Struct}
+  validate = {
+    getStringStruct: function() {
+      return function(value) {
+        Assert.isType(JSON.parse(value), Struct)
+      }
+    },
+  }
 }
 global.__UIUtil = new _UIUtil()
 #macro UIUtil global.__UIUtil

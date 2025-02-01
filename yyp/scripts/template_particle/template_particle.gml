@@ -8,7 +8,7 @@ function template_particle(json = null) {
     store: new Map(String, Struct, {
       "particle_use-preview": {
         type: Boolean,
-        value: Struct.getDefault(json, "particle_use-preview", false) == true,
+        value: Struct.getIfType(json, "particle_use-preview", Boolean, false),
       },
       "particle-template": {
         type: ParticleTemplate,
@@ -16,44 +16,32 @@ function template_particle(json = null) {
       },
       "particle-blend": {
         type: Boolean,
-        value: Struct.getDefault(json, "blend", false) == true,
+        value: Struct.getIfType(json, "blend", Boolean, false),
       },
       "particle-color-start": {
         type: Color,
-        value: ColorUtil.fromHex(Struct.get(Struct.get(json, "color"), "start"), "#ffffff"),
+        value: ColorUtil.fromHex(Struct.get(Struct.get(json, "color"), "start"), ColorUtil.fromHex("#ffffff")),
       },
       "particle-color-halfway": {
         type: Color,
-        value: ColorUtil.fromHex(Struct.get(Struct.get(json, "color"), "halfway"), "#ffffff"),
+        value: ColorUtil.fromHex(Struct.get(Struct.get(json, "color"), "halfway"), ColorUtil.fromHex("#ffffff")),
       },
       "particle-color-finish": {
         type: Color,
-        value: ColorUtil.fromHex(Struct.get(Struct.get(json, "color"), "finish"), "#ffffff"),
+        value: ColorUtil.fromHex(Struct.get(Struct.get(json, "color"), "finish"), ColorUtil.fromHex("#ffffff")),
       },
       "particle-use-sprite": {
         type: Boolean,
-        value: Optional.is(Struct.get(json, "sprite")),
+        value: Optional.is(Struct.getIfType(json, "sprite", Struct)),
       },
       "particle-sprite": {
         type: Sprite,
-        value: SpriteUtil.parse(Struct.get(json, "sprite"), { name: "texture_particle" }),
-      },
-      "particle-sprite-animate": {
-        type: Boolean,
-        value: Optional.is(Struct.get(json, "sprite"))
-          ? Struct.getDefault(json.sprite, "animate", false) == true
-          : false,
-      },
-      "particle-sprite-randomValue": {
-        type: Boolean,
-        value: Optional.is(Struct.get(json, "sprite"))
-          ? Struct.getDefault(json.sprite, "randomValue", false) == true
-          : false,
+        value: SpriteUtil.parse(Struct.getIfType(json, "sprite", Struct), { name: "texture_particle" }),
       },
       "particle-sprite-stretch": {
         type: Boolean,
-        value: Optional.is(Struct.get(json, "sprite"))
-          ? Struct.getDefault(json.sprite, "stretch", false) == true
+        value: Core.isType(Struct.get(json, "sprite"), Struct)
+          ? Struct.getIfType(json.sprite, "stretch", Boolean, false)
           : false,
       },
     }),
@@ -65,7 +53,7 @@ function template_particle(json = null) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Particle preview",
+            text: "Emit particle preview",
             enable: { key: "particle_use-preview" },
             backgroundColor: VETheme.color.accentShadow,
           },
@@ -80,14 +68,58 @@ function template_particle(json = null) {
           }
         },
       },
-      #region Shape
+      {
+        name: "particle_use-preview-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "particle_shape-title",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: {
+            text: "Particle shape",
+            enable: { 
+              key: "particle-use-sprite",
+              negate: true,
+            },
+            backgroundColor: VETheme.color.side,
+          },
+          input: { backgroundColor: VETheme.color.side },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { 
+              key: "particle-use-sprite",
+              callback: function(value, data) {
+                Struct.set(data, "value", !value)
+              },
+              set: function(value) {
+                var item = this.get()
+                if (!Core.isType(value, Boolean)
+                  || !Core.isType(item, StoreItem) 
+                  || !Core.isType(item.get(), Boolean)) {
+                  return
+                }
+
+                item.set(!value)
+                //this.context.updateValue(!value)
+              },  
+            },
+            backgroundColor: VETheme.color.side,
+          },
+        },
+      },
       {
         name: "particle_shape",
         template: VEComponents.get("spin-select-override"),
         layout: VELayouts.get("spin-select"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Shape" },
+          label: { text: "" },
           previous: { 
             callback: function() {
               var template = this.store.get("particle-template").get()
@@ -102,6 +134,10 @@ function template_particle(json = null) {
               callback: function(value, data) { },
               set: function(value) { },
             },
+            enable: { 
+              key: "particle-use-sprite",
+              negate: true,
+            },
           },
           preview: Struct.appendRecursive({ 
             store: {
@@ -112,6 +148,10 @@ function template_particle(json = null) {
                 }
                 data.label.text = value.shape
               }
+            },
+            enable: { 
+              key: "particle-use-sprite",
+              negate: true,
             },
           }, Struct.get(VEStyles.get("spin-select-label_no-store"), "preview"), false),
           next: { 
@@ -130,27 +170,19 @@ function template_particle(json = null) {
               callback: function(value, data) { },
               set: function(value) { },
             },
+            enable: { 
+              key: "particle-use-sprite",
+              negate: true,
+            },
           },
         },
       },
-      #endregion
-      #region Blend
       {
-        name: "particle_blend",
-        template: VEComponents.get("boolean-field"),
-        layout: VELayouts.get("boolean-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Blend" },
-          field: { 
-            store: { key: "particle-blend" },
-            spriteOn: { name: "visu_texture_checkbox_switch_on" },
-            spriteOff: { name: "visu_texture_checkbox_switch_off" },
-          },
-        },
+        name: "particle_shape-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
       },
-      #endregion
-      #region Sprite
       {
         name: "particle_sprite",
         template: VEComponents.get("texture-field-simple"),
@@ -159,13 +191,18 @@ function template_particle(json = null) {
           layout: { type: UILayoutType.VERTICAL },
           title: {
             label: { 
-              text: "Set texture",
+              text: "Particle texture",
               enable: { key: "particle-use-sprite" },
+              backgroundColor: VETheme.color.side,
             },  
+            input: {
+              backgroundColor: VETheme.color.side,
+            },
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
               spriteOff: { name: "visu_texture_checkbox_off" },
               store: { key: "particle-use-sprite" },
+              backgroundColor: VETheme.color.side,
             },
           },
           texture: {
@@ -178,104 +215,133 @@ function template_particle(json = null) {
               enable: { key: "particle-use-sprite" },
             },
           },
-          frame: {
-            label: {
-              text: "Frame",
-              enable: { key: "particle-use-sprite" },
-            },
-            field: {
-              store: { key: "particle-sprite" },
-              enable: { key: "particle-use-sprite" },
-            },
-          },
-          alpha: {
-            label: {
-              text: "Alpha",
-              enable: { key: "particle-use-sprite" },
-            },
-            field: {
-              store: { key: "particle-sprite" },
-              enable: { key: "particle-use-sprite" },
-            },
-            slider: { 
-              minValue: 0.0,
-              maxValue: 1.0,
-              store: { key: "particle-sprite" },
-              enable: { key: "particle-use-sprite" },
-            },
-          },
           preview: {
             image: { name: "texture_empty" },
             store: { key: "particle-sprite" },
             enable: { key: "particle-use-sprite" },
           },
+          resolution: {
+            store: { key: "particle-sprite" },
+            enable: { key: "particle-use-sprite" },
+          },
+          frame: {
+            label: {
+              text: "Frame",
+              enable: { key: "particle-use-sprite" },
+            },
+            field: { 
+              store: { key: "particle-sprite" },
+              enable: { key: "particle-use-sprite" },
+            },
+            decrease: { 
+              store: { key: "particle-sprite" },
+              enable: { key: "particle-use-sprite" },
+            },
+            increase: { 
+              store: { key: "particle-sprite" },
+              enable: { key: "particle-use-sprite" },
+            },
+            checkbox: { 
+              store: { key: "particle-sprite" },
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              enable: { key: "particle-use-sprite" },
+            },
+            title: { 
+              enable: { key: "particle-use-sprite" }
+            },
+            stick: { 
+              store: { key: "particle-sprite" },
+              enable: { key: "particle-use-sprite" },
+            },
+          },
+          speed: {
+            label: {
+              text: "Speed",
+              enable: { key: "particle-use-sprite" },
+            },
+            field: { 
+              store: { key: "particle-sprite" },
+              enable: { key: "particle-use-sprite" },
+            },
+            decrease: { 
+              store: { key: "particle-sprite" },
+              enable: { key: "particle-use-sprite" },
+            },
+            increase: { 
+              store: { key: "particle-sprite" },
+              enable: { key: "particle-use-sprite" },
+            },
+            checkbox: { 
+              store: { key: "particle-sprite" },
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              enable: { key: "particle-use-sprite" },
+            },
+            title: {
+              enable: { key: "particle-use-sprite" },
+            },
+            stick: {
+              store: { key: "particle-sprite" },
+              enable: { key: "particle-use-sprite" },
+            },
+          },
         },
       },
       {
-        name: "particle_sprite-animate",
-        template: VEComponents.get("boolean-field"),
-        layout: VELayouts.get("boolean-field"),
+        name: "particle_sprite-blend-stretch",
+        template: VEComponents.get("double-checkbox"),
+        layout: VELayouts.get("double-checkbox"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Animate",
+            text: "",
             enable: { key: "particle-use-sprite" },
           },
-          field: { 
-            store: { key: "particle-sprite-animate" },
-            enable: { key: "particle-use-sprite" },
-            spriteOn: { name: "visu_texture_checkbox_switch_on" },
-            spriteOff: { name: "visu_texture_checkbox_switch_off" },
-          },
-        },
-      },
-      {
-        name: "particle_sprite-stretch",
-        template: VEComponents.get("boolean-field"),
-        layout: VELayouts.get("boolean-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Stretch",
+          checkbox1: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "particle-blend" },
             enable: { key: "particle-use-sprite" },
           },
-          field: { 
+          label1: {
+            text: "Blend",
+            //font: "font_inter_10_regular",
+            enable: { key: "particle-use-sprite" },
+          },
+          checkbox2: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
             store: { key: "particle-sprite-stretch" },
             enable: { key: "particle-use-sprite" },
-            spriteOn: { name: "visu_texture_checkbox_switch_on" },
-            spriteOff: { name: "visu_texture_checkbox_switch_off" },
+          },
+          label2: {
+            text: "Stretch",
+            //font: "font_inter_10_regular",
+            enable: { key: "particle-use-sprite" },
           },
         },
       },
-      {
-        name: "particle_sprite-randomValue",
-        template: VEComponents.get("boolean-field"),
-        layout: VELayouts.get("boolean-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Random",
-            enable: { key: "particle-use-sprite" },
-          },
-          field: { 
-            store: { key: "particle-sprite-randomValue" },
-            enable: { key: "particle-use-sprite" },
-            spriteOn: { name: "visu_texture_checkbox_switch_on" },
-            spriteOff: { name: "visu_texture_checkbox_switch_off" },
-          },
-        },
-      },
-      #endregion
-      #region Color
       {
         name: "particle_color-start",
         template: VEComponents.get("color-picker"),
         layout: VELayouts.get("color-picker"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
+          //line: { disable: true },
           title: {
-            label: { text: "Start color" },  
-            input: { store: { key: "particle-color-start" } }
+            label: {
+              text: "Start color",
+              backgroundColor: VETheme.color.side,
+              color: VETheme.color.textShadow,
+            }, 
+            input: {
+              store: { key: "particle-color-start" },
+              backgroundColor: VETheme.color.side,
+            },
+            checkbox: {
+              backgroundColor: VETheme.color.side,
+            },
           },
           red: {
             label: { text: "Red" },
@@ -303,10 +369,24 @@ function template_particle(json = null) {
         template: VEComponents.get("color-picker"),
         layout: VELayouts.get("color-picker"),
         config: { 
-          layout: { type: UILayoutType.VERTICAL },
+          layout: {
+            type: UILayoutType.VERTICAL,
+            margin: { top: 4 },
+          },
+          //line: { disable: true },
           title: {
-            label: { text: "Halfway color" },  
-            input: { store: { key: "particle-color-halfway" } }
+            label: {
+              text: "Halfway color",
+              backgroundColor: VETheme.color.side,
+              color: VETheme.color.textShadow,
+            }, 
+            input: {
+              store: { key: "particle-color-halfway" },
+              backgroundColor: VETheme.color.side,
+            },
+            checkbox: {
+              backgroundColor: VETheme.color.side,
+            },
           },
           red: {
             label: { text: "Red" },
@@ -334,10 +414,24 @@ function template_particle(json = null) {
         template: VEComponents.get("color-picker"),
         layout: VELayouts.get("color-picker"),
         config: { 
-          layout: { type: UILayoutType.VERTICAL },
+          layout: {
+            type: UILayoutType.VERTICAL,
+            margin: { top: 4 },
+          },
+          //line: { disable: true },
           title: {
-            label: { text: "Finish color" },  
-            input: { store: { key: "particle-color-finish" } }
+            label: {
+              text: "Finish color",
+              backgroundColor: VETheme.color.side,
+              color: VETheme.color.textShadow,
+            }, 
+            input: {
+              store: { key: "particle-color-finish" },
+              backgroundColor: VETheme.color.side,
+            },
+            checkbox: {
+              backgroundColor: VETheme.color.side,
+            },
           },
           red: {
             label: { text: "Red" },
@@ -360,23 +454,39 @@ function template_particle(json = null) {
           },
         },
       },
-      #endregion
-      #region Alpha
+      {
+        name: "particle-color-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: {
+          type: UILayoutType.VERTICAL,
+          margin: { top: 4, bottom: 3 },
+        } },
+      },
       {
         name: "particle_alpha",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Alpha" },
+          label: { 
+            text: "Alpha",
+            color: VETheme.color.textShadow,
+            backgroundColor: VETheme.color.side,
+          },
+          input: { backgroundColor: VETheme.color.side },
+          checkbox: { backgroundColor: VETheme.color.side },
         },
       },
       {
         name: "particle_alpha-start",
-        template: VEComponents.get("numeric-slider-field"),
-        layout: VELayouts.get("numeric-slider-field"),
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-slider-increase-field"),
         config: { 
-          layout: { type: UILayoutType.VERTICAL },
+          layout: {
+            type: UILayoutType.VERTICAL,
+            //margin: { top: 2 },
+          },
           label: { text: "Start" },
           field: {
             store: {
@@ -404,6 +514,34 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -0.01,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.alpha.start = clamp(template.alpha.start + this.factor, 0.0, 1.0)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.01,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.alpha.start = clamp(template.alpha.start + this.factor, 0.0, 1.0)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
           slider: {
             store: {
               key: "particle-template",
@@ -429,6 +567,7 @@ function template_particle(json = null) {
                 item.set(template)
               },
             },
+            snapValue: 0.01 / 1.0,
             minValue: 0.0,
             maxValue: 1.0,
           }
@@ -436,8 +575,8 @@ function template_particle(json = null) {
       },
       {
         name: "particle_alpha-halfway",
-        template: VEComponents.get("numeric-slider-field"),
-        layout: VELayouts.get("numeric-slider-field"),
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-slider-increase-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Halfway" },
@@ -467,6 +606,34 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -0.01,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.alpha.halfway = clamp(template.alpha.halfway + this.factor, 0.0, 1.0)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.01,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.alpha.halfway = clamp(template.alpha.halfway + this.factor, 0.0, 1.0)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
           slider: { 
             store: {
               key: "particle-template",
@@ -494,13 +661,14 @@ function template_particle(json = null) {
             },
             minValue: 0.0,
             maxValue: 1.0,
+            snapValue: 0.01 / 1.0,
           },
         },
       },
       {
         name: "particle_alpha-finish",
-        template: VEComponents.get("numeric-slider-field"),
-        layout: VELayouts.get("numeric-slider-field"),
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-slider-increase-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Finish" },
@@ -530,6 +698,34 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -0.01,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.alpha.finish = clamp(template.alpha.finish + this.factor, 0.0, 1.0)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.01,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.alpha.finish = clamp(template.alpha.finish + this.factor, 0.0, 1.0)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
           slider: {
             store: {
               key: "particle-template",
@@ -557,29 +753,42 @@ function template_particle(json = null) {
             },
             minValue: 0.0,
             maxValue: 1.0,
+            snapValue: 0.01 / 1.0,
           }
-        },minValue: 0.0,
-            maxValue: 1.0,
+        },
       },
-      #endregion
-      #region Angle
+      {
+        name: "particle-alpha-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
       {
         name: "particle_angle",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Angle" },
+          label: {
+            text: "Angle",
+            color: VETheme.color.textShadow,
+            backgroundColor: VETheme.color.side,
+          },
+          input: { backgroundColor: VETheme.color.side },
+          checkbox: { backgroundColor: VETheme.color.side },
         },
       },
       {
         name: "particle_angle-wiggle",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: { 
-          layout: { type: UILayoutType.VERTICAL },
+          layout: { 
+            type: UILayoutType.VERTICAL,
+            //margin: { top: 2 },
+          },
           label: { text: "Wiggle" },
-          field: {
+          field: { 
             store: {
               key: "particle-template",
               callback: function(value, data) {
@@ -605,15 +814,114 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -0.01,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.angle.wiggle = clamp(template.angle.wiggle + this.factor, -999.9, 999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.01,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.angle.wiggle = clamp(template.angle.wiggle + this.factor, -999.9, 999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          stick: {
+            store: { 
+              key: "particle-template",
+              set: function(value) {
+                var item = this.get()
+                if (item == null) {
+                  return 
+                }
+
+                var parsedValue = NumberUtil.parse(value, null)
+                if (parsedValue == null) {
+                  return
+                }
+                item.get().angle.wiggle = parsedValue
+                item.set(item.get())
+              },
+            },
+            factor: 0.01,
+            updateValue: function(mouseX, mouseY) {
+              var isUIStore = Core.isType(this.store, UIStore)
+              this.base = !Core.isType(this.base, Number) 
+                ? (isUIStore ? this.store.getValue().angle.wiggle : this.value)
+                : this.base 
+
+              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
+              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
+              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
+              this.value = this.base + (distance * this.factor)
+              if (isUIStore && this.value != this.store.getValue().angle.wiggle) {
+                this.store.set(this.value)
+              }
+            },
+          },
+          checkbox: { 
+            store: { 
+              key: "particle-template",
+              callback: function(value, data) { },
+              set: function(value) { },
+            },
+            render: function() {
+              var template = this.store.getValue()
+              if (!Optional.is(template)) {
+                return this
+              }
+
+              var sprite = Struct.get(this, "sprite")
+              if (!Core.isType(sprite, Sprite)) {
+                sprite = SpriteUtil.parse({ name: "visu_texture_ui_angle_arrow" })
+                Struct.set(this, "sprite", sprite)
+              }
+
+              sprite.scaleToFit(this.area.getWidth() * 2, this.area.getHeight() * 2)
+                .setAngle(template.angle.minValue)
+                .render(
+                  this.context.area.getX() + this.area.getX() + 2 + sprite.texture.offsetX * sprite.getScaleX(),
+                  this.context.area.getY() + this.area.getY() + 4 + sprite.texture.offsetY * sprite.getScaleY()
+                )
+
+              var alpha = sprite.getAlpha()
+              sprite.setAngle(template.angle.maxValue)
+                .setAlpha(alpha * 0.66)
+                .render(
+                  this.context.area.getX() + this.area.getX() + 2 + sprite.texture.offsetX * sprite.getScaleX(),
+                  this.context.area.getY() + this.area.getY() + 4 + sprite.texture.offsetY * sprite.getScaleY()
+                )
+                .setAngle(template.angle.minValue)
+                .setAlpha(alpha)
+
+              return this
+            },
+          },
         },
       },
       {
         name: "particle_angle-increase",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Inc." },
+          label: { text: "Increase" },
           field: {
             store: {
               key: "particle-template",
@@ -640,12 +948,74 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -0.01,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.angle.increase  = clamp(template.angle.increase  + this.factor, -999.9, 999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.01,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.angle.increase = clamp(template.angle.increase + this.factor, -999.9, 999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          stick: {
+            store: { 
+              key: "particle-template",
+              set: function(value) {
+                var item = this.get()
+                if (item == null) {
+                  return 
+                }
+
+                var parsedValue = NumberUtil.parse(value, null)
+                if (parsedValue == null) {
+                  return
+                }
+                item.get().angle.increase = parsedValue
+                item.set(item.get())
+              },
+            },
+            factor: 0.01,
+            updateValue: function(mouseX, mouseY) {
+              var isUIStore = Core.isType(this.store, UIStore)
+              this.base = !Core.isType(this.base, Number) 
+                ? (isUIStore ? this.store.getValue().angle.increase : this.value)
+                : this.base 
+
+              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
+              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
+              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
+              this.value = this.base + (distance * this.factor)
+              if (isUIStore && this.value != this.store.getValue().angle.increase) {
+                this.store.set(this.value)
+              }
+            },
+          },
+          checkbox: { },
         },
       },
       {
         name: "particle_angle-minValue",
-        template: VEComponents.get("numeric-slider-field"),
-        layout: VELayouts.get("numeric-slider-field"),
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-slider-increase-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Min" },
@@ -675,6 +1045,34 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.angle.minValue = clamp(template.angle.minValue + this.factor, 0.0, 360.0)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.angle.minValue = clamp(template.angle.minValue + this.factor, 0.0, 360.0)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
           slider: {
             store: {
               key: "particle-template",
@@ -690,8 +1088,8 @@ function template_particle(json = null) {
                 var parsed = NumberUtil.parse(value)
                 var item = this.get()
                 if (!Core.isType(parsed, Number)
-                  || !Core.isType(item, StoreItem) 
-                  || !Core.isType(item.get(), ParticleTemplate)) {
+                    || !Core.isType(item, StoreItem) 
+                    || !Core.isType(item.get(), ParticleTemplate)) {
                   return
                 }
 
@@ -701,14 +1099,15 @@ function template_particle(json = null) {
               },
             },
             minValue: 0.0,
-            maxValue: 360.0
+            maxValue: 360.0,
+            snapValue: 1.0 / 360.0,
           }
         },
       },
       {
         name: "particle_angle-maxValue",
-        template: VEComponents.get("numeric-slider-field"),
-        layout: VELayouts.get("numeric-slider-field"),
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-slider-increase-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Max" },
@@ -738,6 +1137,34 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.angle.maxValue = clamp(template.angle.maxValue + this.factor, 0.0, 360.0)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.angle.maxValue = clamp(template.angle.maxValue + this.factor, 0.0, 360.0)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
           slider: {
             store: {
               key: "particle-template",
@@ -765,26 +1192,40 @@ function template_particle(json = null) {
             },
             minValue: 0.0,
             maxValue: 360.0,
+            snapValue: 1.0 / 360.0,
           }
         },
       },
-      #endregion
-      #region Size
+      {
+        name: "particle-angle-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
       {
         name: "particle_size",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Size" },
+          label: {
+            text: "Size",
+            color: VETheme.color.textShadow,
+            backgroundColor: VETheme.color.side,
+          },
+          input: { backgroundColor: VETheme.color.side },
+          checkbox: { backgroundColor: VETheme.color.side },
         },
       },
       {
         name: "particle_size-wiggle",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: { 
-          layout: { type: UILayoutType.VERTICAL },
+          layout: { 
+            type: UILayoutType.VERTICAL,
+            //margin: { top: 2 },
+          },
           label: { text: "Wiggle" },
           field: {
             store: {
@@ -812,12 +1253,74 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.size.wiggle = clamp(template.size.wiggle + this.factor, -999.9, 999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.size.wiggle = clamp(template.size.wiggle + this.factor, -999.9, 999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          stick: {
+            store: { 
+              key: "particle-template",
+              set: function(value) {
+                var item = this.get()
+                if (item == null) {
+                  return 
+                }
+
+                var parsedValue = NumberUtil.parse(value, null)
+                if (parsedValue == null) {
+                  return
+                }
+                item.get().size.wiggle = parsedValue
+                item.set(item.get())
+              },
+            },
+            factor: 0.01,
+            updateValue: function(mouseX, mouseY) {
+              var isUIStore = Core.isType(this.store, UIStore)
+              this.base = !Core.isType(this.base, Number) 
+                ? (isUIStore ? this.store.getValue().size.wiggle : this.value)
+                : this.base 
+
+              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
+              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
+              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
+              this.value = this.base + (distance * this.factor)
+              if (isUIStore && this.value != this.store.getValue().size.wiggle) {
+                this.store.set(this.value)
+              }
+            },
+          },
+          checkbox: { },
         },
       },
       {
         name: "particle_size-increase",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Inc." },
@@ -847,12 +1350,74 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.size.increase = clamp(template.size.increase + this.factor, -999.9, 999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.size.increase = clamp(template.size.increase + this.factor, -999.9, 999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          stick: {
+            store: { 
+              key: "particle-template",
+              set: function(value) {
+                var item = this.get()
+                if (item == null) {
+                  return 
+                }
+
+                var parsedValue = NumberUtil.parse(value, null)
+                if (parsedValue == null) {
+                  return
+                }
+                item.get().size.increase = parsedValue
+                item.set(item.get())
+              },
+            },
+            factor: 0.01,
+            updateValue: function(mouseX, mouseY) {
+              var isUIStore = Core.isType(this.store, UIStore)
+              this.base = !Core.isType(this.base, Number) 
+                ? (isUIStore ? this.store.getValue().size.increase : this.value)
+                : this.base 
+
+              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
+              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
+              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
+              this.value = this.base + (distance * this.factor)
+              if (isUIStore && this.value != this.store.getValue().size.increase) {
+                this.store.set(this.value)
+              }
+            },
+          },
+          checkbox: { },
         },
       },
       {
         name: "particle_size-minValue",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Min" },
@@ -882,12 +1447,74 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -1.0,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.size.minValue = clamp(template.size.minValue + this.factor, 0.0, 9999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 1.0,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.size.minValue = clamp(template.size.minValue + this.factor, 0.0, 9999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          stick: {
+            store: { 
+              key: "particle-template",
+              set: function(value) {
+                var item = this.get()
+                if (item == null) {
+                  return 
+                }
+
+                var parsedValue = NumberUtil.parse(value, null)
+                if (parsedValue == null) {
+                  return
+                }
+                item.get().size.minValue = parsedValue
+                item.set(item.get())
+              },
+            },
+            factor: 0.01,
+            updateValue: function(mouseX, mouseY) {
+              var isUIStore = Core.isType(this.store, UIStore)
+              this.base = !Core.isType(this.base, Number) 
+                ? (isUIStore ? this.store.getValue().size.minValue : this.value)
+                : this.base 
+
+              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
+              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
+              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
+              this.value = this.base + (distance * this.factor)
+              if (isUIStore && this.value != this.store.getValue().size.minValue) {
+                this.store.set(this.value)
+              }
+            },
+          },
+          checkbox: { },
         },
       },
       {
         name: "particle_size-maxValue",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Max" },
@@ -917,25 +1544,100 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -1.0,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.size.maxValue = clamp(template.size.maxValue + this.factor, 0.0, 9999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 1.0,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.size.maxValue = clamp(template.size.maxValue + this.factor, 0.0, 9999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          stick: {
+            store: { 
+              key: "particle-template",
+              set: function(value) {
+                var item = this.get()
+                if (item == null) {
+                  return 
+                }
+
+                var parsedValue = NumberUtil.parse(value, null)
+                if (parsedValue == null) {
+                  return
+                }
+                item.get().size.maxValue = parsedValue
+                item.set(item.get())
+              },
+            },
+            factor: 0.01,
+            updateValue: function(mouseX, mouseY) {
+              var isUIStore = Core.isType(this.store, UIStore)
+              this.base = !Core.isType(this.base, Number) 
+                ? (isUIStore ? this.store.getValue().size.maxValue : this.value)
+                : this.base 
+
+              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
+              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
+              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
+              this.value = this.base + (distance * this.factor)
+              if (isUIStore && this.value != this.store.getValue().size.maxValue) {
+                this.store.set(this.value)
+              }
+            },
+          },
+          checkbox: { },
         },
       },
-      #endregion
-      #region Speed
+      {
+        name: "particle-size-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
       {
         name: "particle_speed",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Speed" },
+          label: {
+            text: "Speed",
+            color: VETheme.color.textShadow,
+            backgroundColor: VETheme.color.side,
+          },
+          input: { backgroundColor: VETheme.color.side },
+          checkbox: { backgroundColor: VETheme.color.side },
         },
       },
       {
         name: "particle_speed-wiggle",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: { 
-          layout: { type: UILayoutType.VERTICAL },
+          layout: { 
+            type: UILayoutType.VERTICAL,
+            //margin: { top: 2 },
+          },
           label: { text: "Wiggle" },
           field: {
             store: {
@@ -963,15 +1665,77 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.speed.wiggle = clamp(template.speed.wiggle + this.factor, -999.9, 999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.speed.wiggle = clamp(template.speed.wiggle + this.factor, -999.9, 999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          stick: {
+            store: { 
+              key: "particle-template",
+              set: function(value) {
+                var item = this.get()
+                if (item == null) {
+                  return 
+                }
+
+                var parsedValue = NumberUtil.parse(value, null)
+                if (parsedValue == null) {
+                  return
+                }
+                item.get().speed.wiggle = parsedValue
+                item.set(item.get())
+              },
+            },
+            factor: 0.01,
+            updateValue: function(mouseX, mouseY) {
+              var isUIStore = Core.isType(this.store, UIStore)
+              this.base = !Core.isType(this.base, Number) 
+                ? (isUIStore ? this.store.getValue().speed.wiggle : this.value)
+                : this.base 
+
+              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
+              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
+              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
+              this.value = this.base + (distance * this.factor)
+              if (isUIStore && this.value != this.store.getValue().speed.wiggle) {
+                this.store.set(this.value)
+              }
+            },
+          },
+          checkbox: { },
         },
       },
       {
         name: "particle_speed-increase",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Inc." },
+          label: { text: "Increase" },
           field: {
             store: {
               key: "particle-template",
@@ -998,12 +1762,74 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.speed.increase = clamp(template.speed.increase + this.factor, -999.9, 999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.speed.increase = clamp(template.speed.increase + this.factor, -999.9, 999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          stick: {
+            store: { 
+              key: "particle-template",
+              set: function(value) {
+                var item = this.get()
+                if (item == null) {
+                  return 
+                }
+
+                var parsedValue = NumberUtil.parse(value, null)
+                if (parsedValue == null) {
+                  return
+                }
+                item.get().speed.increase = parsedValue
+                item.set(item.get())
+              },
+            },
+            factor: 0.01,
+            updateValue: function(mouseX, mouseY) {
+              var isUIStore = Core.isType(this.store, UIStore)
+              this.base = !Core.isType(this.base, Number) 
+                ? (isUIStore ? this.store.getValue().speed.increase : this.value)
+                : this.base 
+
+              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
+              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
+              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
+              this.value = this.base + (distance * this.factor)
+              if (isUIStore && this.value != this.store.getValue().speed.increase) {
+                this.store.set(this.value)
+              }
+            },
+          },
+          checkbox: { },
         },
       },
       {
         name: "particle_speed-minValue",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Min" },
@@ -1033,12 +1859,74 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -1.0,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.speed.minValue = clamp(template.speed.minValue + this.factor, 0.0, 9999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 1.0,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.speed.minValue = clamp(template.speed.minValue + this.factor, 0.0, 9999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          stick: {
+            store: { 
+              key: "particle-template",
+              set: function(value) {
+                var item = this.get()
+                if (item == null) {
+                  return 
+                }
+
+                var parsedValue = NumberUtil.parse(value, null)
+                if (parsedValue == null) {
+                  return
+                }
+                item.get().speed.minValue = parsedValue
+                item.set(item.get())
+              },
+            },
+            factor: 0.01,
+            updateValue: function(mouseX, mouseY) {
+              var isUIStore = Core.isType(this.store, UIStore)
+              this.base = !Core.isType(this.base, Number) 
+                ? (isUIStore ? this.store.getValue().speed.minValue : this.value)
+                : this.base 
+
+              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
+              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
+              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
+              this.value = this.base + (distance * this.factor)
+              if (isUIStore && this.value != this.store.getValue().speed.minValue) {
+                this.store.set(this.value)
+              }
+            },
+          },
+          checkbox: { },
         },
       },
       {
         name: "particle_speed-maxValue",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Max" },
@@ -1068,25 +1956,100 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -1.0,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.speed.maxValue = clamp(template.speed.maxValue + this.factor, 0.0, 9999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 1.0,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.speed.maxValue = clamp(template.speed.maxValue + this.factor, 0.0, 9999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          stick: {
+            store: { 
+              key: "particle-template",
+              set: function(value) {
+                var item = this.get()
+                if (item == null) {
+                  return 
+                }
+
+                var parsedValue = NumberUtil.parse(value, null)
+                if (parsedValue == null) {
+                  return
+                }
+                item.get().speed.maxValue = parsedValue
+                item.set(item.get())
+              },
+            },
+            factor: 0.01,
+            updateValue: function(mouseX, mouseY) {
+              var isUIStore = Core.isType(this.store, UIStore)
+              this.base = !Core.isType(this.base, Number) 
+                ? (isUIStore ? this.store.getValue().speed.maxValue : this.value)
+                : this.base 
+
+              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
+              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
+              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
+              this.value = this.base + (distance * this.factor)
+              if (isUIStore && this.value != this.store.getValue().speed.maxValue) {
+                this.store.set(this.value)
+              }
+            },
+          },
+          checkbox: { },
         },
       },
-      #endregion
-      #region Scale
+      {
+        name: "particle-speed-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
       {
         name: "particle_scale",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Scale" },
+          label: {
+            text: "Scale",
+            color: VETheme.color.textShadow,
+            backgroundColor: VETheme.color.side,
+          },
+          input: { backgroundColor: VETheme.color.side },
+          checkbox: { backgroundColor: VETheme.color.side },
         },
       },
       {
         name: "particle_scale-x",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: { 
-          layout: { type: UILayoutType.VERTICAL },
+          layout: {
+            type: UILayoutType.VERTICAL,
+            //margin: { top: 2 },
+          },
           label: { text: "X" },
           field: {
             store: {
@@ -1114,12 +2077,74 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.scale.x = clamp(template.scale.x + this.factor, 0.0, 9999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.scale.x = clamp(template.scale.x + this.factor, 0.0, 9999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          stick: {
+            store: { 
+              key: "particle-template",
+              set: function(value) {
+                var item = this.get()
+                if (item == null) {
+                  return 
+                }
+
+                var parsedValue = NumberUtil.parse(value, null)
+                if (parsedValue == null) {
+                  return
+                }
+                item.get().scale.x = parsedValue
+                item.set(item.get())
+              },
+            },
+            factor: 0.005,
+            updateValue: function(mouseX, mouseY) {
+              var isUIStore = Core.isType(this.store, UIStore)
+              this.base = !Core.isType(this.base, Number) 
+                ? (isUIStore ? this.store.getValue().scale.x : this.value)
+                : this.base 
+
+              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
+              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
+              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
+              this.value = this.base + (distance * this.factor)
+              if (isUIStore && this.value != this.store.getValue().scale.x) {
+                this.store.set(this.value)
+              }
+            },
+          },
+          checkbox: { },
         },
       },
       {
         name: "particle_scale-y",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Y" },
@@ -1149,25 +2174,100 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.scale.y = clamp(template.scale.y + this.factor, 0.0, 9999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.scale.y = clamp(template.scale.y + this.factor, 0.0, 9999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          stick: {
+            store: { 
+              key: "particle-template",
+              set: function(value) {
+                var item = this.get()
+                if (item == null) {
+                  return 
+                }
+
+                var parsedValue = NumberUtil.parse(value, null)
+                if (parsedValue == null) {
+                  return
+                }
+                item.get().scale.y = parsedValue
+                item.set(item.get())
+              },
+            },
+            factor: 0.005,
+            updateValue: function(mouseX, mouseY) {
+              var isUIStore = Core.isType(this.store, UIStore)
+              this.base = !Core.isType(this.base, Number) 
+                ? (isUIStore ? this.store.getValue().scale.y : this.value)
+                : this.base 
+
+              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
+              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
+              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
+              this.value = this.base + (distance * this.factor)
+              if (isUIStore && this.value != this.store.getValue().scale.y) {
+                this.store.set(this.value)
+              }
+            },
+          },
+          checkbox: { },
         },
       },
-      #endregion
-      #region Gravity
+      {
+        name: "particle-scale-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
       {
         name: "particle_gravity",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Gravity" },
+          label: {
+            text: "Gravity",
+            color: VETheme.color.textShadow,
+            backgroundColor: VETheme.color.side,
+          },
+          input: { backgroundColor: VETheme.color.side },
+          checkbox: { backgroundColor: VETheme.color.side },
         },
       },
       {
         name: "particle_gravity-angle",
-        template: VEComponents.get("numeric-slider-field"),
-        layout: VELayouts.get("numeric-slider-field"),
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-slider-increase-field"),
         config: { 
-          layout: { type: UILayoutType.VERTICAL },
+          layout: {
+            type: UILayoutType.VERTICAL,
+            //margin: { top: 2 },
+          },
           label: { text: "Angle" },
           field: {
             store: {
@@ -1222,13 +2322,42 @@ function template_particle(json = null) {
             },
             minValue: 0.0,
             maxValue: 360.0,
-          }
+            snapValue: 1.0 / 360.0,
+          },
+          decrease: {
+            factor: -0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.gravity.angle = clamp(template.gravity.angle + this.factor, 0.0, 360.0)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.gravity.angle = clamp(template.gravity.angle + this.factor, 0.0, 360.0)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
         },
       },
       {
         name: "particle_gravity-amount",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Amount" },
@@ -1258,25 +2387,100 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.gravity.amount = clamp(template.gravity.amount + this.factor, 0.0, 9999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.gravity.amount = clamp(template.gravity.amount + this.factor, 0.0, 9999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          stick: {
+            store: { 
+              key: "particle-template",
+              set: function(value) {
+                var item = this.get()
+                if (item == null) {
+                  return 
+                }
+
+                var parsedValue = NumberUtil.parse(value, null)
+                if (parsedValue == null) {
+                  return
+                }
+                item.get().gravity.amount = parsedValue
+                item.set(item.get())
+              },
+            },
+            factor: 0.01,
+            updateValue: function(mouseX, mouseY) {
+              var isUIStore = Core.isType(this.store, UIStore)
+              this.base = !Core.isType(this.base, Number) 
+                ? (isUIStore ? this.store.getValue().gravity.amount : this.value)
+                : this.base 
+
+              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
+              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
+              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
+              this.value = this.base + (distance * this.factor)
+              if (isUIStore && this.value != this.store.getValue().gravity.amount) {
+                this.store.set(this.value)
+              }
+            },
+          },
+          checkbox: { },
         },
       },
-      #endregion
-      #region Life
+      {
+        name: "particle-gravity-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
       {
         name: "particle_life",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Life" },
+          label: {
+            text: "Life",
+            color: VETheme.color.textShadow,
+            backgroundColor: VETheme.color.side,
+          },
+          input: { backgroundColor: VETheme.color.side },
+          checkbox: { backgroundColor: VETheme.color.side },
         },
       },
       {
         name: "particle_life-minValue",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: { 
-          layout: { type: UILayoutType.VERTICAL },
+          layout: { 
+            type: UILayoutType.VERTICAL,
+            //margin: { top: 2 },
+          },
           label: { text: "Min" },
           field: {
             store: {
@@ -1304,12 +2508,74 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -1.0,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.life.minValue = clamp(template.life.minValue + this.factor, 0.0, 9999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 1.0,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.life.minValue = clamp(template.life.minValue + this.factor, 0.0, 9999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          stick: {
+            store: { 
+              key: "particle-template",
+              set: function(value) {
+                var item = this.get()
+                if (item == null) {
+                  return 
+                }
+
+                var parsedValue = NumberUtil.parse(value, null)
+                if (parsedValue == null) {
+                  return
+                }
+                item.get().life.minValue = parsedValue
+                item.set(item.get())
+              },
+            },
+            factor: 0.5,
+            updateValue: function(mouseX, mouseY) {
+              var isUIStore = Core.isType(this.store, UIStore)
+              this.base = !Core.isType(this.base, Number) 
+                ? (isUIStore ? this.store.getValue().life.minValue : this.value)
+                : this.base 
+
+              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
+              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
+              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
+              this.value = this.base + (distance * this.factor)
+              if (isUIStore && this.value != this.store.getValue().life.minValue) {
+                this.store.set(this.value)
+              }
+            },
+          },
+          checkbox: { },
         },
       },
       {
         name: "particle_life-maxValue",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Max" },
@@ -1339,26 +2605,101 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -1.0,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.life.maxValue = clamp(template.life.maxValue + this.factor, 0.0, 9999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 1.0,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.life.maxValue = clamp(template.life.maxValue + this.factor, 0.0, 9999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          stick: {
+            store: { 
+              key: "particle-template",
+              set: function(value) {
+                var item = this.get()
+                if (item == null) {
+                  return 
+                }
+
+                var parsedValue = NumberUtil.parse(value, null)
+                if (parsedValue == null) {
+                  return
+                }
+                item.get().life.maxValue = parsedValue
+                item.set(item.get())
+              },
+            },
+            factor: 0.5,
+            updateValue: function(mouseX, mouseY) {
+              var isUIStore = Core.isType(this.store, UIStore)
+              this.base = !Core.isType(this.base, Number) 
+                ? (isUIStore ? this.store.getValue().life.maxValue : this.value)
+                : this.base 
+
+              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
+              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
+              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
+              this.value = this.base + (distance * this.factor)
+              if (isUIStore && this.value != this.store.getValue().life.maxValue) {
+                this.store.set(this.value)
+              }
+            },
+          },
+          checkbox: { },
         },
       },
-      #endregion
-      #region Orientation
+      {
+        name: "particle-life-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
       {
         name: "particle_orientation",
         template: VEComponents.get("property"),
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Orientation" },
+          label: {
+            text: "Orientation",
+            color: VETheme.color.textShadow,
+            backgroundColor: VETheme.color.side,
+          },
+          input: { backgroundColor: VETheme.color.side },
+          checkbox: { backgroundColor: VETheme.color.side },
         },
       },
       {
         name: "particle_orientation-relative",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Relat." },
+          layout: {
+            type: UILayoutType.VERTICAL,
+            //margin: { top: 2 },
+          },
+          label: { text: "Relative" },
           field: {
             store: {
               key: "particle-template",
@@ -1385,12 +2726,74 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.orientation.relative = clamp(template.orientation.relative + this.factor, 0.0, 360.0)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.orientation.relative = clamp(template.orientation.relative + this.factor, 0.0, 360.0)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          stick: {
+            store: { 
+              key: "particle-template",
+              set: function(value) {
+                var item = this.get()
+                if (item == null) {
+                  return 
+                }
+
+                var parsedValue = NumberUtil.parse(value, null)
+                if (parsedValue == null) {
+                  return
+                }
+                item.get().orientation.relative = parsedValue
+                item.set(item.get())
+              },
+            },
+            factor: 0.2,
+            updateValue: function(mouseX, mouseY) {
+              var isUIStore = Core.isType(this.store, UIStore)
+              this.base = !Core.isType(this.base, Number) 
+                ? (isUIStore ? this.store.getValue().orientation.relative : this.value)
+                : this.base 
+
+              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
+              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
+              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
+              this.value = this.base + (distance * this.factor)
+              if (isUIStore && this.value != this.store.getValue().orientation.relative) {
+                this.store.set(this.value)
+              }
+            },
+          },
+          checkbox: { },
         },
       },
       {
         name: "particle_orientation-wiggle",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Wiggle" },
@@ -1420,15 +2823,77 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.orientation.wiggle = clamp(template.orientation.wiggle + this.factor, -999.9, 999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.orientation.wiggle = clamp(template.orientation.wiggle + this.factor, -999.9, 999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          stick: {
+            store: { 
+              key: "particle-template",
+              set: function(value) {
+                var item = this.get()
+                if (item == null) {
+                  return 
+                }
+
+                var parsedValue = NumberUtil.parse(value, null)
+                if (parsedValue == null) {
+                  return
+                }
+                item.get().orientation.wiggle = parsedValue
+                item.set(item.get())
+              },
+            },
+            factor: 0.01,
+            updateValue: function(mouseX, mouseY) {
+              var isUIStore = Core.isType(this.store, UIStore)
+              this.base = !Core.isType(this.base, Number) 
+                ? (isUIStore ? this.store.getValue().orientation.wiggle : this.value)
+                : this.base 
+
+              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
+              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
+              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
+              this.value = this.base + (distance * this.factor)
+              if (isUIStore && this.value != this.store.getValue().orientation.wiggle) {
+                this.store.set(this.value)
+              }
+            },
+          },
+          checkbox: { },
         },
       },
       {
         name: "particle_orientation-increase",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Inc." },
+          label: { text: "Increase" },
           field: {
             store: {
               key: "particle-template",
@@ -1455,12 +2920,74 @@ function template_particle(json = null) {
               },
             },
           },
+          decrease: {
+            factor: -0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.orientation.increase = clamp(template.orientation.increase + this.factor, -999.9, 999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.orientation.increase = clamp(template.orientation.increase + this.factor, -999.9, 999.9)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          stick: {
+            store: { 
+              key: "particle-template",
+              set: function(value) {
+                var item = this.get()
+                if (item == null) {
+                  return 
+                }
+
+                var parsedValue = NumberUtil.parse(value, null)
+                if (parsedValue == null) {
+                  return
+                }
+                item.get().orientation.increase = parsedValue
+                item.set(item.get())
+              },
+            },
+            factor: 0.01,
+            updateValue: function(mouseX, mouseY) {
+              var isUIStore = Core.isType(this.store, UIStore)
+              this.base = !Core.isType(this.base, Number) 
+                ? (isUIStore ? this.store.getValue().orientation.increase : this.value)
+                : this.base 
+
+              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
+              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
+              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
+              this.value = this.base + (distance * this.factor)
+              if (isUIStore && this.value != this.store.getValue().orientation.increase) {
+                this.store.set(this.value)
+              }
+            },
+          },
+          checkbox: { },
         },
       },
       {
         name: "particle_orientation-minValue",
-        template: VEComponents.get("numeric-slider-field"),
-        layout: VELayouts.get("numeric-slider-field"),
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-slider-increase-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Min" },
@@ -1517,13 +3044,41 @@ function template_particle(json = null) {
             },
             minValue: 0.0,
             maxValue: 360.0,
-          }
+          },
+          decrease: {
+            factor: -0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.orientation.minValue = clamp(template.orientation.minValue + this.factor, 0.0, 360.0)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.orientation.minValue = clamp(template.orientation.minValue + this.factor, 0.0, 360.0)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
         },
       },
       {
         name: "particle_orientation-maxValue",
-        template: VEComponents.get("numeric-slider-field"),
-        layout: VELayouts.get("numeric-slider-field"),
+        template: VEComponents.get("numeric-slider-increase-field"),
+        layout: VELayouts.get("numeric-slider-increase-field"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Max" },
@@ -1580,10 +3135,38 @@ function template_particle(json = null) {
             },
             minValue: 0.0,
             maxValue: 360.0,
-          }
+            snapValue: 1.0 / 360.0
+          },
+          decrease: {
+            factor: -0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.orientation.maxValue = clamp(template.orientation.maxValue + this.factor, 0.0, 360.0)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
+          increase: {
+            factor: 0.1,
+            callback: function() {
+              var item = UIUtil.getIncreaseUIStoreItem(this, ParticleTemplate)
+              if (!Optional.is(item)) {
+                return
+              }
+
+              var template = item.get()
+              template.orientation.maxValue = clamp(template.orientation.maxValue + this.factor, 0.0, 360.0)
+              item.set(template)
+            },
+            store: { key: "particle-template" },
+          },
         },
       },
-      #endregion
     ]),
   }
   return template

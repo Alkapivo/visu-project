@@ -20,11 +20,19 @@ function UIItem(_name, config = {}) constructor {
   ///@type {Margin}
   margin = new Margin(Struct.get(config, "margin"))
 
+  ///@type {?Struct}
+  enable = Struct.getIfType(config, "enable", Struct)
+
+  ///@type {Boolean}
+  isHoverOver = false
+
   ///@type {any}
   state = Struct.get(config, "state")
 
   ///@type {?UIStore}
-  store = Struct.contains(config, "store") ? new UIStore(config.store, this) : null
+  store = Optional.is(Struct.get(config, "store"))
+    ? new UIStore(config.store, this) 
+    : null
 
   ///@type {Boolean}
   storeSubscribed = Core.isType(Struct.get(config, "storeSubscribed"), Boolean) 
@@ -32,22 +40,20 @@ function UIItem(_name, config = {}) constructor {
     : false
 
   ///@type {?Struct}
-  component = Optional.is(Struct.get(config, "component"))
-    ? Assert.isType(config.component, Struct)
-    : null
-
-  ///@params {Boolean}
-  isHoverOver = false
+  component = Struct.getIfType(config, "component", Struct)
 
   ///@type {?GMColor}
-  backgroundColor = Core.isType(Struct.get(config, "backgroundColor"), String)
-    ? Assert.isType(ColorUtil.fromHex(config.backgroundColor).toGMColor(), GMColor)
+  backgroundColor = Optional.is(Struct.getIfType(config, "backgroundColor", String))
+    ? Assert.isType(ColorUtil.parse(config.backgroundColor).toGMColor(), GMColor)
     : null
 
   ///@type {Number}
-  backgroundAlpha = Core.isType(Struct.get(config, "backgroundAlpha"), Number)
-    ? config.backgroundAlpha
-    : 1.0
+  backgroundAlpha = Struct.getIfType(config, "backgroundAlpha", Number, 1.0)
+
+  ///@type {?Margin}
+  backgroundMargin = Optional.is(Struct.get(config, "backgroundMargin"))
+    ? new Margin(config.backgroundMargin)
+    : null
   
   ///@type {Event}
   hoverEvent = new Event("MouseHoverOut", { x: 0, y: 0 })
@@ -136,11 +142,20 @@ function UIItem(_name, config = {}) constructor {
   preRender = Struct.contains(config, "preRender")
     ? method(this, Assert.isType(config.preRender, Callable))
     : null
+
+  ///@type {?Callable}
+  postRender = Struct.contains(config, "postRender")
+    ? method(this, Assert.isType(config.postRender, Callable))
+    : null
   
   ///@return {UIItem}
   render = method(this, Assert.isType(Struct.getDefault(config, "render", function() {
     if (Optional.is(this.preRender)) {
       this.preRender()
+    }
+
+    if (Optional.is(this.postRender)) {
+      this.postRender()
     }
     return this
   }), Callable))
@@ -155,10 +170,10 @@ function UIItem(_name, config = {}) constructor {
   Struct.appendUnique(this, config)
 }
 
-
 ///@static
 function _UIItemUtils() constructor {
 
+  ///@type {Map<String, Callable>}
   templates = new Map(String, Callable, {
     "renderBackgroundColor": function() {
       return function() {
@@ -226,7 +241,77 @@ function _UIItemUtils() constructor {
           ? !item.get() : item.get())
       }
     },
+    "updateEnableKeys": function() {
+      return function() {
+        if (!Optional.is(Struct.get(this, "enable")) 
+          || !Core.isType(Struct.get(this.context, "state"), Map)) {
+          return
+        }
+
+        var keys = Struct.get(this.enable, "keys")
+        if (!Core.isType(keys, GMArray)) {
+          return
+        }
+
+        var store = this.context.state.get("store")
+        if (!Core.isType(store, Store)) {
+          return
+        }
+
+        Struct.set(this.enable, "value", false)
+        for (var index = 0; index < GMArray.size(keys); index++) {
+          var entry = keys[index]
+          var item = store.get(entry.key)
+          if (!Core.isType(item, StoreItem)) {
+            return
+          }
+
+          var result = Struct.get(this.enable, "negate") 
+            ? item.get() : !item.get()
+          if (result) {
+            return
+          }
+        }
+
+        Struct.set(this.enable, "value", true)
+      }
+    },
   })
+
+  ///@type {Struct}
+  textField = {
+
+    ///@return {Callable}
+    getUpdateJSONTextArea: function() {
+      return function() {
+        var text = this.textField.getText()
+        if (!Optional.is(text) 
+            || String.isEmpty(text) 
+            || Struct.get(this, "__previousText") == text) {
+          return
+        }
+
+        Struct.set(this, "__previousText", text)
+        if (!Struct.contains(this, "__colors")) {
+          Struct.set(this, "__colors", {
+            unfocusedValid: this.textField.style.c_bkg_unfocused.c,
+            unfocusedInvalid: ColorUtil.fromHex(VETheme.color.denyShadow).toGMColor(),
+            focusedValid: this.textField.style.c_bkg_focused.c,
+            focusedInvalid: ColorUtil.fromHex(VETheme.color.deny).toGMColor(),
+          })
+        }
+
+        var isValid = Optional.is(JSON.parse(text))
+        var colors = Struct.get(this, "__colors")
+        this.textField.style.c_bkg_unfocused.c = isValid 
+          ? colors.unfocusedValid
+          : colors.unfocusedInvalid
+        this.textField.style.c_bkg_focused.c = isValid 
+          ? colors.focusedValid
+          : colors.focusedInvalid
+      }
+    },
+  }
 }
 global.__UIItemUtils = new _UIItemUtils()
 #macro UIItemUtils global.__UIItemUtils

@@ -2,8 +2,8 @@
   "$GMSound":"",
   "%Name":"sound_kedy_selma_passion",
   "audioGroupId":{
-    "name":"audiogroup_default",
-    "path":"audiogroups/audiogroup_default",
+    "name":"audiogroup_visu_wasm",
+    "path":"audiogroups/audiogroup_visu_wasm",
   },
   "bitDepth":1,
   "bitRate":128,

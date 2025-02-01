@@ -4,7 +4,7 @@
 varying vec2 vTexcoord;
 varying vec4 vColor;
 
-uniform vec3 iResolution;
+uniform vec2 iResolution;
 uniform float iTime;
 
 vec4 Line(vec2 uv, float speed, float height, vec3 col) {

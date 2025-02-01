@@ -1,0 +1,12 @@
+{
+  "$GMShader":"",
+  "%Name":"shader_flame_wasm",
+  "name":"shader_flame_wasm",
+  "parent":{
+    "name":"shadertoy",
+    "path":"folders/io.alkapivo.core/resource/shader/shadertoy.yy",
+  },
+  "resourceType":"GMShader",
+  "resourceVersion":"2.0",
+  "type":1,
+}

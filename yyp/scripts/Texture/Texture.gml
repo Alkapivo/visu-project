@@ -49,6 +49,10 @@ function Texture(_asset, config = null) constructor {
   ///@param {Color} [blend]
   ///@return {Texture}
   static render = function(x, y, frame = 0, scaleX = 1, scaleY = 1, alpha = 1, angle = 0, blend = c_white) {
+    if (scaleX == 0 || scaleY == 0) {
+      return this
+    }
+
     draw_sprite_ext(
       this.asset, frame, 
       x, y, 

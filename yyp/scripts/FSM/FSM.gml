@@ -1,9 +1,6 @@
 ///@package io.alkapivo.Basil.util.FSM
 ///@description FSM stands for Finite-state fsm
 
-///@exception
-///@param {String} _message
-function FSMStateTransitionException(_message): Exception(_message) constructor { }
 
 ///@param {String} _name
 ///@param {Struct} [config]

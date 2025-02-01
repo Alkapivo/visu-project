@@ -77,15 +77,25 @@ function VideoSurface(config = null): Surface(config) constructor {
   ///@param {Number} [y]
   ///@param {Number} [width]
   ///@param {Number} [height]
+  ///@param {Number} [alpha]
+  ///@param {GMColor} [blend]
+  ///@param {?BlendConfig} [blendConfig]
   ///@return {Surface}
-  render = function(x = 0, y = 0, width = null, height = null) {
+  render = function(x = 0, y = 0, width = null, height = null, alpha = 1.0, blend = c_white, blendConfig = null) {
     if (!Core.isType(this.asset, GMVideoSurface)) {
       return this
     }
 
     var _width = Core.isType(width, Number) && width > 1 ? width : this.width
     var _height = Core.isType(height, Number) && height > 1 ? height : this.height
-    draw_surface_stretched(this.asset, x, y, _width, _height)
+    if (Optional.is(blendConfig)) {
+      blendConfig.set()
+      draw_surface_stretched_ext(this.asset, x, y, _width, _height, blend, alpha)
+      blendConfig.reset()
+    } else {
+      draw_surface_stretched_ext(this.asset, x, y, _width, _height, blend, alpha)
+    }
+    
     return this
   }
 

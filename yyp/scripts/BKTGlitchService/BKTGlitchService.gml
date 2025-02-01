@@ -125,8 +125,8 @@ function BKTGlitchService() constructor {
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "spawn": function(event) {
-      this.factor = Assert.isType(Struct.getDefault(event.data, "factor", this.factor), Number)
-      this.rng = Struct.getDefault(event.data, "rng", this.rng)
+      this.factor = Struct.getIfType(event.data, "factor", Number, this.factor)
+      this.rng = Struct.getIfType(event.data, "rng", Boolean, this.rng)
     },
     "load-config": function(event) {
       var keys = Struct.keys(event.data)

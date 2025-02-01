@@ -13,7 +13,7 @@ function _Global() constructor {
   ///@param {?String} name
   ///@param {any} value
   ///@return {Global}
-  static set = function (name, value) {
+  static set = function(name, value) {
     if (this.exists(name)) {
       variable_global_set(name, value)
     }
@@ -34,7 +34,7 @@ function _Global() constructor {
 
   ///@param {?String} name
   ///@return {Boolean}
-  static exists = function (name) {
+  static exists = function(name) {
     return Core.isType(name, String) && variable_global_exists(name)
   }
 }

@@ -30,13 +30,19 @@ function VisuIO() constructor {
     wheelDown: MouseButtonType.WHEEL_DOWN,
   })
 
+  ///@type {Boolean}
+  mouseMoved = false
+
+  ///@type {Number}
+  mouseMovedCooldown = Core.getProperty("visu.io.mouse-moved.cooldown", 4.0)
+  
   ///@private
   ///@param {VisuController} controller
   ///@return {VisuIO}
   fullscreenKeyboardEvent = function(controller) {
     if (this.keyboard.keys.fullscreen.pressed) {
       var fullscreen = controller.displayService.getFullscreen()
-      Logger.debug("VisuIO", String.join("Set fullscreen to ", fullscreen ? "'false'" : "'true'", "."))
+      Logger.debug("VisuIO", String.join("Set fullscreen to", fullscreen ? "'false'" : "'true'", "."))
       controller.displayService.setFullscreen(!fullscreen)
     }
   }
@@ -131,8 +137,11 @@ function VisuIO() constructor {
       controller.uiService.send(generateMouseEvent("MouseWheelDown"))
     }
 
-    if (MouseUtil.hasMoved()) {  
+    if (MouseUtil.hasMoved() && this.mouseMoved == 0) {  
+      this.mouseMoved = this.mouseMovedCooldown
       controller.uiService.send(generateMouseEvent("MouseHoverOver"))
+    } else if (this.mouseMoved > 0) {
+      this.mouseMoved = clamp(this.mouseMoved - 1, 0, this.mouseMovedCooldown)
     }
 
     return this

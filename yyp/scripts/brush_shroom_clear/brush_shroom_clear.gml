@@ -1,4 +1,16 @@
-///@package io.alkapivo.visu.editor.service.brush.shroom
+///@package io.alkapivo.visu.editor.service.brush._old.shroom
+
+///@param {Struct} json
+///@return {Struct}
+function migrateShroomClearEvent(json) {
+  return {
+    "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
+    "en-cfg_cls-shr": Struct.getIfType(json, "shroom-clear_use-clear-all-shrooms", Boolean, false)
+      || (Struct.getIfType(json, "shroom-clear_use-clear-amount", Boolean, false)
+        && Struct.getIfType(json, "shroom-clear_clear-amount", Number, 0) > 0),
+  }
+}
+
 
 ///@param {?Struct} [json]
 ///@return {Struct}
@@ -70,6 +82,7 @@ function brush_shroom_clear(json = null) {
           field: { 
             store: { key: "shroom-clear_clear-amount" },
             enable: { key: "shroom-clear_use-clear-amount" },
+            GMTF_DECIMAL: 0,
           },
         },
       },

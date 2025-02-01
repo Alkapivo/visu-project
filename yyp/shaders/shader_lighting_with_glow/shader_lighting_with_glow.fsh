@@ -4,7 +4,7 @@
 varying vec2 vTexcoord;
 varying vec4 vColor;
 
-uniform vec3 iResolution;
+uniform vec2 iResolution;
 uniform float iTime;
 uniform float iFactor;
 
@@ -36,11 +36,11 @@ float noise(vec2 p) {
 	return res;	
 }
 
-float fbm(vec2 p, int octaves) {
+float fbm(vec2 p) {
 	float s = 0.0;
   float m = 0.0;
   float a = 1.0;
-	for (int i = 0; i < octaves; i++) {
+	for (int i = 0; i < 6; i++) {
 		s += a * noise(p);
 		m += a;
 		a *= 0.5;
@@ -58,7 +58,7 @@ float lightning(vec2 uv, float i) {
   uv.y += (2.0 - uv.x * uv.x) * bend;
   uv.x -= iTime * 0.2;
   
-  float d = fbm(uv * vec2(2, 1.4) - vec2(0, i), 6);
+  float d = fbm(uv * vec2(2, 1.4) - vec2(0, i));
   d = (d * (2.0 + iFactor) - ((2.0 + iFactor) / 2.0)) * 0.45;
 
   return abs(uv.y - d);

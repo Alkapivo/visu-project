@@ -156,6 +156,20 @@ function _SoundUtil() constructor {
     return Core.isType(name, String) && asset_get_index(name) != -1
   }
 
+
+  ///@param {String} name
+  ///@param {?GMSound} [defaultValue]
+  ///@return {?GMSound}
+  fetchGMSound = function(name, defaultValue = null) {
+    var asset = asset_get_index(name)
+    if (!Core.isType(asset, GMSound)) {
+      Logger.warn("SoundUtil", $"GMSound {name} does not exists")
+      return null
+    }
+
+    return asset
+  }
+
   ///@param {String} name
   ///@param {?Struct} [config]
   ///@return {?Sound}
@@ -169,13 +183,8 @@ function _SoundUtil() constructor {
       }
     }
     
-    var asset = asset_get_index(name)
-    if (!Core.isType(asset, GMSound)) {
-      Logger.warn("SoundUtil", String.template(
-        "{0} does not exist: { \"name\": \"{1}\" }", GMSound, name))
-      return null
-    }
-    return new Sound(asset, config)
+    var asset = this.fetchGMSound(name)
+    return Core.isType(asset, GMSound) ? new Sound(asset, config) : null
   }
 }
 global.__SoundUtil = new _SoundUtil()

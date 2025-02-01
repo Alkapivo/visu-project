@@ -1,11 +1,7 @@
 ///@package io.mh-cz.gmtf
 ///@description https://github.com/mh-cz/Gamemaker-Multiline-Text-Field/tree/main
 
-///@type {Number}
-#macro GMTF_DECIMAL 6
-
-
-///@params {Struct} [config]
+///@param {Struct} [config]
 function _GMTFContext(config = {}) constructor {
 
 	///@type {?GMTF}
@@ -190,6 +186,8 @@ function GMTF(style_struct = null) constructor {
 		trim: false,
 	}
 
+  GMTF_DECIMAL = Struct.getIfType(style_struct, "GMTF_DECIMAL", Number, 8)
+
 	lines = ds_list_create() ///@todo memory leak?
 	chars = ds_list_create() ///@todo memory leak?
 	lines[| 0] = [ 0, 0, 0, "" ] ///@todo class & factory
@@ -248,24 +246,15 @@ function GMTF(style_struct = null) constructor {
 
 		GMTFContext.set(this).uiWasScrolled = false
 
-		if (Optional.is(this.uiItem) 
-			&& Optional.is(this.uiItem.context) 
-			&& Optional.is(this.uiItem.context.updateTimer)) {
-			
-			this.uiItem.context.updateTimer.time = this.uiItem.context.updateTimer.duration
+		if (Optional.is(this.uiItem) && Optional.is(this.uiItem.context)) {
+			this.uiItem.context.finishUpdateTimer()
 		}
+
 		return this
 	}
 	
 	///@return {GMTF}
 	unfocus = function() {
-		if (Optional.is(this.uiItem) 
-			&& Optional.is(this.uiItem.context) 
-			&& Optional.is(this.uiItem.context.updateTimer)) {
-			
-			this.uiItem.context.updateTimer.time = this.uiItem.context.updateTimer.duration
-		}
-		
 		GMTFContext.set(null)
 		cursor1.pos = 0
 		cursor1.line =  lines[| 0]
@@ -277,6 +266,11 @@ function GMTF(style_struct = null) constructor {
 		cursor2.cx = 0
 		cursor2.cy = 0
 		cursor2.cxs = 0
+
+    if (Optional.is(this.uiItem) && Optional.is(this.uiItem.context)) {
+			this.uiItem.context.finishUpdateTimer()
+		}
+
 		return this
 	}
 	
@@ -295,13 +289,20 @@ function GMTF(style_struct = null) constructor {
 			var len = array_length(keys)
 			for (var i = 0; i < len; i++) {
 				var key = keys[i]
+        if (!Struct.contains(this, key) && !Struct.contains(this.style, key)) {
+          continue
+        }
+
         if (key == "font") {
           var font = FontUtil.fetch(style_struct[$ key])
-          style_struct[$ key] = font == null ? -1 : font.asset
+          style[$ key] = Optional.is(font) ? font.asset : style[$ key]
+          update_lines = true
+          continue
         }
-        
+
+        ///@bug
 				style[$ key] = style_struct[$ key];
-				switch(key) {
+				switch (key) {
 					case "w":
 					case "h":
 					case "lh":
@@ -654,7 +655,7 @@ function GMTF(style_struct = null) constructor {
 				pad_atx + cursor1.cx, 
 				pad_aty + cursor1.cy, 
 				pad_atx + cursor2.cx, 
-				pad_aty + cursor2.cy + style.lh - 1, 
+				pad_aty + cursor2.cy + style.lh, 
 				false
 			)
 		} else {
@@ -664,14 +665,14 @@ function GMTF(style_struct = null) constructor {
 				pad_atx + upper.cx,
 				pad_aty + upper.cy,
 				pad_atx + getRangeWidth(upper.line[1], upper.line[2]),
-				pad_aty + upper.cy + style.lh - 1,
+				pad_aty + upper.cy + style.lh,
 				false
 			)
 			draw_rectangle(
 				pad_atx,
 				pad_aty + lower.cy,
 				pad_atx + getRangeWidth(lower.line[1], lower.pos),
-				pad_aty + lower.cy + style.lh - 1,
+				pad_aty + lower.cy + style.lh,
 				false
 			)
 
@@ -681,7 +682,7 @@ function GMTF(style_struct = null) constructor {
 					pad_atx,
 					pad_aty + i * style.lh,
 					pad_atx + getRangeWidth(line[1], line[2]),
-					pad_aty + i * style.lh + style.lh - 1,
+					pad_aty + i * style.lh + style.lh,
 					false
 				)
 			}
@@ -720,7 +721,7 @@ function GMTF(style_struct = null) constructor {
 		this.updateCursor(cursor1, true, cursor2)
 	}
 	
-  ///@params {any} text
+  ///@param {any} text
   ///@return {GMTF}
 	setText = function(txt) {
     try {
@@ -729,10 +730,10 @@ function GMTF(style_struct = null) constructor {
   		cursor1.pos = 0
   		cursor2.pos = 0
       if (Core.isType(txt, Number)) {
-        var parsed = string_format(txt, 1, GMTF_DECIMAL) 
+        var parsed = string_format(txt, 1, this.GMTF_DECIMAL) 
         var length = string_length(parsed)
         var trim = length
-        for (var index = 0; index < GMTF_DECIMAL; index++) {
+        for (var index = 0; index < this.GMTF_DECIMAL; index++) {
           trim = length - index
           var char = string_char_at(parsed, trim)
           if (char != "0") {
@@ -942,6 +943,14 @@ function GMTF(style_struct = null) constructor {
 				case vk_delete:
 					this.remove(false, keyboard_check(vk_control))
 					break
+        case vk_escape:
+          if (this.has_focus) {
+            if (Core.isType(this.uiItem, UIItem)) {
+              this.setText(this.uiItem.value)
+            }
+            this.unfocus()
+          }
+          break
 			}
 		}
 	

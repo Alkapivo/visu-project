@@ -17,6 +17,13 @@ function VETitleBar(_editor) constructor {
       {
         name: "title-bar",
         nodes: {
+          bottomLine: {
+            name: "title-bar.bottomLine",
+            x: function() { return 0 },
+            y: function() { return this.context.height() - this.height() },
+            width: function() { return this.context.width() },
+            height: function() { return 1 },
+          },
           file: {
             name: "title-bar.file",
             x: function() { return this.context.x() + this.margin.left },
@@ -57,40 +64,46 @@ function VETitleBar(_editor) constructor {
             y: function() { return 0 },
             width: function() { return 256 },
           },
+          sceneConfigPreview: {
+            x: function() { return this.context.nodes.trackControl.left() 
+              - this.width() - this.margin.right },
+            y: function() { return 0 },
+            width: function() { return this.context.height() },
+          },
           trackControl: {
             name: "title-bar.trackControl",
             x: function() { return this.context.nodes.event.left() 
               - this.width() - this.margin.right },
             y: function() { return 0 },
-            width: function() { return 20 },
+            width: function() { return this.context.height() },
           },
           event: {
             name: "title-bar.event",
             x: function() { return this.context.nodes.timeline.left() 
               - this.width() - this.margin.right },
             y: function() { return 0 },
-            width: function() { return 20 },
+            width: function() { return this.context.height() },
           },
           timeline: {
             name: "title-bar.timeline",
             x: function() { return this.context.nodes.brush.left() 
               - this.width() - this.margin.right },
             y: function() { return 0 },
-            width: function() { return 20 },
+            width: function() { return this.context.height() },
           },
           brush: {
             name: "title-bar.brush",
             x: function() { return this.context.nodes.fullscreen.left() 
               - this.width() - this.margin.right },
             y: function() { return 0 },
-            width: function() { return 20 },
+            width: function() { return this.context.height() },
           },
           fullscreen: {
             name: "title-bar.fullscreen",
             x: function() { return this.context.x() + this.context.width()
                - this.width() - this.margin.right },
             y: function() { return 0 },
-            width: function() { return 20 },
+            width: function() { return this.context.height() },
           }
         }
       }, 
@@ -103,10 +116,11 @@ function VETitleBar(_editor) constructor {
   ///@return {Map<String, UI>}
   factoryContainers = function(parent) {
     static factoryTextButton = function(json) {
-      return Struct.appendRecursiveUnique(
+      var button = Struct.appendRecursiveUnique(
         {
           type: UIButton,
           layout: json.layout,
+          backgroundMargin: { top: 2, bottom: 2, left: 2, right: 2 },
           label: { text: json.text },
           options: json.options,
           callback: Struct.getDefault(json, "callback", function() { }),
@@ -115,12 +129,44 @@ function VETitleBar(_editor) constructor {
             this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
           },
           onMouseHoverOut: function(event) {
-            this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+            var item = this
+            var controller = Beans.get(BeanVisuController)
+            controller.executor.tasks.forEach(function(task, iterator, item) {
+              if (Struct.get(task.state, "item") == item) {
+                task.fullfill()
+              }
+            }, item)
+            
+            var task = new Task($"onMouseHoverOut_{item.name}")
+              .setTimeout(10.0)
+              .setState({
+                item: item,
+                transformer: new ColorTransformer({
+                  value: item.backgroundColorSelected,
+                  target: item.backgroundColorOut,
+                  factor: 0.026,
+                })
+              })
+              .whenUpdate(function(executor) {
+                if (this.state.transformer.update().finished) {
+                  this.fullfill()
+                }
+
+                this.state.item.backgroundColor = this.state.transformer.get().toGMColor()
+              })
+
+            controller.executor.add(task)
           },
         },
         VEStyles.get("ve-title-bar").menu,
         false
       )
+
+      if (Optional.is(Struct.getIfType(json, "postRender", Callable))) {
+        Struct.set(button, "postRender", json.postRender)
+      }
+
+      return button
     }
 
     static factoryCheckboxButton = function(json) {
@@ -153,7 +199,7 @@ function VETitleBar(_editor) constructor {
       "ve-title-bar": new UI({
         name: "ve-title-bar",
         state: new Map(String, any, {
-          "background-color": ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+          "background-color": ColorUtil.fromHex(VETheme.color.sideDark).toGMColor(),
           "store": Beans.get(BeanVisuEditorController).store,
         }),
         controller: controller,
@@ -191,7 +237,7 @@ function VETitleBar(_editor) constructor {
                     height: function() { return GuiHeight() },
                   }),
                 }))
-            }
+            },
           }),
           "button_ve-title-bar_edit": factoryTextButton({
             text: "Edit",
@@ -318,6 +364,12 @@ function VETitleBar(_editor) constructor {
             VEStyles.get("ve-title-bar").version,
             false
           ),
+          "button_ve-title-bar_scene-config-preview": factoryCheckboxButton({
+            layout: layout.nodes.sceneConfigPreview,
+            spriteOn: { name: "texture_ve_title_bar_icons", frame: 5 },
+            spriteOff: { name: "texture_ve_title_bar_icons", frame: 5, alpha: 0.5 },
+            store: { key: "render-sceneConfigPreview" },
+          }),
           "button_ve-title-bar_track-control": factoryCheckboxButton({
             layout: layout.nodes.trackControl,
             spriteOn: { name: "texture_ve_title_bar_icons", frame: 4 },
@@ -352,6 +404,13 @@ function VETitleBar(_editor) constructor {
               displayService.setFullscreen(!fullscreen)
             },
           }),
+          "line_ve-title-bottomLine": {
+            type: UIImage,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            layout: layout.nodes.bottomLine,
+            backgroundColor: VETheme.color.accentShadow,
+            backgroundAlpha: 0.85,
+          },
         },
       }),
     })
@@ -370,7 +429,7 @@ function VETitleBar(_editor) constructor {
     },
     "close": function(event) {
       var context = this
-      this.containers.forEach(function (container, key, uiService) {
+      this.containers.forEach(function(container, key, uiService) {
         uiService.dispatcher.execute(new Event("remove", { 
           name: key, 
           quiet: true,

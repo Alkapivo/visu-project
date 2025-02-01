@@ -43,13 +43,12 @@ function CoinFeature(json) {
           continue
         }
 
-        var verticalOffset = choose(1.0, -1.0)
-          * (((item.sprite.getWidth() * item.sprite.getScaleX()) / 2.0)
-          / GRID_SERVICE_PIXEL_WIDTH)
+        var verticalOffset = choose(1.0, -1.0) * random((item.sprite.getWidth() * item.sprite.getScaleX()) / 2.0)
+        var horizontalOffset = -1.0 * random((item.sprite.getHeight() * item.sprite.getScaleY()) / 2.0)
         controller.coinService.send(new Event("spawn-coin", {
           template: this.coin,
-          x: item.x + verticalOffset + (this.offsetX / GRID_SERVICE_PIXEL_WIDTH),
-          y: item.y + (this.offsetY / GRID_SERVICE_PIXEL_HEIGHT),
+          x: item.x + ((verticalOffset + this.offsetX) / GRID_SERVICE_PIXEL_WIDTH),
+          y: item.y + ((horizontalOffset + this.offsetY) / GRID_SERVICE_PIXEL_HEIGHT),
         }))
       }
     },

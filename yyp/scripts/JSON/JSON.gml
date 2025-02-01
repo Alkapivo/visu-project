@@ -208,8 +208,9 @@ function _JSON() constructor {
         result = new Array(any, result)
       }
     } catch (exception) {
-      Logger.error("JSON", exception.message)
+      Logger.error("JSON.parse()", exception.message)
     }
+    
     return result
   }
 

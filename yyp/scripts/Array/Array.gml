@@ -1,5 +1,10 @@
 ///@package io.alkapivo.core.collection
 
+///@symbol
+function __symbol_GC_TARGET_ENTRY() { }
+#macro GC_TARGET_ENTRY __symbol_GC_TARGET_ENTRY
+
+
 ///@param {Type} [_type]
 ///@param {GMArray} [_container]
 ///@param {?Struct} [config]
@@ -182,9 +187,9 @@ function Array(_type = any, _container = null) constructor {
     return found
   }
 
-  ///@param {String} delimiter
+  ///@param {String} [delimiter]
   ///@return {String}
-  static join = function(delimiter) {
+  static join = function(delimiter = ", ") {
     var size = this.size()
     var buffer = ""
     if (size > 1) {
@@ -237,11 +242,13 @@ function Array(_type = any, _container = null) constructor {
     return this
   }
 
-  ///@param {Collection} keys
+  ///@param {Collection<Number>} keys
   ///@return {Array}
   static removeMany = function(keys) {
-    static setToNull = function(index, gcIndex, array) {
-      array.set(index, null)
+    static setGCTargetEntry = function(index, gcIndex, array) {
+      if (array.size() > index) {
+        array.container[index] = GC_TARGET_ENTRY
+      }
     }
 
     var size = this.size()
@@ -249,15 +256,13 @@ function Array(_type = any, _container = null) constructor {
       return this
     }
 
-    var type = this.type
-    this.type = any
-    keys.forEach(setToNull, this)
+    keys.forEach(setGCTargetEntry, this)
     for (var index = size - 1; index >= 0; index--) {
-      if (this.get(index) == null) {
+      if (this.container[index] == GC_TARGET_ENTRY) {
         this.remove(index)
       }
     }
-    this.type = type
+    
     return this
   }
 
@@ -358,23 +363,40 @@ function Array(_type = any, _container = null) constructor {
     return this
   }
 
-  ///@type {Number} key
+  ///@type {Number} index
   ///@return {Array}
-  static addToGC = function(key) {
+  static addToGC = function(index) {
+    static sortDesc = function(a, b) {
+      return a >= b
+    }
+
     if (!Core.isType(this.gc, Stack)) {
       this.enableGC()
     }
-    this.gc.push(key)
+
+    var last = this.gc.peek()
+    if (last == null) {
+      this.gc.push(index)
+    } else if (last > index) {
+      this.gc.push(index)
+      this.gc.container = GMArray.sort(this.gc.container, sortDesc)
+    } else if (last != index) {
+      this.gc.push(index)
+    }
+    
     return this
   }
 
   ///@return {Array}
   static runGC = function() {
-    if (!Core.isType(this.gc, Stack) || this.gc.size() == 0) {
-      return this
+    static removeIndex = function(index, gcIndex, array) {
+      array.remove(index)
     }
 
-    this.removeMany(this.gc)
+    if (this.gc != null && this.gc.size() > 0) {
+      this.gc.forEach(removeIndex, this)
+    }
+
     return this
   }
 }

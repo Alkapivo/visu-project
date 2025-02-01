@@ -1,0 +1,35 @@
+{
+  "model":"Collection<io.alkapivo.visu.service.subtitle.SubtitleTemplate>",
+  "data":{
+    "subtitle_alkapivo":{
+      "lines":[
+        "Alkapivo",
+        "2024"
+      ]
+    },
+    "subtitle_kedy_selma":{
+      "lines":[
+        "kedy_selma",
+        ""
+      ]
+    },
+    "subtitle_kedy_selma_jtcs_poem":{
+      "lines":[
+        "If it was easier,",
+        "it wouldn't feel this rewarding,",
+        "when somebody finally notice.",
+        "I struggle this much,",
+        "just to create something.",
+        "",
+        "kedy_selma"
+      ]
+    },
+    "subtitle_kedy_selma_jtcs":{
+      "lines":[
+        "",
+        "Just To Create Something"
+      ]
+    }
+  },
+  "version":"1"
+}

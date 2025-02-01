@@ -91,7 +91,9 @@ function UICollection(_container, config = null) constructor {
       }
 
       static add = function(item, index, container) {
-        container.add(item, item.name)
+        item.context = container //@todo item context constructor
+        //container.areaWatchdog.signal()
+        container.items.add(item, item.name)
       }
 
       if (this.contains(component.name)) {

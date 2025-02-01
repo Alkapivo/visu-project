@@ -13,13 +13,13 @@ function ShaderTemplate(_name, json) constructor {
     : null
 
   ///@type {String}
-  shader = Assert.isType(json.shader, String)
-  if (Core.getRuntimeType() != RuntimeType.GXGAMES) {
-    Assert.isType(ShaderUtil.fetch(this.shader), Shader)
-  } else {
-    this.shader = this.shader == "shader_art" ? "shader_art_wasm" : this.shader
-  }
-
+  shader = Assert.isType(Core.getRuntimeType() == RuntimeType.GXGAMES 
+    ? (Struct.contains(SHADERS_WASM, json.shader) 
+      ? Struct.get(SHADERS_WASM, json.shader) 
+      : json.shader)
+    : json.shader, String)
+  Assert.isType(ShaderUtil.fetch(this.shader), Shader)
+  
   ///@type {?String}
   //type = Struct.contains(json, "type") 
   //  ? Assert.isType(json.type, String) 

@@ -6,7 +6,7 @@
   "name":"brush_shroom_spawn",
   "parent":{
     "name":"shroom",
-    "path":"folders/io.alkapivo.visu/src/editor/service/brush/shroom.yy",
+    "path":"folders/io.alkapivo.visu/src/editor/service/brush/_old/shroom.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

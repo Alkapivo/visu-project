@@ -49,15 +49,35 @@ function PlayerRacingGameMode(json) {
     ///@param {VisuController} controller
     ///@return {GridItemGameMode}
     update: function(player, controller) {
-      static calcSpeed = function(movement, keyA, keyB) {
-        movement.speed = keyA || keyB
-          ? (movement.speed + (keyA ? -1 : 1) 
-            * DeltaTime.apply(movement.acceleration))
-          : (abs(movement.speed) - movement.friction >= 0
-            ? movement.speed - sign(movement.speed) 
-              * DeltaTime.apply(movement.friction) : 0)
-        movement.speed = sign(movement.speed) * clamp(abs(movement.speed), 0, movement.speedMax)
-        return movement.speed
+      static calcSpeed = function(movement, keyA, keyB) { 
+        var spd = 0.0
+        if (keyA || keyB) {
+          var dir = keyA ? -1.0 : 1.0
+          movement.speed += dir * DeltaTime.apply(movement.acceleration) * 0.5
+          spd = DeltaTime.apply(movement.speed)
+          movement.speed += dir * DeltaTime.apply(movement.acceleration) * 0.5
+        } else if (abs(movement.speed) - (DeltaTime.apply(movement.friction) * 0.5) >= 0) {
+          var dir = sign(movement.speed)
+          movement.speed -= dir * DeltaTime.apply(movement.friction) * 0.5
+          spd = DeltaTime.apply(movement.speed)
+          movement.speed -= dir * DeltaTime.apply(movement.friction) * 0.5
+          if (sign(movement.speed) != dir) {
+            movement.speed = 0.0
+          }
+        } else {
+          movement.speed = 0.0
+        }
+        movement.speed = sign(movement.speed) * clamp(abs(movement.speed), 0.0, movement.speedMax)
+        return spd
+
+        //movement.speed = keyA || keyB
+        //  ? (movement.speed + (keyA ? -1 : 1) 
+        //    * DeltaTime.apply(movement.acceleration))
+        //  : (abs(movement.speed) - DeltaTime.apply(movement.friction) >= 0
+        //    ? movement.speed - sign(movement.speed) 
+        //      * DeltaTime.apply(movement.friction) : 0)
+        //movement.speed = sign(movement.speed) * clamp(abs(movement.speed), 0, DeltaTime.apply(movement.speedMax))
+        //return movement.speed
       }
 
       var keys = player.keyboard.keys
@@ -159,21 +179,47 @@ function PlayerBulletHellGameMode(json) {
     ///@return {GridItemGameMode}
     update: function(player, controller) {
       static calcSpeed = function(config, player, keyA, keyB, keyFocus) {
-        var speedMax = config.speedMax
+        var spdMax = config.speedMax
         if (keyFocus) {
-          var factor = abs(config.speedMax - config.speedMaxFocus) / 15.0
-          speedMax = clamp(abs(config.speed) - DeltaTime.apply(factor), 
-            config.speedMaxFocus, config.speedMax)
+          var factor = DeltaTime.apply(abs(config.speedMax - config.speedMaxFocus) / 15.0)
+          spdMax = clamp(abs(config.speed) - factor, config.speedMaxFocus, config.speedMax)
         }
 
-        config.speed = keyA || keyB
-          ? (config.speed + (keyA ? -1 : 1) 
-            * DeltaTime.apply(config.acceleration))
-          : (abs(config.speed) - config.friction >= 0
-            ? config.speed - sign(config.speed) 
-              * DeltaTime.apply(config.friction) : 0)
-        config.speed = sign(config.speed) * clamp(abs(config.speed), 0, speedMax)
-        return config.speed
+        var spd = 0.0
+        if (keyA || keyB) {
+          var dir = keyA ? -1.0 : 1.0
+          config.speed += dir * DeltaTime.apply(config.acceleration) * 0.5
+          spd = DeltaTime.apply(config.speed)
+          config.speed += dir * DeltaTime.apply(config.acceleration) * 0.5
+        } else if (abs(config.speed) - (DeltaTime.apply(config.friction) * 0.5) >= 0) {
+          var dir = sign(config.speed)
+          config.speed -= dir * DeltaTime.apply(config.friction) * 0.5
+          spd = DeltaTime.apply(config.speed)
+          config.speed -= dir * DeltaTime.apply(config.friction) * 0.5
+          if (sign(config.speed) != dir) {
+            config.speed = 0.0
+          }
+        } else {
+          config.speed = 0.0
+        }
+        config.speed = sign(config.speed) * clamp(abs(config.speed), 0.0, spdMax)
+        return spd
+
+        //var speedMax = config.speedMax
+        //if (keyFocus) {
+        //  var factor = abs(config.speedMax - config.speedMaxFocus) / 15.0
+        //  speedMax = clamp(abs(config.speed) - DeltaTime.apply(factor), 
+        //    config.speedMaxFocus, config.speedMax)
+        //}
+        //speedMax = DeltaTime.apply(speedMax)
+        //config.speed = keyA || keyB
+        //  ? (config.speed + (keyA ? -1 : 1) 
+        //    * DeltaTime.apply(config.acceleration))
+        //  : (abs(config.speed) - DeltaTime.apply(config.friction) >= 0
+        //    ? config.speed - sign(config.speed) 
+        //      * DeltaTime.apply(config.friction) : 0)
+        //config.speed = sign(config.speed) * clamp(abs(config.speed), 0, speedMax)
+        //return config.speed
       }
       
       var keys = player.keyboard.keys
@@ -232,7 +278,12 @@ function PlayerBulletHellGameMode(json) {
         player.stats.dispatchDeath()
       }
 
-      player.x = player.x + calcSpeed(this.x, player, keys.left.on, keys.right.on, keys.focus.on)
+      player.x = clamp(
+        player.x + calcSpeed(this.x, player, keys.left.on, keys.right.on, keys.focus.on),
+        0.0,
+        controller.gridService.width
+      )
+
       player.y = clamp(
         player.y + calcSpeed(this.y, player, keys.up.on, keys.down.on, keys.focus.on), 
         0.0, 
@@ -294,14 +345,25 @@ function PlayerPlatformerGameMode(json) {
     ///@return {GridItemGameMode}
     update: function(player, controller) {
       static calcSpeed = function(config, player, keyA, keyB) {
-        config.speed = keyA || keyB
-          ? (config.speed + (keyA ? -1 : 1) 
-            * DeltaTime.apply(config.acceleration))
-          : (abs(config.speed) - config.friction >= 0
-            ? config.speed - sign(config.speed) 
-              * DeltaTime.apply(config.friction) : 0)
-        config.speed = sign(config.speed) * clamp(abs(config.speed), 0, config.speedMax)
-        return config.speed
+        var spd = 0.0
+        if (keyA || keyB) {
+          var dir = keyA ? -1.0 : 1.0
+          config.speed += dir * DeltaTime.apply(config.acceleration) * 0.5
+          spd = DeltaTime.apply(config.speed)
+          config.speed += dir * DeltaTime.apply(config.acceleration) * 0.5
+        } else if (abs(config.speed) - (DeltaTime.apply(config.friction) * 0.5) >= 0) {
+          var dir = sign(config.speed)
+          config.speed -= dir * DeltaTime.apply(config.friction) * 0.5
+          spd = DeltaTime.apply(config.speed)
+          config.speed -= dir * DeltaTime.apply(config.friction) * 0.5
+          if (sign(movement.speed) != dir) {
+            movement.speed = 0.0
+          }
+        } else {
+          config.speed = 0.0
+        }
+        config.speed = sign(config.speed) * clamp(abs(config.speed), 0.0, spdMax)
+        return spd
       }
 
       var gridService = controller.gridService
@@ -314,7 +376,7 @@ function PlayerPlatformerGameMode(json) {
         keys.down.on = false
         keys.action.on = false
       }
-      player.x = player.x + calcSpeed(this.x, player, keys.left.on, keys.right.on)
+      player.x += calcSpeed(this.x, player, keys.left.on, keys.right.on)
 
       var shroomCollision = player.signals.shroomCollision
       if (!Optional.is(shroomCollision)) {
@@ -338,7 +400,7 @@ function PlayerPlatformerGameMode(json) {
           }
         }
 
-        player.y = player.y + calcSpeed(this.y, player, false, true)
+        player.y += calcSpeed(this.y, player, false, true)
       } else {
         if ((keys.up.pressed || keys.action.pressed) && this.y.speed > 0) {
           this.y.speed = -1 * this.jump.size
@@ -352,7 +414,7 @@ function PlayerPlatformerGameMode(json) {
         }
 
         if (this.y.speed < 0.0) {
-          player.y = player.y + calcSpeed(this.y, player, false, true)
+          player.y += calcSpeed(this.y, player, false, true)
         } else {
           if (!Optional.is(this.shroomLanded)) {
             this.shroomLanded = shroomCollision
@@ -364,9 +426,9 @@ function PlayerPlatformerGameMode(json) {
               this.y.speed = 0.0
             }
           } else {
-            player.x = player.x + (((this.shroomLanded.angle > 270.0 && this.shroomLanded.angle < 90) ? -1 : 1) 
+            player.x += (((this.shroomLanded.angle > 270.0 && this.shroomLanded.angle < 90) ? -1 : 1) 
               * Math.fetchCircleX(DeltaTime.apply(this.shroomLanded.speed), this.shroomLanded.angle))
-            player.y = player.y + (((this.shroomLanded.angle > 180.0 && this.shroomLanded.angle < 0) ? -1 : 1) 
+            player.y += (((this.shroomLanded.angle > 180.0 && this.shroomLanded.angle < 0) ? -1 : 1) 
               * Math.fetchCircleY(DeltaTime.apply(this.shroomLanded.speed), this.shroomLanded.angle))
 
             if (keys.down.pressed) {

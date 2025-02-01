@@ -18,7 +18,6 @@ function DialogueDesignerService(config = {}) constructor {
   ///@param {String} name
   ///@return {DialogueDesignerService}
   open = function(name) {
-    Core.print($"open dialog {name}")
     var template = templates.get(name)
     if (Core.isType(template, String)) {
       this.dialog = new DDDialogue(JSON.parse(template))
@@ -28,7 +27,6 @@ function DialogueDesignerService(config = {}) constructor {
 
   ///@return {DialogueDesignerService}
   close = function() {
-    Core.print($"close dialog")
     this.dialog = null
     return this
   }

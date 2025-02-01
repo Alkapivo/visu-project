@@ -1,0 +1,12 @@
+{
+  "$GMShader":"",
+  "%Name":"shader_fancy_blending",
+  "name":"shader_fancy_blending",
+  "parent":{
+    "name":"DragoniteSpam",
+    "path":"folders/io.alkapivo.core/resource/shader/DragoniteSpam.yy",
+  },
+  "resourceType":"GMShader",
+  "resourceVersion":"2.0",
+  "type":1,
+}

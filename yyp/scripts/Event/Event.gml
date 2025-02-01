@@ -6,29 +6,28 @@
 function Event(_name, _data = null, _promise = null) constructor {
 
   ///@type {String}
-  name = Assert.isType(_name, String)
+  name = Assert.isType(_name, String, "Event.name must be type of String")
 
   ///@type {any}
-  data = null
+  data = _data
   
   ///@type {?Promise}
-  promise = null
+  promise = Core.isType(_promise, Promise) ? _promise : null
 
   ///@param {any} data
   ///@return {Event}
-  setData = function(data) {
+  static setData = function(data) {
     this.data = data
     return this
   }
-  this.setData(_data)
 
   ///@param {?Promise} promise
   ///@return {Event}
-  setPromise = function(promise = null) {
-    this.promise = Assert.isType(promise, Optional.of(Promise))
+  static setPromise = function(promise = null) {
+    this.promise = Assert.isType(promise, Optional.of(Promise), 
+      "Event.promise must be type of ?Promise")
     return this
   }
-  this.setPromise(_promise)
 }
 
 ///@static
@@ -186,42 +185,16 @@ global.__EVENT_DISPATCHERS = {
       sprite.setAlpha(fadeInSpeed)
 
       var _speed = Core.isType(Struct.get(event.data, "speed"), Number) ? event.data.speed : 0
-      var speedTransformer = Core.isType(Struct.get(event.data, "speedTransformer"), Struct) 
-        ? event.data.speedTransformer 
-        : null
-      if (Optional.is(speedTransformer)) {
-        Struct.set(speedTransformer, "value", _speed)
-        speedTransformer = new NumberTransformer(speedTransformer)
-      }
+      var speedTransformer = Struct.getIfType(event.data, "speedTransformer", NumberTransformer) 
 
       var angle = Core.isType(Struct.get(event.data, "angle"), Number) ? event.data.angle : 0
-      var angleTransformer = Core.isType(Struct.get(event.data, "angleTransformer"), Struct) 
-        ? event.data.angleTransformer 
-        : null
-      if (Optional.is(angleTransformer)) {
-        angleTransformer = new NumberTransformer(Struct
-          .set(angleTransformer, "target", Math
-          .fetchPointsAngleDiff(Math.normalizeAngle(abs(Struct
-          .getIfType(angleTransformer, "target", Number, 0))), angle)))
-      }
+      var angleTransformer = Struct.getIfType(event.data, "angleTransformer", NumberTransformer)
 
       var xScale = Core.isType(Struct.get(event.data, "xScale"), Number) ? event.data.xScale : 1
-      var xScaleTransformer = Core.isType(Struct.get(event.data, "xScaleTransformer"), Struct) 
-        ? event.data.xScaleTransformer 
-        : null
-      if (Optional.is(xScaleTransformer)) {
-        Struct.set(xScaleTransformer, "value", xScale)
-        xScaleTransformer = new NumberTransformer(xScaleTransformer)
-      }
+      var xScaleTransformer = Struct.getIfType(event.data, "xScaleTransformer", NumberTransformer)
 
       var yScale = Core.isType(Struct.get(event.data, "yScale"), Number) ? event.data.yScale : 1
-      var yScaleTransformer = Core.isType(Struct.get(event.data, "yScaleTransformer"), Struct) 
-        ? event.data.yScaleTransformer 
-        : null
-      if (Optional.is(yScaleTransformer)) {
-        Struct.set(yScaleTransformer, "value", yScale)
-        yScaleTransformer = new NumberTransformer(yScaleTransformer)
-      }
+      var yScaleTransformer = Struct.getIfType(event.data, "yScaleTransformer", NumberTransformer)
 
       var blendModeSource = Core.isEnum(Struct.get(event.data, "blendModeSource"), BlendModeExt) 
         ? event.data.blendModeSource
@@ -234,7 +207,18 @@ global.__EVENT_DISPATCHERS = {
       var blendEquation = Core.isEnum(Struct.get(event.data, "blendEquation"), BlendEquation) 
         ? event.data.blendEquation
         : BlendEquation.ADD
+
+      var blendEquationAlpha = Core.isEnum(Struct.get(event.data, "blendEquationAlpha"), BlendEquation) 
+        ? event.data.blendEquationAlpha
+        : null
       
+      var _x = Struct.getIfType(event.data, "x", Number, 0.0)
+      var _y = Struct.getIfType(event.data, "y", Number, 0.0)
+
+      var tiled = Struct.getIfType(event.data, "tiled", Boolean, false)
+      var replace = Struct.getIfType(event.data, "replace", Boolean, false)
+      var lifespawn = Struct.getIfType(event.data, "lifespawn", Number)
+      var lifespawnTimer = Optional.is(lifespawn) ? new Timer(lifespawn) : null
       var task = new Task(event.name)
         .setState(new Map(String, any, {
           type: type,
@@ -244,28 +228,26 @@ global.__EVENT_DISPATCHERS = {
           blendModeSource: blendModeSource,
           blendModeTarget: blendModeTarget,
           blendEquation: blendEquation,
+          blendEquationAlpha: blendEquationAlpha,
           fadeInSpeed: fadeInSpeed,
           fadeOutSpeed: fadeOutSpeed,
           speed: _speed,
           speedTransformer: speedTransformer,
           angle: angle,
           angleTransformer: angleTransformer,
-          x: 0,
-          y: 0,
+          x: _x,
+          y: _y,
           xScale: xScale,
           xScaleTransformer: xScaleTransformer,
           yScale: yScale,
           yScaleTransformer: yScaleTransformer,
+          tiled: tiled,
+          replace: replace,
+          lifespawn: lifespawnTimer,
         }))
         .whenUpdate(function() {
           var stage = this.state.get("stage")
           var sprite = this.state.get("sprite")
-
-          var _speed = this.state.get("speed")
-          var speedTransformer = this.state.get("speedTransformer")
-          if (Optional.is(speedTransformer)) {
-            _speed = speedTransformer.update().value
-          }
 
           var angle = this.state.get("angle")
           var angleTransformer = this.state.get("angleTransformer")
@@ -273,35 +255,59 @@ global.__EVENT_DISPATCHERS = {
             angle = angle + angleTransformer.update().value
           }
 
-          var xScale = this.state.get("xScale")
+          var _speed = this.state.get("speed")
+          var speedTransformer = this.state.get("speedTransformer")
+          if (Optional.is(speedTransformer)) {
+            _speed = speedTransformer.update().value
+          }
+
           var xScaleTransformer = this.state.get("xScaleTransformer")
           if (Optional.is(xScaleTransformer)) {
-            xScale = xScaleTransformer.update().value
+            this.state.set("xScale", xScaleTransformer.update().value)
           }
-          this.state.set("xScale", xScale)
 
-          var yScale = this.state.get("yScale")
           var yScaleTransformer = this.state.get("yScaleTransformer")
           if (Optional.is(yScaleTransformer)) {
-            yScale = yScaleTransformer.update().value
+            this.state.set("yScale", yScaleTransformer.update().value)
           }
-          this.state.set("yScale", yScale)
 
           var _x = this.state.get("x")
           var _y = this.state.get("y")
-          var width = sprite.getWidth() * sprite.getScaleX()
-          var height = sprite.getHeight() * sprite.getScaleY()
-          _x -= Math.fetchCircleX(DeltaTime.apply(_speed), angle)
-          _y -= Math.fetchCircleY(DeltaTime.apply(_speed), angle)
-          if (abs(_x) > width) {
-            _x =  sign(_x) * (abs(_x) - ((abs(_x) div width) * width))
+          var width = abs(sprite.getWidth() * sprite.getScaleX())
+          var height = abs(sprite.getHeight() * sprite.getScaleY())
+          var surfaceWidth = this.state.get("surfaceWidth")
+          var surfaceHeight = this.state.get("surfaceHeight")
+          var horizontalFactor = 1.0
+          var verticalFactor = 1.0
+
+          if (Optional.is(surfaceWidth) && surfaceWidth > 0 && width > 0) {
+            horizontalFactor = clamp(ceil(surfaceWidth / width), 1.0, 999999.9)
           }
-          if (abs(_y) > height) {
-            _y = sign(_y) * (abs(_y) - ((abs(_y) div height) * height))
+
+          if (Optional.is(surfaceHeight) && surfaceHeight > 0 && height > 0) {
+            verticalFactor = clamp(ceil(surfaceHeight / height), 1.0, 999999.9)
           }
+
+          _x -= sign(sprite.getScaleX()) * Math.fetchCircleX(DeltaTime.apply(_speed), angle)
+          _y -= sign(sprite.getScaleY()) * Math.fetchCircleY(DeltaTime.apply(_speed), angle)
+
+          if (abs(_x) > width * horizontalFactor) {
+            _x = sign(_x) * (abs(_x) - (((abs(_x) div width) + horizontalFactor) * width))
+          }
+
+          if (abs(_y) > height * verticalFactor) {
+            _y = sign(_y) * (abs(_y) - (((abs(_y) div height) + verticalFactor) * height))
+          }
+
           this.state.set("x", _x)
           this.state.set("y", _y)
           
+          var lifespawn = this.state.get("lifespawn")
+          if (Optional.is(lifespawn) && lifespawn.update().finished) {
+            stage = "fade-out"
+            this.state.set("stage", stage)
+          }
+
           switch (stage) {
             case "idle":
               break
@@ -327,7 +333,9 @@ global.__EVENT_DISPATCHERS = {
         })
       
       var executor = Assert.isType(Struct.get(event.data, "executor"), TaskExecutor)
-      executor.tasks.forEach(setFadeOut, type)
+      if (replace) {
+        executor.tasks.forEach(setFadeOut, type)
+      }
       executor.add(task)
 
       var collection = Struct.get(event.data, "collection")
@@ -368,6 +376,10 @@ global.__EVENT_DISPATCHERS = {
         ? event.data.blendEquation
         : BlendEquation.ADD
       
+      var blendEquationAlpha = Core.isEnum(Struct.get(event.data, "blendEquationAlpha"), BlendEquation) 
+        ? event.data.blendEquationAlpha
+        : null
+
       var color = Assert.isType(event.data.color, Color)
       var originalAlpha = color.alpha
       var type = Assert.isType(event.data.type, String)
@@ -380,6 +392,7 @@ global.__EVENT_DISPATCHERS = {
           blendModeSource: blendModeSource,
           blendModeTarget: blendModeTarget,
           blendEquation: blendEquation,
+          blendEquationAlpha: blendEquationAlpha,
           fadeInSpeed: fadeInSpeed,
           fadeOutSpeed: fadeOutSpeed,
           type: type,

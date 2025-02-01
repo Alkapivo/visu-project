@@ -59,12 +59,29 @@ function ShaderPipelineTaskProperty(_uniform, _transformer) constructor {
 
   ///@type {Transformer}
   transformer = Assert.isType(_transformer, Transformer)
+
+  ///@return {String}
+  toString = function() {
+    var type = Core.getTypeName(this.transformer)
+    switch (type) {
+      case "Transformer": return $"{this.transformer.value}"
+      case "ColorTransformer": return $"{this.transformer.value.toHex()}"
+      case "NumberTransformer": return $"{this.transformer.value}"
+      case "Vector2Transformer": return $"({this.transformer.value.x}, {this.transformer.value.y})"
+      case "Vector3Transformer": return $"({this.transformer.value.x}, {this.transformer.value.y}, {this.transformer.value.z})"
+      case "Vector4Transformer": return $"({this.transformer.value.x}, {this.transformer.value.y}, {this.transformer.value.z}, {this.transformer.value.a})"
+      case "ResolutionTransformer": return $"({this.transformer.value.x}, {this.transformer.value.y})"
+      default: return "???"
+    }
+  }
 }
 
 
 ///@param {Struct} [config]
 function ShaderPipeline(config = {}) constructor {
 
+  ///@todo refactor, there is probably a bug with serialize and how structs are merged
+  //       this code is old, one of the first tbh
   static factoryShaderPipelineTaskTemplate = function(_name, json) {
     static addToMergeQueue = function(callback, mergeQueue, name, json) {
       mergeQueue.add(name)
@@ -74,7 +91,7 @@ function ShaderPipeline(config = {}) constructor {
       }
 
       var inherit = Struct.get(json, "inherit")
-      var cyclic = mergeQueue.filter(function (template, index, current) {
+      var cyclic = mergeQueue.filter(function(template, index, current) {
         return template == current
       }, inherit)
 
@@ -98,7 +115,7 @@ function ShaderPipeline(config = {}) constructor {
         getTemplate: this.getTemplate,
       }
 
-      IntStream.forEach(acc.mergeQueue.size() - 1, 0, function (index, no, acc) {
+      IntStream.forEach(acc.mergeQueue.size() - 1, 0, function(index, no, acc) {
         var template = acc.getTemplate(acc.mergeQueue.get(index))
         if (!Core.isType(template, Struct)) {
           return
@@ -109,7 +126,7 @@ function ShaderPipeline(config = {}) constructor {
         }
 
         if (Core.isType(template.properties, Struct)) {
-          Struct.forEach(template.properties, function (property, key, acc) {
+          Struct.forEach(template.properties, function(property, key, acc) {
             Struct.set(acc.properties, key, property)
           }, acc)
         }
@@ -148,8 +165,8 @@ function ShaderPipeline(config = {}) constructor {
 
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
-    "spawn-shader": function (event) {
-      static mapProperties = function (property, name, uniforms) {
+    "spawn-shader": function(event) {
+      static mapProperties = function(property, name, uniforms) {
         return new ShaderPipelineTaskProperty(uniforms.get(name), property)
       }
 
@@ -238,6 +255,7 @@ function ShaderPipeline(config = {}) constructor {
     },
     "reset-templates": function(event) {
       this.templates.clear()
+      this.dispatcher.container.clear()
     },
   }))
 

@@ -1,0 +1,30 @@
+{
+  "model":"Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>",
+  "data":[
+    {
+      "texture":"texture_ve_icon_effect_particle",
+      "name":"particle default",
+      "color":"#146CFF",
+      "properties":{
+        "ef-part_amount":30.0,
+        "ef-part_area":{
+          "x":-1.5,
+          "height":2.5,
+          "y":-1.0,
+          "width":4.0
+        },
+        "ef-part_distribution":"LINEAR",
+        "ef-part_duration":1.5,
+        "ef-part_interval":0.22,
+        "ef-part_preview":true,
+        "ef-part_shape":"RECTANGLE",
+        "ef-part_template":"particle-default",
+        "icon":{
+          "name":"texture_baron"
+        }
+      },
+      "type":"brush_effect_particle"
+    }
+  ],
+  "version":"1"
+}

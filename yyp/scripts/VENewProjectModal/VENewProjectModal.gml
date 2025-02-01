@@ -49,7 +49,7 @@ function VisuNewProjectForm(json = null) constructor {
       layout: VELayouts.get("property-bar"),
       config: { 
         layout: { type: UILayoutType.VERTICAL },
-        label: { text: "Create new project" },
+        label: { text: "Create new visu project" },
       },
     },
     {
@@ -63,12 +63,36 @@ function VisuNewProjectForm(json = null) constructor {
       },
     },
     {
+      name: "project-name_line-h",
+      template: VEComponents.get("line-h"),
+      layout: VELayouts.get("line-h"),
+      config: { layout: { type: UILayoutType.VERTICAL } },
+    },
+    {
+      name: "use-file-audio",
+      template: VEComponents.get("property"),
+      layout: VELayouts.get("property"),
+      config: { 
+        layout: { type: UILayoutType.VERTICAL },
+        label: { 
+          text: "Import audio",
+          backgroundColor: VETheme.color.side,
+        },
+        checkbox: { 
+          backgroundColor: VETheme.color.side,
+        },
+        input: {
+          backgroundColor: VETheme.color.side,
+        },
+      },
+    },
+    {
       name: "file-audio",  
       template: VEComponents.get("text-field-button"),
       layout: VELayouts.get("text-field-button"),
       config: { 
         layout: { type: UILayoutType.VERTICAL },
-        label: { text: "Audio" },
+        label: { text: "*.OGG" },
         field: { 
           read_only: true,
           updateCustom: function() {
@@ -95,7 +119,7 @@ function VisuNewProjectForm(json = null) constructor {
               .get("file-audio")
               .set(path)
           },
-          colorHoverOver: VETheme.color.accent,
+          colorHoverOver: VETheme.color.accentLight,
           colorHoverOut: VETheme.color.accentShadow,
           onMouseHoverOver: function(event) {
             this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
@@ -103,6 +127,35 @@ function VisuNewProjectForm(json = null) constructor {
           onMouseHoverOut: function(event) {
             this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
           },
+        },
+      },
+    },
+    {
+      name: "file-audio_line-h",
+      template: VEComponents.get("line-h"),
+      layout: VELayouts.get("line-h"),
+      config: { layout: { type: UILayoutType.VERTICAL } },
+    },
+    {
+      name: "use-file-video",
+      template: VEComponents.get("property"),
+      layout: VELayouts.get("property"),
+      config: { 
+        layout: { type: UILayoutType.VERTICAL },
+        label: { 
+          text: "Import video",
+          //enable: { key: "use-file-video" },
+          backgroundColor: VETheme.color.side,
+        },
+        checkbox: { 
+          store: { key: "use-file-video" },
+          spriteOn: { name: "visu_texture_checkbox_on" },
+          spriteOff: { name: "visu_texture_checkbox_off" },
+          //scaleToFillStretched: false,
+          backgroundColor: VETheme.color.side,
+        },
+        input: {
+          backgroundColor: VETheme.color.side,
         },
       },
     },
@@ -144,10 +197,10 @@ function VisuNewProjectForm(json = null) constructor {
               .get("file-video")
               .set(path)
           },
-          colorHoverOver: VETheme.color.accent,
+          colorHoverOver: VETheme.color.accentLight,
           colorHoverOut: VETheme.color.accentShadow,
           onMouseHoverOver: function(event) {
-            if (!this.enable.value) {
+            if (Struct.get(this.enable, "value") == false) {
               return 
             }
             this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
@@ -159,22 +212,10 @@ function VisuNewProjectForm(json = null) constructor {
       },
     },
     {
-      name: "use-file-video",
-      template: VEComponents.get("property"),
-      layout: VELayouts.get("property"),
-      config: { 
-        layout: { type: UILayoutType.VERTICAL },
-        label: { 
-          text: "Use video",
-          enable: { key: "use-file-video" },
-        },
-        checkbox: { 
-          store: { key: "use-file-video" },
-          spriteOn: { name: "visu_texture_checkbox_on" },
-          spriteOff: { name: "visu_texture_checkbox_off" },
-          scaleToFillStretched: false,
-        },
-      },
+      name: "file-video_line-h",
+      template: VEComponents.get("line-h"),
+      layout: VELayouts.get("line-h"),
+      config: { layout: { type: UILayoutType.VERTICAL } },
     },
     {
       name: "include-templates",
@@ -183,7 +224,7 @@ function VisuNewProjectForm(json = null) constructor {
       config: { 
         layout: { type: UILayoutType.VERTICAL },
         label: { 
-          text: "Include templates",
+          text: "Include current templates",
           enable: { key: "use-include-templates"},
         },
         checkbox: { 
@@ -191,7 +232,7 @@ function VisuNewProjectForm(json = null) constructor {
           enable: { key: "use-include-templates"},
           spriteOn: { name: "visu_texture_checkbox_on" },
           spriteOff: { name: "visu_texture_checkbox_off" },
-          scaleToFillStretched: false,
+          //scaleToFillStretched: false,
         },
       },
     },
@@ -202,7 +243,7 @@ function VisuNewProjectForm(json = null) constructor {
       config: { 
         layout: { type: UILayoutType.VERTICAL },
         label: { 
-          text: "Include brushes",
+          text: "Include current brushes",
           enable: { key: "use-include-brushes"},
         },
         checkbox: {
@@ -210,32 +251,55 @@ function VisuNewProjectForm(json = null) constructor {
           enable: { key: "use-include-brushes"},
           spriteOn: { name: "visu_texture_checkbox_on" },
           spriteOff: { name: "visu_texture_checkbox_off" },
-          scaleToFillStretched: false,
+          //scaleToFillStretched: false,
         },
       },
+    },
+    {
+      name: "include-brushes_line-h",
+      template: VEComponents.get("line-h"),
+      layout: VELayouts.get("line-h"),
+      config: { layout: { type: UILayoutType.VERTICAL } },
     },
     {
       name: "warning",
       template: VEComponents.get("property-bar"),
       layout: VELayouts.get("property-bar"),
       config: { 
-        layout: { type: UILayoutType.VERTICAL },
+        layout: { 
+          type: UILayoutType.VERTICAL,
+          height: function() { return 28 * 2 },
+          margin: { top: 0, bottom: 0 },
+        },
         label: { 
-          text: "Remember to create project in an empty folder!",
+          text: "Visu project must be saved\nin an empty folder!!!",
+          backgroundColor: VETheme.color.side,
           updateCustom: function() {
             if (!Optional.is(Struct.get(this, "flickeringTimer"))) {
               Struct.set(this, "flickeringTimer", new Timer(0.5, { loop: Infinity }))
             }
             
             if (this.flickeringTimer.update().finished) {
-              var color = this.backgroundColor == ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor()
-                ? ColorUtil.fromHex(VETheme.color.denyShadow).toGMColor()
-                : ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor()
+              var color = this.backgroundColor == ColorUtil.fromHex(VETheme.color.deny).toGMColor()
+                ? ColorUtil.fromHex(VETheme.color.side).toGMColor()
+                : ColorUtil.fromHex(VETheme.color.deny).toGMColor()
               this.backgroundColor = color
             }
           }
         },
+        input: {
+          backgroundColor: VETheme.color.side,
+        },
+        checkbox: {
+          backgroundColor: VETheme.color.side,
+        }
       },
+    },
+    {
+      name: "warning_line-h",
+      template: VEComponents.get("line-h"),
+      layout: VELayouts.get("line-h"),
+      config: { layout: { type: UILayoutType.VERTICAL } },
     },
     {
       name: "button_create",
@@ -244,8 +308,8 @@ function VisuNewProjectForm(json = null) constructor {
       config: {
         layout: { type: UILayoutType.VERTICAL },
         backgroundColor: VETheme.color.acceptShadow,
-        backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
-        label: { text: "Create project" },
+        backgroundMargin: { top: 1, bottom: 1, left: 5, right: 5 },
+        label: { text: "Save visu project" },
         colorHoverOver: VETheme.color.accept,
         colorHoverOut: VETheme.color.acceptShadow,
         onMouseHoverOver: function(event) {
@@ -314,7 +378,7 @@ function VisuNewProjectForm(json = null) constructor {
       config: {
         layout: { type: UILayoutType.VERTICAL },
         backgroundColor: VETheme.color.denyShadow,
-        backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
+        backgroundMargin: { top: 1, bottom: 5, left: 5, right: 5 },
         label: { text: "Cancel" },
         colorHoverOver: VETheme.color.deny,
         colorHoverOut: VETheme.color.denyShadow,
@@ -353,9 +417,10 @@ function VisuNewProjectForm(json = null) constructor {
   ///@param {String} manifestPath
   ///@return {VisuNewProjectForm}
   save = function(manifestPath) {
+    Assert.isTrue(!FileUtil.fileExists(manifestPath), $"Visu project cannot be saved at location '{manifestPath}', because it already contains visu project.\nasd\ndef\  ghi\n---")
+
     var json = this.serialize()
     var controller = Beans.get(BeanVisuController)
-
     var path = Assert.isType(FileUtil.getDirectoryFromPath(manifestPath), String)
     var manifest = {
       "model": "io.alkapivo.visu.controller.VisuTrack",
@@ -367,7 +432,7 @@ function VisuNewProjectForm(json = null) constructor {
         "bullet": "template/bullet.json",
         "coin": "template/coin.json",
         "editor": [],
-        "lyrics": "template/lyrics.json",
+        "subtitle": "template/subtitle.json",
         "particle": "template/particle.json",
         "shader": "template/shader.json",
         "shroom": "template/shroom.json",
@@ -388,8 +453,8 @@ function VisuNewProjectForm(json = null) constructor {
         "version": "1",
         "data": {},
       },
-      "lyrics": {
-        "model": "Collection<io.alkapivo.visu.service.lyrics.LyricsTemplate>",
+      "subtitle": {
+        "model": "Collection<io.alkapivo.visu.service.subtitle.SubtitleTemplate>",
         "version": "1",
         "data": {},
       },
@@ -468,7 +533,7 @@ function VisuNewProjectForm(json = null) constructor {
               "name":"grid columns",
               "events":[
                 {
-                  "callable":"brush_grid_channel",
+                  "callable":"brush_grid_old_channel",
                   "timestamp":0.0,
                   "data":{
                     "grid-channel_secondary-color":"#2C7C80",
@@ -531,7 +596,7 @@ function VisuNewProjectForm(json = null) constructor {
               "name":"grid rows",
               "events":[
                 {
-                  "callable":"brush_grid_separator",
+                  "callable":"brush_grid_old_separator",
                   "timestamp":0.0,
                   "data":{
                     "grid-separator_primary-color":"#FFB2F4",
@@ -594,7 +659,7 @@ function VisuNewProjectForm(json = null) constructor {
               "name":"grid config",
               "events":[
                 {
-                  "callable":"brush_grid_config",
+                  "callable":"brush_grid_old_config",
                   "timestamp":0.0,
                   "data":{
                     "grid-config_border-bottom-alpha":{
@@ -684,7 +749,7 @@ function VisuNewProjectForm(json = null) constructor {
               "name":"view background",
               "events":[
                 {
-                  "callable":"brush_view_wallpaper",
+                  "callable":"brush_view_old_wallpaper",
                   "timestamp":0.0,
                   "data":{
                     "view-wallpaper_angle":0.0,
@@ -722,8 +787,7 @@ function VisuNewProjectForm(json = null) constructor {
                       "scaleY":0.23225806451612904
                     },
                     "view-wallpaper_texture-blend":"#BC2EFC",
-                    "view-wallpaper_texture-speed":1.0,
-                    "view-wallpaper_type":"Background",
+                    "view-wallpaper_type":"BACKGROUND",
                     "view-wallpaper_use-angle-transform":false,
                     "view-wallpaper_use-color":true,
                     "view-wallpaper_use-speed-transform":false,
@@ -733,7 +797,6 @@ function VisuNewProjectForm(json = null) constructor {
                       "blend":"#FF0000",
                       "name":"texture_visu_editor_icon_event_view_background"
                     },
-                    "view-wallpaper_use-texture-speed":0.0,
                     "view-wallpaper_use-xScale-transform":false,
                     "view-wallpaper_use-yScale-transform":false,
                     "view-wallpaper_xScale":1.0,
@@ -758,7 +821,7 @@ function VisuNewProjectForm(json = null) constructor {
               "name":"view foreground",
               "events":[
                 {
-                  "callable":"brush_view_wallpaper",
+                  "callable":"brush_view_old_wallpaper",
                   "timestamp":0.0,
                   "data":{
                     "view-wallpaper_angle":0.0,
@@ -796,14 +859,12 @@ function VisuNewProjectForm(json = null) constructor {
                       "scaleY":0.23225806451612904
                     },
                     "view-wallpaper_texture-blend":"#BC2EFC",
-                    "view-wallpaper_texture-speed":1.0,
-                    "view-wallpaper_type":"Foreground",
+                    "view-wallpaper_type":"FOREGROUND",
                     "view-wallpaper_use-angle-transform":false,
                     "view-wallpaper_use-color":0.0,
                     "view-wallpaper_use-speed-transform":false,
                     "view-wallpaper_use-texture":0.0,
                     "view-wallpaper_use-texture-blend":0.0,
-                    "view-wallpaper_use-texture-speed":0.0,
                     "icon":{
                       "blend":"#FF0000",
                       "name":"texture_visu_editor_icon_event_view_foreground"
@@ -832,7 +893,7 @@ function VisuNewProjectForm(json = null) constructor {
               "name":"view camera",
               "events":[
                 {
-                  "callable":"brush_view_camera",
+                  "callable":"brush_view_old_camera",
                   "timestamp":0.0,
                   "data":{
                     "view-config_follow-margin-x":0.5,
@@ -911,7 +972,7 @@ function VisuNewProjectForm(json = null) constructor {
               "name":"view config",
               "events":[
                 {
-                  "callable":"brush_view_config",
+                  "callable":"brush_view_old_config",
                   "timestamp":0.0,
                   "data":{
                     "icon":{
@@ -1046,7 +1107,7 @@ function VisuNewProjectForm(json = null) constructor {
               "name":"player",
               "events":[
                 {
-                  "callable":"brush_grid_player",
+                  "callable":"brush_grid_old_player",
                   "timestamp":0.0,
                   "data":{
                     "grid-player_bullet-hell":{
@@ -1168,7 +1229,7 @@ function VisuNewProjectForm(json = null) constructor {
               ]
             },
             {
-              "name":"lyrics",
+              "name":"subtitle",
               "events":[
               ]
             }
@@ -1187,14 +1248,14 @@ function VisuNewProjectForm(json = null) constructor {
       templates.remove("shroom")
       templates.remove("bullet")
       templates.remove("coin")
-      templates.remove("lyrics")
+      templates.remove("subtitle")
       templates.remove("particle")
       templates.remove("texture")
       FileUtil.copyFile(FileUtil.get($"{visuTrack.path}{visuTrack.shader}"), $"{path}{manifest.data.shader}")
       FileUtil.copyFile(FileUtil.get($"{visuTrack.path}{visuTrack.shroom}"), $"{path}{manifest.data.shroom}")
       FileUtil.copyFile(FileUtil.get($"{visuTrack.path}{visuTrack.bullet}"), $"{path}{manifest.data.bullet}")
       FileUtil.copyFile(FileUtil.get($"{visuTrack.path}{visuTrack.coin}"), $"{path}{manifest.data.coin}")
-      FileUtil.copyFile(FileUtil.get($"{visuTrack.path}{visuTrack.lyrics}"), $"{path}{manifest.data.lyrics}")
+      FileUtil.copyFile(FileUtil.get($"{visuTrack.path}{visuTrack.subtitle}"), $"{path}{manifest.data.subtitle}")
       FileUtil.copyFile(FileUtil.get($"{visuTrack.path}{visuTrack.particle}"), $"{path}{manifest.data.particle}")
       var textures = JSON.parse(FileUtil.readFileSync(FileUtil.get($"{visuTrack.path}{visuTrack.texture}")).getData()).data
       Struct.forEach(textures, function(config, name, acc) {
@@ -1276,10 +1337,10 @@ function VENewProjectModal(_config = null) constructor {
     return new UILayout(
       {
         name: "visu-new-project-modal",
-        x: function() { return (this.context.width() - this.width()) / 2 },
-        y: function() { return (this.context.height() - this.height()) / 2 },
+        x: function() { return (GuiWidth() - this.width()) / 2 },
+        y: function() { return this.context.y() + 24},
         width: function() { return 480 },
-        height: function() { return 352 },
+        height: function() { return 374 },
       },
       parent
     )
@@ -1295,7 +1356,7 @@ function VENewProjectModal(_config = null) constructor {
       "visu-new-project-modal": new UI({
         name: "visu-new-project-modal",
         state: new Map(String, any, {
-          "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
+          "background-color": ColorUtil.fromHex(VETheme.color.side).toGMColor(),
         }),
         modal: modal,
         layout: layout,
@@ -1345,7 +1406,7 @@ function VENewProjectModal(_config = null) constructor {
     },
     "close": function(event) {
       var context = this
-      this.containers.forEach(function (container, key, uiService) {
+      this.containers.forEach(function(container, key, uiService) {
         uiService.send(new Event("remove", { 
           name: key, 
           quiet: true,

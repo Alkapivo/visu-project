@@ -19,7 +19,7 @@ function Sprite(_texture, config = {}) constructor {
   frame = Struct.getDefault(config, "frame", 0)
 
   ///@type {Number}
-  speed = Struct.getDefault(config, "speed", texture.speed)
+  speed = Struct.getIfType(config, "speed", Number, texture.speed)
 
   ///@type {Number}
   scaleX = Struct.getDefault(config, "scaleX", 1.0)
@@ -105,7 +105,8 @@ function Sprite(_texture, config = {}) constructor {
   ///@param {Number} frame
   ///@return {Sprite}
   setFrame = function(frame) {
-    this.frame = clamp(frame, 0, this.texture.frames - (this.texture.frames > 0 ? 1 : 0))
+    //this.frame = clamp(frame, 0, this.texture.frames - (this.texture.frames > 0 ? 1 : 0))
+    this.frame = clamp(frame, 0, this.texture.frames)
     return this
   }
 
@@ -163,7 +164,7 @@ function Sprite(_texture, config = {}) constructor {
   setRandomFrame = function(randomFrame) {
     this.randomFrame = randomFrame
     if (this.randomFrame) {
-      this.setFrame(irandom(this.texture.frames))
+      //this.setFrame(irandom(this.texture.frames))
     }
     
     return this
@@ -173,17 +174,19 @@ function Sprite(_texture, config = {}) constructor {
   ///@param {Number} y
   ///@return {Sprite}
   render = function(x, y) {
-    draw_sprite_ext(this.texture.asset, this.frame, x, y, this.scaleX, this.scaleY, 
-      this.angle, this.blend, this.alpha)
+    if (this.scaleX == 0 || this.scaleY == 0) {
+      return this
+    }
+    
+    draw_sprite_ext(this.texture.asset, this.frame, x, y, this.scaleX, this.scaleY, this.angle, this.blend, this.alpha)
     
     if (!this.animate) {
       return this
     }
 
-    this.frame += DeltaTime.apply(this.speed / GAME_FPS)
+    this.frame += DeltaTime.apply(this.speed) / GAME_FPS
     if (this.frame > this.texture.frames) {
-      this.frame = this.frame - (this.texture.frames 
-        * floor(this.frame / this.texture.frames))
+      this.frame = this.frame - (this.texture.frames * floor(this.frame / this.texture.frames))
     }
     return this
   }
@@ -192,6 +195,10 @@ function Sprite(_texture, config = {}) constructor {
   ///@param {Number} y
   ///@return {Sprite}
   renderTiled = function(x, y) {
+    if (this.scaleX == 0 || this.scaleY == 0) {
+      return this
+    }
+
     draw_sprite_tiled_ext(this.texture.asset, this.frame, x, y, this.scaleX, this.scaleY, 
       this.blend, this.alpha)
     
@@ -315,6 +322,11 @@ function _SpriteUtil() constructor {
   parse = function(_json, defaultJson = null) {
     var sprite = null
     try {
+      if (!Optional.is(Struct.getIfType(_json, "name", String))
+          && Core.isType(defaultJson, Struct)) {
+        return SpriteUtil.parse(defaultJson)
+      }
+
       var json = JSON.clone(_json)
       var texture = Assert.isType(TextureUtil.parse(json.name, json), Texture)
       Struct.set(json, "frame", clamp(
@@ -333,6 +345,7 @@ function _SpriteUtil() constructor {
       sprite = new Sprite(texture, json)
     } catch (exception) {
       Logger.error("SpriteUtil", $"'parse-sprite' fatal error: {exception.message}")
+      sprite = null
       if (Core.isType(defaultJson, Struct)) {
         Logger.error("SpriteUtil", $"'parse-sprite' use defaultJson: {JSON.stringify(defaultJson)}")
         sprite = SpriteUtil.parse(defaultJson)

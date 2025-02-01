@@ -10,7 +10,7 @@ function VEPopupQueue(_editor) constructor {
   containers = new Array(UI)
 
   ///@type {Number}
-  SIZE_LIMIT = 3
+  SIZE_LIMIT = 5
 
   ///@type {Number}
   WIDTH_MAX = 960
@@ -22,30 +22,30 @@ function VEPopupQueue(_editor) constructor {
       name: "ve-popup-queue_item",
       index: Assert.isType(Struct.getDefault(config, "index", 0), Number),
       _x: 0,
-      _y: 28,
+      _y: 24 + 16,
       _width: 300,
-      _height: 48,
+      _height: 32,
       _margin: 8,
       x: function() { return this._x + this.margin.left },
       y: function() { return this._y + (index * this.height()) + (index * _margin) },
       width: function() { return this._width - this.margin.left - this.margin.right },
       height: function() { return this._height },
-      margin: { right: 48, left: 48 },
+      margin: { right: 32, left: 32 },
       nodes: {
         icon: {
           name: "ve-popup-queue_item.icon",
           _offsetY: 0,
           _width: 0,
-          _height: 0,
+          _height: 32,
           x: function() { return this.margin.left },
           y: function() { return this._offsetY + this.margin.top },
           width: function() { return _width - this.margin.left - this.margin.right },
           height: function() { return _height - this.margin.top - this.margin.bottom },
-          //margin: { top: 4, right: 4, bottom: 4, left: 4 },
+          margin: { top: 0, right: 4, bottom: 0, left: 4 },
         },
         message: {
           name: "ve-popup-queue_item.message",
-          _height: 48,
+          _height: 32,
           x: function() { return this.context.nodes.icon.right() + this.margin.left },
           y: function() { return this.margin.top },
           width: function() { return this.context.width()
@@ -55,13 +55,13 @@ function VEPopupQueue(_editor) constructor {
             - this.context.nodes.close.width()
             - this.context.nodes.close.margin.left
             - this.context.nodes.close.margin.right
-            - this.margin.left 
             - this.margin.right
+            - this.margin.left
           },
           height: function() { return this._height
             - this.margin.top 
             - this.margin.bottom },
-          margin: { top: 4, right: 4, bottom: 4, left: 4 },
+          margin: { top: 0, right: 4, bottom: 0, left: 4 },
         },
         close: {
           name: "ve-popup-queue_item.close",
@@ -72,7 +72,7 @@ function VEPopupQueue(_editor) constructor {
           y: function() { return this._offsetY + this.margin.top },
           width: function() { return this._width - this.margin.left - this.margin.right },
           height: function() { return this._height - this.margin.top - this.margin.bottom },
-          margin: { top: 12, right: 4, bottom: -4, left: 4 },
+          margin: { top: 0, right: 4, bottom: 0, left: 4 },
         },
       }
     })
@@ -97,7 +97,7 @@ function VEPopupQueue(_editor) constructor {
       timeout: new Timer(Assert.isType(Struct.getDefault(config, "timeout", 3.0), Number)),
       timeoutLine: new TexturedLine({ 
         thickness: 10,
-        blend: VETheme.color.accent,
+        blend: VETheme.color.accentLight,
         cornerTo: { name: "texture_empty" },
         cornerFrom: { name: "texture_empty" },
       }),
@@ -116,9 +116,9 @@ function VEPopupQueue(_editor) constructor {
       },
       renderItem: Callable.run(UIUtil.renderTemplates.get("renderItemDefaultScrollable")),
       renderSurface: function() {
-        var color = ColorUtil.fromGMColor(this.state.get("background-color"))
-        color.alpha = this.state.get("background-alpha")
-        GPU.render.clear(color)
+        var color = this.state.getDefault("background-color", c_black)
+        var alpha = this.state.getDefault("background-alpha", 0.0)
+        GPU.render.clear(color, alpha)
 
         if (Core.isType(this.timeout, Timer)) {
           var lineY = this.area.getHeight() / 2.0
@@ -127,16 +127,62 @@ function VEPopupQueue(_editor) constructor {
 
         var areaX = this.area.x
         var areaY = this.area.y
-        var delta = DeltaTime.deltaTime
-        DeltaTime.deltaTime += this.surfaceTick.delta
+        //var delta = DeltaTime.deltaTime
+        //DeltaTime.deltaTime += this.updateTimer != null && this.updateTimer.finished && this.surfaceTick.previous ? 0.0 : this.surfaceTick.delta
         this.area.x = this.offset.x
         this.area.y = this.offset.y
         this.items.forEach(this.renderItem, this.area)
         this.area.x = areaX
         this.area.y = areaY
-        DeltaTime.deltaTime = delta
+        //DeltaTime.deltaTime = delta
       },
-      render: Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollableBlend")),
+      render: function() {
+        if (!Optional.is(this.surface)) {
+          this.surface = new Surface()
+        }
+
+        this.surface.update(this.area.getWidth(), this.area.getHeight())
+        //if (!this.surfaceTick.get() && !this.surface.updated) {
+        //  this.surface.render(this.area.getX(), this.area.getY())
+        //  if (this.enableScrollbarY) {
+        //    this.scrollbarY.render(this)
+        //  }
+        //  return
+        //}
+
+        this.surface.renderOn(this.renderSurface)
+        this.surface.render(this.area.getX(), this.area.getY())
+
+        if (this.enableScrollbarY) {
+          this.scrollbarY.render(this)
+        }
+
+        GPU.render.rectangle(
+          this.area.getX(),
+          this.area.getY() + this.area.getHeight(),
+          this.area.getX() + this.area.getWidth() - 1,
+          this.area.getY() + this.area.getHeight() + 2,
+          false,
+          this.state.get("background-color"),
+          this.state.get("background-color"),
+          this.state.get("background-color"),
+          this.state.get("background-color"),
+          this.state.get("background-alpha")
+        )
+
+        GPU.render.rectangle(
+          this.area.getX(),
+          this.area.getY() - 4,
+          this.area.getX() + this.area.getWidth() - 1,
+          this.area.getY() - 1,
+          false,
+          this.state.get("background-color"),
+          this.state.get("background-color"),
+          this.state.get("background-color"),
+          this.state.get("background-color"),
+          this.state.get("background-alpha")
+        )
+      },
       onMouseHoverOver: function() {
         this.timeout = null
       },
@@ -151,8 +197,10 @@ function VEPopupQueue(_editor) constructor {
           font: "font_inter_10_regular",
           color: VETheme.color.textFocus,
           outline: true,
-          outlineColor: VETheme.color.darkShadow,
-          backgroundColor: VETheme.color.deny,
+          outlineColor: VETheme.color.sideDark,
+          //backgroundColor: VETheme.color.deny,
+          //backgroundColor: VETheme.color.primary,
+          //backgroundAlpha: 0.66,
           align: { v: VAlign.CENTER, h: HAlign.CENTER },
           updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
           updateCustom: function() {
@@ -165,18 +213,21 @@ function VEPopupQueue(_editor) constructor {
           layout: layout.nodes.message,
           text: "",
           _text: Assert.isType(Struct.getDefault(config, "message", ""), String),
-          font: "font_consolas_12_bold",
+          font: "font_inter_10_regular",
           color: VETheme.color.textFocus,
           outline: true,
-          outlineColor: VETheme.color.darkShadow,
-          align: { v: VAlign.CENTER, h: HAlign.LEFT },
+          outlineColor: VETheme.color.sideDark,
+          align: { v: VAlign.TOP, h: HAlign.LEFT },
+          useScale: false,
           updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
           updateCustom: function() {
+            this.updateArea()
             GPU.set.font(this.label.font.asset)
-            var text = String.wrapText(this._text, this.area.getWidth(), "\n", 0)
+            var text = String.wrapText(this._text, this.layout.width(), "\n", 0)
             var lines = 1 + String.count(text, "\n")
             this.layout._height = lines == 1 ? this.context.area.getHeight() : lines * string_height("|")
             this.label.text = text
+            this.label.align.v = lines == 1 ? VAlign.CENTER : VAlign.TOP
           },
           onMousePressedLeft: function(event) {
             this.context.controller.dispatcher.send(new Event("remove", this.context.name))
@@ -185,11 +236,11 @@ function VEPopupQueue(_editor) constructor {
         "close": {
           type: UIText,
           layout: layout.nodes.close,
-          text: "x",
-          font: "font_inter_10_regular",
+          text: "X",
+          font: "font_inter_10_bold",
           color: VETheme.color.textFocus,
-          outline: true,
-          outlineColor: VETheme.color.darkShadow,
+          //outline: true,
+          //outlineColor: VETheme.color.sideDark,
           backgroundColor: VETheme.color.denyShadow,
           align: { v: VAlign.CENTER, h: HAlign.CENTER },
           updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -206,7 +257,7 @@ function VEPopupQueue(_editor) constructor {
             this.backgroundColor = ColorUtil.fromHex(this.colorHoverOut).toGMColor()
           },
           onMousePressedLeft: function(event) {
-            this.context.dispatcher.send(new Event("remove", this.context.name))
+            this.context.controller.dispatcher.send(new Event("remove", this.context.name))
           },
         },
       }

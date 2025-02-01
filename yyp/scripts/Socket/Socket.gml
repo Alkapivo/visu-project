@@ -49,7 +49,7 @@ function Socket(config = {}) constructor {
   ///@return {Socket}
   send = function(message) {
     try {
-      Core.print("Send ", message)
+      Core.print("Send", message)
       Assert.areEqual(this.socket != null, true, "null socket")
 
       var buff = buffer_create(String.size(message), buffer_fixed, 1)

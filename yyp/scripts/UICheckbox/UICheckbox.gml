@@ -1,4 +1,4 @@
-///@pacakge io.alkapivo.core.service.ui.item
+///@package io.alkapivo.core.service.ui.item
 
 ///@param {String} name
 ///@param {Struct} [json]
@@ -23,9 +23,7 @@ function UICheckbox(name, json = null) {
       : null,
 
     ///@type {?Struct}
-    enable: Struct.contains(json, "enable")
-      ? Assert.isType(json.enable, Struct)
-      : null,
+    enable: Struct.getIfType(json, "enable", Struct),
 
     ///@type {Boolean}
     scaleToFillStretched: Struct.contains(json, "scaleToFillStretched")
@@ -48,7 +46,7 @@ function UICheckbox(name, json = null) {
       }
     }), Callable)),
 
-    updateEnable: Assert.isType(Callable.run(UIItemUtils.templates.get("updateEnable")), Callable),
+    updateEnable: Struct.getIfType(json, "updateEnable", Callable, Callable.run(UIItemUtils.templates.get("updateEnable"))),
 
     renderBackgroundColor: new BindIntent(Callable.run(UIItemUtils.templates.get("renderBackgroundColor"))),
 
@@ -64,13 +62,13 @@ function UICheckbox(name, json = null) {
       if (sprite != null) {
         var alpha = sprite.getAlpha()
         if (this.scaleToFillStretched) {
-          sprite.scaleToFillStretched(this.area.getWidth(), this.area.getHeight())
+          sprite.scaleToFillStretched(this.area.getWidth() - this.margin.left - this.margin.right, this.area.getHeight() - this.margin.top - this.margin.bottom)
         }
         sprite
           .setAlpha(alpha * (Struct.get(this.enable, "value") == false ? 0.5 : 1.0))
           .render(
-            this.context.area.getX() + this.area.getX(),
-            this.context.area.getY() + this.area.getY()
+            this.context.area.getX() + this.area.getX() + this.margin.left,
+            this.context.area.getY() + this.area.getY() + this.margin.top
           )
           .setAlpha(alpha)
       }
@@ -90,6 +88,10 @@ function UICheckbox(name, json = null) {
 
       if (Optional.is(this.updateValue)) {
         this.updateValue(this.value == true ? false : true)
+      }
+
+      if (Optional.is(this.context)) {
+        this.context.clampUpdateTimer(0.7500)
       }
     }), Callable),
   }, false))

@@ -202,16 +202,16 @@ function PlayerStats(_player, json) constructor {
         controller.sfxService.play("player-collect-point-or-force")
         //Core.print("Force incremented from", previous, "to", value)
       } else if (previous > value) {
-        Core.print("Force decremented from", previous, "to", value)
+        //Core.print("Force decremented from", previous, "to", value)
       }
       return this
     },
     onMinValueExceed: function() { 
-      Core.print("Force already reached minimum")
+      //Core.print("Force already reached minimum")
       return this
     },
     onMaxValueExceed: function() { 
-      Core.print("Force alread reached maximum")
+      //Core.print("Force alread reached maximum")
       return this
     },
   }))
@@ -241,16 +241,16 @@ function PlayerStats(_player, json) constructor {
         controller.sfxService.play("player-collect-point-or-force")
         //Core.print("Points incremented from", previous, "to", value)
       } else if (previous > value) {
-        Core.print("Points decremented from", previous, "to", value)
+        //Core.print("Points decremented from", previous, "to", value)
       }
       return this
     },
     onMinValueExceed: function() { 
-      Core.print("Points already reached minimum")
+      //Core.print("Points already reached minimum")
       return this
     },
     onMaxValueExceed: function() { 
-      Core.print("Points already reached maximum")
+      //Core.print("Points already reached maximum")
       return this
     },
   }))
@@ -338,7 +338,7 @@ function PlayerStats(_player, json) constructor {
               }))
 
             controller.visuRenderer.hudRenderer.sendGlitchEvent()
-            view_track_event.brush_view_glitch({
+            view_old_track_event.brush_view_old_glitch.run({
               "view-glitch_shader-rng-seed":0.26406799999999998,
               "view-glitch_use-factor":true,
               "view-glitch_shader-intensity":0.3015499999999999,
@@ -386,16 +386,19 @@ function PlayerStats(_player, json) constructor {
       if (previous < value) {
         controller.visuRenderer.hudRenderer.sendGlitchEvent()
         controller.sfxService.play("player-collect-life")
-        //Core.print("Life added from", previous, "to", value)
+        //Core.print("Life added from", previous, "to", value) 
       } else if (previous > value) {
         var view = controller.gridService.view
         this.stats.setGodModeCooldown(5.0)
 
         controller.visuRenderer.hudRenderer.sendGlitchEvent()
-        controller.sfxService.play("player-die")
 
-        if (this.stats.bomb.get() < 5) {
-          this.stats.bomb.set(5)
+        if (!Visu.settings.getValue("visu.god-mode")) {
+          controller.sfxService.play("player-die")
+        }
+
+        if (this.stats.bomb.get() < 3) {
+          this.stats.bomb.set(3)
         }
 
         controller.particleService.send(controller.particleService

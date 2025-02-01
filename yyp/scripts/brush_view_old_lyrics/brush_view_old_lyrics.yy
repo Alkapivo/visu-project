@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"brush_view_old_lyrics",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"brush_view_old_lyrics",
+  "parent":{
+    "name":"view_old",
+    "path":"folders/io.alkapivo.visu/src/editor/service/brush/_old/view_old.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

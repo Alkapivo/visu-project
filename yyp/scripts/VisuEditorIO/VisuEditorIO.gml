@@ -19,6 +19,7 @@ function VisuEditorIO() constructor {
 
     previewEvent: "A", // + ctrl
     saveTemplate: "A", // + ctrl + shift
+    toBrush: "B", // + ctrl
 
     previewBrush: "D", // + ctrl
     saveBrush: "D", // + ctrl + shift
@@ -41,6 +42,7 @@ function VisuEditorIO() constructor {
     renderBottomPane: KeyboardKeyType.F2,
     renderRightPane: KeyboardKeyType.F3,
     renderTrackControl: KeyboardKeyType.F4,
+    renderSceneConfigPreview: KeyboardKeyType.F12,
     renderUI: KeyboardKeyType.F5,
     renderEventInspector: KeyboardKeyType.F6,
     renderTemplateToolbar: KeyboardKeyType.F7,
@@ -55,6 +57,12 @@ function VisuEditorIO() constructor {
     wheelUp: MouseButtonType.WHEEL_UP,
     wheelDown: MouseButtonType.WHEEL_DOWN,
   })
+  
+  ///@type {Boolean}
+  mouseMoved = false
+
+  ///@type {Number}
+  mouseMovedCooldown = Core.getProperty("visu.editor.io.mouse-moved.cooldown", 4.0)
   
   ///@private
   ///@param {VisuController} controller
@@ -136,7 +144,8 @@ function VisuEditorIO() constructor {
       editor.store.get("tool").set("tool_erase")
     }
 
-    if (this.keyboard.keys.brushTool.pressed) {
+    if (!this.keyboard.keys.controlLeft.on 
+      && this.keyboard.keys.brushTool.pressed) {
       editor.store.get("tool").set("tool_brush")
     }
 
@@ -194,6 +203,11 @@ function VisuEditorIO() constructor {
         .set(!editor.store.getValue("render-trackControl"))
     }
 
+    if (this.keyboard.keys.renderSceneConfigPreview.pressed) {
+      editor.store.get("render-sceneConfigPreview")
+        .set(!editor.store.getValue("render-sceneConfigPreview"))
+    }
+
     if (this.keyboard.keys.renderLeftPane.pressed) {
       editor.store.get("render-event")
         .set(!editor.store.getValue("render-event"))
@@ -248,6 +262,20 @@ function VisuEditorIO() constructor {
       if (Core.isType(editor.uiService.find("visu-modal"), UI)) {
         editor.exitModal.send(new Event("close"))
       } else if (!exitModalKeyDispatched) {
+        controller.visuRenderer.gridRenderer.camera.enableMouseLook = false
+        controller.visuRenderer.gridRenderer.camera.enableKeyboardLook = false
+        editor.executor.add(new Task("disable-renderUI")
+          .whenUpdate(function() {
+            var editor = Beans.get(BeanVisuEditorController)
+            if (!Optional.is(editor)) {
+              this.fullfill()
+            }
+            
+            editor.renderUI = false
+            this.fullfill()
+          })
+          .setTimeout(2.0))
+        /*
         editor.exitModal.send(new Event("open").setData({
           layout: new UILayout({
             name: "display",
@@ -257,8 +285,7 @@ function VisuEditorIO() constructor {
             height: function() { return GuiHeight() },
           }),
         }))
-        controller.visuRenderer.gridRenderer.camera.enableMouseLook = false
-        controller.visuRenderer.gridRenderer.camera.enableKeyboardLook = false
+        */
       }
     }
 
@@ -379,10 +406,18 @@ function VisuEditorIO() constructor {
       return this
     }
 
+    var control = editor.accordion.eventInspector.containers.get("ve-event-inspector-control")
+    if (this.keyboard.keys.toBrush.pressed) {
+      if (Optional.is(control)) {
+        var toBrush = control.items.get("button_control-to-brush_type-button")
+        if (Optional.is(toBrush)) {
+          toBrush.callback()
+        }
+      }
+    }
+
     if (this.keyboard.keys.shiftLeft.on) {
-      if (this.keyboard.keys.saveTemplate.pressed 
-        && editor.store.getValue("render-event")) {
-        
+      if (this.keyboard.keys.saveTemplate.pressed && editor.store.getValue("render-event")) {
         editor.accordion.templateToolbar.send(new Event("save-template"))
       }
     } else {
@@ -390,7 +425,39 @@ function VisuEditorIO() constructor {
         var event = editor.accordion.eventInspector.store.getValue("event")
         if (Core.isType(event, VEEvent)) {
           var handler = controller.trackService.handlers.get(event.type)
-          handler(event.toTemplate().event.data)
+          handler.run(handler.parse(event.toTemplate().event.data))
+          if (Optional.is(control)) {
+            var preview = control.items.get("button_control-preview_type-button")
+            if (Optional.is(preview)) {
+              var item = preview
+              editor.executor.tasks.forEach(function(task, iterator, item) {
+                if (Struct.get(task.state, "item") == item) {
+                  task.fullfill()
+                }
+              }, item)
+              
+              var task = new Task($"onMouseReleasedLeft_{item.name}")
+                .setTimeout(10.0)
+                .setState({
+                  item: item,
+                  transformer: new ColorTransformer({
+                    value: VETheme.color.accentLight,
+                    target: item.isHoverOver ? item.colorHoverOver : item.colorHoverOut,
+                    factor: 0.016,
+                  })
+                })
+                .whenUpdate(function(executor) {
+                  if (this.state.transformer.update().finished) {
+                    this.fullfill()
+                  }
+  
+                  this.state.item.backgroundColor = this.state.transformer.get().toGMColor()
+                })
+  
+              item.backgroundColor = ColorUtil.parse(VETheme.color.accent).toGMColor()
+              editor.executor.add(task)
+            }
+          }
         }
       }
     }
@@ -419,8 +486,42 @@ function VisuEditorIO() constructor {
       if (this.keyboard.keys.previewBrush.pressed) {
         var brush = editor.brushToolbar.store.getValue("brush")
         if (Core.isType(brush, VEBrush)) {
-          var handler = controller.trackService.handlers.get(brush.type)
-          handler(brush.toTemplate().properties)
+          var handler = Beans.get(BeanVisuController).trackService.handlers.get(brush.type)
+          handler.run(handler.parse(brush.toTemplate().properties))
+
+          var control = editor.brushToolbar.containers.get("ve-brush-toolbar_control")
+          if (Optional.is(control)) {
+            var preview = control.items.get("button_control-preview_type-button")
+            if (Optional.is(preview)) {
+              var item = preview
+              editor.executor.tasks.forEach(function(task, iterator, item) {
+                if (Struct.get(task.state, "item") == item) {
+                  task.fullfill()
+                }
+              }, item)
+              
+              var task = new Task($"onMouseReleasedLeft_{item.name}")
+                .setTimeout(10.0)
+                .setState({
+                  item: item,
+                  transformer: new ColorTransformer({
+                    value: VETheme.color.accentLight,
+                    target: item.isHoverOver ? item.colorHoverOver : item.colorHoverOut,
+                    factor: 0.016,
+                  })
+                })
+                .whenUpdate(function(executor) {
+                  if (this.state.transformer.update().finished) {
+                    this.fullfill()
+                  }
+  
+                  this.state.item.backgroundColor = this.state.transformer.get().toGMColor()
+                })
+  
+              item.backgroundColor = ColorUtil.parse(VETheme.color.accent).toGMColor()
+              editor.executor.add(task)
+            }
+          }
         }
       }
     }
@@ -505,8 +606,11 @@ function VisuEditorIO() constructor {
       editor.uiService.send(generateMouseEvent("MouseWheelDown"))
     }
 
-    if (MouseUtil.hasMoved()) {  
+    if (MouseUtil.hasMoved() && this.mouseMoved == 0) {  
+      this.mouseMoved = this.mouseMovedCooldown
       editor.uiService.send(generateMouseEvent("MouseHoverOver"))
+    } else if (this.mouseMoved > 0) {
+      this.mouseMoved = clamp(this.mouseMoved - 1, 0, this.mouseMovedCooldown)
     }
 
     return this

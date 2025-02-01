@@ -1,8 +1,11 @@
 {
+  "core.mouse.drag-treshold": 2,
   "core.video-service.cooldown": 0.25,
   "core.video-service.timeout": 5.0,
   "core.video-service.attempts": 4,
   "core.ui-service.use-surface-optimalization": true,
   "core.ui-service.surface-optimalization": 4,
+  "core.display-service.center.offset.x": 0.0,
+  "core.display-service.center.offset.y": 32.0,
   "end-property": null
 }

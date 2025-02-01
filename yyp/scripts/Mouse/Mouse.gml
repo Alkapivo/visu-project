@@ -42,7 +42,7 @@ function MouseButton(_type) constructor {
   drop = false
 
   ///@type {Number}
-  dragTreshold = 3
+  dragTreshold = Core.getProperty("core.mouse.drag-treshold", 2)
 
   ///@type {?Vector2}
   lastPressedPosition = null
@@ -51,15 +51,78 @@ function MouseButton(_type) constructor {
 
 ///@type {Struct}
 function Mouse(json) constructor {
+
+  ///@type {any}
+  clipboard = null
+
+  ///@type {?Sprite}
+  sprite = null
+
+  ///@param {any} item
+  ///@return {MouseUtil}
+  setClipboard = function(item) {
+    this.clipboard = item
+    var mouseSprite = Struct.get(item, "sprite")
+    if (Core.isType(mouseSprite, Sprite)) {
+      this.sprite = new Sprite(mouseSprite.texture, mouseSprite)
+    }
+    return this
+  }
+
+  ///@return {any}
+  getClipboard = function() {
+    return this.clipboard
+  }
+
+  ///@return {Mouse}
+  clearClipboard = function() {
+    this.clipboard = null
+    this.sprite = null
+    return this
+  }
+
+  ///@return {Mouse}
+  renderSprite = function() {
+    if (Core.isType(this.sprite, Sprite)) {
+      this.sprite.alpha = clamp(this.sprite.alpha - 0.04, 0.5, 1.0)
+      this.sprite.render(MouseUtil.getMouseX(), MouseUtil.getMouseY())
+    }
+    return this
+  }
   
   ///@type {Struct}
   buttons = Struct.map(json, function(type, name) {
     return new MouseButton(type)
   })
 
+  ///@return {Number}
+  getMouseX = function() {
+    return device_mouse_x_to_gui(0)//window_mouse_get_x()
+  }
+
+  ///@return {Number}
+  getMouseY = function() {
+    return device_mouse_y_to_gui(0)//window_mouse_get_y()
+  }
+
+  ///@return {Number}
+  getMouseDeltaX = function() {
+    return window_mouse_get_delta_x()
+  }
+
+  ///@return {Number}
+  getMouseDeltaY = function() {
+    return window_mouse_get_delta_y()
+  }
+
+  ///@return {Boolean}
+  hasMoved = function() {
+    return this.getMouseDeltaX() != 0 || this.getMouseDeltaY() != 0
+  }
+
   ///@return {Mouse}
   update = function() {
-    static buttonUpdate = function(button) {
+    static buttonUpdate = function(button, key, mouse) {
       if (button.type == MouseButtonType.WHEEL_UP 
         || button.type == MouseButtonType.WHEEL_DOWN) {
         
@@ -82,7 +145,7 @@ function Mouse(json) constructor {
         button.on = mouse_check_button(button.type)
         button.pressed = mouse_check_button_pressed(button.type)
         button.released = mouse_check_button_released(button.type)
-        var clipboard = MouseUtil.getClipboard()
+        var clipboard = mouse.getClipboard()
 
         if (button.dragging && !button.on && !button.released && !button.pressed) {
           button.released = true
@@ -99,7 +162,7 @@ function Mouse(json) constructor {
           if (Core.isType(Struct.get(clipboard, "drop"), Callable)) {
             clipboard.drop()
           }
-          MouseUtil.clearClipboard()
+          mouse.clearClipboard()
         }
 
         if (button.pressed) {
@@ -143,7 +206,7 @@ function Mouse(json) constructor {
       }
     }
 
-    Struct.forEach(this.buttons, buttonUpdate)
+    Struct.forEach(this.buttons, buttonUpdate, this)
     return this
   }
 }

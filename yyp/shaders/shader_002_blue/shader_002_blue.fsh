@@ -4,7 +4,7 @@
 varying vec2 vTexcoord;
 varying vec4 vColor;
 
-uniform vec3 iResolution;
+uniform vec2 iResolution;
 uniform float iTime;
 uniform float iIterations;
 uniform float iSize;

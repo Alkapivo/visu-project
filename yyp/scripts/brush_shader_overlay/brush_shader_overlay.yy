@@ -6,7 +6,7 @@
   "name":"brush_shader_overlay",
   "parent":{
     "name":"shader",
-    "path":"folders/io.alkapivo.visu/src/editor/service/brush/shader.yy",
+    "path":"folders/io.alkapivo.visu/src/editor/service/brush/_old/shader.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

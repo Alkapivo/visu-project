@@ -1,5 +1,37 @@
 ///@package io.alkapivo.visu.editor.ui.controller
 
+global.__THEME_COLOR_ORDER = [
+  "accentLight",
+  "accent",
+  "accentShadow",
+  "accentDark",
+  "primaryLight",
+  "primary",
+  "primaryShadow",
+  "primaryDark",
+  "sideLight",
+  "side",
+  "sideShadow",
+  "sideDark",
+  "button",
+  "buttonHover",
+  "text",
+  "textShadow",
+  "textFocus",
+  "textSelected",
+  "accept",
+  "acceptShadow",
+  "deny",
+  "denyShadow",
+  "ruler",
+  "header",
+  "stick",
+  "stickHover",
+  "stickBackground"
+]
+#macro THEME_COLOR_ORDER global.__THEME_COLOR_ORDER
+
+
 ///@param {Struct} [json]
 function VisuProjectForm(json = null) constructor {
   var controller = Beans.get(BeanVisuController)
@@ -64,9 +96,38 @@ function VisuProjectForm(json = null) constructor {
       template: VEComponents.get("text-field"),
       layout: VELayouts.get("text-field"),
       config: { 
-        layout: { type: UILayoutType.VERTICAL },
+        layout: { type: UILayoutType.VERTICAL, margin: { top: 4 } },
         label: { text: "Name" },
         field: { store: { key: "project-name" } },
+      },
+    },
+    {
+      name: "project-name_line-h",
+      template: VEComponents.get("line-h"),
+      layout: VELayouts.get("line-h"),
+      config: { layout: { type: UILayoutType.VERTICAL } },
+    },
+    {
+      name: "use-file-audio",
+      template: VEComponents.get("property"),
+      layout: VELayouts.get("property"),
+      config: { 
+        layout: { type: UILayoutType.VERTICAL },
+        label: { 
+          text: "Import audio",
+          //enable: { key: "use-file-video" },
+          backgroundColor: VETheme.color.side,
+        },
+        checkbox: { 
+          //store: { key: "use-file-video" },
+          //spriteOn: { name: "visu_texture_checkbox_on" },
+          //spriteOff: { name: "visu_texture_checkbox_off" },
+          //scaleToFillStretched: false,
+          backgroundColor: VETheme.color.side,
+        },
+        input: {
+          backgroundColor: VETheme.color.side,
+        },
       },
     },
     {
@@ -75,7 +136,7 @@ function VisuProjectForm(json = null) constructor {
       layout: VELayouts.get("text-field-button"),
       config: { 
         layout: { type: UILayoutType.VERTICAL },
-        label: { text: "Audio" },
+        label: { text: "*.OGG" },
         field: { 
           read_only: true,
           updateCustom: function() {
@@ -102,7 +163,7 @@ function VisuProjectForm(json = null) constructor {
               .get("file-audio")
               .set(path)
           },
-          colorHoverOver: VETheme.color.accent,
+          colorHoverOver: VETheme.color.accentLight,
           colorHoverOut: VETheme.color.accentShadow,
           onMouseHoverOver: function(event) {
             this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
@@ -114,13 +175,42 @@ function VisuProjectForm(json = null) constructor {
       },
     },
     {
+      name: "file-audio_line-h",
+      template: VEComponents.get("line-h"),
+      layout: VELayouts.get("line-h"),
+      config: { layout: { type: UILayoutType.VERTICAL } },
+    },
+    {
+      name: "use-file-video",
+      template: VEComponents.get("property"),
+      layout: VELayouts.get("property"),
+      config: { 
+        layout: { type: UILayoutType.VERTICAL },
+        label: { 
+          text: "Import video",
+          //enable: { key: "use-file-video" },
+          backgroundColor: VETheme.color.side,
+        },
+        checkbox: { 
+          store: { key: "use-file-video" },
+          spriteOn: { name: "visu_texture_checkbox_on" },
+          spriteOff: { name: "visu_texture_checkbox_off" },
+          //scaleToFillStretched: false,
+          backgroundColor: VETheme.color.side,
+        },
+        input: {
+          backgroundColor: VETheme.color.side,
+        },
+      },
+    },
+    {
       name: "file-video",  
       template: VEComponents.get("text-field-button"),
       layout: VELayouts.get("text-field-button"),
       config: { 
         layout: { type: UILayoutType.VERTICAL },
         label: { 
-          text: "Video",
+          text: "*.MP4",
           enable: { key: "use-file-video" },
         },
         field: { 
@@ -148,10 +238,10 @@ function VisuProjectForm(json = null) constructor {
               .get("file-video")
               .set(FileUtil.fileExists(path) ? path : null)
           },
-          colorHoverOver: VETheme.color.accent,
+          colorHoverOver: VETheme.color.accentLight,
           colorHoverOut: VETheme.color.accentShadow,
           onMouseHoverOver: function(event) {
-            if (!this.enable.value) {
+            if (Struct.get(this.enable, "value") == false) {
               return 
             }
             this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
@@ -163,22 +253,10 @@ function VisuProjectForm(json = null) constructor {
       },
     },
     {
-      name: "use-file-video",
-      template: VEComponents.get("property"),
-      layout: VELayouts.get("property"),
-      config: { 
-        layout: { type: UILayoutType.VERTICAL },
-        label: { 
-          text: "Use video",
-          enable: { key: "use-file-video" },
-        },
-        checkbox: { 
-          store: { key: "use-file-video" },
-          spriteOn: { name: "visu_texture_checkbox_on" },
-          spriteOff: { name: "visu_texture_checkbox_off" },
-          scaleToFillStretched: false,
-        },
-      },
+      name: "file-video_line-h",
+      template: VEComponents.get("line-h"),
+      layout: VELayouts.get("line-h"),
+      config: { layout: { type: UILayoutType.VERTICAL } },
     },
     {
       name: "button_apply",
@@ -187,8 +265,8 @@ function VisuProjectForm(json = null) constructor {
       config: {
         layout: { type: UILayoutType.VERTICAL },
         backgroundColor: VETheme.color.acceptShadow,
-        backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
-        label: { text: "Apply" },
+        backgroundMargin: { top: 1, bottom: 0, left: 5, right: 5 },
+        label: { text: "Save visu project" },
         colorHoverOver: VETheme.color.accept,
         colorHoverOut: VETheme.color.acceptShadow,
         onMouseHoverOver: function(event) {
@@ -239,8 +317,8 @@ function VisuProjectForm(json = null) constructor {
             this.context.modal.send(new Event("close"))
             return
           }
+          return;//
           this.context.modal.send(new Event("close"))
-          
           try {
             Assert.isTrue(FileUtil.fileExists(path))
             Beans.get(BeanVisuController).send(new Event("load", {
@@ -261,7 +339,7 @@ function VisuProjectForm(json = null) constructor {
       config: {
         layout: { type: UILayoutType.VERTICAL },
         backgroundColor: VETheme.color.denyShadow,
-        backgroundMargin: { top: 5, bottom: 5, left: 5, right: 5 },
+        backgroundMargin: { top: 1, bottom: 1, left: 5, right: 5 },
         label: { text: "Cancel" },
         colorHoverOver: VETheme.color.deny,
         colorHoverOut: VETheme.color.denyShadow,
@@ -278,19 +356,125 @@ function VisuProjectForm(json = null) constructor {
     },
   ])
 
+  
+  if (Core.getProperty("visu.editor.edit-theme")) {
+    GMArray.forEach(THEME_COLOR_ORDER, function(colorName, index, acc) {
+      var key = $"theme-color-{colorName}"
+      if (!acc.store.contains(key)) {
+        acc.store.add(new StoreItem(key, {
+          type: Color,
+          value: ColorUtil.parse(Struct.get(acc.theme, colorName)),
+        }))
+      }
+  
+      acc.components.add({
+        name: key,
+        template: VEComponents.get("color-picker"),
+        layout: VELayouts.get("color-picker"),
+        config: { 
+          layout: {
+            type: UILayoutType.VERTICAL,
+            margin: { top: 4 },
+          },
+          line: { disable: true },
+          title: {
+            label: { text: colorName },  
+            input: { store: { key: key } }
+          },
+          red: {
+            label: { text: "Red" },
+            field: { store: { key: key } },
+            slider: { store: { key: key } },
+          },
+          green: {
+            label: { text: "Green", },
+            field: { store: { key: key } },
+            slider: { store: { key: key } },
+          },
+          blue: {
+            label: { text: "Blue" },
+            field: { store: { key: key } },
+            slider: { store: { key: key } },
+          },
+          hex: { 
+            label: { text: "Hex" },
+            field: { store: { key: key } },
+          },
+        },
+      })
+    }, {
+      store: this.store,
+      components: this.components,
+      theme: Visu.settings.getValue("visu.editor.theme"),
+    })
+  }
+
   ///@return {VisuProjectForm}
   save = function() {
+
+    if (Core.getProperty("visu.editor.edit-theme")) {
+      GMArray.forEach(THEME_COLOR_ORDER, function(colorName, index, store) {
+        var key = $"theme-color-{colorName}"
+        if (!store.contains(key)) {
+          Logger.error("VisuProjectForm", $"Color store item not found: {key}")
+          return
+        }
+
+        Struct.set(VETheme.color, colorName, store.getValue(key).toHex())
+      }, this.store)
+
+      Visu.settings.setValue("visu.editor.theme", VETheme.color).save()
+      VEStyles = generateVEStyles()
+
+      var task = new Task("reset-editor")
+        .setState({ stage: "kill" })
+        .setTimeout(5.0)
+        .whenUpdate(function(executor) {
+          if (this.state.stage == "kill") {
+            if (Optional.is(Beans.get(BeanVisuEditorIO))) {
+              Beans.kill(BeanVisuEditorIO)
+            }
+
+            if (Optional.is(Beans.get(BeanVisuEditorController))) {
+              Beans.kill(BeanVisuEditorController)
+            }
+            this.state.stage = "add"
+          } else if (this.state.stage == "add") {
+            if (!Optional.is(Beans.get(BeanVisuEditorIO))) {
+              Beans.add(Beans.factory(BeanVisuEditorIO, GMServiceInstance, 
+                Beans.get(BeanVisuController).layerId, new VisuEditorIO()))
+            }
+
+            if (!Optional.is(Beans.get(BeanVisuEditorController))) {
+              Beans.add(Beans.factory(BeanVisuEditorController, GMServiceInstance, 
+                Beans.get(BeanVisuController).layerId, new VisuEditorController()))
+            }
+            this.state.stage = "open"
+          } else if (this.state.stage == "open") {
+            var editor = Beans.get(BeanVisuEditorController)
+            if (Optional.is(editor)) {
+              editor.renderUI = true
+              editor.send(new Event("open"))
+              this.fullfill()
+            }
+          }
+        })
+      Beans.get(BeanVisuController).executor.add(task)
+
+      return this
+    }
+
     var controller = Beans.get(BeanVisuController)
     var track = controller.trackService.track
     var visuTrack = controller.track
     if (!Core.isType(track, Track)
       || !Core.isType(visuTrack, VisuTrack)) {
-      return
+      return this
     }
 
     var path = $"{controller.track.path}"
     if (!FileUtil.directoryExists(path)) {
-      return
+      return this
     }
 
     track.name = this.store.getValue("project-name")
@@ -345,13 +529,18 @@ function VEProjectModal(_config = null) constructor {
   ///@param {UIlayout} parent
   ///@return {UILayout}
   factoryLayout = function(parent) {
+    var editTheme = Core.getProperty("visu.editor.edit-theme")
     return new UILayout(
       {
         name: "visu-project-modal",
-        x: function() { return (this.context.width() - this.width()) / 2 },
-        y: function() { return (this.context.height() - this.height()) / 2 },
-        width: function() { return 480 },
-        height: function() { return 236 },
+        x: editTheme
+          ? function() { return 48 }
+          : function() { return (GuiWidth() - this.width()) / 2.0 },
+        y: function() { return this.context.y() + 24 },
+        width: function() { return 640 },
+        height: editTheme
+          ? function() { return GuiHeight() - 48 }
+          : function() { return 256 },
       },
       parent
     )
@@ -367,14 +556,64 @@ function VEProjectModal(_config = null) constructor {
       "visu-project-modal": new UI({
         name: "visu-project-modal",
         state: new Map(String, any, {
-          "background-color": ColorUtil.fromHex(VETheme.color.dark).toGMColor(),
+          "background-color": ColorUtil.fromHex(VETheme.color.side).toGMColor(),
         }),
         modal: modal,
         layout: layout,
         propagate: false,
+        scrollbarY: { align: HAlign.RIGHT },
+        onMousePressedLeft: Callable.run(UIUtil.mouseEventTemplates.get("onMouseScrollbarY")),
+        onMouseWheelUp: Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelUpY")),
+        onMouseWheelDown: Callable.run(UIUtil.mouseEventTemplates.get("scrollableOnMouseWheelDownY")),
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
         renderItem: Callable.run(UIUtil.renderTemplates.get("renderItemDefaultScrollable")),
-        render: Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable")),
+        renderDefaultScrollable: new BindIntent(Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable"))),
+        render: Core.getProperty("visu.editor.edit-theme")
+          ? function() {
+            this.renderDefaultScrollable()
+  
+            GMArray.forEach(THEME_COLOR_ORDER, function(colorName, index, context) {
+              var form = context.modal.store.getValue("form")
+              if (!Optional.is(form)) {
+                return
+              }
+  
+              var color = form.store.getValue($"theme-color-{colorName}")
+              if (!Optional.is(color)) {
+                return
+              }
+  
+              GPU.render.rectangle(
+                48 + 640 + 24,
+                20 + (index * 32),
+                48 + 640 + 24 + 640,
+                20 + 32 + (index * 32),
+                false,
+                color.toGMColor()
+              )
+  
+              GPU.render.text(
+                48 + 640 + 24 + 24,
+                20 + (index * 32) + 16,
+                $"{color.toHex()}: {colorName}",
+                c_black,
+                c_white,
+                1.0,
+                GPU_DEFAULT_FONT_BOLD,
+                HAlign.LEFT,
+                VAlign.CENTER,
+                1.0,
+              )
+            }, this)
+
+            return this
+          }
+          : function() {
+            this.enableScrollbarY = false
+            this.renderDefaultScrollable()
+
+            return this
+          },
         onInit: function() {
           var container = this
           this.collection = new UICollection(this, { layout: container.layout })
@@ -420,7 +659,7 @@ function VEProjectModal(_config = null) constructor {
     },
     "close": function(event) {
       var context = this
-      this.containers.forEach(function (container, key, uiService) {
+      this.containers.forEach(function(container, key, uiService) {
         uiService.send(new Event("remove", { 
           name: key, 
           quiet: true,

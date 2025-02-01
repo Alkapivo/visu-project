@@ -1,4 +1,4 @@
-///@io.alkapivo.core.service.particle
+///@package io.alkapivo.core.service.particle
 
 ///@enum
 function _ParticleEmitterShape(): Enum() constructor {

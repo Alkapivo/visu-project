@@ -6,9 +6,9 @@ function MovementSystem(_system) constructor {
   ///@type {GridECS}
   system = Assert.isType(_system, GridECS)
 
-  ///@params {GridEntity} entity
-  ///@params {String} key
-  ///@params {GridECS} system
+  ///@param {GridEntity} entity
+  ///@param {String} key
+  ///@param {GridECS} system
   static moveEntity = function(entity, key, system) {
     entity.signals.reset()
     entity.position.x += Math.fetchCircleX(entity.velocity.speed, entity.velocity.angle)

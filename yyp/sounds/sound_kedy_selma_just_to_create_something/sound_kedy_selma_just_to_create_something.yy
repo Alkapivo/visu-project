@@ -2,8 +2,8 @@
   "$GMSound":"",
   "%Name":"sound_kedy_selma_just_to_create_something",
   "audioGroupId":{
-    "name":"audiogroup_default",
-    "path":"audiogroups/audiogroup_default",
+    "name":"audiogroup_visu_wasm",
+    "path":"audiogroups/audiogroup_visu_wasm",
   },
   "bitDepth":1,
   "bitRate":128,

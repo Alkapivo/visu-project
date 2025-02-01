@@ -1,43 +1,26 @@
 ///@package io.alkapivo.visu.editor.service.brush.view
 
-///@static
-///@type {Array<String>}
-global.__WALLPAPER_TYPES = [
-  "Background",
-  "Foreground",
-]
-#macro WALLPAPER_TYPES global.__WALLPAPER_TYPES
+///@enum
+function _WallpaperType(): Enum() constructor {
+  BACKGROUND = "BACKGROUND"
+  FOREGROUND = "FOREGROUND"
+}
+global.__WallpaperType = new _WallpaperType()
+#macro WallpaperType global.__WallpaperType
 
-
-///@static
-///@type {GMArray<String>}
-global.__BLEND_MODES_EXT = [
-  "ONE",
-  "ZERO",
-  "SRC_ALPHA",
-  "INV_SRC_ALPHA",
-  "SRC_COLOUR",
-  "INV_SRC_COLOUR",
-  "SRC_ALPHA_SAT",
-  "DEST_ALPHA",
-  "INV_DEST_ALPHA",
-  "DEST_COLOUR",
-  "INV_DEST_COLOUR"
-]
-#macro BLEND_MODES_EXT global.__BLEND_MODES_EXT
-
-
-///@static
-///@type {GMArray<String>}
-global.__BLEND_EQUATIONS = [
-  "ADD",
-  "SUBTRACT",
-  "REVERSE_SUBTRACT",
-  "MIN",
-  "MAX"
-]
-#macro BLEND_EQUATIONS global.__BLEND_EQUATIONS
-
+///@param {String} type
+///@return {ShaderPipelineType}
+function migrateWallpaperType(type) {
+  switch (type) {
+    case WallpaperType.BACKGROUND:
+    case "Background": return WallpaperType.BACKGROUND
+    case WallpaperType.FOREGROUND:
+    case "Foreground": return WallpaperType.FOREGROUND
+    default: 
+      Logger.warn("migrateWallpaperType", $"Found unsupported type: '{type}'. Return default value: '{WallpaperType.BACKGROUND}'")
+      return ShaderPipelineType.COMBINED
+  }
+}
 
 ///@param {?Struct} [json]
 ///@return {Struct}
@@ -45,850 +28,2135 @@ function brush_view_wallpaper(json = null) {
   return {
     name: "brush_view_wallpaper",
     store: new Map(String, Struct, {
-      "view-wallpaper_type": {
+      "vw-layer_type": {
         type: String,
-        value: Struct.getDefault(json, "view-wallpaper_type", WALLPAPER_TYPES[0]),
-        validate: function(value) {
-          Assert.areEqual(true, this.data.contains(value))
-        },
-        data: new Array(String, WALLPAPER_TYPES),
+        value: Struct.get(json, "vw-layer_type"),
+        passthrough: UIUtil.passthrough.getArrayValue(),
+        data: WallpaperType.keys(),
       },
-      "view-wallpaper_blend-mode-source": {
-        type: String,
-        value: Struct.getDefault(json, "view-wallpaper_blend-mode-source", "SRC_ALPHA"),
-        validate: function(value) {
-          Assert.areEqual(true, this.data.contains(value))
-        },
-        data: new Array(String, BLEND_MODES_EXT),
-      },
-      "view-wallpaper_blend-mode-target": {
-        type: String,
-        value: Struct.getDefault(json, "view-wallpaper_blend-mode-target", Struct.get(json, "view-wallpaper_type") == "Background" ? "INV_SRC_ALPHA" : "ONE"),
-        validate: function(value) {
-          Assert.areEqual(true, this.data.contains(value))
-        },
-        data: new Array(String, BLEND_MODES_EXT),
-      },
-      "view-wallpaper_blend-equation": {
-        type: String,
-        value: Struct.getDefault(json, "view-wallpaper_blend-equation", "ADD"),
-        validate: function(value) {
-          Assert.areEqual(true, this.data.contains(value))
-        },
-        data: new Array(String, BLEND_EQUATIONS),
-      },
-      "view-wallpaper_fade-in-duration": {
+      "vw-layer_fade-in": {
         type: Number,
-        value: Struct.getDefault(json, "view-wallpaper_fade-in-duration", 0.0),
-        passthrough: function(value) {
-          return NumberUtil.parse(value, this.value)
-        },
+        value: Struct.get(json, "vw-layer_fade-in"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.0, 99.9),
       },
-      "view-wallpaper_fade-out-duration": {
+      "vw-layer_fade-out": {
         type: Number,
-        value: Struct.getDefault(json, "view-wallpaper_fade-out-duration", 0.0),
-        passthrough: function(value) {
-          return NumberUtil.parse(value, this.value)
-        },
+        value: Struct.get(json, "vw-layer_fade-out"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.0, 99.9),
       },
-      "view-wallpaper_use-color": {
+      "vw-layer_use-texture": {
         type: Boolean,
-        value: Struct.getDefault(json, "view-wallpaper_use-color", false),
+        value: Struct.get(json, "vw-layer_use-texture"),
       },
-      "view-wallpaper_color": {
-        type: Color,
-        value: ColorUtil.fromHex(Struct.get(json, "view-wallpaper_color"), "#ffffffff"),
-      },
-      "view-wallpaper_clear-color": {
-        type: Boolean,
-        value: Struct.getDefault(json, "view-wallpaper_clear-color", false),
-      },
-      "view-wallpaper_use-texture": {
-        type: Boolean,
-        value: Struct.getDefault(json, "view-wallpaper_use-texture", true),
-      },
-      "view-wallpaper_texture": {
+      "vw-layer_texture": {
         type: Sprite,
-        value: SpriteUtil.parse(Struct
-          .get(json, "view-wallpaper_texture"), 
-          { name: "texture_missing" }),
+        value: Struct.get(json, "vw-layer_texture"),
       },
-      "view-wallpaper_use-texture-speed": {
+      "vw-layer_use-texture-blend": {
         type: Boolean,
-        value: Struct.getDefault(json, "view-wallpaper_use-texture-speed", true),
+        value: Struct.get(json, "vw-layer_use-texture-blend"),
       },
-      "view-wallpaper_texture-speed": {
-        type: Number,
-        value: Struct.getDefault(json, "view-wallpaper_texture-speed", 1),
-        passthrough: function(value) {
-          return NumberUtil.parse(value, this.value)
-        },
-      },
-      "view-wallpaper_use-texture-blend": {
-        type: Boolean,
-        value: Struct.getDefault(json, "view-wallpaper_use-texture-blend", true),
-      },
-      "view-wallpaper_texture-blend": {
+      "vw-layer_texture-blend": {
         type: Color,
-        value: ColorUtil.fromHex(Struct.get(json, "view-wallpaper_texture-blend"), "#ffffff"),
+        value: Struct.get(json, "vw-layer_texture-blend"),
       },
-      "view-wallpaper_clear-texture": {
+      "vw-layer_use-col": {
         type: Boolean,
-        value: Struct.getDefault(json, "view-wallpaper_clear-texture", false),
+        value: Struct.get(json, "vw-layer_use-col"),
       },
-      "view-wallpaper_angle": {
-        type: Number,
-        value: Struct.getDefault(json, "view-wallpaper_angle", 0.0),
-        passthrough: function(value) {
-          return clamp(NumberUtil.parse(value, this.value), 0.0, 360.0) 
-        },
+      "vw-layer_col": {
+        type: Color,
+        value: Struct.get(json, "vw-layer_col"),
       },
-      "view-wallpaper_use-angle-transform": {
+      "vw-layer_cls-texture": {
         type: Boolean,
-        value: Struct.getDefault(json, "view-wallpaper_use-angle-transform", false),
+        value: Struct.get(json, "vw-layer_cls-texture"),
       },
-      "view-wallpaper_angle-transform": {
+      "vw-layer_cls-col": {
+        type: Boolean,
+        value: Struct.get(json, "vw-layer_cls-col"),
+      },
+      "vw-layer_use-blend": {
+        type: Boolean,
+        value: Struct.get(json, "vw-layer_use-blend"),
+      },
+      "vw-layer_blend-src": {
+        type: String,
+        value: Struct.get(json, "vw-layer_blend-src"),
+        passthrough: UIUtil.passthrough.getArrayValue(),
+        data: BlendModeExt.keys(),
+      },
+      "vw-layer_blend-dest": {
+        type: String,
+        value: Struct.get(json, "vw-layer_blend-dest"),
+        passthrough: UIUtil.passthrough.getArrayValue(),
+        data: BlendModeExt.keys(),
+      },
+      "vw-layer_blend-eq": {
+        type: String,
+        value: Struct.get(json, "vw-layer_blend-eq"),
+        passthrough: UIUtil.passthrough.getArrayValue(),
+        data: BlendEquation.keys(),
+      },
+      "vw-layer_blend-eq-alpha": {
+        type: String,
+        value: Struct.get(json, "vw-layer_blend-eq-alpha"),
+        passthrough: UIUtil.passthrough.getArrayValue(),
+        data: BlendEquation.keys(),
+      },
+      "vw-layer_use-spd": {
+        type: Boolean,
+        value: Struct.get(json, "vw-layer_use-spd"),
+      },
+      "vw-layer_spd": {
         type: NumberTransformer,
-        value: new NumberTransformer(Struct.get(json, "view-wallpaper_angle-transform")),
+        value: Struct.get(json, "vw-layer_spd"),
+        passthrough: UIUtil.passthrough.getClampedNumberTransformer(),
+        data: new Vector2(0.0, 99.9),
       },
-      "view-wallpaper_speed": {
-        type: Number,
-        value: Struct.getDefault(json, "view-wallpaper_speed", 0.0),
-        passthrough: function(value) {
-          return abs(NumberUtil.parse(value, this.value)) 
-        },
-      },
-      "view-wallpaper_use-speed-transform": {
+      "vw-layer_change-spd": {
         type: Boolean,
-        value: Struct.getDefault(json, "view-wallpaper_use-speed-transform", false),
+        value: Struct.get(json, "vw-layer_change-spd"),
       },
-      "view-wallpaper_speed-transform": {
-        type: NumberTransformer,
-        value: new NumberTransformer(Struct.get(json, "view-wallpaper_speed-transform")),
-      },
-      "view-wallpaper_xScale": {
-        type: Number,
-        value: Struct.getDefault(json, "view-wallpaper_xScale", 1.0),
-        passthrough: function(value) {
-          return abs(NumberUtil.parse(value, this.value)) 
-        },
-      },
-      "view-wallpaper_use-xScale-transform": {
+      "vw-layer_use-dir": {
         type: Boolean,
-        value: Struct.getDefault(json, "view-wallpaper_use-xScale-transform", false),
+        value: Struct.get(json, "vw-layer_use-dir"),
       },
-      "view-wallpaper_xScale-transform": {
+      "vw-layer_dir": {
         type: NumberTransformer,
-        value: new NumberTransformer(Struct.get(json, "view-wallpaper_xScale-transform")),
+        value: Struct.get(json, "vw-layer_dir"),
+        passthrough: UIUtil.passthrough.getClampedNumberTransformer(),
+        data: new Vector2(-9999.9, 9999.9),
       },
-      "view-wallpaper_yScale": {
-        type: Number,
-        value: Struct.getDefault(json, "view-wallpaper_yScale", 1.0),
-        passthrough: function(value) {
-          return abs(NumberUtil.parse(value, this.value)) 
-        },
-      },
-      "view-wallpaper_use-yScale-transform": {
+      "vw-layer_change-dir": {
         type: Boolean,
-        value: Struct.getDefault(json, "view-wallpaper_use-yScale-transform", false),
+        value: Struct.get(json, "vw-layer_change-dir"),
       },
-      "view-wallpaper_yScale-transform": {
+      "vw-layer_use-scale-x": {
+        type: Boolean,
+        value: Struct.get(json, "vw-layer_use-scale-x"),
+      },
+      "vw-layer_scale-x": {
         type: NumberTransformer,
-        value: new NumberTransformer(Struct.get(json, "view-wallpaper_yScale-transform")),
+        value: Struct.get(json, "vw-layer_scale-x"),
+        passthrough: UIUtil.passthrough.getClampedNumberTransformer(),
+        data: new Vector2(-99.9, 99.9),
+      },
+      "vw-layer_change-scale-x": {
+        type: Boolean,
+        value: Struct.get(json, "vw-layer_change-scale-x"),
+      },
+      "vw-layer_use-scale-y": {
+        type: Boolean,
+        value: Struct.get(json, "vw-layer_use-scale-y"),
+      },
+      "vw-layer_scale-y": {
+        type: NumberTransformer,
+        value: Struct.get(json, "vw-layer_scale-y"),
+        passthrough: UIUtil.passthrough.getClampedNumberTransformer(),
+        data: new Vector2(-99.9, 99.9),
+      },
+      "vw-layer_change-scale-y": {
+        type: Boolean,
+        value: Struct.get(json, "vw-layer_change-scale-y"),
+      },
+      "vw-layer_use-texture-tiled": {
+        type: Boolean,
+        value: Struct.get(json, "vw-layer_use-texture-tiled"),
+      },
+      "vw-layer_use-texture-replace": {
+        type: Boolean,
+        value: Struct.get(json, "vw-layer_use-texture-replace"),
+      },
+      "vw-layer_texture-reset-pos": {
+        type: Boolean,
+        value: Struct.get(json, "vw-layer_texture-reset-pos"),
+      },
+      "vw-layer_texture-use-lifespawn": {
+        type: Boolean,
+        value: Struct.get(json, "vw-layer_texture-use-lifespawn"),
+      },
+      "vw-layer_texture-lifespawn": {
+        type: Number,
+        value: Struct.get(json, "vw-layer_texture-lifespawn"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.0, 9999.9),
       },
     }),
     components: new Array(Struct, [
       {
-        name: "view-wallpaper_type",
+        name: "vw-layer_type",
         template: VEComponents.get("spin-select"),
         layout: VELayouts.get("spin-select"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Type" },
-          previous: { store: { key: "view-wallpaper_type" } },
+          label: { 
+            text: "Type",
+            font: "font_inter_10_bold",
+            color: VETheme.color.text,
+          },
+          previous: { store: { key: "vw-layer_type" } },
           preview: Struct.appendRecursive({ 
-            store: { key: "view-wallpaper_type" },
+            store: { key: "vw-layer_type" },
           }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
-          next: { store: { key: "view-wallpaper_type" } },
+          next: { store: { key: "vw-layer_type" } },
         },
       },
       {
-        name: "view-wallpaper_blend-mode-source",
+        name: "vw-layer_type-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "vw-layer_blend-mode-title",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: {
+            text: "Layer blend mode",
+            backgroundColor: VETheme.color.side,
+            enable: { key: "vw-layer_use-blend" },
+          },
+          input: { backgroundColor: VETheme.color.side },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "vw-layer_use-blend" },
+            backgroundColor: VETheme.color.side,
+          },
+        },
+      },
+      {
+        name: "vw-layer_blend-src",
         template: VEComponents.get("spin-select"),
         layout: VELayouts.get("spin-select"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Blend src" },
-          previous: { store: { key: "view-wallpaper_blend-mode-source" } },
+          label: { 
+            text: "Source",
+            enable: { key: "vw-layer_use-blend" },
+          },
+          previous: {
+            store: { key: "vw-layer_blend-src" },
+            enable: { key: "vw-layer_use-blend" },
+          },
           preview: Struct.appendRecursive({ 
-            store: { key: "view-wallpaper_blend-mode-source" },
+            store: { key: "vw-layer_blend-src" },
+            enable: { key: "vw-layer_use-blend" },
+            preRender: function() { 
+              Struct.set(this, "_text", this.label.text)
+              this.label.text = String.toUpperCase(String.replaceAll(this.label.text, "_", " "))
+            },
+            postRender: function() { 
+              this.label.text = this._text
+            },
           }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
-          next: { store: { key: "view-wallpaper_blend-mode-source" } },
+          next: { 
+            store: { key: "vw-layer_blend-src" },
+            enable: { key: "vw-layer_use-blend" },
+          },
         },
       },
       {
-        name: "view-wallpaper_blend-mode-target",
+        name: "vw-layer_blend-dest",
         template: VEComponents.get("spin-select"),
         layout: VELayouts.get("spin-select"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Blend dest" },
-          previous: { store: { key: "view-wallpaper_blend-mode-target" } },
+          label: { 
+            text: "Target",
+            enable: { key: "vw-layer_use-blend" },
+          },
+          previous: {
+            store: { key: "vw-layer_blend-dest" },
+            enable: { key: "vw-layer_use-blend" },
+          },
           preview: Struct.appendRecursive({ 
-            store: { key: "view-wallpaper_blend-mode-target" },
+            store: { key: "vw-layer_blend-dest" },
+            enable: { key: "vw-layer_use-blend" },
+            preRender: function() { 
+              Struct.set(this, "_text", this.label.text)
+              this.label.text = String.toUpperCase(String.replaceAll(this.label.text, "_", " "))
+            },
+            postRender: function() { 
+              this.label.text = this._text
+            },
           }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
-          next: { store: { key: "view-wallpaper_blend-mode-target" } },
+          next: { 
+            store: { key: "vw-layer_blend-dest" },
+            enable: { key: "vw-layer_use-blend" },
+          },
         },
       },
       {
-        name: "view-wallpaper_blend-equation",
+        name: "vw-layer_blend-eq",
         template: VEComponents.get("spin-select"),
         layout: VELayouts.get("spin-select"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Blend eq" },
-          previous: { store: { key: "view-wallpaper_blend-equation" } },
+          label: { 
+            text: "Equation",
+            enable: { key: "vw-layer_use-blend" },
+          },
+          previous: {
+            store: { key: "vw-layer_blend-eq" },
+            enable: { key: "vw-layer_use-blend" },
+          },
           preview: Struct.appendRecursive({ 
-            store: { key: "view-wallpaper_blend-equation" },
+            store: { key: "vw-layer_blend-eq" },
+            enable: { key: "vw-layer_use-blend" },
+            preRender: function() { 
+              Struct.set(this, "_text", this.label.text)
+              this.label.text = String.toUpperCase(String.replaceAll(this.label.text, "_", " "))
+            },
+            postRender: function() { 
+              this.label.text = this._text
+            },
           }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
-          next: { store: { key: "view-wallpaper_blend-equation" } },
+          next: {
+            store: { key: "vw-layer_blend-eq" },
+            enable: { key: "vw-layer_use-blend" },
+          },
         },
       },
       {
-        name: "view-wallpaper_fade-in-duration",  
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        name: "vw-layer_blend-eq-alpha",
+        template: VEComponents.get("spin-select"),
+        layout: VELayouts.get("spin-select"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Eq. alpha",
+            enable: { key: "vw-layer_use-blend" },
+          },
+          previous: {
+            store: { key: "vw-layer_blend-eq-alpha" },
+            enable: { key: "vw-layer_use-blend" },
+          },
+          preview: Struct.appendRecursive({ 
+            store: { key: "vw-layer_blend-eq-alpha" },
+            enable: { key: "vw-layer_use-blend" },
+            preRender: function() { 
+              Struct.set(this, "_text", this.label.text)
+              this.label.text = String.toUpperCase(String.replaceAll(this.label.text, "_", " "))
+            },
+            postRender: function() { 
+              this.label.text = this._text
+            },
+          }, Struct.get(VEStyles.get("spin-select-label"), "preview"), false),
+          next: {
+            store: { key: "vw-layer_blend-eq-alpha" },
+            enable: { key: "vw-layer_use-blend" },
+          },
+        },
+      },
+      {
+        name: "vw-layer_blend-eq-alpha-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "vw-layer_texture-lifespawn",
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
+        config: {
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Lifespawn",
+            enable: { key: "vw-layer_texture-use-lifespawn" },
+          },
+          field: { 
+            store: { key: "vw-layer_texture-lifespawn" },
+            enable: { key: "vw-layer_texture-use-lifespawn" },
+          },
+          decrease: {
+            store: { key: "vw-layer_texture-lifespawn" },
+            enable: { key: "vw-layer_texture-use-lifespawn" },
+            factor: -0.25,
+          },
+          increase: {
+            store: { key: "vw-layer_texture-lifespawn" },
+            enable: { key: "vw-layer_texture-use-lifespawn" },
+            factor: 0.25,
+          },
+          stick: {
+            store: { key: "vw-layer_texture-lifespawn" },
+            enable: { key: "vw-layer_texture-use-lifespawn" },
+            factor: 0.001,
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "vw-layer_texture-use-lifespawn" },
+          },
+          title: { 
+            text: "Override",
+            enable: { key: "vw-layer_texture-use-lifespawn" },
+          },
+        }
+      },
+      {
+        name: "vw-layer_lifespawn-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "vw-layer_fade-in",  
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Fade in" },
-          field: { store: { key: "view-wallpaper_fade-in-duration" } },
+          field: { store: { key: "vw-layer_fade-in" } },
+          decrease: {
+            store: { key: "vw-layer_fade-in" },
+            factor: -0.25,
+          },
+          increase: {
+            store: { key: "vw-layer_fade-in" },
+            factor: 0.25,
+          },
+          stick: {
+            store: { key: "vw-layer_fade-in" },
+            factor: 0.01,
+          },
+          checkbox: { },
         },
       },
       {
-        name: "view-wallpaper_fade-out-duration",  
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        name: "vw-layer_fade-out",  
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { text: "Fade out" },
-          field: { store: { key: "view-wallpaper_fade-out-duration" } },
+          field: { store: { key: "vw-layer_fade-out" } },
+          decrease: {
+            store: { key: "vw-layer_fade-out" },
+            factor: -0.25,
+          },
+          increase: {
+            store: { key: "vw-layer_fade-out" },
+            factor: 0.25,
+          },
+          stick: {
+            store: { key: "vw-layer_fade-out" },
+            factor: 0.01,
+          },
+          checkbox: { },
         },
       },
       {
-        name: "view-wallpaper_color",
+        name: "vw-layer_fade-out-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "vw-cls-title",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: {
+            text: "Remove layer",
+            backgroundColor: VETheme.color.accentShadow,
+          },
+          input: { backgroundColor: VETheme.color.accentShadow },
+          checkbox: { backgroundColor: VETheme.color.accentShadow },
+        },
+      },
+      {
+        name: "vw-layer_cls-texture",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: {
+            text: "Texture",
+            enable: { key: "vw-layer_cls-texture" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "vw-layer_cls-texture" },
+          },
+        },
+      },
+      {
+        name: "vw-layer_cls-col",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: {
+            text: "Color",
+            enable: { key: "vw-layer_cls-col" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "vw-layer_cls-col" },
+          },
+        },
+      },
+      {
+        name: "vw-layer_cls-col-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "vw-layer_use-texture",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: {
+            text: "Texture layer",
+            backgroundColor: VETheme.color.accentShadow,
+            enable: { key: "vw-layer_use-texture" },
+          },
+          input: { backgroundColor: VETheme.color.accentShadow },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "vw-layer_use-texture" },
+            backgroundColor: VETheme.color.accentShadow,
+          },
+        },
+      },
+      {
+        name: "vw-layer_use-texture-tiled",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Render texture tiled",
+            enable: {
+              keys: [ 
+                { key: "vw-layer_use-texture" },
+                { key: "vw-layer_use-texture-tiled" }
+              ],
+            },
+            updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "vw-layer_use-texture-tiled" },
+            enable: { key: "vw-layer_use-texture" },
+          },
+        },
+      },
+      {
+        name: "vw-layer_use-texture-replace",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Replace texture layer",
+            enable: {
+              keys: [ 
+                { key: "vw-layer_use-texture" },
+                { key: "vw-layer_use-texture-replace" }
+              ],
+            },
+            updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "vw-layer_use-texture-replace" },
+            enable: { key: "vw-layer_use-texture" },
+          },
+        },
+      },
+      {
+        name: "vw-layer_texture-reset-pos",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Restart texture position",
+            enable: {
+              keys: [ 
+                { key: "vw-layer_use-texture" },
+                { key: "vw-layer_texture-reset-pos" }
+              ],
+            },
+            updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "vw-layer_texture-reset-pos" },
+            enable: { key: "vw-layer_use-texture" },
+          },
+        },
+      },
+      {
+        name: "vw-layer_texture",
+        template: VEComponents.get("texture-field"),
+        layout: VELayouts.get("texture-field"),
+        config: { 
+          layout: { 
+            type: UILayoutType.VERTICAL,
+            margin: { top: 2 },
+          },
+          texture: {
+            label: { enable: { key: "vw-layer_use-texture" } }, 
+            field: {
+              store: { key: "vw-layer_texture" },
+              enable: { key: "vw-layer_use-texture" },
+            },
+          },
+          preview: {
+            image: { name: "texture_empty" },
+            store: { key: "vw-layer_texture" },
+            enable: { key: "vw-layer_use-texture" },
+            imageBlendStoreKey: "vw-layer_texture-blend",
+            useImageBlendStoreKey: "vw-layer_use-texture-blend",
+            updateCustom: function() {
+              var key = Struct.get(this, "imageBlendStoreKey")
+              var use = Struct.get(this, "useImageBlendStoreKey")
+              if (!Core.isType(this.store, UIStore) ||
+                  !Core.isType(key, String) ||
+                  !Core.isType(use, String) ||
+                  !Core.isType(this.image, Sprite)) {
+                return
+              }
+
+              var store = this.store.getStore()
+              if (!Core.isType(store, Store)) {
+                return
+              }
+
+              var color = store.getValue(key)
+              if (!Core.isType(color, Color)) {
+                return
+              }
+
+              this.image.setBlend(store.getValue(use) ? color.toGMColor() : c_white)
+            },
+          },
+          resolution: {
+            store: { key: "vw-layer_texture" },
+            enable: { key: "vw-layer_use-texture" },
+          },
+          frame: {
+            label: { enable: { key: "vw-layer_use-texture" } },
+            field: { 
+              store: { key: "vw-layer_texture" },
+              enable: { key: "vw-layer_use-texture" },
+            },
+            decrease: { 
+              store: { key: "vw-layer_texture" },
+              enable: { key: "vw-layer_use-texture" },
+            },
+            increase: { 
+              store: { key: "vw-layer_texture" },
+              enable: { key: "vw-layer_use-texture" },
+            },
+            checkbox: { 
+              store: { key: "vw-layer_texture" },
+              enable: { key: "vw-layer_use-texture" },
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+            },
+            title: { enable: { key: "vw-layer_use-texture" } },
+          },
+          speed: {
+            label: { enable: { key: "vw-layer_use-texture" } },
+            field: { 
+              enable: { key: "vw-layer_use-texture" },
+              store: { key: "vw-layer_texture" },
+            },
+            decrease: { 
+              store: { key: "vw-layer_texture" },
+              enable: { key: "vw-layer_use-texture" },
+            },
+            increase: { 
+              store: { key: "vw-layer_texture" },
+              enable: { key: "vw-layer_use-texture" },
+            },
+            checkbox: { 
+              store: { key: "vw-layer_texture" },
+              enable: { key: "vw-layer_use-texture" },
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+            },
+            title: { enable: { key: "vw-layer_use-texture" } },
+          },
+          alpha: {
+            label: { enable: { key: "vw-layer_use-texture" } },
+            field: { 
+              enable: { key: "vw-layer_use-texture" },
+              store: { key: "vw-layer_texture" },
+            },
+            decrease: { 
+              store: { key: "vw-layer_texture" },
+              enable: { key: "vw-layer_use-texture" },
+            },
+            increase: { 
+              store: { key: "vw-layer_texture" },
+              enable: { key: "vw-layer_use-texture" },
+            },
+            slider: { 
+              store: { key: "vw-layer_texture" },
+            },
+          },
+        },
+      },
+      {
+        name: "vw-layer_texture-blend-property",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: {
+            text: "Blend texture",
+            //color: VETheme.color.textShadow,
+            backgroundColor: VETheme.color.side,
+            enable: {
+              keys: [ 
+                { key: "vw-layer_use-texture" },
+                { key: "vw-layer_use-texture-blend" }
+              ],
+            },
+            updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+          },
+          input: { backgroundColor: VETheme.color.side },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "vw-layer_use-texture-blend" },
+            enable: { key: "vw-layer_use-texture" },
+            backgroundColor: VETheme.color.side,
+          },
+        },
+      },
+      /*
+      {
+        name: "vw-layer_texture-blend-title",
+        template: VEComponents.get("double-checkbox"),
+        layout: VELayouts.get("double-checkbox"),
+        config: { 
+          layout: { 
+            type: UILayoutType.VERTICAL,
+            margin: { top: 4 },
+          },
+          checkbox1: { },
+          label1: { },
+          checkbox2: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            enable: { key: "vw-layer_use-texture" },
+            store: { key: "vw-layer_use-texture-blend" },
+            backgroundColor: VETheme.color.side,
+          },
+          label2: {
+            //font: "font_inter_10_regular",
+            color: VETheme.color.text,
+            backgroundColor: VETheme.color.side,
+            text: "Blend",
+            enable: {
+              keys: [ 
+                { key: "vw-layer_use-texture" },
+                { key: "vw-layer_use-texture-blend" }
+              ],
+            },
+            updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+          },
+        },
+      },
+      */
+      {
+        name: "vw-layer_texture-blend",
+        template: VEComponents.get("color-picker"),
+        layout: VELayouts.get("color-picker"),
+        config: {
+          layout: { 
+            type: UILayoutType.VERTICAL,
+            //margin: { top: 2 },
+          },
+          red: {
+            label: {
+              text: "Red",
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-texture-blend" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            field: {
+              store: { key: "vw-layer_texture-blend" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-texture-blend" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            decrease: {
+              store: { key: "vw-layer_texture-blend" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-texture-blend" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            increase: {
+              store: { key: "vw-layer_texture-blend" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-texture-blend" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            slider: {
+              store: { key: "vw-layer_texture-blend" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-texture-blend" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+          },
+          green: {
+            label: {
+              text: "Green",
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-texture-blend" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            field: {
+              store: { key: "vw-layer_texture-blend" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-texture-blend" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            decrease: {
+              store: { key: "vw-layer_texture-blend" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-texture-blend" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            increase: {
+              store: { key: "vw-layer_texture-blend" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-texture-blend" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            slider: {
+              store: { key: "vw-layer_texture-blend" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-texture-blend" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+          },
+          blue: {
+            label: {
+              text: "Blue",
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-texture-blend" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            field: {
+              store: { key: "vw-layer_texture-blend" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-texture-blend" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            decrease: {
+              store: { key: "vw-layer_texture-blend" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-texture-blend" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            increase: {
+              store: { key: "vw-layer_texture-blend" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-texture-blend" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            slider: {
+              store: { key: "vw-layer_texture-blend" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-texture-blend" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+          },
+          hex: { 
+            label: {
+              text: "Hex",
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-texture-blend" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            field: {
+              store: { key: "vw-layer_texture-blend" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-texture-blend" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+          },
+        },
+      },
+      {
+        name: "vw-layer_texture-blend-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "vw-layer_position-title",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: {
+            text: "Texture layer movement",
+            //color: VETheme.color.textShadow,
+            backgroundColor: VETheme.color.side,
+            enable: { key: "vw-layer_use-texture" },
+          },
+          input: { backgroundColor: VETheme.color.side },
+          checkbox: { backgroundColor: VETheme.color.side },
+        },
+      },
+      {
+        name: "vw-layer_spd",
+        template: VEComponents.get("number-transformer-increase-checkbox"),
+        layout: VELayouts.get("number-transformer-increase-checkbox"),
+        config: { 
+          layout: { 
+            type: UILayoutType.VERTICAL,
+            margin: { top: 4 },
+          },
+          value: {
+            label: {
+              text: "Speed",
+              font: "font_inter_10_bold",
+              color: VETheme.color.textShadow,
+              //enable: { key: "vw-layer_use-spd" },
+            },
+            field: {
+              store: { key: "vw-layer_spd" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-spd" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            decrease: {
+              store: { key: "vw-layer_spd" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-spd" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+              factor: -0.25,
+            },
+            increase: {
+              store: { key: "vw-layer_spd" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-spd" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+              factor: 0.25,        
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "vw-layer_use-spd" },
+              enable: { key: "vw-layer_use-texture" },
+            },
+            title: { 
+              text: "Override",
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-spd" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            stick: {
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-spd" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+          },
+          target: {
+            label: {
+              text: "Target",
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-spd" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            field: {
+              store: { key: "vw-layer_spd" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-spd" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            decrease: {
+              store: { key: "vw-layer_spd" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-spd" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+              factor: -0.25,
+            },
+            increase: {
+              store: { key: "vw-layer_spd" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-spd" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+              factor: 0.25,
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "vw-layer_change-spd" },
+              enable: { key: "vw-layer_use-texture" },
+            },
+            title: { 
+              text: "Change",
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-spd" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            stick: {
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-spd" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+          },
+          factor: {
+            label: {
+              text: "Factor",
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-spd" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            field: {
+              store: { key: "vw-layer_spd" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-spd" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            decrease: {
+              store: { key: "vw-layer_spd" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-spd" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+              factor: -0.01,
+            },
+            increase: {
+              store: { key: "vw-layer_spd" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-spd" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+              factor: 0.01,
+            },
+            stick: {
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-spd" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+          },
+          increase: {
+            label: {
+              text: "Increase",
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-spd" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            field: {
+              store: { key: "vw-layer_spd" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-spd" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            decrease: {
+              store: { key: "vw-layer_spd" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-spd" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+              factor: -0.001,
+            },
+            increase: {
+              store: { key: "vw-layer_spd" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-spd" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+              factor: 0.001,      
+            },
+            stick: {
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-spd" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+          },
+        },
+      },
+      {
+        name: "vw-layer_spd-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "vw-layer_dir",
+        template: VEComponents.get("number-transformer-increase-checkbox"),
+        layout: VELayouts.get("number-transformer-increase-checkbox"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          value: {
+            label: {
+              text: "Angle",
+              font: "font_inter_10_bold",
+              color: VETheme.color.textShadow,
+              //enable: { key: "vw-layer_use-dir" },
+            },
+            field: {
+              store: { key: "vw-layer_dir" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-dir" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            decrease: {
+              store: { key: "vw-layer_dir" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-dir" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+              factor: -0.25,
+            },
+            increase: {
+              store: { key: "vw-layer_dir" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-dir" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+              factor: 0.25,        
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              enable: { key: "vw-layer_use-texture" },
+              store: { key: "vw-layer_use-dir" },
+            },
+            title: { 
+              text: "Override",
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-dir" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            stick: {
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-dir" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            }
+          },
+          target: {
+            label: {
+              text: "Target",
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-dir" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            field: {
+              store: { key: "vw-layer_dir" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-dir" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            decrease: {
+              store: { key: "vw-layer_dir" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-dir" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+              factor: -0.25,
+            },
+            increase: {
+              store: { key: "vw-layer_dir" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-dir" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+              factor: 0.25,
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              enable: { key: "vw-layer_use-texture" },
+              store: { key: "vw-layer_change-dir" },
+            },
+            title: { 
+              text: "Change",
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-dir" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            stick: {
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-dir" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+          },
+          factor: {
+            label: {
+              text: "Factor",
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-dir" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            field: {
+              store: { key: "vw-layer_dir" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-dir" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            decrease: {
+              store: { key: "vw-layer_dir" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-dir" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+              factor: -0.01,
+            },
+            increase: {
+              store: { key: "vw-layer_dir" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-dir" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+              factor: 0.01,
+            },
+            checkbox: { 
+              store: { 
+                key: "vw-layer_dir",
+                callback: function(value, data) { 
+                  if (!Core.isType(value, NumberTransformer)) {
+                    return
+                  }
+
+                  var sprite = Struct.get(data, "sprite")
+                  if (!Core.isType(sprite, Sprite)) {
+                    sprite = SpriteUtil.parse({ name: "visu_texture_ui_angle_arrow" })
+                    Struct.set(data, "sprite", sprite)
+                  }
+
+                  sprite.setAngle(value.value)
+                },
+                set: function(value) { return },
+              },
+              render: function() {
+                var sprite = Struct.get(this, "sprite")
+                if (!Core.isType(sprite, Sprite)) {
+                  sprite = SpriteUtil.parse({ name: "visu_texture_ui_angle_arrow" })
+                  Struct.set(this, "sprite", sprite)
+                }
+
+                sprite.scaleToFit(this.area.getWidth() * 2, this.area.getHeight() * 2)
+
+                var itemUse = this.store.getStore().get("vw-layer_use-dir")
+                if (Optional.is(itemUse) && itemUse.get()) {
+                  sprite.render(
+                    this.context.area.getX() + this.area.getX() + 2 + sprite.texture.offsetX * sprite.getScaleX(),
+                    this.context.area.getY() + this.area.getY() + 4 + sprite.texture.offsetY * sprite.getScaleY()
+                  )
+                }
+
+                var transformer = this.store.getValue()
+                var itemChange = this.store.getStore().get("vw-layer_change-dir")
+                if (Optional.is(itemChange) && itemChange.get() && Optional.is(transformer)) {
+                  var alpha = sprite.getAlpha()
+                  sprite.setAngle(transformer.target)
+                    .setAlpha(alpha * 0.66)
+                    .render(
+                      this.context.area.getX() + this.area.getX() + 2 + sprite.texture.offsetX * sprite.getScaleX(),
+                      this.context.area.getY() + this.area.getY() + 4 + sprite.texture.offsetY * sprite.getScaleY()
+                    )
+                    .setAngle(transformer.value)
+                    .setAlpha(alpha)
+                }
+                
+                return this
+              },
+            },
+            stick: {
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-dir" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+          },
+          increase: {
+            label: {
+              text: "Increase",
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-dir" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            field: {
+              store: { key: "vw-layer_dir" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-dir" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            decrease: {
+              store: { key: "vw-layer_dir" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-dir" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+              factor: -0.001,
+            },
+            increase: {
+              store: { key: "vw-layer_dir" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-dir" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+              factor: 0.001,      
+            },
+            stick: {
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-dir" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+          },
+        },
+      },
+      {
+        name: "vw-layer_dir-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "vw-layer_scale-x",
+        template: VEComponents.get("number-transformer-increase-checkbox"),
+        layout: VELayouts.get("number-transformer-increase-checkbox"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          value: {
+            label: {
+              text: "Scale X",
+              font: "font_inter_10_bold",
+              color: VETheme.color.textShadow,
+              //enable: { key: "vw-layer_use-scale-x" },
+            },
+            field: {
+              store: { key: "vw-layer_scale-x" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-scale-x" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            decrease: {
+              store: { key: "vw-layer_scale-x" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-scale-x" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+              factor: -0.25,
+            },
+            increase: {
+              store: { key: "vw-layer_scale-x" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-scale-x" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+              factor: 0.25,        
+            },
+            stick: {
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-scale-x" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "vw-layer_use-scale-x" },
+              enable: { key: "vw-layer_use-texture" },
+            },
+            title: { 
+              text: "Override",
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-scale-x" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+          },
+          target: {
+            label: {
+              text: "Target",
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-scale-x" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            field: {
+              store: { key: "vw-layer_scale-x" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-scale-x" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            decrease: {
+              store: { key: "vw-layer_scale-x" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-scale-x" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+              factor: -0.25,
+            },
+            increase: {
+              store: { key: "vw-layer_scale-x" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-scale-x" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+              factor: 0.25,
+            },
+            stick: {
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-scale-x" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "vw-layer_change-scale-x" },
+              enable: { key: "vw-layer_use-texture" },
+            },
+            title: { 
+              text: "Change",
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-scale-x" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+          },
+          factor: {
+            label: {
+              text: "Factor",
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-scale-x" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            field: {
+              store: { key: "vw-layer_scale-x" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-scale-x" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            decrease: {
+              store: { key: "vw-layer_scale-x" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-scale-x" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+              factor: -0.01,
+            },
+            increase: {
+              store: { key: "vw-layer_scale-x" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-scale-x" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+              factor: 0.01,
+            },
+            stick: {
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-scale-x" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            checkbox: { },
+          },
+          increase: {
+            label: {
+              text: "Increase",
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-scale-x" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            field: {
+              store: { key: "vw-layer_scale-x" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-scale-x" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            decrease: {
+              store: { key: "vw-layer_scale-x" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-scale-x" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+              factor: -0.001,
+            },
+            increase: {
+              store: { key: "vw-layer_scale-x" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-scale-x" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+              factor: 0.001,      
+            },
+            stick: {
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-scale-x" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            checkbox: { },
+          },
+        },
+      },
+      {
+        name: "vw-layer_scale-x-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "vw-layer_scale-y",
+        template: VEComponents.get("number-transformer-increase-checkbox"),
+        layout: VELayouts.get("number-transformer-increase-checkbox"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          value: {
+            label: {
+              text: "Scale Y",
+              font: "font_inter_10_bold",
+              color: VETheme.color.textShadow,
+              //enable: { key: "vw-layer_use-scale-y" },
+            },
+            field: {
+              store: { key: "vw-layer_scale-y" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-scale-y" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            decrease: {
+              store: { key: "vw-layer_scale-y" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-scale-y" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+              factor: -0.25,
+            },
+            increase: {
+              store: { key: "vw-layer_scale-y" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-scale-y" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+              factor: 0.25,        
+            },
+            stick: {
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-scale-y" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "vw-layer_use-scale-y" },
+              enable: { key: "vw-layer_use-texture" },
+            },
+            title: { 
+              text: "Override",
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_use-scale-y" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+          },
+          target: {
+            label: {
+              text: "Target",
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-scale-y" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            field: {
+              store: { key: "vw-layer_scale-y" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-scale-y" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            decrease: {
+              store: { key: "vw-layer_scale-y" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-scale-y" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+              factor: -0.25,
+            },
+            increase: {
+              store: { key: "vw-layer_scale-y" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-scale-y" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+              factor: 0.25,
+            },
+            stick: {
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-scale-y" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "vw-layer_change-scale-y" },
+              enable: { key: "vw-layer_use-texture" },
+            },
+            title: { 
+              text: "Change",
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-scale-y" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+          },
+          factor: {
+            label: {
+              text: "Factor",
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-scale-y" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            field: {
+              store: { key: "vw-layer_scale-y" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-scale-y" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            decrease: {
+              store: { key: "vw-layer_scale-y" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-scale-y" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+              factor: -0.01,
+            },
+            increase: {
+              store: { key: "vw-layer_scale-y" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-scale-y" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+              factor: 0.01,
+            },
+            stick: {
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-scale-y" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            checkbox: { },
+          },
+          increase: {
+            label: {
+              text: "Increase",
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-scale-y" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            field: {
+              store: { key: "vw-layer_scale-y" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-scale-y" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            decrease: {
+              store: { key: "vw-layer_scale-y" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-scale-y" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+              factor: -0.001,
+            },
+            increase: {
+              store: { key: "vw-layer_scale-y" },
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-scale-y" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+              factor: 0.001,      
+            },
+            stick: {
+              enable: {
+                keys: [ 
+                  { key: "vw-layer_use-texture" },
+                  { key: "vw-layer_change-scale-y" }
+                ],
+              },
+              updateEnable: Callable.run(UIItemUtils.templates.get("updateEnableKeys")),
+            },
+            checkbox: { },
+          },
+        },
+      },
+      {
+        name: "vw-layer-col-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "vw-layer_col",
         template: VEComponents.get("color-picker"),
         layout: VELayouts.get("color-picker-alpha"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           title: {
             label: { 
-              text: "Set color",
-              enable: { key: "view-wallpaper_use-color" },
+              text: "Color layer",
+              enable: { key: "vw-layer_use-col" },
+              backgroundColor: VETheme.color.accentShadow,
             },  
             checkbox: { 
               spriteOn: { name: "visu_texture_checkbox_on" },
               spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "view-wallpaper_use-color" },
+              store: { key: "vw-layer_use-col" },
+              backgroundColor: VETheme.color.accentShadow,
             },
             input: { 
-              store: { key: "view-wallpaper_color" },
-              enable: { key: "view-wallpaper_use-color" },
+              store: { key: "vw-layer_col" },
+              enable: { key: "vw-layer_use-col" },
+              backgroundColor: VETheme.color.accentShadow,
             }
           },
           red: {
             label: { 
               text: "Red",
-              enable: { key: "view-wallpaper_use-color" },
+              enable: { key: "vw-layer_use-col" },
             },
             field: { 
-              store: { key: "view-wallpaper_color" },
-              enable: { key: "view-wallpaper_use-color" },
+              store: { key: "vw-layer_col" },
+              enable: { key: "vw-layer_use-col" },
             },
             slider: { 
-              store: { key: "view-wallpaper_color" },
-              enable: { key: "view-wallpaper_use-color" },
+              store: { key: "vw-layer_col" },
+              enable: { key: "vw-layer_use-col" },
             },
           },
           green: {
             label: { 
               text: "Green",
-              enable: { key: "view-wallpaper_use-color" },
+              enable: { key: "vw-layer_use-col" },
             },
             field: { 
-              store: { key: "view-wallpaper_color" },
-              enable: { key: "view-wallpaper_use-color" },
+              store: { key: "vw-layer_col" },
+              enable: { key: "vw-layer_use-col" },
             },
             slider: { 
-              store: { key: "view-wallpaper_color" },
-              enable: { key: "view-wallpaper_use-color" },
+              store: { key: "vw-layer_col" },
+              enable: { key: "vw-layer_use-col" },
             },
           },
           blue: {
             label: { 
               text: "Blue",
-              enable: { key: "view-wallpaper_use-color" },
+              enable: { key: "vw-layer_use-col" },
             },
             field: { 
-              store: { key: "view-wallpaper_color" },
-              enable: { key: "view-wallpaper_use-color" },
+              store: { key: "vw-layer_col" },
+              enable: { key: "vw-layer_use-col" },
             },
             slider: { 
-              store: { key: "view-wallpaper_color" },
-              enable: { key: "view-wallpaper_use-color" },
+              store: { key: "vw-layer_col" },
+              enable: { key: "vw-layer_use-col" },
             },
           },
           alpha: {
             label: { 
               text: "Alpha",
-              enable: { key: "view-wallpaper_use-color" },
+              enable: { key: "vw-layer_use-col" },
             },
             field: { 
-              store: { key: "view-wallpaper_color" },
-              enable: { key: "view-wallpaper_use-color" },
+              store: { key: "vw-layer_col" },
+              enable: { key: "vw-layer_use-col" },
             },
             slider: { 
-              store: { key: "view-wallpaper_color" },
-              enable: { key: "view-wallpaper_use-color" },
+              store: { key: "vw-layer_col" },
+              enable: { key: "vw-layer_use-col" },
             },
           },
           hex: { 
             label: { 
               text: "Hex",
-              enable: { key: "view-wallpaper_use-color" },
+              enable: { key: "vw-layer_use-col" },
             },
             field: { 
-              store: { key: "view-wallpaper_color" },
-              enable: { key: "view-wallpaper_use-color" },
+              store: { key: "vw-layer_col" },
+              enable: { key: "vw-layer_use-col" },
             },
           },
-        },
-      },
-      {
-        name: "view-wallpaper_texture",
-        template: VEComponents.get("texture-field"),
-        layout: VELayouts.get("texture-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          title: {
-            label: { 
-              text: "Set texture",
-              enable: { key: "view-wallpaper_use-texture" },
-            },  
-            checkbox: { 
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "view-wallpaper_use-texture" },
-            },
-          },
-          texture: {
-            label: {
-              text: "Texture",
-              enable: { key: "view-wallpaper_use-texture" },
-            }, 
-            field: {
-              store: { key: "view-wallpaper_texture" },
-              enable: { key: "view-wallpaper_use-texture" },
-            },
-          },
-          frame: {
-            label: {
-              text: "Frame",
-              enable: { key: "view-wallpaper_use-texture" },
-            },
-            field: {
-              store: { key: "view-wallpaper_texture" },
-              enable: { key: "view-wallpaper_use-texture" },
-            },
-          },
-          alpha: {
-            label: {
-              text: "Alpha",
-              enable: { key: "view-wallpaper_use-texture" },
-            },
-            field: {
-              store: { key: "view-wallpaper_texture" },
-              enable: { key: "view-wallpaper_use-texture" },
-            },
-            slider: { 
-              minValue: 0.0,
-              maxValue: 1.0,
-              store: { key: "view-wallpaper_texture" },
-            },
-          },
-          preview: {
-            image: { name: "texture_baron" },
-            store: { key: "view-wallpaper_texture" },
-            enable: { key: "view-wallpaper_use-texture" },
-            imageBlendStoreKey: "view-wallpaper_texture-blend",
-            useTextureSpeedStoreKey: "view-wallpaper_use-texture-speed",
-            textureSpeedStoreKey: "view-wallpaper_texture-speed",
-            updateCustom: function() {
-              var key = Struct.get(this, "imageBlendStoreKey")
-              if (!Optional.is(this.store)
-                || !Core.isType(key, String) 
-                || !Core.isType(this.image, Sprite)) {
-                return
-              }
-
-              var store = this.store.getStore()
-              if (!Optional.is(store)) {
-                return
-              }
-
-              var item = store.get(key)
-              if (!Optional.is(item)) {
-                return
-              }
-
-              var gmColor = store.getValue("view-wallpaper_use-texture-blend")
-                ? store.getValue("view-wallpaper_texture-blend").toGMColor()
-                : c_white
-              this.image.setBlend(gmColor)
-
-              if (store.getValue(this.useTextureSpeedStoreKey)) {
-                this.image.setAnimate(true)
-                var animationSpeed = store.getValue(this.textureSpeedStoreKey)
-                if (Core.isType(animationSpeed, Number)) {
-                  this.image.setSpeed(animationSpeed)
-                }
-              } else {
-                this.image.setAnimate(false)
-              }
-            },
-          },
-        },
-      },
-      {
-        name: "view-wallpaper_use-texture-speed",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Animation speed",
-            enable: { key: "view-wallpaper_use-texture-speed" },
-          },
-          checkbox: { 
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "view-wallpaper_use-texture-speed" },
-          },
-        },
-      },
-      {
-        name: "view-wallpaper_texture-speed",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: {
-            text: "FPS",
-            enable: { key: "view-wallpaper_use-texture-speed" },
-          },
-          field: {
-            store: { key: "view-wallpaper_texture-speed" },
-            enable: { key: "view-wallpaper_use-texture-speed" },
-          },
-        },
-      },
-      {
-        name: "view-wallpaper_texture-blend",
-        template: VEComponents.get("color-picker"),
-        layout: VELayouts.get("color-picker"),
-        config: {
-          layout: { type: UILayoutType.VERTICAL },
-          title: { 
-            label: { 
-              text: "Texture blend",
-              enable: { key: "view-wallpaper_use-texture-blend" },
-            },
-            checkbox: { 
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "view-wallpaper_use-texture-blend" },
-            },
-            input: { 
-              store: { key: "view-wallpaper_texture-blend" },
-              enable: { key: "view-wallpaper_use-texture-blend" },
-            }
-          },
-          red: {
-            label: {
-              text: "Red",
-              enable: { key: "view-wallpaper_use-texture-blend" },
-            },
-            field: {
-              store: { key: "view-wallpaper_texture-blend" },
-              enable: { key: "view-wallpaper_use-texture-blend" },
-            },
-            slider: {
-              store: { key: "view-wallpaper_texture-blend" },
-              enable: { key: "view-wallpaper_use-texture-blend" },
-            },
-          },
-          green: {
-            label: {
-              text: "Green",
-              enable: { key: "view-wallpaper_use-texture-blend" },
-            },
-            field: {
-              store: { key: "view-wallpaper_texture-blend" },
-              enable: { key: "view-wallpaper_use-texture-blend" },
-            },
-            slider: {
-              store: { key: "view-wallpaper_texture-blend" },
-              enable: { key: "view-wallpaper_use-texture-blend" },
-            },
-          },
-          blue: {
-            label: {
-              text: "Blue",
-              enable: { key: "view-wallpaper_use-texture-blend" },
-            },
-            field: {
-              store: { key: "view-wallpaper_texture-blend" },
-              enable: { key: "view-wallpaper_use-texture-blend" },
-            },
-            slider: {
-              store: { key: "view-wallpaper_texture-blend" },
-              enable: { key: "view-wallpaper_use-texture-blend" },
-            },
-          },
-          hex: { 
-            label: {
-              text: "Hex",
-              enable: { key: "view-wallpaper_use-texture-blend" },
-            },
-            field: {
-              store: { key: "view-wallpaper_texture-blend" },
-              enable: { key: "view-wallpaper_use-texture-blend" },
-            },
-          },
-        },
-      },
-      {
-        name: "view-wallpaper_clear-color",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Remove color" },
-          checkbox: { 
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "view-wallpaper_clear-color" },
-          },
-        },
-      },
-      {
-        name: "view-wallpaper_clear-texture",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Remove texture" },
-          checkbox: { 
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "view-wallpaper_clear-texture" },
-          },
-        },
-      },
-      {
-        name: "view-wallpaper_tiled",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Move",
-          },
-          input: {
-            store: { 
-              key: "view-wallpaper_angle",
-              callback: function(value, data) { 
-                var sprite = Struct.get(data, "sprite")
-                if (!Core.isType(sprite, Sprite)) {
-                  sprite = SpriteUtil.parse({ name: "visu_texture_ui_spawn_arrow" })
-                  Struct.set(data, "sprite", sprite)
-                }
-                sprite.setAngle(value)
-              },
-              set: function(value) { return },
-            },
-            render: function() {
-              if (this.backgroundColor != null) {
-                var _x = this.context.area.getX() + this.area.getX()
-                var _y = this.context.area.getY() + this.area.getY()
-                var color = this.backgroundColor
-                draw_rectangle_color(
-                  _x, _y, 
-                  _x + this.area.getWidth(), _y + this.area.getHeight(),
-                  color, color, color, color,
-                  false
-                )
-              }
-
-              var sprite = Struct.get(this, "sprite")
-              if (!Core.isType(sprite, Sprite)) {
-                sprite = SpriteUtil.parse({ name: "visu_texture_ui_spawn_arrow" })
-                Struct.set(this, "sprite", sprite)
-              }
-              sprite.scaleToFit(this.area.getWidth(), this.area.getHeight())
-                .render(
-                  this.context.area.getX() + this.area.getX() + sprite.texture.offsetX * sprite.getScaleX(),
-                  this.context.area.getY() + this.area.getY() + sprite.texture.offsetY * sprite.getScaleY()
-                )
-              
-              return this
-            },
-          }
-        },
-      },
-      
-      {
-        name: "view-wallpaper_speed",  
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "Speed" },
-          field: { store: { key: "view-wallpaper_speed" } },
-        },
-      },
-      {
-        name: "view-wallpaper_angle",  
-        template: VEComponents.get("numeric-slider-field"),
-        layout: VELayouts.get("numeric-slider-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "Angle",
-          },
-          field: { 
-            store: { key: "view-wallpaper_angle" },
-          },
-          slider: { 
-            minValue: 0.0,
-            maxValue: 360.0,
-            store: { key: "view-wallpaper_angle" },
-          },
-        },
-      },
-      {
-        name: "view-wallpaper_xScale",  
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "xScale" },
-          field: { store: { key: "view-wallpaper_xScale" } },
-        },
-      },
-      {
-        name: "view-wallpaper_yScale",  
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "yScale" },
-          field: { store: { key: "view-wallpaper_yScale" } },
-        },
-      }, 
-      {
-        name: "view-wallpaper_speed-transform",
-        template: VEComponents.get("transform-numeric-property"),
-        layout: VELayouts.get("transform-numeric-property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          title: {
-            label: { 
-              text: "Transform speed",
-              enable: { key: "view-wallpaper_use-speed-transform" },
-            },  
-            checkbox: { 
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "view-wallpaper_use-speed-transform"}
-            },
-          },
-          target: {
-            label: {
-              text: "Target",
-              enable: { key: "view-wallpaper_use-speed-transform" },
-            },
-            field: {
-              store: { key: "view-wallpaper_speed-transform" },
-              enable: { key: "view-wallpaper_use-speed-transform" },
-            },
-          },
-          factor: {
-            label: {
-              text: "Factor",
-              enable: { key: "view-wallpaper_use-speed-transform" },
-            },
-            field: {
-              store: { key: "view-wallpaper_speed-transform" },
-              enable: { key: "view-wallpaper_use-speed-transform" },
-            },
-          },
-          increment: {
-            label: { 
-              text: "Increase",
-              enable: { key: "view-wallpaper_use-speed-transform" },
-            },
-            field: { 
-              store: { key: "view-wallpaper_speed-transform" },
-              enable: { key: "view-wallpaper_use-speed-transform" },
-            },
-          },
-        },
-      },
-      {
-        name: "view-wallpaper_angle-transform",
-        template: VEComponents.get("transform-numeric-property"),
-        layout: VELayouts.get("transform-numeric-property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          title: {
-            label: { 
-              text: "Transform angle",
-              enable: { key: "view-wallpaper_use-angle-transform" },
-            },  
-            checkbox: { 
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "view-wallpaper_use-angle-transform"}
-            },
-          },
-          target: {
-            label: {
-              text: "Target",
-              enable: { key: "view-wallpaper_use-angle-transform" },
-            },
-            field: {
-              store: { key: "view-wallpaper_angle-transform" },
-              enable: { key: "view-wallpaper_use-angle-transform" },
-            },
-          },
-          factor: {
-            label: {
-              text: "Factor",
-              enable: { key: "view-wallpaper_use-angle-transform" },
-            },
-            field: {
-              store: { key: "view-wallpaper_angle-transform" },
-              enable: { key: "view-wallpaper_use-angle-transform" },
-            },
-          },
-          increment: {
-            label: { 
-              text: "Increase",
-              enable: { key: "view-wallpaper_use-angle-transform" },
-            },
-            field: { 
-              store: { key: "view-wallpaper_angle-transform" },
-              enable: { key: "view-wallpaper_use-angle-transform" },
-            },
-          },
-        },
-      },
-      {
-        name: "view-wallpaper_xScale-transform",
-        template: VEComponents.get("transform-numeric-property"),
-        layout: VELayouts.get("transform-numeric-property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          title: {
-            label: { 
-              text: "Transform xScale",
-              enable: { key: "view-wallpaper_use-xScale-transform" },
-            },  
-            checkbox: { 
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "view-wallpaper_use-xScale-transform"}
-            },
-          },
-          target: {
-            label: {
-              text: "Target",
-              enable: { key: "view-wallpaper_use-xScale-transform" },
-            },
-            field: {
-              store: { key: "view-wallpaper_xScale-transform" },
-              enable: { key: "view-wallpaper_use-xScale-transform" },
-            },
-          },
-          factor: {
-            label: {
-              text: "Factor",
-              enable: { key: "view-wallpaper_use-xScale-transform" },
-            },
-            field: {
-              store: { key: "view-wallpaper_xScale-transform" },
-              enable: { key: "view-wallpaper_use-xScale-transform" },
-            },
-          },
-          increment: {
-            label: { 
-              text: "Increase",
-              enable: { key: "view-wallpaper_use-xScale-transform" },
-            },
-            field: { 
-              store: { key: "view-wallpaper_xScale-transform" },
-              enable: { key: "view-wallpaper_use-xScale-transform" },
-            },
-          },
-        },
-      },
-      {
-        name: "view-wallpaper_yScale-transform",
-        template: VEComponents.get("transform-numeric-property"),
-        layout: VELayouts.get("transform-numeric-property"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          title: {
-            label: { 
-              text: "Transform yScale",
-              enable: { key: "view-wallpaper_use-yScale-transform" },
-            },  
-            checkbox: { 
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "view-wallpaper_use-yScale-transform"}
-            },
-          },
-          target: {
-            label: {
-              text: "Target",
-              enable: { key: "view-wallpaper_use-yScale-transform" },
-            },
-            field: {
-              store: { key: "view-wallpaper_yScale-transform" },
-              enable: { key: "view-wallpaper_use-yScale-transform" },
-            },
-          },
-          factor: {
-            label: {
-              text: "Factor",
-              enable: { key: "view-wallpaper_use-yScale-transform" },
-            },
-            field: {
-              store: { key: "view-wallpaper_yScale-transform" },
-              enable: { key: "view-wallpaper_use-yScale-transform" },
-            },
-          },
-          increment: {
-            label: { 
-              text: "Increase",
-              enable: { key: "view-wallpaper_use-yScale-transform" },
-            },
-            field: { 
-              store: { key: "view-wallpaper_yScale-transform" },
-              enable: { key: "view-wallpaper_use-yScale-transform" },
-            },
-          },
+          line: { disable: true },
         },
       },
     ]),

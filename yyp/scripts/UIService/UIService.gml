@@ -1,7 +1,7 @@
 ///@package io.alkapivo.core.service.ui
 
 ///@param {Struct} _context
-///@parms {Struct} [config]
+///@param {Struct} [config]
 function UIService(_context, config = {}): Service(config) constructor {
 
   ///@type {Struct}

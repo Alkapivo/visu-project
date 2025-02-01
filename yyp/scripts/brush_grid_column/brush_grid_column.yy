@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"brush_grid_column",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"brush_grid_column",
+  "parent":{
+    "name":"grid",
+    "path":"folders/io.alkapivo.visu/src/editor/service/brush/grid.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

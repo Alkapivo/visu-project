@@ -1,8 +1,5 @@
 ///@package io.alkapivo.core.util.task
 
-///@param {String} _message
-function TaskTimeoutException(_message): Exception(_message) constructor { }
-
 ///@enum
 function _TaskStatus(): Enum() constructor {
   IDLE = "idle"
@@ -13,15 +10,16 @@ function _TaskStatus(): Enum() constructor {
 global.__TaskStatus = new _TaskStatus()
 #macro TaskStatus global.__TaskStatus
 
+
 ///@param {String} _name
 ///@param {Struct} [config]
 function Task(_name, config = {}) constructor {
 
   ///@type {String}
-  name = Assert.isType(_name, String)
+  name = Assert.isType(_name, String, "Task.name must be type of String")
 
   ///@type {TaskStatus}
-  status = Assert.isEnum(TaskStatus.IDLE, TaskStatus)
+  status = Assert.isEnum(TaskStatus.IDLE, TaskStatus, "Task.status must be type of TaskStatus")
 
   ///@type {any}
   state = null
@@ -55,49 +53,39 @@ function Task(_name, config = {}) constructor {
 
   ///@param {?Callable} onStart
   ///@return {Task}
-  whenStart = function(onStart) {
-    this.onStart = onStart != null ? method(this, Assert.isType(onStart, Callable)) : null
+  static whenStart = function(onStart) {
+    this.onStart = Core.isType(onStart, Callable) ? method(this, onStart) : null
     return this
   }
-  this.whenStart(Core.isType(Struct.get(config, "onStart"), Callable) 
-    ? config.onStart
-    : null)
+  this.whenStart(Struct.get(config, "onStart"))
   
   ///@param {?Callable} onFinish
   ///@return {Task}
-  whenFinish = function(onFinish) {
-    this.onFinish = onFinish != null ? method(this, Assert.isType(onFinish, Callable)) : null
+  static whenFinish = function(onFinish) {
+    this.onFinish = Core.isType(onFinish, Callable) ? method(this, onFinish) : null
     return this
   }
-  this.whenFinish(Core.isType(Struct.get(config, "onFinish"), Callable) 
-    ? config.onFinish
-    : null)
+  this.whenFinish(Struct.get(config, "onFinish"))
 
-  ///@param {Callable} onUpdate
+  ///@param {?Callable} onUpdate
   ///@return {Task}
-  whenUpdate = function(onUpdate) {
-    this.onUpdate = method(this, Assert.isType(onUpdate, Callable))
+  static whenUpdate = function(onUpdate) {
+    this.onUpdate = Core.isType(onUpdate, Callable) ? method(this, onUpdate) : null
     return this
   }
-  this.whenUpdate(Core.isType(Struct.get(config, "onUpdate"), Callable) 
-    ? config.onUpdate 
-    : method(this, function() {
-      Core.print("Dummy onUpdate task", this.name)
-    }))
+  this.whenUpdate(Struct.get(config, "onUpdate"))
 
   ///@param {?Callable} onTimeout
   ///@return {Task}
-  whenTimeout = function(onTimeout) {
-    this.onTimeout = onTimeout != null ? method(this, Assert.isType(onTimeout, Callable)) : null
+  static whenTimeout = function(onTimeout) {
+    this.onTimeout = Core.isType(onTimeout, Callable) ? method(this, onTimeout) : null
     return this
   }
-  this.whenTimeout(Core.isType(Struct.get(config, "onTimeout"), Callable) 
-    ? config.onTimeout
-    : null)
+  this.whenTimeout(Struct.get(config, "whenTimeout"))
 
   ///@param {?Number} timeout
   ///@return {Task}
-  setTimeout = function(timeout) {
+  static setTimeout = function(timeout) {
     this.timeout = Core.isType(timeout, Number) ? new Timer(timeout) : null
     return this
   }
@@ -105,15 +93,17 @@ function Task(_name, config = {}) constructor {
 
   ///@param {?Number} tick
   ///@return {Task}
-  setTick = function(tick) {
-    this.tick = Core.isType(tick, Number) ? new Timer(tick, { loop: Infinity }) : null
+  static setTick = function(tick) {
+    this.tick = Core.isType(tick, Number) 
+      ? new Timer(tick, { time: tick, loop: Infinity })
+      : null
     return this
   }
   this.setTick(Struct.get(config, "tick"))
 
   ///@param {any} state
   ///@return {Task}
-  setState = function(state) {
+  static setState = function(state) {
     this.state = state
     return this
   }
@@ -121,7 +111,7 @@ function Task(_name, config = {}) constructor {
 
   ///@param {?Promise} promise
   ///@return {Task}
-  setPromise = function(promise) {
+  static setPromise = function(promise) {
     this.promise = promise != null ? Assert.isType(promise, Promise) : null
     return this
   }
@@ -129,53 +119,51 @@ function Task(_name, config = {}) constructor {
 
   ///@param {any} [data]
   ///@return {Task}
-  fullfill = function(data = null) {
+  static fullfill = function(data = null) {
     this.status = TaskStatus.FULLFILLED
-    if (Core.isType(this.onFinish, Callable)) {
-      this.onFinish(data)
-    }
-
-    if (Core.isType(this.promise, Promise)) {
+    if (Optional.is(this.promise)) {
       this.promise.fullfill(data)
     }
+
     return this
   }
 
   ///@param {any} [data]
   ///@return {Task}
-  reject = function(data = null) {
+  static reject = function(data = null) {
     this.status = TaskStatus.REJECTED
-    if (Core.isType(this.onFinish, Callable)) {
-      this.onFinish(data)
-    }
-
-    if (Core.isType(this.promise, Promise)) {
+    if (Optional.is(this.promise)) {
       this.promise.reject(data)
     }
+    
     return this
   }
 
   ///@param {TaskExecutor} executor
   ///@return {Task}
-  ///@throws {TaskTimeoutException}
-  update = function(executor = null) {
-    if (this.timeout != null) {
-      this.timeout.update()
-    }
-
-    if (this.tick != null && !this.tick.update().finished) {
+  ///@throws {Exception}
+  static update = function(executor = null) {
+    if (this.status == TaskStatus.FULLFILLED) {
       return this
     }
 
-    this.onUpdate(executor)
-
-    if (this.timeout != null && this.timeout.finished) {
-      if (Core.isType(this.onTimeout, Callable)) {
+    if (Optional.is(this.timeout) && this.timeout.update().finished) {
+      this.reject()
+      if (Optional.is(this.onTimeout)) {
         this.onTimeout(executor)
       } else {
-        throw new TaskTimeoutException($"Timer state: {this.timeout.serialize()}")
+        throw new Exception($"Task timed out: '{this.name}'")
       }
     }
+
+    if (Optional.is(this.tick) && !this.tick.update().finished) {
+      return this
+    }
+
+    if (Optional.is(this.onUpdate)) {
+      this.onUpdate(executor)
+    }
+
     return this
   }
 }

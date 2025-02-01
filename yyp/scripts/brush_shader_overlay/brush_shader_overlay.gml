@@ -1,4 +1,37 @@
-///@package io.alkapivo.visu.editor.service.brush.shader
+///@package io.alkapivo.visu.editor.service.brush._old.shader
+
+///@param {Struct} json
+///@return {Struct}
+function migrateShaderOverlayEvent(json) {
+  //Logger.debug("Track", "migrateShaderOverlayEvent is not implemented")
+  return {
+    "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
+    "gr-cfg_use-render-focus-grid": Struct.getIfType(json, "shader-overlay_use-render-support-grid", Boolean, false),
+    "gr-cfg_render-focus-grid": Struct.getIfType(json, "shader-overlay_render-support-grid", Boolean, false),
+    "gr-cfg_use-focus-grid-treshold": false,
+    "gr-cfg_focus-grid-treshold": Struct.getIfType(json, "shader-overlay_transform-support-grid-treshold", Struct, {
+      value: 0.0,
+      target: 1.0,
+      factor: 1.0,
+      increase: 0.0,
+    }),
+    "gr-cfg_change-focus-grid-treshold": Struct.getIfType(json, "shader-overlay_use-transform-support-grid-treshold", Boolean, false),
+    "gr-cfg_use-focus-grid-alpha": false,
+    "gr-cfg_focus-grid-alpha": Struct.getIfType(json, "shader-overlay_transform-support-grid-alpha", Struct, {
+      value: 0.0,
+      target: 1.0,
+      factor: 1.0,
+      increase: 0.0,
+    }),
+    "gr-cfg_change-focus-grid-alpha": Struct.getIfType(json, "shader-overlay_use-transform-support-grid-alpha", Boolean, false),
+    "gr-cfg_focus-grid-use-blend": true,
+    "gr-cfg_focus-grid-blend-src": BlendModeExt.getKey(BlendModeExt.SRC_ALPHA),
+    "gr-cfg_focus-grid-blend-dest": BlendModeExt.getKey(BlendModeExt.ONE),
+    "gr-cfg_focus-grid-blend-eq": BlendEquation.getKey(BlendEquation.ADD),
+    "gr-cfg_focus-grid-blend-eq-alpha": BlendEquation.getKey(BlendEquation.ADD),
+  }
+}
+
 
 ///@param {?Struct} [json]
 ///@return {Struct}

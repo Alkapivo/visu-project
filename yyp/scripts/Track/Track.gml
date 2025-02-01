@@ -3,8 +3,10 @@
 ///@static
 ///@type {Map<String, Callable>}
 global.__DEFAULT_TRACK_EVENT_HANDLERS = new Map(String, Callable, {
-  "dummy": function(data) {
-    Core.print("Dummy track event, data:", data)
+  "dummy": {
+    run: function(data) {
+      Core.print("Dummy track event")
+    },
   },
 })
 #macro DEFAULT_TRACK_EVENT_HANDLERS global.__DEFAULT_TRACK_EVENT_HANDLERS
@@ -196,37 +198,11 @@ function Track(json, config = null) constructor {
 ///@param {?Struct} [config]
 function TrackChannel(json, config = null) constructor {
 
-  ///@private
-  ///@param {Event}
-  ///@param {Number} index
-  ///@param {?Struct} [config]
-  ///@return {TrackEvent}
-  parseEvent = Core.isType(Struct.get(config, "parseEvent"), Callable)
-    ? method(this, config.parseEvent)
-    : function(event, index, config = null) {
-        return new TrackEvent(event, config)
-      }
-  
-  ///@private
-  ///@param {TrackEvent} a
-  ///@param {TrackEvent} b
-  ///@return {Boolean}
-  compareEvents = Core.isType(Struct.get(config, "compareEvents"), Callable)
-    ? method(this, config.compareEvents)
-    : function(a, b) { 
-        return a.timestamp <= b.timestamp
-      }
-
   ///@type {String}
   name = Assert.isType(Struct.get(json, "name"), String)
 
   ///@type {Number}
   index = Assert.isType(Struct.get(json, "index"), Number)
-
-  ///@type {Array<TrackEvent>}
-  events = GMArray.toArray(Struct
-    .getDefault(json, "events", []), TrackEvent, parseEvent, config)
-    .sort(compareEvents)
 
   ///@type {Boolean}
   muted = false
@@ -243,51 +219,104 @@ function TrackChannel(json, config = null) constructor {
   ///@type {Number}
   MAX_EXECUTION_PER_FRAME = 99
 
+  ///@private
+  ///@param {Event}
+  ///@param {Number} index
+  ///@param {?Struct} [config]
+  ///@return {TrackEvent}
+  parseEvent = Optional.is(Struct.getIfType(config, "parseEvent", Callable))
+    ? method(this, config.parseEvent)
+    : function(event, index, config = null) {
+      return new TrackEvent(event, config)
+    }
+
+  ///@private
+  ///@param {Struct} json
+  ///@return {Struct}
+  parseSettings = Optional.is(Struct.getIfType(config, "parseSettings", Callable))
+    ? method(this, config.parseSettings)
+    : function(json) {
+      return Core.isType(json, Struct) ? json : { }
+    }
+  
+  ///@private
+  ///@param {TrackEvent} a
+  ///@param {TrackEvent} b
+  ///@return {Boolean}
+  compareEvents = Optional.is(Struct.getIfType(config, "compareEvents", Callable))
+    ? method(this, config.compareEvents)
+    : function(a, b) {
+      return a.timestamp <= b.timestamp
+    }
+
+  ///@private
+  ///@type {Array<TrackEvent>}
+  events = GMArray
+    .toArray(
+      Struct.getIfType(json, "events", GMArray, [ ]), 
+      TrackEvent, 
+      this.parseEvent,
+      Struct.set((Core.isType(config, Struct) ? config : { }),
+        "__channelName", this.name)
+    ).sort(compareEvents)
+
+  ///@type {Struct}
+  settings = this.parseSettings(Struct.get(json, "settings"))
+
   ///@param {TrackEvent} event
   ///@return {TrackChannel}
-  add = method(this, Assert.isType(Struct
-    .getDefault(config, "add", function(event) {
-      for (var index = 0; index < events.size(); index++) {
-        if (event.timestamp < events.get(index).timestamp) {
+  add = Optional.is(Struct.getIfType(config, "add", Callable))
+    ? method(this, config.add)
+    : function(event) {
+      var size = this.events.size()
+      for (var index = 0; index < size; index++) {
+        if (event.timestamp < this.events.get(index).timestamp) {
           break
         }
       }
-      var lastExecutedEvent = this.pointer != null ? events.get(this.pointer) : null
-      events.add(event, index)
+      
+      var lastExecutedEvent = this.pointer != null ? this.events.get(this.pointer) : null
+      this.events.add(event, index)
       if (lastExecutedEvent == null) {
         return this
       }
 
-      for (var index = 0; index < events.size(); index++) {
-        if (events.get(index) == lastExecutedEvent) {
+      size = this.events.size()
+      for (var index = 0; index < size; index++) {
+        if (this.events.get(index) == lastExecutedEvent) {
           this.pointer = index
           break
         }
       }
+
       return this
-    }), Callable))
+    }
 
   ///@param {TrackEvent} event
   ///@return {TrackChannel}
-  remove = method(this, Assert.isType(Struct
-    .getDefault(config, "remove", function(event) {
+  remove = Optional.is(Struct.getIfType(config, "remove", Callable))
+    ? method(this, config.remove)
+    : function(event) {
       if (this.events.size() == 0) {
         return this
       }
 
-      for (var index = 0; index < events.size(); index++) {
+      var size = this.events.size()
+      for (var index = 0; index < size; index++) {
         if (this.events.get(index) == event) {
           break
         }
+
         if (index == this.events.size() - 1) {
-          Logger.warn("Track", $"TrackEvent wasn't found. channel: '{this.name}'")
+          Logger.warn("TrackChannel", $"TrackEvent wasn't found. channel: '{this.name}'")
           return this
         }
       }
+
       var lastExecutedEvent = this.pointer != null ? this.events.get(this.pointer) : null
       var trackEvent = this.events.get(index)
       this.events.remove(index)
-      Logger.debug("Track", $"TrackEvent removed: channel: '{this.name}', timestamp: {trackEvent.timestamp}, callable: '{trackEvent.callableName}'")
+      Logger.debug("TrackChannel", $"TrackEvent removed: channel: '{this.name}', timestamp: {trackEvent.timestamp}, callable: '{trackEvent.callableName}'")
       if (this.pointer == null) {
         return this
       }
@@ -295,7 +324,8 @@ function TrackChannel(json, config = null) constructor {
       if (lastExecutedEvent == event) {
         this.pointer = this.pointer == 0 ? null : this.pointer - 1
       } else {
-        for (var index = 0; index < this.events.size(); index++) {
+        size = this.events.size()
+        for (var index = 0; index < size; index++) {
           if (this.events.get(index) == lastExecutedEvent) {
             this.pointer = index
             break
@@ -303,28 +333,32 @@ function TrackChannel(json, config = null) constructor {
         }
       }
       return this
-    }), Callable))
+    }
 
   ///@param {Number} timestamp
   ///@return {TrackChannel}
-  rewind = method(this, Assert.isType(Struct
-    .getDefault(config, "rewind", function(timestamp) {
+  rewind = Optional.is(Struct.getIfType(config, "rewind", Callable))
+    ? method(this, config.rewind)
+    : function(timestamp) {
+      var size = this.events.size()
       this.pointer = null
       this.time = timestamp
-      for (var index = 0; index < events.size(); index++) {
+      for (var index = 0; index < size; index++) {
         this.pointer = index
-        if (events.get(index).timestamp >= timestamp) {
+        if (this.events.get(index).timestamp >= timestamp) {
           this.pointer = index == 0 ? null : index - 1
           break
         }
       }
+
       return this
-    }), Callable))
+    }
 
   ///@param {Number} timestamp
   ///@return {TrackChannel}
-  update = method(this, Assert.isType(Struct
-    .getDefault(config, "update", function(timestamp) {
+  update = Optional.is(Struct.getIfType(config, "update", Callable))
+    ? method(this, config.update)
+    : function(timestamp) {
       if (this.time > timestamp) {
         this.rewind(timestamp)
       }
@@ -343,25 +377,30 @@ function TrackChannel(json, config = null) constructor {
         var event = events.get(pointer)
         if (timestamp >= event.timestamp) {
           this.pointer = pointer
-          event.callable(event.data)
+          //Logger.debug("Track", $"(channel: '{this.name}', timestamp: {timestamp}) dispatch event: '{event.callableName}'")
+          event.callable(event.parseData(event.data), this)
         } else {
           ///@todo execute events based on some dictionary
           break
         }
       }
       return this
-    }), Callable))
+    }
 
   ///@return {Struct}
-  serialize = method(this, Assert.isType(Struct
-    .getDefault(config, "toTemplate", function() {
+  serialize = Optional.is(Struct.getIfType(config, "serialize", Callable))
+    ? method(this, config.serialize)
+    : function() {
       return {
         "name": this.name,
         "events": this.events.map(function(event) {
           return event.serialize()
         }).getContainer(),
+        "settings": Core.isType(Struct.get(this.settings, "serialize"), Struct) 
+          ? this.settings.serialize() 
+          : this.settings,
       }
-    }), Callable))
+    }
 }
 
 
@@ -369,40 +408,34 @@ function TrackChannel(json, config = null) constructor {
 ///@param {?Struct} [config]
 function TrackEvent(json, config = null): Event("TrackEvent") constructor {
 
+  ///@override
+  ///@type {Struct}
+  data = Struct.getIfType(json, "data", Struct, { })
+
   ///@type {Number}
   timestamp = Assert.isType(Struct.get(json, "timestamp"), Number)
 
-  ///@override
-  ///@type {Struct}
-  data = Assert.isType(Struct.getDefault(json, "data", {}), Struct)
-
   ///@type {String}
-  callableName = Struct.getDefault(json, "callable", "dummy")
+  callableName = Struct.getIfType(json, "callable", String, "dummy")
+
+  var handler = Struct.getIfType(config, "handlers", Map, DEFAULT_TRACK_EVENT_HANDLERS)
+    .get(this.callableName)
 
   ///@type {Callable}
-  callable = Assert.isType((Struct.contains(config, "handlers") 
-      ? Assert.isType(config.handlers, Map)
-      : DEFAULT_TRACK_EVENT_HANDLERS)
-    .get(this.callableName), Callable)
+  callable = Struct.getIfType(handler, "run", Callable, Lambda.dummy)
 
-  ///@todo refactor
+  ///@type {Callable}
+  parseData = Struct.getIfType(handler, "parse", Callable, Lambda.passthrough)
+
+  ///@type {Callable}
+  serializeData = Struct.getIfType(handler, "serialize", Callable, Struct.serialize)
+  
   ///@return {Struct}
-  serialize = method(this, Assert.isType(Struct
-    .getDefault(config, "serialize", function() {
-      var json = {
-        "timestamp": this.timestamp,
-        "callable": this.callableName,
-      }
-
-      if (Core.isType(this.data, Struct)) {
-        Struct.set(json, "data", Struct.map(this.data, function(value, key) {
-          var serialize = Struct.get(value, "serialize")
-          return Core.isType(serialize, Callable) 
-            ? value.serialize() 
-            : value
-        }))
-      }
-      
-      return json
-    }), Callable))
+  serialize = method(this, Struct.getIfType(config, "serialize", Callable, function() {
+    return {
+      "timestamp": this.timestamp,
+      "callable": this.callableName,
+      "data": this.serializeData(this.data),
+    }
+  }))
 }

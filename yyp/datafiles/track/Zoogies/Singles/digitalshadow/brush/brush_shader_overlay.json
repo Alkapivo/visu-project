@@ -1,0 +1,54 @@
+{
+  "version":"1",
+  "data":[
+    {
+      "color":"#36FF18",
+      "type":"brush_shader_overlay",
+      "properties":{
+        "shader-overlay_render-support-grid":1.0,
+        "shader-overlay_transform-support-grid-alpha":{
+          "factor":999.0,
+          "increase":0.0,
+          "target":0.20000000000000001,
+          "value":0.0
+        },
+        "shader-overlay_transform-support-grid-treshold":{
+          "factor":999.0,
+          "increase":0.0,
+          "target":3.0,
+          "value":0.0
+        },
+        "shader-overlay_use-render-support-grid":1.0,
+        "shader-overlay_use-transform-support-grid-alpha":true,
+        "shader-overlay_use-transform-support-grid-treshold":true
+      },
+      "texture":"texture_ve_icon_effect_config",
+      "name":"render overlay ON"
+    },
+    {
+      "color":"#FF0023",
+      "type":"brush_shader_overlay",
+      "properties":{
+        "shader-overlay_render-support-grid":0.0,
+        "shader-overlay_transform-support-grid-alpha":{
+          "factor":999.0,
+          "increase":0.0,
+          "target":0.20000000000000001,
+          "value":0.0
+        },
+        "shader-overlay_transform-support-grid-treshold":{
+          "factor":999.0,
+          "increase":0.0,
+          "target":3.0,
+          "value":0.0
+        },
+        "shader-overlay_use-render-support-grid":1.0,
+        "shader-overlay_use-transform-support-grid-alpha":false,
+        "shader-overlay_use-transform-support-grid-treshold":false
+      },
+      "texture":"texture_ve_icon_effect_config",
+      "name":"render overlay OFF"
+    }
+  ],
+  "model":"Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>"
+}

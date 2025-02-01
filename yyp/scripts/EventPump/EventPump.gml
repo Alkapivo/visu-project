@@ -1,9 +1,5 @@
 ///@package io.alkapivo.core.util.event
 
-///@param {String} _message
-function EventPumpNotFoundException(_message): Exception(_message) constructor { }
-
-
 ///@static
 function _EventPumpUtil() constructor {
   
@@ -27,7 +23,7 @@ global.__EventPumpUtil = new _EventPumpUtil()
 function EventPump(_context, _dispatchers, config = {}) constructor {
 
   ///@type {Struct}
-  context = Assert.isType(_context, Struct, "context")
+  context = Assert.isType(_context, Struct, "EventPump context must type of Struct")
 
   ///@private 
   ///@type {Queue<Event>}
@@ -41,92 +37,105 @@ function EventPump(_context, _dispatchers, config = {}) constructor {
 
   ///@private
   ///@type {?Timer}
-  timer = Struct.contains(config, "timer") 
-    ? Assert.isType(Struct.get(config, "timer"), Timer) 
-    : null
+  timer = Struct.getIfType(config, "timer", Timer, null)
 
   ///@private
   ///@type {Number}
-  limit = Core.isType(Struct.get(config, "limit"), Number) ? config.limit : Infinity
+  limit = Struct.getIfType(config, "limit", Number, Infinity)
 
   ///@private
   ///@type {Boolean}
-  enableLogger = Assert.isType(Struct
-    .getDefault(config, "enableLogger", false), Boolean)
+  enableLogger = Struct.getIfType(config, "enableLogger", Boolean, false)
+
+  ///@private
+  ///@type {String}
+  loggerPrefix = Struct.getIfType(config, "loggerPrefix", String, "EventPump")
 
   ///@private
   ///@type {Boolean}
-  catchException = Assert.isType(Struct
-    .getDefault(config, "catchException", false), Boolean)
+  catchException = Struct.getIfType(config, "catchException", Boolean, false)
+
+  ///@private
+  ///@type {?Callable}
+  exceptionCallback = Struct.getIfType(config, "exceptionCallback", Callable)
 
   ///@param {Event} event
   ///@return {?Promise}
-  send = function(event) {
+  static send = function(event) {
     if (this.enableLogger) {
-      Logger.debug("EventPump", $"Send event: '{event.name}'")
+      Logger.info(this.loggerPrefix, $"Send event: '{event.name}'")
     }
+
     this.container.push(event)
     return event.promise
   }
 
-  ///@param {Event|Number} entry
+  ///@param {Event} event
+  ///@throws {Exception}
   ///@return {EventPump}
-  execute = function(entry) {
-    static resolveEvent = function(context, event) {
-      if (context.enableLogger) {
-        Logger.debug("EventPump", $"Dispatch event: '{event.name}'")
+  static execute = function(event) {
+    static resolveEvent = function(event, pump) {
+      if (pump.enableLogger) {
+        Logger.info(pump.loggerPrefix, $"Dispatch event: '{event.name}'")
       }
 
-      var handler = context.dispatchers.get(event.name)
-      if (!Core.isType(handler, Callable)) {
-        throw new EventPumpNotFoundException($"Dispatcher not found: '{event.name}'")
-      }
-
+      var handler = Assert.isType(pump.dispatchers.get(event.name), Callable, 
+        $"Dispatcher not found for event: '{event.name}'")
       var response = handler(event)
       if (Core.isType(event.promise, Promise)) {
         event.promise.fullfill(response)
       }
     }
 
-    var event = Core.isType(entry, Number) ? this.container.pop() : entry
     if (this.catchException) {
-      var isException = false
-      var exceptionMessage = ""
       try {
-        resolveEvent(this, event)
+        resolveEvent(event, this)
       } catch (exception) {
-        Logger.error("EventPump", $"'execute-dispatcher' fatal error: {exception.message}")
+        Logger.error(this.loggerPrefix, 
+          $"EventPump::execute fatal error: {exception.message}")
         Core.printStackTrace()
-        isException = true
-        exceptionMessage = exception.message
-      }
-
-      if (isException && Core.isType(Struct.get(event, "promise"), Promise)) {
-        try {
-          event.promise.reject(exceptionMessage)
-        } catch (ex) {
-          Logger.error("EventPump", $"'dispatcher-promise-reject' fatal error: {ex.message}")
+        
+        if (Optional.is(event.promise)) {
+          try {
+            event.promise.reject(exception.message)
+          } catch (ex) {
+            Logger.error(this.loggerPrefix, 
+              $"EventPump::execute fatal error while rejecting event promise: {ex.message}")
+            Core.printStackTrace()
+          }
+        }
+  
+        if (Optional.is(this.exceptionCallback)) {
+          try {
+            this.exceptionCallback(event)
+          } catch (ex) {
+            Logger.error(this.loggerPrefix, 
+              $"EventPump::execute fatal error while running exceptionCallback: {ex.message}")
+            Core.printStackTrace()
+          }
         }
       }
     } else {
-      resolveEvent(this, event)
+      resolveEvent(event, this)
     }
 
     return this
   }
 
   ///@return {EventPump}
-  update = function() {
+  static update = function() {
     if (this.timer != null && !this.timer.update().finished) {
       return this
     }
 
-    if (this.limit == Infinity) {
-      this.container.forEach(this.execute)
-    } else {
-      var to = min(this.limit, this.container.size())
-      IntStream.forEach(0, to, this.execute, this)
+    var size = this.limit == Infinity 
+      ? this.container.size() 
+      : min(this.limit, this.container.size())
+
+    repeat (size) {
+      this.execute(this.container.pop())
     }
+
     return this
   }
 }

@@ -3,9 +3,10 @@
 varying vec2 v_vTexcoord;
 varying vec4 v_vColour;
 
-uniform vec3 iResolution; // viewport resolution (in pixels)
+uniform vec2 iResolution; // viewport resolution (in pixels)
 uniform float iTime; // shader playback time (in seconds)
-
+uniform float iTreshold; // 8.0
+uniform vec3 iSize; // vec3(0.0, 0.0, 0.0)
 
 float opSmoothUnion(float d1, float d2, float k) {
   float h = clamp(0.5 + 0.5 * (d2 - d1) / k, 0.0, 1.0);
@@ -22,7 +23,7 @@ float map(vec3 p) {
 		float fi = float(i);
 		float time = iTime * (fract(fi * 412.531 + 0.513) - 0.5) * 2.0;
 		d = opSmoothUnion(
-      sdSphere(p + sin(time + fi * vec3(52.5126, 64.62744, 632.25)) * vec3(2.0, 2.0, 0.8), mix(0.5, 1.0, fract(fi * 412.531 + 0.5124))),
+      sdSphere(p + sin(time + fi * vec3(52.5126, 64.62744, 632.25)) * vec3(iSize.x + 2.0, iSize.y + 2.0, iSize.z + 0.8), mix(0.5, 1.0, fract(fi * 412.531 + 0.5124))),
 			d,
 			0.4
 		);
@@ -48,7 +49,7 @@ void main() {
 	float depth = 0.0;
 	vec3 p;
 	
-	for(int i = 0; i < 8; i++) {
+	for (int i = 0; i < 8; i++) {
 		p = rayOri + rayDir * depth;
 		float dist = map(p);
     depth += dist;
@@ -59,12 +60,12 @@ void main() {
 	
   depth = min(6.0, depth);
 	vec3 n = calcNormal(p);
-  float b = max(0.0, dot(n, vec3(0.577)));
-  vec3 col = (0.5 + 0.5 * cos((b + iTime * 3.0) + uv.xyx * 2.0 + vec3(0,2,4))) * (0.85 + b * 0.35);
-  col *= exp(-depth * 0.15);
-	
-  // maximum thickness is 2m in alpha channel
-  vec4 pixel = vec4(col, 1.0 - (depth - 0.5) / 2.0);
-  pixel.a *= v_vColour.a;
-  gl_FragColor = pixel;
+  float b = max(0.0, dot(n, vec3(0.977)));
+  vec3 col = (0.5 + 0.5 * cos((b + iTime * 3.0) + uv.xyx * 2.0 + vec3(0.0, 2.0, 4.0))) * (0.85 + b * 0.95);
+  col *= exp(-depth * 0.05);
+
+  vec4 textureColor = texture2D(gm_BaseTexture, v_vTexcoord);
+  float alpha = (depth - 0.5) / 2.0;
+  vec3 pixel = mix(col, textureColor.rgb, alpha);
+  gl_FragColor = vec4(pixel, textureColor.a * v_vColour.a * (iTreshold * (1.0 - alpha)));
 }

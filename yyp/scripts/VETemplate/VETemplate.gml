@@ -6,7 +6,7 @@ function _VETemplateType(): Enum() constructor {
   SHROOM = "template_shroom"
   BULLET = "template_bullet"
   COIN = "template_coin"
-  LYRICS = "template_lyrics"
+  SUBTITLE = "template_subtitle"
   PARTICLE = "template_particle"
   TEXTURE = "template_texture"
 }
@@ -21,7 +21,7 @@ global.__VETemplateTypeNames = new Map(String, String)
   .set(VETemplateType.SHROOM, "Shroom template")
   .set(VETemplateType.BULLET, "Bullet template")
   .set(VETemplateType.COIN, "Coin template")
-  .set(VETemplateType.LYRICS, "Lyrics template")
+  .set(VETemplateType.SUBTITLE, "Subtitle template")
   .set(VETemplateType.PARTICLE, "Particle template")
   .set(VETemplateType.TEXTURE, "Texture template")
 #macro VETemplateTypeNames global.__VETemplateTypeNames
@@ -81,13 +81,22 @@ function VETemplate(json) constructor {
       template: VEComponents.get("text-field"),
       layout: VELayouts.get("text-field"),
       config: { 
-        layout: { type: UILayoutType.VERTICAL },
+        layout: { 
+          type: UILayoutType.VERTICAL,
+          margin: { top: 2 },
+        },
         label: { text: "Name" },
         field: { 
           read_only: json.type == VETemplateType.TEXTURE,
           store: { key: "template-name" }
         },
       },
+    },
+    {
+      name: "template_start-line-h",
+      template: VEComponents.get("line-h"),
+      layout: VELayouts.get("line-h"),
+      config: { layout: { type: UILayoutType.VERTICAL } },
     },
   ])
 
@@ -141,6 +150,10 @@ function VETemplate(json) constructor {
       }
     }
 
+    if (this.store.getValue("shroom_use-lifespawn")) {
+      Struct.set(json, "lifespawnMax", this.store.getValue("shroom_lifespawn"))
+    }
+
     if (this.store.getValue("shroom_use-health-points")) {
       Struct.set(json, "healthPoints", this.store.getValue("shroom_health-points"))
     }
@@ -157,51 +170,69 @@ function VETemplate(json) constructor {
     var sprite = this.store.getValue("bullet_texture")
     var json = {
       name: Assert.isType(this.store.getValue("template-name"), String),
-      sprite: sprite.serialize(),
-      damage: this.store.getValue("bullet_use-damage")
-        ? this.store.getValue("bullet_damage")
-        : null,
       lifespawnMax: this.store.getValue("bullet_use-lifespawn")
         ? this.store.getValue("bullet_lifespawn")
         : null,
-      bulletTemplateOnDeath: this.store.getValue("bullet_use-template-on-death")
-        ? this.store.getValue("bullet_template-on-death")
+      damage: this.store.getValue("bullet_use-damage")
+        ? this.store.getValue("bullet_damage")
         : null,
-      bulletAmountOnDeath: this.store.getValue("bullet_use-template-on-death")
-        ? this.store.getValue("bullet_template-amount-on-death")
+      sprite: sprite.serialize(),
+      wiggle: this.store.getValue("bullet_use-wiggle"),
+      wiggleTime: this.store.getValue("bullet_use-wiggle")
+        ? this.store.getValue("bullet_wiggle-time")
         : null,
-      bulletSpawnAngleOnDeath: this.store.getValue("bullet_use-template-on-death")
-        ? this.store.getValue("bullet_template-spawn-angle-on-death")
+      wiggleTimeRng: this.store.getValue("bullet_use-wiggle")
+        ? this.store.getValue("bullet_use-wiggle-time-rng")
         : null,
-      bulletAngleStepOnDeath: this.store.getValue("bullet_use-template-on-death")
-        ? this.store.getValue("bullet_template-angle-step-on-death")
+      wiggleFrequency: this.store.getValue("bullet_use-wiggle")
+        ? this.store.getValue("bullet_wiggle-frequency")
         : null,
-      speedTransformer: this.store.getValue("bullet_use-transform-speed")
-        ? this.store.getValue("bullet_transform-speed").serialize()
+      wiggleDirRng: this.store.getValue("bullet_use-wiggle")
+        ? this.store.getValue("bullet_use-wiggle-dir-rng")
         : null,
-      speedWiggleValue: this.store.getValue("bullet_use-wiggle-speed")
-        ? this.store.getValue("bullet_wiggle-speed-value").serialize()
+      wiggleAmplitude: this.store.getValue("bullet_use-wiggle")
+        ? this.store.getValue("bullet_wiggle-amplitude")
         : null,
-      speedWiggleInterval: this.store.getValue("bullet_use-wiggle-speed")
-        ? this.store.getValue("bullet_wiggle-speed-interval").serialize()
+      useAngleOffset: this.store.getValue("bullet_use-angle-offset"),
+      changeAngleOffset: this.store.getValue("bullet_change-angle-offset"),
+      angleOffset: this.store.getValue("bullet_angle-offset").serialize(),
+      angleOffsetRng: this.store.getValue("bullet_use-angle-offset-rng"),
+      useSpeedOffset: this.store.getValue("bullet_use-speed-offset"),
+      changeSpeedOffset: this.store.getValue("bullet_change-speed-offset"),
+      speedOffset: this.store.getValue("bullet_speed-offset").serialize(),
+      onDeath: this.store.getValue("bullet_use-on-death")
+        ? this.store.getValue("bullet_on-death")
         : null,
-      angleTransformer: this.store.getValue("bullet_use-transform-angle")
-        ? this.store.getValue("bullet_transform-angle").serialize()
+      onDeathAmount: this.store.getValue("bullet_use-on-death")
+        ? this.store.getValue("bullet_on-death-amount")
         : null,
-      angleWiggleValue : this.store.getValue("bullet_use-wiggle-angle")
-        ? this.store.getValue("bullet_wiggle-angle-value").serialize()
+      onDeathAngle: this.store.getValue("bullet_use-on-death")
+        ? this.store.getValue("bullet_on-death-angle")
         : null,
-      angleWiggleInterval: this.store.getValue("bullet_use-wiggle-angle")
-        ? this.store.getValue("bullet_wiggle-angle-interval").serialize()
+      onDeathAngleRng: this.store.getValue("bullet_use-on-death")
+        ? this.store.getValue("bullet_on-death-angle-rng")
         : null,
-      randomDirection: this.store.getValue("bullet_use-random-direction")
-        ? this.store.getValue("bullet_random-direction")
+      onDeathAngleStep: this.store.getValue("bullet_use-on-death")
+        ? this.store.getValue("bullet_on-death-angle-step")
+        : null,
+      onDeathRngStep: this.store.getValue("bullet_use-on-death")
+        ? this.store.getValue("bullet_on-death-rng-step")
+        : null,
+      onDeathSpeed: this.store.getValue("bullet_use-on-death")
+        ? this.store.getValue("bullet_on-death-speed")
+        : null,
+      onDeathSpeedMerge: this.store.getValue("bullet_use-on-death")
+        ? this.store.getValue("bullet_on-death-speed-merge")
+        : null,
+      onDeathRngSpeed: this.store.getValue("bullet_use-on-death")
+        ? this.store.getValue("bullet_on-death-rng-speed")
         : null,
     }
 
     if (this.store.getValue("use_bullet_mask")) {
       Struct.set(json, "mask", this.store.getValue("bullet_mask").serialize())
     }
+
     return new BulletTemplate(json.name, json)
   }
 
@@ -213,6 +244,9 @@ function VETemplate(json) constructor {
       name: Assert.isType(this.store.getValue("template-name"), String),
       category: Assert.isEnum(this.store.getValue("coin_category"), CoinCategory),
       sprite: sprite.serialize(),
+      useSpeed: this.store.getValue("coin_use-speed"),
+      speed: this.store.getValue("coin_speed").serialize(),
+      changeSpeed: this.store.getValue("coin_change-speed"),
     }
 
     if (this.store.getValue("coin_use-mask")) {
@@ -225,19 +259,14 @@ function VETemplate(json) constructor {
         .getValue("coin_amount"), Number))
     }
 
-    if (this.store.getValue("coin_use-speed")) {
-      Struct.set(json, "speed", this.store
-        .getValue("coin_speed").serialize())
-    }
-
     return new CoinTemplate(json.name, json)
   }
 
   ///@private
-  ///@return {LyricsTemplate}
-  toLyricsTemplate = function() {
+  ///@return {SubtitleTemplate}
+  toSubtitleTemplate = function() {
     var store = this.store
-    return new LyricsTemplate(
+    return new SubtitleTemplate(
       store.getValue("template-name"), 
       { lines: String.split(store.getValue("lines"), "\n").getContainer() }
     )
@@ -256,10 +285,11 @@ function VETemplate(json) constructor {
     template.color.halfway = this.store.getValue("particle-color-halfway").toHex()
     template.color.finish = this.store.getValue("particle-color-finish").toHex()
     if (this.store.getValue("particle-use-sprite")) {
+      var sprite = this.store.getValue("particle-sprite")
       Struct.set(template, "sprite", {
-        name: this.store.getValue("particle-sprite").getName(),
-        animate: this.store.getValue("particle-sprite-animate"),
-        randomValue: this.store.getValue("particle-sprite-randomValue"),
+        name: sprite.getName(),
+        animate: sprite.getAnimate(),
+        randomValue: sprite.getRandomFrame(),
         stretch: this.store.getValue("particle-sprite-stretch"),
       })
     } else {
@@ -277,14 +307,14 @@ function VETemplate(json) constructor {
   }
 
   ///@throws {Exception}
-  ///@return {ShaderTemplate|ShroomTemplate|BulletTemplate|CoinTemplate|LyricsTemplate|ParticleTemplate|TextureTemplate}
+  ///@return {ShaderTemplate|ShroomTemplate|BulletTemplate|CoinTemplate|SubtitleTemplate|ParticleTemplate|TextureTemplate}
   serialize = function() {
     switch (this.type) {
       case VETemplateType.SHADER: return this.toShaderTemplate()
       case VETemplateType.SHROOM: return this.toShroomTemplate()
       case VETemplateType.BULLET: return this.toBulletTemplate()
       case VETemplateType.COIN: return this.toCoinTemplate()
-      case VETemplateType.LYRICS: return this.toLyricsTemplate()
+      case VETemplateType.SUBTITLE: return this.toSubtitleTemplate()
       case VETemplateType.PARTICLE: return this.toParticleTemplate()
       case VETemplateType.TEXTURE: return this.toTextureTemplate()
       default: throw new Exception($"Serialize dispatcher for type '{this.type}' wasn't found")
@@ -299,4 +329,10 @@ function VETemplate(json) constructor {
   data.components.forEach(function(component, index, components) {
     components.add(component)
   }, this.components)
+  //this.components.add({
+  //  name: "template_end-line-h",
+  //  template: VEComponents.get("line-h"),
+  //  layout: VELayouts.get("line-h"),
+  //  config: { layout: { type: UILayoutType.VERTICAL } },
+  //})
 }

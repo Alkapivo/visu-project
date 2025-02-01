@@ -1,23 +1,30 @@
 ///@package io.alkapivo.visu.editor.api.template
 
-
-
 ///@param {Struct} json
 ///@return {Struct}
-function template_shroom(json = null) {
-  var template = {
+function template_shroom(json) {
+  return {
     name: Assert.isType(json.name, String),
     store: new Map(String, Struct, {
+      "shroom_use-lifespawn": {
+        type: Boolean,
+        value: Core.isType(Struct.get(json, "lifespawnMax"), Number),
+      },
+      "shroom_lifespawn": {
+        type: Number,
+        value: Struct.getIfType(json, "lifespawnMax", Number, 15.0),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.0, 99.9),
+      },
       "shroom_use-health-points": {
         type: Boolean,
         value: Core.isType(Struct.get(json, "healthPoints"), Number),
       },
       "shroom_health-points": {
         type: Number,
-        value: Core.isType(Struct.get(json, "healthPoints"), Number) ? json.healthPoints : 1.0,
-        passthrough: function(value) {
-          return round(clamp(NumberUtil.parse(value, this.value), 0, 9999.9))
-        },
+        value: Struct.getIfType(json, "healthPoints", Number, 1.0),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.0, 9999.9),
       },
       "shroom_texture": {
         type: Sprite,
@@ -25,58 +32,110 @@ function template_shroom(json = null) {
       },
       "use_shroom_mask": {
         type: Boolean,
-        value: Optional.is(Struct.getDefault(json, "mask", null)),
+        value: Optional.is(Struct.getIfType(json, "mask", Struct)),
       },
       "shroom_mask": {
         type: Rectangle,
-        value: new Rectangle(Struct.getDefault(json, "mask", null)),
+        value: new Rectangle(Struct.getIfType(json, "mask", Struct)),
       },
       "shroom_game-mode_bullet-hell_features": {
         type: String,
-        value: JSON.stringify(Struct.getDefault(json.gameModes.bulletHell, "features", []), { pretty: true })
+        value: JSON.stringify(Struct
+          .getIfType(json.gameModes.bulletHell, "features", GMArray, []), { 
+            pretty: true 
+          })
       },
       "shroom_game-mode_platformer_features": {
         type: String,
-        value: JSON.stringify(Struct.getDefault(json.gameModes.platformer, "features", []), { pretty: true })
+        value: JSON.stringify(Struct
+          .getIfType(json.gameModes.platformer, "features", GMArray, []), { 
+            pretty: true 
+          })
       },
       "shroom_game-mode_racing_features": {
         type: String,
-        value: JSON.stringify(Struct.getDefault(json.gameModes.racing, "features", []), { pretty: true })
+        value: JSON.stringify(Struct
+          .getIfType(json.gameModes.racing, "features", GMArray, []), { 
+            pretty: true 
+          })
       },
     }),
     components: new Array(Struct, [
       {
-        name: "shroom_use-health-points",
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
+        name: "shroom_lifespawn",
+        template: VEComponents.get("text-field-increase-checkbox"),
+        layout: VELayouts.get("text-field-increase-checkbox"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Set health points",
-            enable: { key: "shroom_use-health-points" },
+            text: "Lifespawn",
+            enable: { key: "shroom_use-lifespawn" },
           },  
+          field: { 
+            store: { key: "shroom_lifespawn" },
+            enable: { key: "shroom_use-lifespawn" },
+          },
+          decrease: {
+            store: { key: "shroom_lifespawn" },
+            enable: { key: "shroom_use-lifespawn" },
+            factor: -0.25,
+          },
+          increase: {
+            store: { key: "shroom_lifespawn" },
+            enable: { key: "shroom_use-lifespawn" },
+            factor: 0.25,
+          },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "shroom_use-health-points" },
+            store: { key: "shroom_use-lifespawn" },
+          },
+          title: { 
+            text: "Override",
+            enable: { key: "shroom_use-lifespawn" },
           },
         },
       },
       {
         name: "shroom_health-points",
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
+        template: VEComponents.get("text-field-increase-checkbox"),
+        layout: VELayouts.get("text-field-increase-checkbox"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "HP",
+            text: "Health",
             enable: { key: "shroom_use-health-points" },
           },  
           field: { 
             store: { key: "shroom_health-points" },
             enable: { key: "shroom_use-health-points" },
           },
+          decrease: {
+            store: { key: "shroom_health-points" },
+            enable: { key: "shroom_use-health-points" },
+            factor: -0.25,
+          },
+          increase: {
+            store: { key: "shroom_health-points" },
+            enable: { key: "shroom_use-health-points" },
+            factor: 0.25,
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "shroom_use-health-points" },
+          },
+          title: { 
+            text: "Override",
+            enable: { key: "shroom_use-health-points" },
+          },
         },
+      },
+      {
+        name: "shroom_health-points-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
       },
       {
         name: "shroom_texture",
@@ -85,52 +144,16 @@ function template_shroom(json = null) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           title: {
-            label: { text: "Set texture" },
+            label: {
+              text: "Shroom texture",
+              backgroundColor: VETheme.color.accentShadow,
+            },
+            input: { backgroundColor: VETheme.color.accentShadow },
+            checkbox: { backgroundColor: VETheme.color.accentShadow },
           },
           texture: {
             label: { text: "Texture" }, 
             field: { store: { key: "shroom_texture" } },
-          },
-          animate: {
-            label: { text: "Animate" }, 
-            checkbox: { 
-              store: { key: "shroom_texture" },
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-            },
-          },
-          randomFrame: {
-            label: { text: "Random frame" }, 
-            checkbox: { 
-              store: { key: "shroom_texture" },
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-            },
-          },
-          frame: {
-            label: { text: "Frame" },
-            field: { store: { key: "shroom_texture" } },
-          },
-          speed: {
-            label: { text: "Speed" },
-            field: { store: { key: "shroom_texture" } },
-          },
-          scaleX: {
-            label: { text: "Scale X" },
-            field: { store: { key: "shroom_texture" } },
-          },
-          scaleY: {
-            label: { text: "Scale Y" },
-            field: { store: { key: "shroom_texture" } },
-          },
-          alpha: {
-            label: { text: "Alpha" },
-            field: { store: { key: "shroom_texture" } },
-            slider: { 
-              minValue: 0.0,
-              maxValue: 1.0,
-              store: { key: "shroom_texture" },
-            },
           },
           preview: {
             image: { name: "texture_empty" },
@@ -139,25 +162,110 @@ function template_shroom(json = null) {
           resolution: {
             store: { key: "shroom_texture" },
           },
+          alpha: {
+            label: { text: "Alpha" },
+            field: { store: { key: "shroom_texture" } },
+            decrease: { store: { key: "shroom_texture" } },
+            increase: { store: { key: "shroom_texture" } },
+            slider: { 
+              minValue: 0.0,
+              maxValue: 1.0,
+              snapValue: 0.01 / 1.0,
+              store: { key: "shroom_texture" },
+            },
+          },
+          frame: {
+            label: { text: "Frame" },
+            field: { store: { key: "shroom_texture" } },
+            decrease: { store: { key: "shroom_texture" } },
+            increase: { store: { key: "shroom_texture" } },
+            checkbox: { 
+              store: { key: "shroom_texture" },
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+            },
+            title: { text: "Rng" }, 
+            stick: { store: { key: "shroom_texture" } },
+          },
+          speed: {
+            label: { text: "Speed" },
+            field: { store: { key: "shroom_texture" } },
+            decrease: { store: { key: "shroom_texture" } },
+            increase: { store: { key: "shroom_texture" } },
+            checkbox: { 
+              store: { key: "shroom_texture" },
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+            },
+            title: { text: "Animate" }, 
+            stick: { store: { key: "shroom_texture" } },
+          },
+          scaleX: {
+            label: { text: "Scale X" },
+            field: { store: { key: "shroom_texture" } },
+            decrease: { store: { key: "shroom_texture" } },
+            increase: { store: { key: "shroom_texture" } },
+            stick: { store: { key: "shroom_texture" } },
+          },
+          scaleY: {
+            label: { text: "Scale Y" },
+            field: { store: { key: "shroom_texture" } },
+            decrease: { store: { key: "shroom_texture" } },
+            increase: { store: { key: "shroom_texture" } },
+            stick: { store: { key: "shroom_texture" } },
+          },
+        },
+      },
+      {
+        name: "shroom_texture-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "shroom_mask-property",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: {
+            text: "Collision mask",
+            enable: { key: "use_shroom_mask" },
+            backgroundColor: VETheme.color.side,
+          },
+          input: { backgroundColor: VETheme.color.side },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "use_shroom_mask" },
+            backgroundColor: VETheme.color.side,
+          },
+        },
+      },
+      {
+        name: "shroom_preview_mask",
+        template: VEComponents.get("preview-image-mask"),
+        layout: VELayouts.get("preview-image-mask"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          preview: {
+            enable: { key: "use_shroom_mask" },
+            image: { name: "texture_empty" },
+            store: { key: "shroom_texture" },
+            mask: "shroom_mask",
+          },
+          resolution: {
+            enable: { key: "use_shroom_mask" },
+            store: { key: "shroom_texture" },
+          },
         },
       },
       {
         name: "shroom_mask",
-        template: VEComponents.get("vec4-field"),
-        layout: VELayouts.get("vec4-field"),
+        template: VEComponents.get("vec4-stick-increase"),
+        layout: VELayouts.get("vec4"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          title: {
-            label: {
-              text: "Custom collision mask",
-              enable: { key: "use_shroom_mask" },
-            },
-            checkbox: { 
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "use_shroom_mask" },
-            },
-          },
           x: {
             label: {
               text: "X",
@@ -166,6 +274,22 @@ function template_shroom(json = null) {
             field: {
               store: { key: "shroom_mask" },
               enable: { key: "use_shroom_mask" },
+              GMTF_DECIMAL: 0,
+            },
+            decrease: {
+              store: { key: "shroom_mask" },
+              enable: { key: "use_shroom_mask" },
+              factor: -1.0,
+            },
+            increase: {
+              store: { key: "shroom_mask" },
+              enable: { key: "use_shroom_mask" },
+              factor: 1.0,
+            },
+            slider: {
+              store: { key: "shroom_mask" },
+              enable: { key: "use_shroom_mask" },
+              factor: 0.1,
             },
           },
           y: {
@@ -176,6 +300,22 @@ function template_shroom(json = null) {
             field: {
               store: { key: "shroom_mask" },
               enable: { key: "use_shroom_mask" },
+              GMTF_DECIMAL: 0,
+            },
+            decrease: {
+              store: { key: "shroom_mask" },
+              enable: { key: "use_shroom_mask" },
+              factor: -1.0,
+            },
+            increase: {
+              store: { key: "shroom_mask" },
+              enable: { key: "use_shroom_mask" },
+              factor: 1.0,
+            },
+            slider: {
+              store: { key: "shroom_mask" },
+              enable: { key: "use_shroom_mask" },
+              factor: 0.1,
             },
           },
           z: {
@@ -186,6 +326,22 @@ function template_shroom(json = null) {
             field: {
               store: { key: "shroom_mask" },
               enable: { key: "use_shroom_mask" },
+              GMTF_DECIMAL: 0,
+            },
+            decrease: {
+              store: { key: "shroom_mask" },
+              enable: { key: "use_shroom_mask" },
+              factor: -1.0,
+            },
+            increase: {
+              store: { key: "shroom_mask" },
+              enable: { key: "use_shroom_mask" },
+              factor: 1.0,
+            },
+            slider: {
+              store: { key: "shroom_mask" },
+              enable: { key: "use_shroom_mask" },
+              factor: 0.1,
             },
           },
           a: {
@@ -196,9 +352,31 @@ function template_shroom(json = null) {
             field: {
               store: { key: "shroom_mask" },
               enable: { key: "use_shroom_mask" },
+              GMTF_DECIMAL: 0,
+            },
+            decrease: {
+              store: { key: "shroom_mask" },
+              enable: { key: "use_shroom_mask" },
+              factor: -1.0,
+            },
+            increase: {
+              store: { key: "shroom_mask" },
+              enable: { key: "use_shroom_mask" },
+              factor: 1.0,
+            },
+            slider: {
+              store: { key: "shroom_mask" },
+              enable: { key: "use_shroom_mask" },
+              factor: 0.1,
             },
           },
         },
+      },
+      {
+        name: "shroom_mask-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
       },
       {
         name: "shroom_game-mode_bullet-hell",
@@ -206,7 +384,12 @@ function template_shroom(json = null) {
         layout: VELayouts.get("property"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          label: { text: "BulletHell" },
+          label: {
+            text: "Shroom features",
+            backgroundColor: VETheme.color.accentShadow,
+          },
+          input: { backgroundColor: VETheme.color.accentShadow },
+          checkbox: { backgroundColor: VETheme.color.accentShadow },
         },
       },
       {
@@ -219,9 +402,11 @@ function template_shroom(json = null) {
             v_grow: true,
             w_min: 570,
             store: { key: "shroom_game-mode_bullet-hell_features" },
+            updateCustom: UIItemUtils.textField.getUpdateJSONTextArea(),
           },
         },
       },
+      /*
       {
         name: "shroom_game-mode_platformer",
         template: VEComponents.get("property"),
@@ -266,8 +451,7 @@ function template_shroom(json = null) {
           },
         },
       },
+      */
     ]),
   }
-
-  return template
 }

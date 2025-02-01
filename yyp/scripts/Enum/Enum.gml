@@ -52,21 +52,31 @@ function Enum() constructor {
     return null
   }
 
+  ///@param {any} value
+  ///@throws {Exception}
+  ///@return {String}
+  getKey = function(value) {
+    var key = this.findKey(value)
+    return Assert.isType(key, String, 
+      $"'Enum::getKey' (value: '{value}') fatal error: Key was not found")
+  }
+
   ///@return {Array<String>}
   keys = function() {
     static filterKeys = function(key) {
-      return key != "_keys" 
-        && key != "keys" 
-        && key != "get" 
-        && key != "findKey"
-        && key != "contains"
-        && key != "containsKey" 
+      return key != "_keys"
+          && key != "keys"
+          && key != "get"
+          && key != "getKey"
+          && key != "findKey"
+          && key != "contains"
+          && key != "containsKey"
     }
 
-    if (!Core.isType(this._keys, Array)) {
-      this._keys = GMArray.toArray(Struct.keys(this))
-        .filter(filterKeys)
+    if (!Optional.is(this._keys)) {
+      this._keys = new Array(String, GMArray.filter(Struct.keys(this), filterKeys))
     }
+
     return this._keys
   }
 }

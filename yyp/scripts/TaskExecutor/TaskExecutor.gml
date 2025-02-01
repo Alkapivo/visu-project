@@ -1,111 +1,104 @@
 ///@package io.alkapivo.core.task
 
-///@param {String} _message
-function InvalidTaskStatusException(_message): Exception(_message) constructor { }
-
 ///@param {Struct} _context
 ///@param {Struct} [config]
 function TaskExecutor(_context, config = {}) constructor {
 
   ///@type {Struct}
-  context = Assert.isType(_context, Struct)
+  context = Assert.isType(_context, Struct, "TaskExecutor.context must be type of Struct")
 
   ///@private
   ///@type {Array<Task>}
-  tasks = new Array(Task)
-
-  ///@private
-  ///@type {Stack<Number>}
-  gc = new Stack(Number)
+  tasks = new Array(Task).enableGC()
 
   ///@private
   ///@type {Boolean}
-  enableLogger = Assert.isType(Struct
-    .getDefault(config, "enableLogger", false), Boolean)
+  enableLogger = Struct.getIfType(config, "enableLogger", Boolean, false)
   
   ///@private
+  ///@type {String}
+  loggerPrefix = Struct.getIfType(config, "loggerPrefix", String, "TaskExecutor")
+
+  ///@private
   ///@type {Boolean}
-  catchException = Assert.isType(Struct
-    .getDefault(config, "catchException", true), Boolean)
+  catchException = Struct.getIfType(config, "catchException", Boolean, false)
 
   ///@private
-  ///@type {Number}
-  timeoutCounter = 0
+  ///@type {?Callable}
+  exceptionCallback = Struct.getIfType(config, "exceptionCallback", Callable)
 
-  ///@private
   ///@param {Task} task
   ///@param {Number} index
-  ///@throws {InvalidTaskStatusException}
-  updateTask = function(task, index) {
-    static resovleTaskStatus = function(context, task, index) {
-      if (context.enableLogger
-        && Core.isType(task.timeout, Timer)
-        && task.timeout.time > context.timeoutCounter) {
-        context.timeoutCounter += 1
-        Logger.debug("TaskExecutor", $"Timeout 'time': {task.timeout.time}, 'duration': {task.timeout.duration}")
+  ///@param {TaskExecutor} executor
+  ///@throws {Exception}
+  ///@return {TaskExecutor}
+  static execute = function(task, index, executor) {
+    static resolveTask = function(task, index, executor) {
+      if (task.status == TaskStatus.IDLE) {
+        task.status = TaskStatus.RUNNING
+        if (Core.isType(task.onStart, Callable)) {
+          task.onStart(executor)
+        }
       }
-      
-      switch (task.status) {
-        case TaskStatus.IDLE:
-          task.status = TaskStatus.RUNNING
-          if (Core.isType(task.onStart, Callable)) {
-            task.onStart(this)
-          }
-          break
-        case TaskStatus.RUNNING:
-          task.update(this)
-          break
-        case TaskStatus.FULLFILLED:
-        case TaskStatus.REJECTED:
-          context.gc.push(index)
-          break
-        default:
-          throw new InvalidTaskStatusException()
-          break
+
+      if (task.status == TaskStatus.RUNNING) {
+        task.update(executor)
+      }
+
+      if (task.status == TaskStatus.FULLFILLED
+          || task.status == TaskStatus.REJECTED) {
+        executor.tasks.addToGC(index)
+        if (Optional.is(task.onFinish)) {
+          task.onFinish(executor)
+        }        
       }
     }
 
-    if (this.catchException) {
-      var isException = false
+    if (executor.catchException) {
       try {
-        resovleTaskStatus(this, task, index)
+        resolveTask(task, index, executor)
       } catch (exception) {
-        Logger.error("TaskExecutor", $"'executor-task' fatal error: {exception.message}")
-        this.gc.push(index)
-        isException = true
-      }
-
-      if (isException) {
-        try {
-          task.reject(exception.message)
-        } catch (ex) {
-          Logger.error("TaskExecutor", $"'executor-promise-reject' fatal error: {ex.message}")
+        Logger.error(executor.loggerPrefix, 
+          $"TaskExecutor::execute fatal error: {exception.message}")
+        Core.printStackTrace()
+        
+        if (Optional.is(task.promise)) {
+          try {
+            task.promise.reject(exception.message)
+          } catch (ex) {
+            Logger.error(executor.loggerPrefix, 
+              $"TaskExecutor::execute fatal error while rejecting task promise: {ex.message}")
+            Core.printStackTrace()
+          }
+        }
+  
+        if (Optional.is(executor.exceptionCallback)) {
+          try {
+            executor.exceptionCallback(task)
+          } catch (ex) {
+            Logger.error(executor.loggerPrefix, 
+              $"TaskExecutor::execute fatal error while running exceptionCallback: {ex.message}")
+            Core.printStackTrace()
+          }
         }
       }
     } else {
-      resovleTaskStatus(this, task, index)
+      resolveTask(task, index, executor)
     } 
+
+    return executor
   }
 
   ///@param {Task} task
   ///@return {TaskExecutor}
-  add = function(task) {
+  static add = function(task) {
     this.tasks.add(task)
     return this
   }
 
   ///@return {TaskExecutor}
-  update = function() {
-    static dispatchTask = function(task, index, executor) {
-      executor.updateTask(task, index)  
-    }
-
-    static gcTask = function(taskIndex, index, executor) { 
-      executor.tasks.remove(taskIndex) 
-    }
-    
-    this.tasks.forEach(dispatchTask, this)
-    this.gc.forEach(gcTask, this)
+  static update = function() {
+    this.tasks.forEach(this.execute, this).runGC()
     return this
   }
 }

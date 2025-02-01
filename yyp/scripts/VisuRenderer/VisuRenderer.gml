@@ -5,8 +5,8 @@ function VisuRenderer() constructor {
   ///@type {GridRenderer}
   gridRenderer = new GridRenderer()
 
-  ///@type {LyricsRenderer}
-  lyricsRenderer = new LyricsRenderer()
+  ///@type {SubtitleRenderer}
+  subtitleRenderer = new SubtitleRenderer()
 
   ///@type {VisuHUDRenderer}
   hudRenderer = new VisuHUDRenderer()
@@ -78,7 +78,7 @@ function VisuRenderer() constructor {
   renderSpinner = function(layout) {
     var controller = Beans.get(BeanVisuController)
     var loaderState = controller.loader.fsm.getStateName()
-    if (loaderState != "idle" && loaderState != "loaded") {
+    if (loaderState != "idle" && loaderState != "cooldown" && loaderState != "loaded") {
       var color = c_black
       this.spinnerFactor = lerp(this.spinnerFactor, 100.0, 0.1)
 
@@ -124,6 +124,15 @@ function VisuRenderer() constructor {
   ///@private
   ///@return {VisuRenderer}
   renderDebugGUI = function() {
+    /*
+    var editor = Beans.get(BeanVisuEditorController)
+    if (Optional.is(editor)) {
+      editor.uiService.containers.forEach(function(container, index) {
+        GPU.render.text(60, 60 + (24 * index), $"#{index}: {container.name}", c_lime, c_black, 1.0, GPU_DEFAULT_FONT_BOLD)  
+      })
+    }
+    */
+    
     if (is_debug_overlay_open()) {
       var controller = Beans.get(BeanVisuController)
       var gridService = controller.gridService
@@ -137,6 +146,7 @@ function VisuRenderer() constructor {
         + gridService.updateBulletServiceTimer.getValue()
         + this.renderTimer.getValue()
         + this.renderGUITimer.getValue()
+      gridService.avgTime.add(timeSum)        
   
       var text = $"shrooms: {shrooms}" + "\n"
         + $"bullets: {bullets}" + "\n"
@@ -148,7 +158,8 @@ function VisuRenderer() constructor {
         + gridService.updateBulletServiceTimer.getMessage() + "\n"
         + this.renderTimer.getMessage() + "\n"
         + this.renderGUITimer.getMessage() + "\n"
-        + $"Sum: {timeSum}" + "\n"
+        + $"Sum: {timeSum}ms" + "\n"
+        + $"Avg: {gridService.avgTime.get()}ms" + "\n"
       GPU.render.text(32, 32, text, c_lime, c_black, 1.0, GPU_DEFAULT_FONT_BOLD)  
     }
 
@@ -198,7 +209,7 @@ function VisuRenderer() constructor {
     this.dialogueRenderer.update()
     return this
   }
-
+  
   ///@return {VisuRenderer}
   render = function() {
     var editor = Beans.get(BeanVisuEditorController)
@@ -220,7 +231,7 @@ function VisuRenderer() constructor {
     if (controller.menu.containers.size() == 0) {
       this.blur.reset()
       this.gridRenderer.renderGUI(_layout)
-      this.lyricsRenderer.renderGUI(_layout)  
+      this.subtitleRenderer.renderGUI(_layout)  
       if (Visu.settings.getValue("visu.interface.render-hud")) {
         this.hudRenderer.renderGUI(_layout)
       }
@@ -245,7 +256,7 @@ function VisuRenderer() constructor {
         var uniformSize = shader_get_uniform(shader_gaussian_blur, "size")
         shader_set(shader_gaussian_blur)
         shader_set_uniform_f(uniformSize, _layout.width(), _layout.height(), this.blur.update().value)
-        this.gridRenderer.renderGlitch(_layout)
+        this.gridRenderer.renderGameplay(_layout)
         shader_reset()
       } else {
         this.gridRenderer.renderGUI(_layout)
@@ -257,7 +268,7 @@ function VisuRenderer() constructor {
     this.renderDebugGUI()
 
     if (!this.initTimer.finished) {
-      GPU.render.clear(ColorUtil.BLACK)
+      GPU.render.clear(c_black, 1.0)
     }
 
     return this

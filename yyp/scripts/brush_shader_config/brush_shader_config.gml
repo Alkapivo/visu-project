@@ -1,4 +1,24 @@
-///@package io.alkapivo.visu.editor.service.brush.shader
+///@package io.alkapivo.visu.editor.service.brush._old.shader
+
+///@param {Struct} json
+///@return {Struct}
+function migrateShaderConfigEvent(json) {
+  return {
+    "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
+    "ef-cfg_use-render-shd-bkg": Struct.getIfType(json, "shader-config_use-background-grid-shaders", Boolean, false),
+    "ef-cfg_render-shd-bkg": Struct.getIfType(json, "shader-config_background-grid-shaders", Boolean, false),
+    "ef-cfg_use-render-shd-gr": Struct.getIfType(json, "shader-config_use-render-grid-shaders", Boolean, false),
+    "ef-cfg_render-shd-gr": Struct.getIfType(json, "shader-config_render-grid-shaders", Boolean, false),
+    "ef-cfg_cls-shd-gr": Struct.getIfType(json, "shader-config_clear-shaders", Boolean, false),
+    "ef-cfg_cls-shd-bkg": Struct.getIfType(json, "shader-config_clear-bkg-shaders", Boolean, false),
+    "ef-cfg_use-cls-frame": Struct.getIfType(json, "shader-config_use-clear-frame", Boolean, false),
+    "ef-cfg_cls-frame": Struct.getIfType(json, "shader-config_clear-frame", Boolean, false),
+    "ef-cfg_use-cls-frame-col": Struct.getIfType(json, "shader-config_use-clear-color", Boolean, false),
+    "ef-cfg_cls-frame-col": Struct.getIfType(json, "shader-config_clear-color", String, "#000000"),
+    "ef-cfg_change-cls-frame-alpha": Struct.getIfType(json, "shader-config_use-transform-clear-frame-alpha", Boolean, false),
+    "ef-cfg_cls-frame-alpha": Struct.getIfType(json, "shader-config_transform-clear-frame-alpha", Struct, { value: 0.0, factor: 0.0, target: 0.0, increase: 0.0 }),
+  }
+}
 
 ///@param {?Struct} [json]
 ///@return {Struct}

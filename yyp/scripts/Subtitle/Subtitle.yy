@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"Subtitle",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"Subtitle",
+  "parent":{
+    "name":"subtitle",
+    "path":"folders/io.alkapivo.visu/src/service/subtitle.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

@@ -31,12 +31,20 @@ function CoinTemplate(_name, json) constructor {
   ///@type {Optional<Struct>}
   speed = Core.isType(Struct.get(json, "speed"), Struct) ? json.speed : null
 
+  ///@type {Boolean}
+  useSpeed = Struct.getIfType(json, "useSpeed", Boolean, false)
+
+  ///@type {Boolean}
+  changeSpeed = Struct.getIfType(json, "changeSpeed", Boolean, false)
+
   //@return {Struct}
   serialize = function() {
     var json = {
       name: this.name,
       category: this.category,
       sprite: this.sprite,
+      useSpeed: this.useSpeed,
+      changeSpeed: this.changeSpeed,
     }
 
     if (Optional.is(this.mask)) {
@@ -73,10 +81,10 @@ function Coin(config) constructor {
   ///@type {Rectangle}
   mask = Core.isType(Struct.get(config, "mask"), Struct)
     ? new Rectangle(config.mask)
-    : new Rectangle({ 
-      x: 0, 
-      y: 0, 
-      width: this.sprite.getWidth(), 
+    : new Rectangle({
+      x: 0,
+      y: 0,
+      width: this.sprite.getWidth(),
       height: this.sprite.getHeight()
   })
 
@@ -86,13 +94,27 @@ function Coin(config) constructor {
   ///@type {Number}
   amount = Core.isType(Struct.get(config, "amount"), Number) ? config.amount : 1
 
+  if (Optional.is(Struct.getIfType(config, "speed", Struct))) {
+    if (!Struct.getIfType(config, "useSpeed", Boolean, false)) {
+      Struct.set(config.speed, "value", -3.0)
+    }
+
+    if (!Struct.getIfType(config, "changeSpeed", Boolean, false)) {
+      Struct.set(config.speed, "target", 1.0)
+      Struct.set(config.speed, "factor", 0.1)
+      Struct.set(config.speed, "increase", 0.0)
+    }
+  }
+
   ///@type {NumberTransformer}
-  speed = new NumberTransformer(Core.isType(Struct.get(config, "speed"), Struct) 
-    ? config.speed 
+  speed = new NumberTransformer(Optional.is(Struct.getIfType(config, "speed", Struct))
+    ? config.speed
     : { value: -3.0, target: 1.0, factor: 0.1, increase: 0.0 })
 
   ///@type {Number}
-  angle = Core.isType(Struct.get(config, "angle"), Number) ? config.angle : 90.0
+  angle = Optional.is(Struct.getIfType(config, "angle", Number))
+    ? config.angle
+    : 90.0
 
   ///@private
   ///@type {Boolean}
@@ -100,12 +122,12 @@ function Coin(config) constructor {
 
   ///@param {Player} target
   ///@return {Boolean}
-  static collide = function(target) { 
+  static collide = function(target) {
     var halfSourceWidth = (this.mask.getWidth() * this.sprite.scaleX) / 2.0
     var halfSourceHeight = (this.mask.getHeight() * this.sprite.scaleY) / 2.0
     var halfTargetWidth = (target.mask.getWidth() * target.sprite.scaleX) / 2.0
     var halfTargetHeight = (target.mask.getHeight() * target.sprite.scaleY) / 2.0
-          
+
     var sourceX = this.x * GRID_SERVICE_PIXEL_WIDTH
     var sourceY = this.y * GRID_SERVICE_PIXEL_HEIGHT
     var targetX = target.x * GRID_SERVICE_PIXEL_WIDTH
@@ -129,7 +151,7 @@ function Coin(config) constructor {
   ///@param {?Player} player
   ///@return {Coin}
   static move = function(player = null) {
-    var value = (this.speed.update().value / 100.0) 
+    var value = (this.speed.update().value / 100.0)
     if (player != null && Math.fetchLength(this.x, this.y, player.x, player.y) < 0.4) {
       var to = Math.fetchPointsAngle(this.x, this.y, player.x, player.y)
       this.magnet = true
@@ -143,8 +165,8 @@ function Coin(config) constructor {
     }
 
     value = abs(value) + this.magnetSpeed
-    this.x += Math.fetchCircleX(value, this.angle)
-    this.y += Math.fetchCircleY(value, this.angle)
+    this.x += Math.fetchCircleX(DeltaTime.apply(value), this.angle)
+    this.y += Math.fetchCircleY(DeltaTime.apply(value), this.angle)
     return this
   }
 }

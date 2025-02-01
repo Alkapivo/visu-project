@@ -1,0 +1,55 @@
+{
+  "version":"1",
+  "data":{
+    "subtitle-gm-boot-log":{
+      "lines":[
+        "Collision Event time(microsecs)=3",
+        "Variable_Global_Init()",
+        "PrepareGame()",
+        "Audio_Init()",
+        "Attempting to set gamepadcount to 12",
+        "Game_Prepare()",
+        "Script_Prepare() ",
+        "init Assert.gml",
+        "init Core.gml",
+        "init GPU.gml",
+        "init Logger.gml",
+        "init Scene.gml",
+        "init Texture.gml",
+        "TimeLine_Prepare() ",
+        "Object_Prepare() ",
+        "Room_Prepare() ",
+        "Finished PrepareGame() ",
+        "Run_Start",
+        "Done g_EffectsManager.Init()",
+        "Done RenderStateManager",
+        "Done ObjectLists",
+        "Done Extension_Initialize",
+        "About to startroom",
+        "       ",
+        "           ",
+        "         ",
+        "        "
+      ]
+    },
+    "subtitle_alkapivo":{
+      "lines":[
+        "Alkapivo",
+        "2024"
+      ]
+    },
+    "subtitle_zoogies_digitalshadow":{
+      "lines":[
+        "",
+        "digitalshadow"
+      ]
+    },
+    "subtitle_zoogies":{
+      "lines":[
+        "Zoogies",
+        ""
+      ]
+    }
+  },
+  "model":"Collection<io.alkapivo.visu.service.subtitle.SubtitleTemplate>"
+}

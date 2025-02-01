@@ -19,7 +19,7 @@ global.__GameMode = new _GameMode()
 function _Visu() constructor {
 
   ///@type {Settings}
-  settings = new Settings($"{working_directory}visu-settings.json")
+  settings = new Settings($"{game_save_id}visu-settings.json")
 
   ///@private
   ///@type {?Struct}
@@ -63,8 +63,10 @@ function _Visu() constructor {
         "name":"texture_bullet"
       },
       "mask":{
-        "width":128.0,
-        "height":128.0
+        "x": 16,
+        "y": 16,
+        "width":32.0,
+        "height":32.0
       },
     },
   }
@@ -191,11 +193,11 @@ function _Visu() constructor {
 
   ///@private
   ///@type {Struct}
-  lyricsTemplates = {
-    "lyrics-default": {
+  subtitleTemplates = {
+    "subtitle-default": {
       "lines": [ "Lorem ipsum" ]
     },
-    "lyrics-preview-mode": {
+    "subtitle-preview-mode": {
       "lines": [
         "[SYSTEM] preview-mode detected",
         "[SYSTEM] Showing preview-mode message",
@@ -573,10 +575,10 @@ function _Visu() constructor {
             function(json, name) {
               return new CoinTemplate(name, json)
             }),
-        lyricsTemplates: Struct
-          .toMap(this.lyricsTemplates, String, LyricsTemplate, 
+        subtitleTemplates: Struct
+          .toMap(this.subtitleTemplates, String, SubtitleTemplate, 
             function(json, name) {
-              return new LyricsTemplate(name, json)
+              return new SubtitleTemplate(name, json)
             }),
         particleTemplates: Struct
           .toMap(this.particleTemplates, String, ParticleTemplate, 
@@ -647,6 +649,7 @@ function _Visu() constructor {
   static generateSettingsSubscriber = function(name) {
     return { 
       name: name,
+      overrideSubscriber: true,
       callback: function(value) {
         if (Visu.settings.getValue(this.name) == value) {
           return
@@ -654,6 +657,136 @@ function _Visu() constructor {
         Visu.settings.setValue(this.name, value).save()
       },
     }
+  }
+
+  ///@param {Struct} data
+  ///@param {String} useKey
+  ///@param {String} valueKey
+  ///@param {String} containerKey
+  ///@param {Struct} container
+  static resolveBooleanTrackEvent = function(data, useKey, valueKey, containerKey, container) {
+    if (!Struct.get(data, useKey)) {
+      return
+    }
+
+    Struct.set(container, containerKey, Struct.get(data, valueKey))
+  }
+
+  ///@param {Struct} data
+  ///@param {String} useKey
+  ///@param {String} sourceKey
+  ///@param {String} targetKey
+  ///@param {String} equationKey 
+  ///@param {BlendConfig} blendConfig
+  ///@param {?String} [equationAlphaKey] 
+  static resolveBlendConfigTrackEvent = function(data, useKey, sourceKey, targetKey, equationKey, blendConfig, equationAlphaKey = null) {
+    if (!Struct.get(data, useKey)) {
+      return
+    }
+
+    blendConfig
+      .setSource(BlendModeExt.get(Struct.get(data, sourceKey)))
+      .setTarget(BlendModeExt.get(Struct.get(data, targetKey)))
+      .setEquation(BlendEquation.get(Struct.get(data, equationKey)))
+
+    if (Optional.is(equationAlphaKey)) {
+      blendConfig.setEquationAlpha(BlendEquation.get(Struct.get(data, equationAlphaKey)))
+    }
+  }
+
+  ///@param {Struct} data
+  ///@param {String} useKey
+  ///@param {String} eventName
+  ///@param {any} eventData
+  ///@param {EventPump} pump
+  static resolveSendEventTrackEvent = function(data, useKey, eventName, eventData, pump) {
+    if (!Struct.get(data, useKey)) {
+      return
+    }
+
+    pump.send(new Event(eventName, eventData))
+  }
+
+  ///@param {Struct} data
+  ///@param {String} useKey
+  ///@param {String} transformerKey
+  ///@param {String} changeKey
+  ///@param {String} containerKey
+  ///@param {Struct} container
+  ///@param {EventPump} pump
+  ///@param {TaskExecutor} executor
+  static resolveNumberTransformerTrackEvent = function(data, useKey, transformerKey, changeKey, containerKey, container, pump, executor) {
+    var override = Struct.get(data, useKey)
+    var change = Struct.get(data, changeKey)
+    var transformer = Struct.get(data, transformerKey)
+    if (override) {
+      Struct.set(container, containerKey, transformer.value)
+    }
+
+    if (change) {
+      pump.send(new Event("transform-property", {
+        key: containerKey,
+        container: container,
+        executor: executor,
+        transformer: new NumberTransformer({
+          value: override ? transformer.value : Struct.get(container, containerKey),
+          target: transformer.target,
+          factor: transformer.factor,
+          increase: transformer.increase,
+        })
+      }))
+    }
+  }
+
+  ///@param {Struct} data
+  ///@param {String} useKey
+  ///@param {String} colorKey
+  ///@param {String} speedKey
+  ///@param {String} containerKey
+  ///@param {Struct} container
+  ///@param {EventPump} pump
+  ///@param {TaskExecutor} executor
+  static resolveColorTransformerTrackEvent = function(data, useKey, colorKey, speedKey, containerKey, container, pump, executor) {
+    if (!Struct.get(data, useKey)) {
+      return
+    }
+
+    var colA = Struct.get(container, containerKey)
+    var colB = Struct.get(data, colorKey)
+    var duration = Struct.get(data, speedKey) 
+    var length = max(
+      abs(colA.red - colB.red),
+      abs(colA.green - colB.green),
+      abs(colA.blue - colB.blue)
+    )
+
+    var factor = duration > 0.0 && length > 0.0
+      ? (length / (duration * GAME_FPS))
+      : 1.0
+    pump.send(new Event("transform-property", {
+      key: containerKey,
+      container: container,
+      executor: executor,
+      transformer: new ColorTransformer({
+        value: Struct.get(container, containerKey).toHex(false),
+        target: Struct.get(data, colorKey).toHex(false),
+        factor: factor,
+        increase: 0.0,
+      })
+    }))
+  }
+
+  ///@param {Struct} data
+  ///@param {String} useKey
+  ///@param {String} valueKey
+  ///@param {String} containerKey
+  ///@param {Struct} container
+  static resolvePropertyTrackEvent = function(data, useKey, valueKey, containerKey, container) {
+    if (!Struct.get(data, useKey)) {
+      return
+    }
+
+    Struct.set(container, containerKey, Struct.get(data, valueKey))
   }
 
   ///@param {String} [layerName]
@@ -670,7 +803,13 @@ function _Visu() constructor {
     this.settings.set(new SettingEntry({ name: "visu.editor.autosave", type: SettingTypes.BOOLEAN, defaultValue: false }))
       .set(new SettingEntry({ name: "visu.language", type: SettingTypes.STRING, defaultValue: LanguageType.en_EN }))
       .set(new SettingEntry({ name: "visu.fullscreen", type: SettingTypes.BOOLEAN, defaultValue: false }))
+      .set(new SettingEntry({ name: "visu.debug", type: SettingTypes.BOOLEAN, defaultValue: false }))
+      .set(new SettingEntry({ name: "visu.debug.render-entities-mask", type: SettingTypes.BOOLEAN, defaultValue: false }))
+      .set(new SettingEntry({ name: "visu.debug.render-debug-chunks", type: SettingTypes.BOOLEAN, defaultValue: false }))
+      .set(new SettingEntry({ name: "visu.debug.render-surfaces", type: SettingTypes.BOOLEAN, defaultValue: false }))
       .set(new SettingEntry({ name: "visu.god-mode", type: SettingTypes.BOOLEAN, defaultValue: false }))
+      .set(new SettingEntry({ name: "visu.optimalization.sort-entities-by-txgroup", type: SettingTypes.BOOLEAN, defaultValue: true }))
+      .set(new SettingEntry({ name: "visu.optimalization.iterate-entities-once", type: SettingTypes.BOOLEAN, defaultValue: true }))
       .set(new SettingEntry({ name: "visu.window.width", type: SettingTypes.NUMBER, defaultValue: 1400 }))
       .set(new SettingEntry({ name: "visu.window.height", type: SettingTypes.NUMBER, defaultValue: 900 }))
       .set(new SettingEntry({ name: "visu.interface.scale", type: SettingTypes.NUMBER, defaultValue: 1 }))
@@ -681,6 +820,7 @@ function _Visu() constructor {
       .set(new SettingEntry({ name: "visu.graphics.resolution", type: SettingTypes.STRING, defaultValue: "1440x900" }))
       .set(new SettingEntry({ name: "visu.graphics.main-shaders", type: SettingTypes.BOOLEAN, defaultValue: true }))
       .set(new SettingEntry({ name: "visu.graphics.bkg-shaders", type: SettingTypes.BOOLEAN, defaultValue: true }))
+      .set(new SettingEntry({ name: "visu.graphics.combined-shaders", type: SettingTypes.BOOLEAN, defaultValue: true }))
       .set(new SettingEntry({ name: "visu.graphics.shaders-limit", type: SettingTypes.NUMBER, defaultValue: 10 }))
       .set(new SettingEntry({ name: "visu.graphics.bkt-glitch", type: SettingTypes.BOOLEAN, defaultValue: true }))
       .set(new SettingEntry({ name: "visu.graphics.particle", type: SettingTypes.BOOLEAN, defaultValue: true }))
@@ -694,6 +834,7 @@ function _Visu() constructor {
       .set(new SettingEntry({ name: "visu.editor.render-event", type: SettingTypes.BOOLEAN, defaultValue: false }))
       .set(new SettingEntry({ name: "visu.editor.render-timeline", type: SettingTypes.BOOLEAN, defaultValue: false }))
       .set(new SettingEntry({ name: "visu.editor.render-track-control", type: SettingTypes.BOOLEAN, defaultValue: true }))
+      .set(new SettingEntry({ name: "visu.editor.render-scene-config-preview", type: SettingTypes.BOOLEAN, defaultValue: true }))
       .set(new SettingEntry({ name: "visu.editor.render-brush", type: SettingTypes.BOOLEAN, defaultValue: false }))
       .set(new SettingEntry({ name: "visu.editor.accordion.render-event-inspector", type: SettingTypes.BOOLEAN, defaultValue: false }))
       .set(new SettingEntry({ name: "visu.editor.accordion.render-template-toolbar", type: SettingTypes.BOOLEAN, defaultValue: true }))
@@ -705,9 +846,49 @@ function _Visu() constructor {
       .set(new SettingEntry({ name: "visu.keyboard.player.action", type: SettingTypes.NUMBER, defaultValue: ord("Z") }))
       .set(new SettingEntry({ name: "visu.keyboard.player.bomb", type: SettingTypes.NUMBER, defaultValue: ord("X") }))
       .set(new SettingEntry({ name: "visu.keyboard.player.focus", type: SettingTypes.NUMBER, defaultValue: KeyboardKeyType.SHIFT }))
+      .set(new SettingEntry({ 
+          name: "visu.editor.theme",
+          type: SettingTypes.STRUCT,
+          defaultValue: { 
+            accentLight: "#7742b8",
+            accent: "#5f398e",
+            accentShadow: "#462f63",
+            accentDark: "#231832",
+            primaryLight: "#455f82",
+            primary: "#3B3B53",
+            primaryShadow: "#2B2B35",
+            primaryDark: "#222227",
+            sideLight: "#212129",
+            side: "#1B1B20",
+            sideShadow: "#141418",
+            sideDark: "#0D0D0F",
+            button: "#3B3B53",
+            buttonHover: "#3c4e66",
+            text: "#D9D9D9",
+            textShadow: "#878787",
+            textFocus: "#ededed",
+            textSelected: "#7742b8",
+            accept: "#3d9e87",
+            acceptShadow: "#368b77",
+            deny: "#9e3d54",
+            denyShadow: "#6d3c54",
+            ruler: "#E64B3D",
+            header: "#963271",
+            stick: "#3B3B53",
+            stickHover: "#878787",
+            stickBackground: "#0D0D0F",
+          }
+        }))
       .load()
     
     Language.load(this.settings.getValue("visu.language", LanguageType.en_EN))
+    if (Core.getProperty("visu.editor.edit-theme")) {
+      Struct.forEach(this.settings.getValue("visu.editor.theme"), function(hex, name) {
+        Struct.set(VETheme, name, hex)
+      })
+
+      VEStyles = generateVEStyles()
+    }
 
     var layerId = Scene.fetchLayer(layerName, layerDefaultDepth)
 

@@ -1,4 +1,23 @@
-///@package io.alkapivo.visu.editor.service.brush.shroom
+///@package io.alkapivo.visu.editor.service.brush._old.shroom
+
+///@param {Struct} json
+///@return {Struct}
+function migrateShroomConfigEvent(json) {
+  return {
+    "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
+    "en-cfg_use-render-shr": Struct.getIfType(json, "shroom-config_use-render-shrooms", Boolean, false),
+    "en-cfg_render-shr": Struct.getIfType(json,"shroom-config_render-shrooms", Boolean, false),
+    "en-cfg_use-z-shr": false,
+    "en-cfg_z-shr": Struct.getIfType(json, "shroom-config_transform-shroom-z", Struct, {
+      value: 2049.0,
+      target: 2049.0,
+      factor: 9999.0,
+      increase: 0.0,
+    }),
+    "en-cfg_change-z-shr": Struct.getIfType(json, "shroom-config_use-transform-shroom-z", Boolean, false),
+  }
+}
+
 
 ///@param {?Struct} [json]
 ///@return {Struct}

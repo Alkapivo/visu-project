@@ -221,8 +221,8 @@ function GridItem(config = {}) constructor {
   ///@return {GridItem}
   static move = function() {
     this.signals.reset()
-    this.x += Math.fetchCircleX(this.speed, this.angle)
-    this.y += Math.fetchCircleY(this.speed, this.angle)
+    this.x += Math.fetchCircleX(DeltaTime.apply(this.speed), this.angle)
+    this.y += Math.fetchCircleY(DeltaTime.apply(this.speed), this.angle)
     return this
   }
 

@@ -1,0 +1,32 @@
+{
+  "model":"Collection<io.alkapivo.visu.editor.api.VEBrushTemplate>",
+  "data":[
+    {
+      "texture":"texture_ve_icon_effect",
+      "name":"clear all",
+      "color":"#FF0000",
+      "properties":{
+        "shader-clear_use-fade-out":true,
+        "shader-clear_clear-amount":1.0,
+        "shader-clear_fade-out":0.0,
+        "shader-clear_pipeline":"Grid",
+        "shader-clear_use-clear-all-shaders":1.0,
+        "shader-clear_use-clear-amount":0.0
+      },
+      "type":"brush_shader_clear"
+    },
+    {
+      "texture":"texture_ve_icon_effect",
+      "name":"clear 1",
+      "color":"#FFFF2E",
+      "properties":{
+        "shader-clear_clear-amount":1.0,
+        "shader-clear_pipeline":"Grid",
+        "shader-clear_use-clear-all-shaders":0.0,
+        "shader-clear_use-clear-amount":1.0
+      },
+      "type":"brush_shader_clear"
+    }
+  ],
+  "version":"1"
+}

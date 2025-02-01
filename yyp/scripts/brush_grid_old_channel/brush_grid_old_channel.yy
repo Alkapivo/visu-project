@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"brush_grid_old_channel",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"brush_grid_old_channel",
+  "parent":{
+    "name":"grid_old",
+    "path":"folders/io.alkapivo.visu/src/editor/service/brush/_old/grid_old.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

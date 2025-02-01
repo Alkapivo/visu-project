@@ -1,4 +1,21 @@
-///@package io.alkapivo.visu.editor.service.brush.shader
+///@package io.alkapivo.visu.editor.service.brush._old.shader
+
+///@param {Struct} json
+///@return {Struct}
+function migrateShaderSpawnEvent(json) {
+  return {
+    "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
+    "ef-shd_template": Struct.getIfType(json, "shader-spawn_template", String, "shader-default"),
+    "ef-shd_duration": Struct.getIfType(json, "shader-spawn_duration", Number, 5.0),
+    "ef-shd_fade-in": Struct.getIfType(json, "shader-spawn_fade-in", Number, 1.0),
+    "ef-shd_fade-out": Struct.getIfType(json, "shader-spawn_fade-out", Number, 1.0),
+    "ef-shd_alpha": Struct.getIfType(json, "shader-spawn_alpha-max", Number, 1.0),
+    "ef-shd_pipeline": migrateShaderPipelineType(Struct.getDefault(json, "shader-spawn_pipeline", ShaderPipelineType.COMBINED)),
+    "ef-shd_use-merge-cfg": Struct.getIfType(json, "shader-spawn_use-merge-properties", Boolean, false),
+    "ef-shd_merge-cfg": Struct.getIfType(json, "shader-spawn_merge-properties", Struct, {}),
+  }
+}
+
 
 ///@param {?Struct} [json]
 ///@return {Struct}
@@ -8,11 +25,9 @@ function brush_shader_spawn(json = null) {
     store: new Map(String, Struct, {
       "shader-spawn_pipeline": {
         type: String,
-        value: Struct.getDefault(json, "shader-spawn_pipeline", "Grid"),
-        validate: function(value) {
-          Assert.isTrue(this.data.contains(value))
-        },
-        data: new Array(String, [ "Grid", "Background", "All" ])
+        value: migrateShaderPipelineType(Struct.get(json, "shader-spawn_pipeline")),
+        passthrough: UIUtil.passthrough.getArrayValue(),
+        data: ShaderPipelineType.keys(),
       },
       "shader-spawn_template": {
         type: String,
@@ -58,7 +73,7 @@ function brush_shader_spawn(json = null) {
       },
       "shader-spawn_merge-properties": {
         type: String,
-        value: JSON.stringify(Struct.getDefault(json, "shader-spawn_merge-properties", {}), { pretty: true }),
+        value: JSON.stringify(Struct.getIfType(json, "shader-spawn_merge-properties", Struct, {}), { pretty: true }),
         serialize: function() {
           return JSON.parse(this.get())
         },
@@ -169,6 +184,7 @@ function brush_shader_spawn(json = null) {
             w_min: 570,
             store: { key: "shader-spawn_merge-properties" },
             enable: { key: "shader-spawn_use-merge-properties" },
+            updateCustom: UIItemUtils.textField.getUpdateJSONTextArea(),
           },
         },
       },

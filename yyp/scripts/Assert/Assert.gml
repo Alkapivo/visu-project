@@ -12,7 +12,7 @@ function _Assert() constructor {
   areEqual = function(a, b, message = null) {
     if (a != b) {
       Logger.error("Assert.areEqual", message == null ? "Assert exception." : message)
-      throw new InvalidAssertException()
+      throw new InvalidAssertException(message)
     }
     return true
   }
@@ -24,7 +24,7 @@ function _Assert() constructor {
   isTrue = function(object, message = null) {
     if (object != true) {
       Logger.error("Assert.isTrue", message == null ? "Assert exception." : message)
-      throw new InvalidAssertException()
+      throw new InvalidAssertException(message)
     }
     return true
   }
@@ -36,7 +36,7 @@ function _Assert() constructor {
   isFalse = function(object, message = null) {
     if (object != false) {
       Logger.error("Assert.isFalse", message == null ? "Assert exception." : message)
-      throw new InvalidAssertException()
+      throw new InvalidAssertException(message)
     }
     return true
   }
@@ -49,7 +49,7 @@ function _Assert() constructor {
   isType = function(object, type, message = null) {
     if (!Core.isType(object, type)) {
       Logger.error("Assert.isType", message == null ? "Assert exception." : message)
-      throw new InvalidAssertException()
+      throw new InvalidAssertException(message)
     }
     return object
   }
@@ -62,7 +62,7 @@ function _Assert() constructor {
   isEnum = function(object, enumerable, message = null) {
     if (!Core.isEnum(object, enumerable)) {
       Logger.error("Assert.isEnum", message == null ? "Assert exception." : message)
-      throw new InvalidAssertException()
+      throw new InvalidAssertException(message)
     }
     return object
   }
@@ -75,7 +75,7 @@ function _Assert() constructor {
   isEnumKey = function(object, enumerable, message = null) {
     if (!Core.isEnumKey(object, enumerable)) {
       Logger.error("Assert.isEnumKey", message == null ? "Assert exception." : message)
-      throw new InvalidAssertException()
+      throw new InvalidAssertException(message)
     }
     return object
   }
@@ -87,7 +87,7 @@ function _Assert() constructor {
   fileExists = function(path, message = null) {
     if (!Core.isType(path, String) && !file_exists(path)) {
       Logger.error("Assert.fileExists", message == null ? "Assert exception." : message)
-      throw new InvalidAssertException()
+      throw new InvalidAssertException(message)
     }
     return path
   }

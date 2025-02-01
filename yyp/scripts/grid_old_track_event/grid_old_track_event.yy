@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"grid_old_track_event",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"grid_old_track_event",
+  "parent":{
+    "name":"track",
+    "path":"folders/io.alkapivo.visu/src/service/track.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

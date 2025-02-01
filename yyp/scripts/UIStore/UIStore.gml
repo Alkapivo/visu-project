@@ -21,6 +21,12 @@ function UIStore(config, _context = null) constructor {
     return Core.isType(item, StoreItem) ? item : null
   }), Callable))
 
+  ///@return {any}
+  getValue = method(this, Assert.isType(Struct.getDefault(config, "getValue", function() {
+    var item = this.get()
+    return Core.isType(item, StoreItem) ? item.get() : null
+  }), Callable))
+
   ///@return {?Store}
   getStore = method(this, Assert.isType(Struct.getDefault(config, "getStore", function() {
     if (this.context == null) {

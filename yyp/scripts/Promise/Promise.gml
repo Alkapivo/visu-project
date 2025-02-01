@@ -24,17 +24,12 @@ function Promise(config = null) constructor {
 
   ///@private
   ///@type {?Callable}
-  onSuccess = Core.isType(Struct.get(config, "onSuccess"), Callable)
-    ? method(this, config.onSuccess)
-    : function(data) { return data }
-  
+  onSuccess = null
+
   ///@private
   ///@type {?Callable}
-  onFailure = Core.isType(Struct.get(config, "onFailure"), Callable)
-    ? method(this, config.onFailure)
-    : function(data) { return data }
+  onFailure = null
   
-
   ///@return {Boolean}
   isReady = function() {
     return this.status != PromiseStatus.PENDING
@@ -43,22 +38,18 @@ function Promise(config = null) constructor {
   ///@param {?Callable} resolve
   ///@return {Promise}
   whenSuccess = function(resolve) {
-    this.onSuccess = Core.isType(resolve, Callable)
-      ? method(this, resolve)
-      : null
-
+    this.onSuccess = Core.isType(resolve, Callable) ? method(this, resolve) : null
     return this
   }
+  this.whenSuccess(Struct.get(config, "onSuccess"))
 
   ///@param {?Callable} reject
   ///@return {Promise}
   whenFailure = function(reject) {
-    this.onFailure = Core.isType(reject, Callable)
-      ? method(this, reject)
-      : null
-
+    this.onFailure = Core.isType(reject, Callable) ? method(this, reject) : null
     return this
   }
+  this.whenFailure(Struct.get(config, "onFailure"))
 
   ///@param {any} state
   ///@return {Promise}
@@ -86,16 +77,28 @@ function Promise(config = null) constructor {
   ///@param {any} [data]
   ///@return {Promise}
   fullfill = function(data = null) {
-    return this.status == PromiseStatus.PENDING
-      ? this.setStatus(PromiseStatus.FULLFILLED)
-          .setResponse(Callable.run(this.onSuccess, data))
-      : this
+    if (!this.isReady()) {
+      this.status = PromiseStatus.FULLFILLED
+      if (Optional.is(this.onSuccess)) {
+        var _response = this.onSuccess(data) ///@todo refactor
+        this.setResponse(_response)
+      }
+    }
+
+    return this
   }
 
   ///@param {any} [data]
   ///@return {Promise}
   reject = function(data = null) {
-    return this.setStatus(PromiseStatus.REJECTED)
-      .setResponse(Callable.run(this.onFailure, data))
+    if (this.status != PromiseStatus.REJECTED) {
+      this.status = PromiseStatus.REJECTED
+      if (Optional.is(this.onFailure)) {
+        var _response = this.onFailure(data) ///@todo refactor
+        this.setResponse(_response)
+      }
+    }
+
+    return this
   }
 }

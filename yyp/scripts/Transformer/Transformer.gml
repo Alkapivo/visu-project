@@ -32,6 +32,13 @@ function Transformer(json = null) constructor {
   ///@return {Transformer}
   update = function() { return this }
 
+  ///@return {Struct} 
+  serialize = function() {
+    return {
+      value: this.value
+    }
+  }
+
   ///@return {Transformer}
   reset = function() {
     this.finished = false 
@@ -65,14 +72,24 @@ function ColorTransformer(json = { value: "#ffffff" }): Transformer(json) constr
       return this
     }
 
-    this.value.red = Math.transformNumber(this.value.red, this.target.red, this.factor)
-    this.value.green = Math.transformNumber(this.value.green, this.target.green, this.factor)
-    this.value.blue = Math.transformNumber(this.value.blue, this.target.blue, this.factor)
-    this.value.alpha = Math.transformNumber(this.value.alpha, this.target.alpha, this.factor)
+    var _factor = DeltaTime.apply(this.factor)
+    this.value.red = Math.transformNumber(this.value.red, this.target.red, _factor)
+    this.value.green = Math.transformNumber(this.value.green, this.target.green, _factor)
+    this.value.blue = Math.transformNumber(this.value.blue, this.target.blue, _factor)
+    this.value.alpha = Math.transformNumber(this.value.alpha, this.target.alpha, _factor)
     if (ColorUtil.areEqual(this.value, this.target)) {
       this.finished = true
     }
     return this
+  }
+
+  ///@return {Struct}
+  serialize = function() {
+    return {
+      value: this.value,
+      factor: this.factor,
+      target: this.target
+    }
   }
 }
 
@@ -107,8 +124,9 @@ function NumberTransformer(json = null): Transformer(json) constructor {
       return this
     }
 
-    this.factor = this.factor + DeltaTime.apply(this.increase)
-    this.value = Math.transformNumber(this.value, this.target, this.factor)
+    this.factor += DeltaTime.apply(this.increase * 0.5)
+    this.value = Math.transformNumber(this.value, this.target, DeltaTime.apply(this.factor))
+    this.factor += DeltaTime.apply(this.increase * 0.5)
     if (this.value == this.target) {
       this.finished = true
     }
@@ -171,6 +189,14 @@ function Vector2Transformer(json = {}): Transformer(json) constructor {
     return this
   }
 
+  ///@return {Struct}
+  serialize = function() {
+    return {
+      x: this.x.serialize(),
+      y: this.y.serialize(),
+    }
+  }
+
   ///@override
   ///@return {Vector2Transformer}
   reset = function() {
@@ -219,6 +245,15 @@ function Vector3Transformer(json = {}): Transformer(json) constructor {
       this.finished = true
     }
     return this
+  }
+
+  ///@return {Struct}
+  serialize = function() {
+    return {
+      x: this.x.serialize(),
+      y: this.y.serialize(),
+      z: this.z.serialize(),
+    }
   }
 
   ///@override
@@ -276,6 +311,16 @@ function Vector4Transformer(json = {}): Transformer(json) constructor {
       this.finished = true
     }
     return this
+  }
+
+  ///@return {Struct}
+  serialize = function() {
+    return {
+      x: this.x.serialize(),
+      y: this.y.serialize(),
+      z: this.z.serialize(),
+      a: this.a.serialize(),
+    }
   }
 
   ///@override

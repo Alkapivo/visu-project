@@ -22,7 +22,6 @@ show_debug_message("init Core.gml")
 #macro GMLayer "GMLayer"
 #macro any "any"
 
-
 ///@enum
 function _RuntimeType(): Enum() constructor {
   WINDOWS = "Windows"
@@ -104,6 +103,7 @@ function _Core() constructor {
         case GMVideoSurface: return result == "ref" && surface_exists(object)
         case GMTileset: return result == "ref"
         case GMTexture: return (result == "ref" || result == "number") && sprite_exists(object)
+        case GMAudioGroupID: return result == "ref"
         ///@todo bug, ref will be returned only when gamemaker is initalizing
         case NonNull: return object != null
         case Number: return result == "number" || result == "int64"
@@ -152,7 +152,7 @@ function _Core() constructor {
     try {
       type = Core.hasConstructor(object) 
         ? instanceof(object) 
-        : StructgetDefault(typeofMap, typeof(object), null)
+        : Struct.getDefault(this.typeofMap, typeof(object))
     } catch (exception) { }
     return type
   }
@@ -201,12 +201,13 @@ function _Core() constructor {
 
   ///@return {Core}
   static printStackTrace = function() {
-    var stackTrace = debug_get_callstack();
-    for (var index = 0; index < GMArray.size(stackTrace); index++) {
-      var line = string(stackTrace[index]);
+    var stackTrace = debug_get_callstack(50)
+    var size = GMArray.size(stackTrace)
+    for (var index = 0; index < size; index++) {
+      var line = string(stackTrace[index])
       if (line != "0") {
         line = "\tat " + line;
-        Core.print(line)
+        show_debug_message(line)
       }
     }
     return Core
@@ -307,6 +308,14 @@ function _Core() constructor {
   ///@return {any}
   static getIfType = function(value, type, defaultValue = null) {
     return Core.isType(value, type) ? value : defaultValue
+  }
+
+  ///@param {any} value
+  ///@param {Type} type
+  ///@param {any} [defaultValue]
+  ///@return {any}
+  static getIfEnum = function(value, type, defaultValue = null) {
+    return Core.isEnum(value, type) ? value : defaultValue
   }
 }
 global.__Core = new _Core()

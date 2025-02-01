@@ -1,4 +1,4 @@
-///@pacakge io.alkapivo.core.service.ui.item
+///@package io.alkapivo.core.service.ui.item
 
 ///@param {String} name
 ///@param {Struct} [json]
@@ -16,9 +16,11 @@ function UIText(name, json = null) {
     value: Struct.contains(json, "value") ? Assert.isType(json.value, Boolean) : true,
 
     ///@type {?Struct}
-    enable: Struct.contains(json, "enable") ? Assert.isType(json.enable, Struct) : null,
+    enable: Struct.getIfType(json, "enable", Struct),
     
-    updateEnable: Assert.isType(Callable.run(UIItemUtils.templates.get("updateEnable")), Callable),
+    updateEnable: Optional.is(Struct.getIfType(json, "updateEnable", Callable))
+      ? json.updateEnable
+      : Callable.run(UIItemUtils.templates.get("updateEnable")),
 
     renderBackgroundColor: new BindIntent(Callable.run(UIItemUtils.templates.get("renderBackgroundColor"))),
 
@@ -53,8 +55,15 @@ function UIText(name, json = null) {
 
       this.label.render(
         this.context.area.getX() + this.area.getX() + offsetX,
-        this.context.area.getY() + this.area.getY() + offsetY
+        this.context.area.getY() + this.area.getY() + offsetY,
+        this.area.getWidth(),
+        this.area.getHeight()
       )
+
+      if (this.postRender != null) {
+        this.postRender()
+      }
+      
       return this
     }),
   }, false))

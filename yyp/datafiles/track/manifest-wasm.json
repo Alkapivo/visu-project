@@ -16,7 +16,7 @@
           }
         },
         {
-          "name": "zoogies",
+          "name": "Zoogies",
           "event": {
             "type": "open-node",
             "data": {
@@ -35,7 +35,7 @@
           "event": {
             "type": "load-track",
             "data": {
-              "path": "track/kedy_selma/Just-To-Create-Something/manifest.visu"
+              "path": "track/kedy_selma/Just-To-Create-Something/Just-To-Create-Something/manifest.visu"
             }
           }
         },
@@ -44,7 +44,7 @@
           "event": {
             "type": "load-track",
             "data": {
-              "path": "track/kedy_selma/Passion/manifest.visu"
+              "path": "track/kedy_selma/Singles/Passion/manifest.visu"
             }
           }
         }
@@ -59,7 +59,7 @@
           "event": {
             "type": "load-track",
             "data": {
-              "path": "track/zoogies/digitalshadow/manifest.visu"
+              "path": "track/Zoogies/Singles/digitalshadow/manifest.visu"
             }
           }
         }

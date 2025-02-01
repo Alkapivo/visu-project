@@ -8,19 +8,19 @@
   "dependencies": {
     "core": {
       "remote": "https://github.com/Alkapivo/core-gml.git",
-      "revision": "24.11.05"
+      "revision": "25.02.01"
     },
     "visu": {
       "remote": "https://github.com/Alkapivo/visu-gml.git",
-      "revision": "24.11.05"
+      "revision": "25.02.01"
     },
     "gmtf": {
       "remote": "https://github.com/Alkapivo/mh-cz.gmtf-gml.git",
-      "revision": "24.10.15"
+      "revision": "25.02.01"
     },
     "bktGlitch": {
       "remote": "https://github.com/Alkapivo/fyi.odditica.bktGlitch-gml.git",
-      "revision": "24.05.26"
+      "revision": "25.02.01"
     }
   }
 }

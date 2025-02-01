@@ -1,4 +1,21 @@
-///@package io.alkapivo.visu.editor.service.brush.shader
+///@package io.alkapivo.visu.editor.service.brush._old.shader
+
+///@param {Struct} json
+///@return {Struct}
+function migrateShaderClearEvent(json) {
+  var pipeline = migrateShaderPipelineType(Struct.get(json, "shader-clear_pipeline"))
+  var clear = Struct.getIfType(json, "shader-clear_use-clear-all-shaders", Boolean, false)
+    || (Struct.getIfType(json, "shader-clear_use-clear-amount", Boolean, false)
+      && Struct.getIfType(json, "shader-clear_clear-amount", Number, 0) > 0)
+
+  return {
+    "icon": Struct.getIfType(json, "icon", Struct, { name: "texture_baron" }),
+    "ef-cfg_cls-shd-bkg": clear && pipeline == ShaderPipelineType.BACKGROUND,
+    "ef-cfg_cls-shd-gr": clear && pipeline == ShaderPipelineType.GRID,
+    "ef-cfg_cls-shd-all": clear && pipeline == ShaderPipelineType.COMBINED,
+  }
+}
+
 
 ///@param {?Struct} [json]
 ///@return {Struct}
@@ -8,11 +25,11 @@ function brush_shader_clear(json = null) {
     store: new Map(String, Struct, {
       "shader-clear_pipeline": {
         type: String,
-        value: Struct.getDefault(json, "shader-clear_pipeline", "Grid"),
+        value: migrateShaderPipelineType(Struct.getDefault(json, "shader-clear_pipeline", ShaderPipelineType.BACKGROUND)),
         validate: function(value) {
           Assert.isTrue(this.data.contains(value))
         },
-        data: new Array(String, [ "Grid", "Background", "All" ])
+        data: ShaderPipelineType.keys(),
       },
       "shader-clear_use-clear-all-shaders": {
         type: Boolean,
@@ -89,6 +106,7 @@ function brush_shader_clear(json = null) {
           field: { 
             store: { key: "shader-clear_clear-amount" },
             enable: { key: "shader-clear_use-clear-amount" },
+            GMTF_DECIMAL: 0,
           },
         },
       },

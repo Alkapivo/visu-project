@@ -3,18 +3,6 @@
 ///@param {Struct} [config]
 function GridProperties(config = {}) constructor {
 
-  ///@type {Color}
-  clearColor = Assert.isType(ColorUtil.fromHex(Struct
-    .getDefault(config, "properties.clearColor", "#00000000")), Color)
-
-  ///@type {Boolean}
-  clearFrame = Assert.isType(Struct
-    .getDefault(config, "properties.clearFrame", true), Boolean)
-
-  ///@type {Number}
-  clearFrameAlpha = Assert.isType(Struct
-    .getDefault(config, "properties.clearFrameAlpha", 0.0), Number)
-
   ///@type {Number}
   speed = Assert.isType(Struct
     .getDefault(config, "properties.speed", (FRAME_MS / 4) * 1000), Number)
@@ -26,11 +14,11 @@ function GridProperties(config = {}) constructor {
 
   ///@type {Color}
   channelsPrimaryColor = Assert.isType(ColorUtil.fromHex(Struct
-    .getDefault(config, "properties.channelsPrimaryColor ", "#023ef2")), Color)
+    .getDefault(config, "properties.channelsPrimaryColor", "#023ef2")), Color)
 
   ///@type {Color}
   channelsSecondaryColor = Assert.isType(ColorUtil.fromHex(Struct
-    .getDefault(config, "properties.channelsSecondaryColor ", "#ff11bb")), Color)
+    .getDefault(config, "properties.channelsSecondaryColor", "#ff11bb")), Color)
 
   ///@type {Number}
   channelsPrimaryAlpha = Assert.isType(Struct
@@ -47,6 +35,10 @@ function GridProperties(config = {}) constructor {
   ///@type {Number}
   channelsSecondaryThickness = Assert.isType(Struct
     .getDefault(config, "properties.channelsSecondaryThickness", 10), Number)
+
+  ///@type {String}
+  channelsMode = Assert.isType(Struct
+    .getDefault(config, "properties.channelsMode", "DUAL"), String)
   #endregion
 
   #region separators
@@ -77,6 +69,10 @@ function GridProperties(config = {}) constructor {
   ///@type {Number}
   separatorsSecondaryThickness = Assert.isType(Struct
     .getDefault(config, "properties.separatorsSecondaryThickness", 6), Number)
+
+  ///@type {String}
+  separatorsMode = Assert.isType(Struct
+    .getDefault(config, "properties.separatorsMode", "DUAL"), String)
   #endregion
 
   #region borders
@@ -135,12 +131,19 @@ function GridProperties(config = {}) constructor {
     .getDefault(config, "properties.renderCoins", true), Boolean)
 
   ///@type {Boolean}
+  renderPlayer = Struct.getIfType(config, "properties.renderPlayer", Boolean, true)
+
+  ///@type {Boolean}
   renderBackground = Assert.isType(Struct
     .getDefault(config, "properties.renderBackground", true), Boolean)
 
   ///@type {Boolean}
   renderVideo = Assert.isType(Struct
     .getDefault(config, "properties.renderVideo", true), Boolean)
+
+  ///@type {Boolean}
+  renderVideoAfter = Assert.isType(Struct
+    .getDefault(config, "properties.renderVideoAfter", false), Boolean)
 
   ///@type {Boolean}
   renderForeground = Assert.isType(Struct
@@ -155,8 +158,16 @@ function GridProperties(config = {}) constructor {
     .getDefault(config, "properties.renderBackgroundShaders", true), Boolean)
 
   ///@type {Boolean}
+  renderCombinedShaders = Assert.isType(Struct
+    .getDefault(config, "properties.renderCombinedShaders", true), Boolean)
+
+  ///@type {Boolean}
   renderParticles = Assert.isType(Struct
     .getDefault(config, "properties.renderParticles", true), Boolean)
+
+      ///@type {Boolean}
+  renderSubtitles = Assert.isType(Struct
+    .getDefault(config, "properties.renderSubtitles", true), Boolean)
   #endregion
 
   #region support-grid
@@ -165,12 +176,20 @@ function GridProperties(config = {}) constructor {
     .getDefault(config, "properties.renderSupportGrid", true), Boolean)
 
   ///@type {Number}
-  renderSupportGridTreshold = Assert.isType(Struct
-    .getDefault(config, "properties.renderSupportGridTreshold", 2), Number)
+  supportGridTreshold = Assert.isType(Struct
+    .getDefault(config, "properties.supportGridTreshold", 2), Number)
 
   ///@type {Number}
-  renderSupportGridAlpha = Assert.isType(Struct
-    .getDefault(config, "properties.renderSupportGridAlpha", 0.33), Number)
+  supportGridAlpha = Assert.isType(Struct
+    .getDefault(config, "properties.supportGridAlpha", 0.33), Number)
+
+  ///@type {Color}
+  supportGridBlendColor = Assert.isType(ColorUtil.fromHex(Struct
+    .getDefault(config, "properties.supportGridColor", "#ffffff")), Color)
+
+  ///@type {BlendConfig}
+  supportGridBlendConfig = new BlendConfig(Struct
+    .getIfType(config, "properties.supportGridBlendConfig", Struct))
   #endregion
 
   ///@type {Color}
@@ -185,6 +204,10 @@ function GridProperties(config = {}) constructor {
   gridClearFrameAlpha = Assert.isType(Struct
     .getDefault(config, "properties.gridClearFrameAlpha", 0.0), Number)
 
+  ///@type {BlendConfig}
+  gridBlendConfig = new BlendConfig(Struct
+    .getIfType(config, "properties.gridBlendConfig", Struct))
+
   ///@type {Color}
   shaderClearColor = Assert.isType(ColorUtil.fromHex(Struct
     .getDefault(config, "properties.shaderClearColor", "#00000000")), Color)
@@ -197,11 +220,23 @@ function GridProperties(config = {}) constructor {
   shaderClearFrameAlpha = Assert.isType(Struct
     .getDefault(config, "properties.shaderClearFrameAlpha", 0.0), Number)
   
+  ///@type {Number}
+  videoAlpha = Assert.isType(Struct
+    .getDefault(config, "properties.videoAlpha", 1.0), Number)
+
+  ///@type {Color}
+  videoBlendColor = Assert.isType(ColorUtil.fromHex(Struct
+    .getDefault(config, "properties.videoBlendColor", "#ffffff")), Color)
+  
+  ///@type {BlendConfig}
+  videoBlendConfig = new BlendConfig(Struct
+    .getIfType(config, "properties.videoBlendConfig", Struct))
 
   ///@type {Struct}
   depths = {
     channelZ: 1,
     separatorZ: 2,
+    gridZ: 1,
     bulletZ: 2048,
     shroomZ: 2049,
     coinZ: 2047,
@@ -220,7 +255,6 @@ function GridProperties(config = {}) constructor {
     this.separatorTimer.update()
     this.separatorTimer.amount = (this.speed / 1000) - DeltaTime.apply(gridService.view.derivativeY)
 
-    this.clearColor.alpha = this.clearFrameAlpha
     this.gridClearColor.alpha = this.gridClearFrameAlpha
     this.shaderClearColor.alpha = this.shaderClearFrameAlpha
     return this

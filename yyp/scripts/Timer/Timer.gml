@@ -5,29 +5,27 @@
 function Timer(_duration, config = {}) constructor {
 
   ///@type {Number}
-  time = 0
-
-  ///@type {Number}
   duration = Assert.isType(_duration, Number)
 
   ///@type {Number}
-  loopCounter = Assert.isType(Struct.getDefault(config, "loopCounter", 0), Number)
+  time = Struct.getIfType(config, "time", Number, 0.0)
+
+  ///@type {Number}
+  loopCounter = Struct.getIfType(config, "loopCounter", Number, 0.0)
 
   ///@type {Boolean}
-  finished = Assert.isType(Struct.getDefault(config, "finished", false), Boolean)
+  finished = Struct.getIfType(config, "finished", Boolean, false)
 
   ///@type {Number}
-  loop = Assert.isType(Struct.getDefault(config, "loop", 1), Number)
+  loop = Struct.getIfType(config, "loop", Number, 1.0)
 
   ///@type {Number}
-  amount = Assert.isType(Struct.getDefault(config, "amount", FRAME_MS), Number)
+  amount = Struct.getIfType(config, "amount", Number, FRAME_MS)
 
   ///@type {?Callable}
-  callback = Struct.get(config, "callback") != null
-    ? Assert.isType(config.callback, Callable)
-    : null
+  callback = Struct.getIfType(config, "callback", Callable)
 
-  if (Struct.getDefault(config, "shuffle", false)) {
+  if (Struct.getIfType(config, "shuffle", Boolean, false)) {
     this.time = random(this.duration)
   }
 
@@ -61,10 +59,7 @@ function Timer(_duration, config = {}) constructor {
       this.callback(callbackData, this)
     }
 
-    if (this.loop != Infinity) {
-      this.loopCounter++
-    }
-    
+    this.loopCounter++
     return this
   }
 

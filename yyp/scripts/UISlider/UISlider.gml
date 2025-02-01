@@ -1,22 +1,32 @@
-///@pacakge io.alkapivo.core.service.ui.item
+///@package io.alkapivo.core.service.ui.item
 
 ///@param {String} name
 ///@param {Struct} [json]
 ///@return {UIItem}
 function UISliderHorizontal(name, json = null) {
+  var minValue = Struct.getIfType(json, "minValue", Number, 0.0)
+  var maxValue = Struct.getIfType(json, "maxValue", Number, 1.0)
+  if (minValue > maxValue) {
+    var _value = minValue
+    minValue = maxValue
+    maxValue = _value
+  }
   return new UIItem(name, Struct.append(json, {
 
     ///@param {Callable}
     type: UISliderHorizontal,
 
     ///@type {Number}
-    value: Assert.isType(Struct.getDefault(json, "value", 0.0), Number),
+    value: Struct.getIfType(json, "value", Number, 0.0),
 
     ///@type {Number}
-    minValue: Assert.isType(Struct.getDefault(json, "minValue", 0.0), Number),
+    minValue: minValue,
 
     ///@type {Number}
-    maxValue: Assert.isType(Struct.getDefault(json, "maxValue", 1.0), Number),
+    maxValue: maxValue,
+
+    ///@type {Number}
+    snapValue: abs(Struct.getIfType(json, "snapValue", Number, 0.0)),
 
     ///@type {Sprite}
     pointer: Assert.isType(SpriteUtil.parse(Struct.getDefault(json, "pointer", {
@@ -38,12 +48,23 @@ function UISliderHorizontal(name, json = null) {
     })),
 
     ///@type {?Struct}
-    enable: Struct.contains(json, "enable") ? Assert.isType(json.enable, Struct) : null,
+    enable: Struct.getIfType(json, "enable", Struct),
+
+    ///@type {Callable}
+    getClipboard: Struct.getIfType(json, "getClipboard", Callable, MouseUtil.getClipboard),
+
+    ///@type {Callable}
+    setClipboard: Struct.getIfType(json, "setClipboard", Callable, MouseUtil.setClipboard),
 
     ///@param {Number} mouseX
-    updateValue: new BindIntent(Assert.isType(Struct.getDefault(json, "updateValue", function(mouseX) {
-      var position = this.context.area.getX() + mouseX - this.context.area.getX() - this.area.getX()
-      var length = abs(this.minValue - this.maxValue) * (position / this.area.getWidth())
+    ///@param {Number} mouseY
+    updateValue: new BindIntent(Assert.isType(Struct.getDefault(json, "updateValue", function(mouseX, mouseY) {
+      var position = clamp((this.context.area.getX() + mouseX - this.context.area.getX() - this.area.getX()) / this.area.getWidth(), 0.0, 1.0)
+      if (this.snapValue > 0.0) {
+        position = (floor(position / this.snapValue) * this.snapValue)
+      }
+
+      var length = abs(this.minValue - this.maxValue) * position
       this.value = clamp(this.minValue + length, this.minValue, this.maxValue)
       if (Core.isType(this.store, UIStore)) {
         this.store.set(this.value)
@@ -53,9 +74,10 @@ function UISliderHorizontal(name, json = null) {
     }), Callable)),
 
     ///@param {Number} mouseX
-    updatePosition: new BindIntent(Assert.isType(Struct.getDefault(json, "updatePosition", function(mouseX) { }), Callable)),
+    ///@param {Number} mouseY
+    updatePosition: new BindIntent(Assert.isType(Struct.getDefault(json, "updatePosition", function(mouseX, mouseY) { }), Callable)),
 
-    updateEnable: Assert.isType(Callable.run(UIItemUtils.templates.get("updateEnable")), Callable),
+    updateEnable: Struct.getIfType(json, "updateEnable", Callable, Callable.run(UIItemUtils.templates.get("updateEnable"))),
 
     ///@override
     ///@param {Boolean} [_updateArea]
@@ -88,9 +110,15 @@ function UISliderHorizontal(name, json = null) {
           this.pointer.setAlpha(factor
             * Struct.inject(this.enable, "pointer-alpha", this.pointer.getAlpha()))
         }
+
         if (Core.isType(this.progress, TexturedLine)) {
           this.progress.alpha = factor
             * Struct.inject(this.enable, "progress-alpha", this.progress.alpha)
+        }
+
+        if (Core.isType(this.background, TexturedLine)) {
+          this.background.alpha = factor
+            * Struct.inject(this.enable, "background-alpha", this.background.alpha)
         }
       }
 
@@ -101,12 +129,15 @@ function UISliderHorizontal(name, json = null) {
 
     ///@return {UIItem}
     render: Struct.getDefault(json, "render", function() {
-      var promise = MouseUtil.getClipboard()
+      var promise = this.getClipboard()
       if (Struct.get(Struct.get(promise, "state"), "context") == this) {
         var offsetX = Core.isType(Struct.get(this.context, "layout"), UILayout)
           ? this.context.layout.x() 
-          : 0
-        this.updateValue(MouseUtil.getMouseX() - offsetX)
+          : 0.0
+        var offsetY = Core.isType(Struct.get(this.context, "layout"), UILayout)
+          ? this.context.layout.y() 
+          : 0.0
+        this.updateValue(MouseUtil.getMouseX() - offsetX, MouseUtil.getMouseY() - offsetY)
       }
       
       if (Optional.is(this.preRender)) {
@@ -121,6 +152,11 @@ function UISliderHorizontal(name, json = null) {
       this.background.render(fromX, fromY, fromX + widthMax, fromY)
       this.progress.render(fromX, fromY, fromX + width, fromY)
       this.pointer.render(fromX + width, fromY)
+
+      if (Optional.is(this.postRender)) {
+        this.postRender()
+      }
+      
       return this
     }),
 
@@ -135,18 +171,22 @@ function UISliderHorizontal(name, json = null) {
 
       var offsetX = Core.isType(Struct.get(this.context, "layout"), UILayout) 
         ? this.context.layout.x() 
-        : 0
-      this.updateValue(MouseUtil.getMouseX() - offsetX)
+        : 0.0
+      var offsetY = Core.isType(Struct.get(this.context, "layout"), UILayout)
+        ? this.context.layout.y() 
+        : 0.0
+      this.updateValue(MouseUtil.getMouseX() - offsetX, MouseUtil.getMouseY() - offsetY)
     }), Callable),
 
     ///@param {Event} event
     onMouseDragLeft: Assert.isType(Struct.getDefault(json, "onMouseDragLeft", function(event) {
-      if (Struct.get(this.enable, "value") == false) {
+      if (Struct.get(this.enable, "value") == false 
+          || Optional.is(this.getClipboard())) {
         return
       }
 
       var context = this
-      MouseUtil.setClipboard(new Promise()
+      this.setClipboard(new Promise()
         .setState({
           context: context,
           callback: context.callback,

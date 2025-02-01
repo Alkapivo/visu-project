@@ -10,10 +10,10 @@ function GridCamera(config = {}) constructor {
 	y = Assert.isType(Struct.getDefault(config, "y", 5356), Number)
 
   ///@type {Number}
-	z = Assert.isType(Struct.getDefault(config, "z", 0), Number)
+	z = Assert.isType(Struct.getDefault(config, "z", 5000), Number)
 
   ///@type {Number}
-	zoom = Assert.isType(Struct.getDefault(config, "zoom", 5000), Number)
+	zoom = Assert.isType(Struct.getDefault(config, "zoom", 0), Number)
 
   ///@type {Number}
 	angle = Assert.isType(Struct.getDefault(config, "angle", 270), Number)

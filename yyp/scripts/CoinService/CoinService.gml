@@ -3,13 +3,10 @@
 function CoinService(config = {}): Service() constructor {
 
   ///@type {Array<Coin>}
-  coins = new Array(Coin)
+  coins = new Array(Coin).enableGC()
 
   ///@type {Map<String, CoinTemplate>}
   templates = new Map(String, CoinTemplate)
-  
-  ///@type {Stack<Number>}
-  gc = new Stack(Number)
 
   ///@param {String} name
   ///@return {?CoinTemplate}
@@ -61,7 +58,7 @@ function CoinService(config = {}): Service() constructor {
     coin.move(acc.player)
     if (acc.player != null && coin.collide(acc.player)) {
       acc.player.stats.dispatchCoin(coin)
-      acc.gc.push(index)
+      acc.coins.addToGC(index)
     } else {
       var view = acc.view
       var length = Math.fetchLength(
@@ -71,7 +68,7 @@ function CoinService(config = {}): Service() constructor {
       )
 
       if (length > GRID_ITEM_FRUSTUM_RANGE) {
-        acc.gc.push(index)
+        acc.coins.addToGC(index)
       }
     }
   }
@@ -79,17 +76,14 @@ function CoinService(config = {}): Service() constructor {
   ///@override
   ///@return {CoinService}
   update = function() { 
-    this.dispatcher.update()
     var controller = Beans.get(BeanVisuController)
+    this.dispatcher.update()
     this.coins.forEach(this.updateCoin, {
       player: controller.playerService.player,
-      gc: this.gc,
+      coins: this.coins,
       view: controller.gridService.view,
-    })
+    }).runGC()
 
-    if (this.gc.size() > 0) {
-      this.coins.removeMany(this.gc)
-    }
     return this
   } 
 }

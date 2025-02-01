@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"effect_track_event",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"effect_track_event",
+  "parent":{
+    "name":"track",
+    "path":"folders/io.alkapivo.visu/src/service/track.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

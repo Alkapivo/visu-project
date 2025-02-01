@@ -80,12 +80,12 @@ void main() {
 
   float factorA = acc / 24.0;
   float factorB = acc2 / 36.0;
-  vec4 textureColor = texture2D(gm_BaseTexture, vTexcoord).rgba;
+  vec4 textureColor = texture2D(gm_BaseTexture, vTexcoord);
   vec3 pixel = mix(iTint, textureColor.rgb, 0.17) * pow(factorA * factorB, 2.0);
   gl_FragColor = vec4(
     pixel.x, 
     pixel.y, 
     pixel.z, 
-    textureColor.a * vColor.a * pow(factorA * factorB, 4.0)
+    textureColor.a * vColor.a * pow(factorA * factorB, 2.0)
   );
 }

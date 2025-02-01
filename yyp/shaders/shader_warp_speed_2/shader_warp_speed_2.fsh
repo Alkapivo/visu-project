@@ -3,7 +3,7 @@
 varying vec2 v_vTexcoord;
 varying vec4 v_vColour;
 
-uniform vec3 iResolution;
+uniform vec2 iResolution;
 uniform float iTime;
 uniform float iIterations; // 10
 uniform vec2 iSize; // vec2(1.666, 0.666)

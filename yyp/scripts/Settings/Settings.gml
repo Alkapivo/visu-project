@@ -4,13 +4,14 @@
 function _SettingTypes(): Enum() constructor {
   BOOLEAN = "BOOLEAN"
   NUMBER = "NUMBER"
-  STRING = "STRING"  
+  STRING = "STRING"
+  STRUCT = "STRUCT"
 }
 global.__SettingTypes = new _SettingTypes()
 #macro SettingTypes global.__SettingTypes
 
 
-///@params {Struct} json
+///@param {Struct} json
 function SettingEntry(json) constructor {
 
   ///@type {String}
@@ -27,9 +28,10 @@ function SettingEntry(json) constructor {
       case SettingTypes.BOOLEAN: return Assert.isType(value, Boolean)
       case SettingTypes.NUMBER: return Assert.isType(value, Number)
       case SettingTypes.STRING: return Assert.isType(value, String)
+      case SettingTypes.STRUCT: return Assert.isType(value, Struct)
       default: throw new AssertException($"SettinghType '{this.type}'")
     }
-    return this
+    return this.value
   }
 
   ///@type {any}

@@ -31,7 +31,7 @@ function VisuTrack(_path, json) constructor {
   coin = Assert.isType(Struct.get(json, "coin"), String)
   
   ///@type {String}
-  lyrics = Assert.isType(Struct.get(json, "lyrics"), String)
+  subtitle = Assert.isType(Struct.get(json, "subtitle"), String)
   
   ///@type {String}
   particle = Assert.isType(Struct.get(json, "particle"), String)
@@ -69,7 +69,7 @@ function VisuTrack(_path, json) constructor {
         "track": this.track,
         "bullet": this.bullet,
         "coin": this.coin,
-        "lyrics": this.lyrics,
+        "subtitle": this.subtitle,
         "particle": this.particle,
         "shader": this.shader,
         "shroom": this.shroom,
@@ -122,15 +122,15 @@ function VisuTrack(_path, json) constructor {
         Struct.set(data, template.name, template.serialize())
       }, coin.data)
 
-    var lyrics = {
-      "model": "Collection<io.alkapivo.visu.service.lyrics.LyricsTemplate>",
+    var subtitle = {
+      "model": "Collection<io.alkapivo.visu.service.subtitle.SubtitleTemplate>",
       "version": "1",
       "data": {},
     }
-    controller.lyricsService.templates
+    controller.subtitleService.templates
       .forEach(function(template, name, data) {
         Struct.set(data, template.name, template.serialize())
-      }, lyrics.data)
+      }, subtitle.data)
 
     var particle = {
       "model": "Collection<io.alkapivo.core.service.particle.ParticleTemplate>",
@@ -225,8 +225,8 @@ function VisuTrack(_path, json) constructor {
 
     fileService.send(new Event("save-file-sync")
       .setData(new File({
-        path: $"{path}{this.lyrics}",
-        data: JSON.stringify(lyrics, { pretty: true }),
+        path: $"{path}{this.subtitle}",
+        data: JSON.stringify(subtitle, { pretty: true }),
     })))
 
     fileService.send(new Event("save-file-sync")
