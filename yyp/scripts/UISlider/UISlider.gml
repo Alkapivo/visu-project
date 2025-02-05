@@ -65,12 +65,14 @@ function UISliderHorizontal(name, json = null) {
       }
 
       var length = abs(this.minValue - this.maxValue) * position
-      this.value = clamp(this.minValue + length, this.minValue, this.maxValue)
-      if (Core.isType(this.store, UIStore)) {
-        this.store.set(this.value)
+      var value = clamp(this.minValue + length, this.minValue, this.maxValue)
+      if (value != this.value) {
+        this.updatePosition(mouseX)
       }
 
-      this.updatePosition(mouseX)
+      if (Optional.is(this.store) && value != this.store.getValue()) {
+        this.store.set(value)
+      }
     }), Callable)),
 
     ///@param {Number} mouseX

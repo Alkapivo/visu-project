@@ -17,6 +17,13 @@ global.__Lambda = {
     return value
   },
 
+  ///@param {Callable} callable
+  ///@param {any} iterator
+  ///@param {any} data
+  callback: function(callable, iterator, data) {
+    return callable(data)
+  },
+
   ///@param {...any} param
   ///@return {any}
   dummy: function(/*...param*/) {

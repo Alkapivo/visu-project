@@ -92,6 +92,7 @@ function _Core() constructor {
         case GMFont: return result == "ref" && font_exists(object)
         case GMKeyboardKey: return typeof(object) == "number"
         case GMLayer: return result == "ref" && object != -1
+        case GMMatrix: return result == "array" && is_matrix(object)
         case GMMouseButton: return MouseButtonType.contains(object)
         case GMObject: return result == "ref" && instance_exists(object)
         case GMObjectType: return result == "ref" && object_exists(object)

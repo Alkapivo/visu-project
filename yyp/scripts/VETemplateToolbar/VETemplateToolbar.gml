@@ -2435,7 +2435,7 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
             template: VEComponents.get("collection-button"),
             layout: VELayouts.get("horizontal-item"),
             config: {
-              label: { text: "Save template" },
+              label: { text: "Save" },
               layout: { 
                 height: function() { return 40 },
                 margin: { top: 0 },

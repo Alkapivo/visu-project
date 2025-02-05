@@ -5,8 +5,8 @@
   "isDnD":false,
   "name":"GridOverlayRenderer",
   "parent":{
-    "name":"grid",
-    "path":"folders/io.alkapivo.visu/src/renderer/grid.yy",
+    "name":"renderer",
+    "path":"folders/io.alkapivo.visu/src/renderer.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

@@ -39,7 +39,7 @@ function VisuRenderer() constructor {
       name: "texture_spinner", 
       scaleX: 0.25, 
       scaleY: 0.25,
-    }), Sprite)
+    }), Sprite, "VisuRenderer.spiner must be type of Sprite")
 
   ///@private
   ///@type {Number}
@@ -167,12 +167,11 @@ function VisuRenderer() constructor {
     var gridCameraMessage = ""
     if (gridCamera.enableKeyboardLook || gridCamera.enableMouseLook) {
       gridCameraMessage = gridCameraMessage 
+        + $"x:     {gridCamera.x}\n"
+        + $"y:     {gridCamera.y}\n"
+        + $"z:     {gridCamera.z}\n"
         + $"pitch: {gridCamera.pitch}\n"
         + $"angle: {gridCamera.angle}\n"
-        + $"zoom: {gridCamera.zoom}\n"
-        + $"x: {gridCamera.x}\n"
-        + $"y: {gridCamera.y}\n"
-        + $"z: {gridCamera.z}\n"
     }
     
     if (gridCameraMessage != "") {

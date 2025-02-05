@@ -86,16 +86,6 @@ function GridRenderer() constructor {
     gpu_set_zwriteenable(false)
     gpu_set_cullmode(cull_counterclockwise)
 
-    ///@todo is it even used?
-    this.vertexBuffer = new DefaultVertexBuffer(new Array(DefaultVertex, [
-      new DefaultVertex(0, 0, 0, 0, 0, 1, 0, 0, ColorUtil.WHITE, 1),
-      new DefaultVertex(GRID_SERVICE_PIXEL_WIDTH, 0, 0,  0, 0, 1, 1, 0, ColorUtil.WHITE, 1),
-      new DefaultVertex(GRID_SERVICE_PIXEL_WIDTH, GRID_SERVICE_PIXEL_HEIGHT, 0, 0, 0, 1, 1, 1, ColorUtil.WHITE, 1),
-      new DefaultVertex(GRID_SERVICE_PIXEL_WIDTH, GRID_SERVICE_PIXEL_HEIGHT, 0, 0, 0, 1, 1, 1, ColorUtil.WHITE, 1),
-      new DefaultVertex(0, GRID_SERVICE_PIXEL_HEIGHT, 0, 0, 0, 1, 0, 1, ColorUtil.WHITE, 1),
-      new DefaultVertex(0, 0, 0, 0, 0, 1, 0, 0, ColorUtil.WHITE, 1)
-    ])).build().buffer
-
     return this
   }
 
@@ -1050,11 +1040,12 @@ function GridRenderer() constructor {
     }
     var depths = properties.depths
     var camera = this.camera
+    var gmCamera = camera.get()
     var cameraAngle = camera.angle
     var cameraPitch = camera.pitch
     var xto = camera.x
     var yto = camera.y
-    var zto = camera.z + camera.zoom
+    var zto = camera.z
     var xfrom = xto + dcos(cameraAngle) * dcos(cameraPitch)
     var yfrom = yto - dsin(cameraAngle) * dcos(cameraPitch)
     var zfrom = zto - dsin(cameraPitch)
@@ -1065,6 +1056,7 @@ function GridRenderer() constructor {
       xto, yto, zto, 
       0, 0, 1
     )
+
     ///@todo extract parameters
     camera.projectionMatrix = matrix_build_projection_perspective_fov(
       -60, 
@@ -1073,9 +1065,9 @@ function GridRenderer() constructor {
       32000 
     ) 
 
-    camera_set_view_mat(camera.gmCamera, camera.viewMatrix)
-    camera_set_proj_mat(camera.gmCamera, camera.projectionMatrix)
-    camera_apply(camera.gmCamera)
+    camera_set_view_mat(gmCamera, camera.viewMatrix)
+    camera_set_proj_mat(gmCamera, camera.projectionMatrix)
+    camera_apply(gmCamera)
     
     matrix_set(matrix_world, matrix_build(
       baseX, baseY, depths.particleZ, 
@@ -1094,6 +1086,21 @@ function GridRenderer() constructor {
   ///@param {UILayout} layout
   ///@return {GridRenderer}
   renderGridSurface = function(layout) {
+    var width = layout.width()
+    var height = layout.height()
+    var renderDebugMasks = Visu.settings.getValue("visu.debug.render-entities-mask", false)
+    var renderDebugChunks = Visu.settings.getValue("visu.debug.render-debug-chunks", false)
+    var _renderPlayer = this.renderPlayer
+    var _renderShrooms = this.renderShrooms
+    var _renderBullets = this.renderBullets
+    var _renderCoins = this.renderCoins
+    if (renderDebugMasks) {
+      _renderPlayer = this.debugRenderPlayer
+      _renderShrooms = this.debugRenderShrooms
+      _renderBullets = this.debugRenderBullets
+      _renderCoins = this.debugRenderCoins
+    }
+    
     var controller = Beans.get(BeanVisuController)
     var gridService = controller.gridService
     var properties = gridService.properties
@@ -1102,21 +1109,7 @@ function GridRenderer() constructor {
     var shroomService = controller.shroomService
     var coinService = controller.coinService
     var particleService = controller.particleService
-    var width = layout.width()
-    var height = layout.height()
-    var debugMode = Visu.settings.getValue("visu.debug.render-entities-mask", false)
-    var renderDebugChunks = Visu.settings.getValue("visu.debug.render-debug-chunks", false)
-    var _renderPlayer = this.renderPlayer
-    var _renderShrooms = this.renderShrooms
-    var _renderBullets = this.renderBullets
-    var _renderCoins = this.renderCoins
-    if (debugMode) {
-      _renderPlayer = this.debugRenderPlayer
-      _renderShrooms = this.debugRenderShrooms
-      _renderBullets = this.debugRenderBullets
-      _renderCoins = this.debugRenderCoins
-    }
-    
+
     if (properties.gridClearFrame) {
       var tempAlpha = properties.gridClearColor.alpha
       properties.gridClearColor.alpha = properties.gridClearFrameAlpha
@@ -1135,11 +1128,12 @@ function GridRenderer() constructor {
 
     var depths = properties.depths
     var camera = this.camera
+    var gmCamera = camera.get()
     var cameraAngle = camera.angle
     var cameraPitch = camera.pitch
     var xto = camera.x
     var yto = camera.y
-    var zto = camera.z + camera.zoom
+    var zto = camera.z
     var xfrom = xto + dcos(cameraAngle) * dcos(cameraPitch)
     var yfrom = yto - dsin(cameraAngle) * dcos(cameraPitch)
     var zfrom = zto - dsin(cameraPitch)
@@ -1157,9 +1151,9 @@ function GridRenderer() constructor {
       1, 
       32000 
     ) 
-    camera_set_view_mat(camera.gmCamera, camera.viewMatrix)
-    camera_set_proj_mat(camera.gmCamera, camera.projectionMatrix)
-    camera_apply(camera.gmCamera)
+    camera_set_view_mat(gmCamera, camera.viewMatrix)
+    camera_set_proj_mat(gmCamera, camera.projectionMatrix)
+    camera_apply(gmCamera)
 
     matrix_set(matrix_world, matrix_build(
       baseX, baseY, depths.channelZ, 
@@ -1694,6 +1688,7 @@ function GridRenderer() constructor {
 
   ///@return {GridRenderer}
   clear = function() {
+    this.camera.free()
     this.camera = new GridCamera()
     this.overlayRenderer.clear()
     return this

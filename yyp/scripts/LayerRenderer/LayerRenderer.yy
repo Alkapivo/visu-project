@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"LayerRenderer",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"LayerRenderer",
+  "parent":{
+    "name":"renderer",
+    "path":"folders/io.alkapivo.visu/src/renderer.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

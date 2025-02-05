@@ -167,3 +167,41 @@ function Task(_name, config = {}) constructor {
     return this
   }
 }
+
+
+///@static
+function _TaskUtil() constructor {
+  
+  ///@param {Task} task
+  ///@param {any} iterator
+  ///@param {String} name
+  filterByName = function(task, iterator, name) {
+    return task.name == name
+  }
+
+  ///@param {Task} task
+  ///@return {Boolean}
+  filterFinished = function(task) {
+    return task.status == TaskStatus.FULLFILLED
+        || task.status == TaskStatus.REJECTED
+  }
+
+  ///@param {Task} task
+  fullfill = function(task) { 
+    if (task.status != TaskStatus.FULLFILLED 
+        && task.status != TaskStatus.REJECTED) {
+      task.fullfill()
+    }
+  }
+
+  ///@param {Task} task
+  reject = function(task) { 
+    if (task.status != TaskStatus.FULLFILLED 
+        && task.status != TaskStatus.REJECTED) {
+      task.reject()
+    }
+  }
+}
+
+global.__TaskUtil = new _TaskUtil()
+#macro TaskUtil global.__TaskUtil

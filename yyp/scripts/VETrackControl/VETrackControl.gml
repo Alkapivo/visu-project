@@ -24,7 +24,7 @@ function VETrackControl(_editor) constructor {
         nodes: {
           timeline: {
             name: "track-control.timeline",
-            margin: { left: 1, right: 33 },
+            margin: { left: 0, right: 32 },
             x: function() { return this.margin.left },
             y: function() { return 0 },
             width: function() { return this.context.width() 
@@ -38,7 +38,7 @@ function VETrackControl(_editor) constructor {
             name: "track-control.timestamp",
             width: function() { return 64 },
             height: function() { return 20 },
-            margin: { top: 2, right: 8 },
+            margin: { top: 8, right: 8 },
             x: function() { return this.margin.right },
             y: function() { return this.context.nodes.timeline.bottom()
               + this.margin.top },
@@ -166,18 +166,6 @@ function VETrackControl(_editor) constructor {
               - this.margin.bottom 
               - this.height() },
           },
-          mockup: {
-            name: "track-control.mockup",
-            width: function() { return this.context.width()
-              - this.margin.left
-              - this.margin.right },
-            height: function() { return 22 },
-            margin: { top: 0, bottom: 0, left: 0, right: 0 },
-            x: function() { return this.margin.right },
-            y: function() { return this.context.height()
-              - this.margin.bottom 
-              - this.height() },
-          },
           redo: {
             name: "track-control.redo",
             width: function() { return 20 },
@@ -251,7 +239,7 @@ function VETrackControl(_editor) constructor {
           },
           background: {
             thickness: 0.0, 
-            blend: VETheme.color.side,
+            blend: VETheme.color.sideDark,
             alpha: 0.0,
           },
           preRender: function() {
@@ -324,18 +312,20 @@ function VETrackControl(_editor) constructor {
             var ruler = editor.uiService.find("ve-timeline-ruler")
             if (Optional.is(ruler)) {
               ruler.state.set("time", this.value * controller.trackService.duration)
+              ruler.finishUpdateTimer()
             }
 
             var events = editor.uiService.find("ve-timeline-events")
             if (Optional.is(events)) {
               events.state.set("time", this.value * controller.trackService.duration)
+              events.finishUpdateTimer()
             }
           },
           onMousePressedLeft: function(event) {
-            this.updatePosition(event.data.x - this.context.area.getX())
+            this.updatePosition(event.data.x)
           },
           onMouseReleasedLeft: function(event) {
-            this.updatePosition(event.data.x - this.context.area.getX())
+            this.updatePosition(event.data.x)
             this.sendEvent()
           },
           onMouseDragLeft: function(event) {
@@ -400,7 +390,7 @@ function VETrackControl(_editor) constructor {
              ? json.updateCustom
              : function() {},
           onMouseHoverOver: function(event) {
-            this.sprite.setBlend(ColorUtil.fromHex(VETheme.color.accent).toGMColor())
+            this.sprite.setBlend(ColorUtil.fromHex(VETheme.color.buttonHover).toGMColor())
           },
           onMouseHoverOut: function(event) {
             this.sprite.setBlend(ColorUtil.fromHex(VETheme.color.textShadow).toGMColor())
@@ -522,7 +512,6 @@ function VETrackControl(_editor) constructor {
           "background-color2": ColorUtil.fromHex(VETheme.color.sideDark).toGMColor(),
           "background-alpha": 0.7,
           "store": Beans.get(BeanVisuEditorController).store,
-          "mockup": null,
         }),
         controller: controller,
         layout: layout,
@@ -542,12 +531,6 @@ function VETrackControl(_editor) constructor {
             )
           }
 
-          //if (!Optional.is(this.state.get("mockup"))) {
-          //  this.state.set("mockup", this.items.get("button-ve-track-control_mockup"))
-          //  this.items.remove("button-ve-track-control_mockup")
-          //} 
-          //this.renderItem(this.state.get("mockup"), "button-ve-track-control_mockup", this.area)
-          
           this.items.forEach(this.renderItem, this.area)
 
           if (Beans.get(BeanVisuController).fsm.getStateName() == "rewind") {
@@ -571,28 +554,6 @@ function VETrackControl(_editor) constructor {
           }
         },
         items: {
-          /* 
-          "button-ve-track-control_mockup": Struct.appendRecursiveUnique(
-            {
-              type: UIImage,
-              layout: layout.nodes.mockup,
-              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-              //backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
-              backgroundColor: VETheme.color.primary,
-              backgroundAlpha: 0.5,
-              render: function() {
-                if (Optional.is(this.preRender)) {
-                  this.preRender()
-                }
-                this.renderBackgroundColor()
-
-                return this
-              },
-            },
-            null,//VEStyles.get("ve-track-control").button,
-            false
-          ),
-          */
           "slider_ve-track-control_timeline": factorySlider({
             layout: layout.nodes.timeline,
           }),
@@ -634,7 +595,6 @@ function VETrackControl(_editor) constructor {
               blend: VETheme.color.textShadow,
             },
             callback: function() {
-              Logger.debug("VETrackControl", $"Button pressed: {this.name}")
               Beans.get(BeanVisuController).send(new Event("play"))
             },
             postRender: function() {
@@ -659,7 +619,6 @@ function VETrackControl(_editor) constructor {
               blend: VETheme.color.textShadow,
             },
             callback: function() {
-              Logger.debug("VETrackControl", $"Button pressed: {this.name}")
               Beans.get(BeanVisuController).send(new Event("pause"))
             },
             postRender: function() {
@@ -993,10 +952,23 @@ function VETrackControl(_editor) constructor {
             setClipboard: Beans.get(BeanVisuEditorIO).mouse.setClipboard,
             minValue: 5.0,
             maxValue: 20.0,
-            snapValue: 1.0 / 15.0,
+            //snapValue: 1.0 / 15.0,
             store: { key: "timeline-zoom" },
             onMouseHoverOver: function(event) { },
             onMouseHoverOut: function(event) { },
+            updatePosition: function(mouseX) {
+              var controller = Beans.get(BeanVisuController)
+              var editor = Beans.get(BeanVisuEditorController)
+              var ruler = editor.uiService.find("ve-timeline-ruler")
+              if (Optional.is(ruler)) {
+                ruler.finishUpdateTimer()
+              }
+  
+              var events = editor.uiService.find("ve-timeline-events")
+              if (Optional.is(events)) {
+                events.finishUpdateTimer()
+              }
+            },
             postRender: function() {
               if (!this.isHoverOver) {
                 return
@@ -1005,7 +977,7 @@ function VETrackControl(_editor) constructor {
               var label = Struct.get(this, "label")
               if (!Optional.is(label)) {
                 label = new UILabel({
-                  text: "Zoom (-)(+)",
+                  text: "Zoom In/Out\n( + / - )",
                   color: VETheme.color.textShadow,
                   align: { v: VAlign.BOTTOM, h: HAlign.CENTER },
                   useScale: false,

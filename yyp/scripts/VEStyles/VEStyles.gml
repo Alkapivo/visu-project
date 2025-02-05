@@ -219,20 +219,6 @@ function generateVEStyles() {
         align: { v: VAlign.CENTER, h: HAlign.CENTER },
       },
     },
-    "category-button": {
-      backgroundColorSelected: VETheme.color.accent,
-      backgroundColor: VETheme.color.accentDark,
-      backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
-      backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
-      backgroundColorOff: ColorUtil.fromHex(VETheme.color.accentDark).toGMColor(),
-      colorHoverOver: VETheme.color.accentShadow,
-      colorHoverOut: VETheme.color.accentDark,
-      label: {
-        font: "font_inter_8_regular",
-        color: VETheme.color.textFocus,
-        align: { v: VAlign.CENTER, h: HAlign.CENTER },
-      },
-    },
     "type-button": {
       backgroundColorSelected: VETheme.color.accentShadow,
       backgroundColor: VETheme.color.primaryDark,
@@ -559,42 +545,6 @@ function generateVEStyles() {
         color: VETheme.color.text,
         align: { v: VAlign.CENTER, h: HAlign.LEFT },
       },
-    },
-    "text-field-button-checkbox": { 
-      font: "font_inter_10_regular",
-      colorBackgroundUnfocused: VETheme.color.primaryDark,
-      colorBackgroundFocused: VETheme.color.primaryShadow,
-      colorTextUnfocused: VETheme.color.textShadow,
-      colorTextFocused: VETheme.color.textFocus,
-      colorSelection: VETheme.color.textSelected,
-      lh: 22.0000,
-      padding: { top: 0, bottom: 0, left: 4, right: 0 },
-      label: {
-        font: "font_inter_10_regular",
-        color: VETheme.color.textShadow,
-        align: { v: VAlign.CENTER, h: HAlign.RIGHT },
-      },
-      field: {
-        font: "font_inter_10_regular",
-        colorBackgroundUnfocused: VETheme.color.primaryDark,
-        colorBackgroundFocused: VETheme.color.primaryShadow,
-        colorTextUnfocused: VETheme.color.textShadow,
-        colorTextFocused: VETheme.color.textFocus,
-        colorSelection: VETheme.color.textSelected,
-        lh: 22.0000,
-        padding: { top: 0, bottom: 0, left: 4, right: 0 },
-      },
-      button: {
-        backgroundColor: VETheme.color.button,
-        colorHoverOver: VETheme.color.buttonHover,
-        colorHoverOut: VETheme.color.button,
-        label: {
-          font: "font_inter_10_regular",
-          color: VETheme.color.textFocus,
-          align: { v: VAlign.CENTER, h: HAlign.CENTER },
-        },
-      },
-      checkbox: { }
     },
     "text-field_label": {
       font: "font_inter_10_regular",

@@ -4,36 +4,24 @@
 ///@param {Boolean} [useScale]
 function GridItemMovement(json = null, _useScale = true) constructor {
   
+  ///@todo Make it deprecated
   ///@type {Boolean}
   useScale = _useScale
 
   ///@type {Number}
-  speed = Assert.isType(Struct
-    .getDefault(json, "speed", 0.0) 
-    / (this.useScale ? 100.0 : 1.0), Number)
+  speed = Struct.getIfType(json, "speed", Number, 0.0) / (this.useScale ? 100.0 : 1.0)
   
   ///@type {Number}
-  speedMax = Assert.isType(Struct
-    .getDefault(json, "speedMax", 2.1) 
-    / (this.useScale ? 100.0 : 1.0), Number)
+  speedMax = Struct.getIfType(json, "speedMax", Number, 2.1) / (this.useScale ? 100.0 : 1.0)
 
   ///@type {Number}
-
-  
-  speedMaxFocus = (Core.isType(Struct.get(json, "speedMaxFocus"), Number) 
-    ? json.speedMaxFocus 
-    : 0.66) 
-    / (this.useScale ? 100.0 : 1.0)
+  speedMaxFocus = Struct.getIfType(json, "speedMaxFocus", Number, 0.66) / (this.useScale ? 100.0 : 1.0)
   
   ///@type {Number}
-  acceleration = Assert.isType(Struct
-    .getDefault(json, "acceleration", 1.92) 
-    / (this.useScale ? 1000.0 : 1.0), Number)
+  acceleration = Struct.getIfType(json, "acceleration", Number, 1.92) / (this.useScale ? 1000.0 : 1.0)
   
   ///@type {Number}
-  friction = Assert.isType(Struct
-    .getDefault(json, "friction", 9.3) 
-    / (this.useScale ? 10000.0 : 1.0), Number)
+  friction = Struct.getIfType(json, "friction", Number, 9.3) / (this.useScale ? 10000.0 : 1.0)
 
   ///@return {Struct}
   serialize = function() {
@@ -98,7 +86,7 @@ function GridItemSignals() constructor {
 function GridItem(config = {}) constructor {
 
   ///@type {String}
-  uid = Assert.isType(config.uid, String)
+  uid = Assert.isType(config.uid, String, "GridItem.uid must be type of String")
 
   ///@type {Number}
   x = Assert.isType(Struct.get(config, "x"), Number)
@@ -110,7 +98,9 @@ function GridItem(config = {}) constructor {
   z = Assert.isType(Struct.getDefault(config, "z", 0), Number)
 
   ///@type {Sprite}
-  sprite = Assert.isType(SpriteUtil.parse(Struct.get(config, "sprite"), { name: "texture_missing" }), Sprite)
+  sprite = SpriteUtil.parse(Struct.get(config, "sprite"), { 
+    name: "texture_missing"
+  })
 
   ///@type {Rectangle}
   mask = Core.isType(Struct.get(config, "mask"), Struct)
@@ -147,10 +137,8 @@ function GridItem(config = {}) constructor {
   fadeInFactor = 0.03
 
   ///@type {?Struct}
-  chunkPosition = Core.isType(Struct.get(config, "chunkPosition"), Struct) 
-    ? config.chunkPosition 
-    : null 
-
+  chunkPosition = Struct.getIfType(config, "chunkPosition", Struct)
+    
   ///@param {Number} angle
   ///@return {GridItem}
   static setAngle = function(angle) {
@@ -200,11 +188,10 @@ function GridItem(config = {}) constructor {
   ///@param {GridItem} target
   ///@return {Bollean} collide?
   static collide = function(target) { 
-    var halfSourceWidth = (this.mask.getWidth() * this.sprite.scaleX) / 2.0
-    var halfSourceHeight = (this.mask.getHeight() * this.sprite.scaleY) / 2.0
-    var halfTargetWidth = (target.mask.getWidth() * target.sprite.scaleX) / 2.0
-    var halfTargetHeight = (target.mask.getHeight() * target.sprite.scaleY) / 2.0
-          
+    var halfSourceWidth = (this.mask.z * this.sprite.scaleX) / 2.0
+    var halfSourceHeight = (this.mask.a * this.sprite.scaleY) / 2.0
+    var halfTargetWidth = (target.mask.z * target.sprite.scaleX) / 2.0
+    var halfTargetHeight = (target.mask.a * target.sprite.scaleY) / 2.0
     var sourceX = this.x * GRID_SERVICE_PIXEL_WIDTH
     var sourceY = this.y * GRID_SERVICE_PIXEL_HEIGHT
     var targetX = target.x * GRID_SERVICE_PIXEL_WIDTH
@@ -229,13 +216,14 @@ function GridItem(config = {}) constructor {
   ///@param {VisuController} controller
   ///@return {GridItem}
   static update = function(controller) { 
-    if (Optional.is(this.gameMode)) {
+    if (this.gameMode != null) {
       gameMode.update(this, controller)
     }
 
     if (this.fadeIn < 1.0) {
       this.fadeIn = clamp(this.fadeIn + this.fadeInFactor, 0.0, 1.0)
     }
+
     return this
   }
 }

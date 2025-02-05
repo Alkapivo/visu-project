@@ -2,27 +2,6 @@
 
 ///@enum
 function _VEBrushType(): Enum() constructor {
-  #region Old API
-  SHADER_SPAWN = "brush_shader_spawn"
-  SHADER_OVERLAY = "brush_shader_overlay"
-  SHADER_CLEAR = "brush_shader_clear"
-  SHADER_CONFIG = "brush_shader_config"
-  SHROOM_SPAWN = "brush_shroom_spawn"
-  SHROOM_CLEAR = "brush_shroom_clear"
-  SHROOM_CONFIG = "brush_shroom_config"
-  VIEW_OLD_WALLPAPER = "brush_view_old_wallpaper"
-  VIEW_OLD_CAMERA = "brush_view_old_camera"
-  VIEW_OLD_LYRICS = "brush_view_old_lyrics"
-  VIEW_OLD_GLITCH = "brush_view_old_glitch"
-  VIEW_OLD_CONFIG = "brush_view_old_config"
-  GRID_OLD_CHANNEL = "brush_grid_old_channel"
-  GRID_OLD_COIN = "brush_grid_old_coin"
-  GRID_OLD_CONFIG = "brush_grid_old_config"
-  GRID_OLD_PARTICLE = "brush_grid_old_particle"
-  GRID_OLD_PLAYER = "brush_grid_old_player"
-  GRID_OLD_SEPARATOR = "brush_grid_old_separator"
-  #endregion
-
   EFFECT_SHADER = "brush_effect_shader"
   EFFECT_GLITCH = "brush_effect_glitch"
   EFFECT_PARTICLE = "brush_effect_particle"
@@ -47,27 +26,6 @@ global.__VEBrushType = new _VEBrushType()
 ///@static
 ///@type {Struct}
 global.__VEBrushTypeNames = {
-  #region Old API
-  "brush_shader_spawn": "Shader spawn",
-  "brush_shader_overlay": "Shader overlay",
-  "brush_shader_clear": "Shader clear",
-  "brush_shader_config": "Shader config",
-  "brush_shroom_spawn": "Shroom spawn",
-  "brush_shroom_clear": "Shroom clear",
-  "brush_shroom_config": "Shroom config",
-  "brush_view_old_wallpaper": "View wallpaper",
-  "brush_view_old_camera": "View camera",
-  "brush_view_old_lyrics": "View subtitle",
-  "brush_view_old_glitch": "View glitch",
-  "brush_view_old_config": "View config",
-  "brush_grid_old_channel": "Grid columns",
-  "brush_grid_old_coin": "Spawn coin",
-  "brush_grid_old_config": "Grid config",
-  "brush_grid_old_particle": "Spawn particle",
-  "brush_grid_old_player": "Spawn player",
-  "brush_grid_old_separator": "Grid rows",
-  #endregion
-
   "brush_effect_shader": "Effect shader",
   "brush_effect_glitch": "Effect glitch",
   "brush_effect_particle": "Effect particle",

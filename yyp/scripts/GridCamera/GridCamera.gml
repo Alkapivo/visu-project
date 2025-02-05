@@ -1,50 +1,96 @@
-///@package com.alkapivo.visu.component.grid.renderer.GridCamera
+///@package io.alkapivo.visu.renderer
 
-///@param {Struct} [config]
-function GridCamera(config = {}) constructor {
+///@param {?Struct} [config]
+function GridCamera(config = null) constructor {
     
 	///@type {Number}
-	x = Assert.isType(Struct.getDefault(config, "x", 4096), Number)
+	x = Struct.getIfType(config, "x", Number, 4096)
 
   ///@type {Number}
-	y = Assert.isType(Struct.getDefault(config, "y", 5356), Number)
+	y = Struct.getIfType(config, "y", Number, 5356)
 
   ///@type {Number}
-	z = Assert.isType(Struct.getDefault(config, "z", 5000), Number)
+	z = Struct.getIfType(config, "z", Number, 5000)
 
   ///@type {Number}
-	zoom = Assert.isType(Struct.getDefault(config, "zoom", 0), Number)
-
-  ///@type {Number}
-	angle = Assert.isType(Struct.getDefault(config, "angle", 270), Number)
+	angle = Struct.getIfType(config, "angle", Number, 270.0)
 
     ///@type {Number}
-	pitch = Assert.isType(Struct.getDefault(config, "pitch", -70), Number)
+	pitch = Struct.getIfType(config, "pitch", Number, 70.0)
 
-  ///@type {?Matrix}
+  ///@type {?GMMatrix}
   viewMatrix = null
 
-	///@type {?Matrix}
+	///@type {?GMMatrix}
 	projectionMatrix = null
 
 	///@type {Boolean}
-	enableMouseLook = Struct.getDefault(config, "enableMouseLook", false)
+	enableMouseLook = Struct.getIfType(config, "enableMouseLook", Boolean, false)
 
 	///@type {Boolean}
-	enableKeyboardLook = Struct.getDefault(config, "enableKeyboardLook", false)
+	enableKeyboardLook = Struct.getIfType(config, "enableKeyboardLook", Boolean, false)
 
 	///@type {Number}
-	moveSpeed = Assert.isType(Struct.getDefault(config, "moveSpeed", 16), Number)
+	moveSpeed = Struct.getIfType(config, "moveSpeed", Number, 16.0)
 
-	///@type {GMCamera}
-	gmCamera = camera_create()
+	///@type {?GMCamera}
+	gmCamera = null
 
-	executor = new TaskExecutor(this)
+  ///@return {GMCamera}
+  get = function() {
+    if (!Core.isType(this.gmCamera, GMCamera)) {
+      this.gmCamera = camera_create()
+    }
+
+    return this.gmCamera
+  }
+
+  ///@type {?GMMatrix}
+  ///@return {GridCamera}
+  setViewMatrix = function(matrix) {
+    if (!Core.isType(this.gmCamera, GMCamera)) {
+      this.gmCamera = camera_create()
+    }
+
+    if (Core.isType(matrix, GMMatrix)) {
+      this.viewMatrix = matrix
+      camera_set_view_mat(this.gmCamera, matrix)
+    } else {
+      this.viewMatrix = null
+    }
+    
+    return this
+  }
+  
+  ///@type {?GMMatrix}
+  ///@return {GridCamera}
+  setProjectionMatrix = function(matrix) {
+    if (!Core.isType(this.gmCamera, GMCamera)) {
+      this.gmCamera = camera_create()
+    }
+
+    if (Core.isType(matrix, GMMatrix)) {
+      this.projectionMatrix = matrix
+      camera_set_proj_mat(this.gmCamera, matrix)
+    } else {
+      this.projectionMatrix = null
+    }
+    return this
+  }
+
+  ///@return {GridCamera}
+  apply = function() {
+    if (!Core.isType(this.gmCamera, GMCamera)) {
+      this.gmCamera = camera_create()
+    }
+
+    camera_apply(this.gmCamera)
+    return this
+  }
 
 	///@param {UILayout} layout
 	///@return {Camera}
 	update = function(layout) {
-		this.executor.update()
 		if (this.enableMouseLook) {
       var width = layout.width()
       var height = layout.height()
@@ -113,4 +159,14 @@ function GridCamera(config = {}) constructor {
 
 		return this
 	}
+
+  ///@return {GridCamera}
+  free = function() {
+    if (Core.isType(this.gmCamera, GMCamera)) {
+      camera_destroy(this.gmCamera)
+      this.gmCamera = null
+    }
+
+    return this
+  }
 }

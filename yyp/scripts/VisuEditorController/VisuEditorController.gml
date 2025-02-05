@@ -679,18 +679,18 @@ function VisuEditorController() constructor {
       return this
     }
 
-    try {
+    //try {
       ///@description reset UI timers after resize to avoid ghost effect
       if (Beans.get(BeanVisuController).displayService.state == "resized") {
         this.uiService.containers.forEach(this.resetUITimer)
       }
       this.uiService.update()
-    } catch (exception) {
-      var message = $"'updateUIService' set fatal error: {exception.message}"
-      Logger.error(BeanVisuEditorController, message)
-      Core.printStackTrace()
-      this.send(new Event("spawn-popup", { message: message }))
-    }
+    //} catch (exception) {
+    //  var message = $"'updateUIService' set fatal error: {exception.message}"
+    //  Logger.error(BeanVisuEditorController, message)
+    //  Core.printStackTrace()
+    //  this.send(new Event("spawn-popup", { message: message }))
+    //}
 
     return this
   }

@@ -446,7 +446,10 @@ function VETimeline(_editor) constructor {
                   label: { text: "Name" },
                   field: { store: { key: "new-channel-name" } },
                   button: { 
-                    label: { text: "Add" },
+                    label: { 
+                      text: "Add",
+                      font: "font_inter_10_bold",
+                    },
                     onMouseHoverOver: function(event) {
                       this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
                     },
@@ -1138,6 +1141,7 @@ function VETimeline(_editor) constructor {
           var nextX = this.getXFromTimestamp(timestamp) + this.offset.x
           var previousY = (selectEvent.data.channelIndexFrom * 32) + this.offset.y + 16
           var nextY = (index * 32) + this.offset.y + 16
+          nextY = MouseUtil.getMouseY() - this.area.getY()
 
           //rectangle: function(beginX, beginY, endX, endY, outline = false, color1 = null, color2 = null, color3 = null, color4 = null, alpha = null) {
           GPU.render.rectangle(previousX, previousY, nextX, nextY, false, c_blue, c_blue, c_blue, c_blue, 0.33)
@@ -1254,6 +1258,25 @@ function VETimeline(_editor) constructor {
             }
           }
 
+          var collide = this.area.collide(MouseUtil.getMouseX(), MouseUtil.getMouseY())
+          var brushSprite = editor.brushToolbar.store.getValue("brush-sprite")
+          if (collide && Optional.is(brushSprite)) {
+            var brushTimestamp = this.getTimestampFromMouseX(MouseUtil.getMouseX())
+            if (editor.store.getValue("snap") || keyboard_check(vk_control)) {
+              brushTimestamp = floor(brushTimestamp / (60 / (bpm * bpmSub))) * (60 / (bpm * bpmSub))
+            }
+
+            var channelIndex = this.getChannelIndexFromMouseY(MouseUtil.getMouseY())
+            if (!Optional.is(channelIndex)) {
+              channelIndex = MouseUtil.getMouseY() < this.area.getY() ? 0 : this.lastIndex
+            }
+
+            brushSprite.setAlpha(0.5).scaleToFit(32, 32).render(
+              this.getXFromTimestamp(brushTimestamp) + this.offset.x,
+              (32 * channelIndex) + this.offset.y
+            )
+          }
+
           // items
           var areaX = this.area.x
           var areaY = this.area.y
@@ -1319,24 +1342,6 @@ function VETimeline(_editor) constructor {
                 )
               }
             }
-            
-            //for (var bpmIndex = 0; bpmIndex < bpmSize; bpmIndex++) {
-            //  bpmX = round((bpmIndex * bpmWidth) - (abs(this.offset.x) mod bpmWidth))
-            //  _thickness = bpmCount > 0 && bpmCountIndex mod bpmCount == 0 ? thickness * 4 : thickness
-            //  bpmCountIndex++
-            //  GPU.render.texturedLine(bpmX, 0, bpmX, bpmY, _thickness, alpha, color)
-            //  for (var bpmSubIndex = 1; bpmSubIndex <= bpmSub; bpmSubIndex++) {
-            //    GPU.render.texturedLine(
-            //      bpmX + (bpmSubIndex * bpmSubLength), 
-            //      0, 
-            //      bpmX + (bpmSubIndex * bpmSubLength), 
-            //      bpmY, 
-            //      thickness, 
-            //      alpha * 0.5, 
-            //      color
-            //    )
-            //  }
-            //}
           } else {
             for (var bpmIndex = 0; bpmIndex <= bpmSize; bpmIndex++) {
               bpmX = round((bpmIndex * bpmWidth) - (abs(this.offset.x) mod bpmWidth))
@@ -1384,7 +1389,51 @@ function VETimeline(_editor) constructor {
           DeltaTime.deltaTime = delta
         },
         renderItem: Callable.run(UIUtil.renderTemplates.get("renderItemDefaultScrollable")),
-        render: Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable")),
+        renderDefaultScrollable: new BindIntent(Callable.run(UIUtil.renderTemplates.get("renderDefaultScrollable"))),
+        render: function() {
+          var displayService = Beans.get(BeanVisuController).displayService
+          var collide = this.area.collide(MouseUtil.getMouseX(), MouseUtil.getMouseY())
+          var cursor = displayService.getCursor()
+          if (collide) {
+            var tool = Beans.get(BeanVisuEditorController).store.getValue("tool")
+            switch (tool) {
+              case ToolType.SELECT:
+                if (cursor == Cursor.DEFAULT) {
+                  displayService.setCursor(Cursor.NONE)
+                  cursor_sprite = texture_ve_cursor_tool_select
+                }
+                break
+              case ToolType.CLONE:
+                if (cursor == Cursor.DEFAULT) {
+                  displayService.setCursor(Cursor.NONE)
+                  cursor_sprite = texture_ve_cursor_tool_clone
+                }
+                break
+              case ToolType.BRUSH:
+                if (cursor == Cursor.DEFAULT) {
+                  displayService.setCursor(Cursor.NONE)
+                  cursor_sprite = texture_ve_cursor_tool_brush
+                }
+                break
+              case ToolType.ERASE:
+                if (cursor == Cursor.DEFAULT) {
+                  displayService.setCursor(Cursor.NONE)
+                  cursor_sprite = texture_ve_cursor_tool_erase
+                }
+                break
+            }
+          } else {
+            if (cursor == Cursor.NONE) {
+              displayService.setCursor(Cursor.DEFAULT)
+            }
+
+            if (cursor_sprite != -1) {
+              cursor_sprite = -1
+            }
+          }
+
+          this.renderDefaultScrollable()
+        },
         onInit: function() {
           this.scrollbarY = null
           this.lastIndex = 0
@@ -1543,7 +1592,7 @@ function VETimeline(_editor) constructor {
             var channel = acc.context.getMovedChannelName(acc.sourceChannel, acc.targetChannel, selectedEvent.channel)
             var transactionService = acc.context.controller.transactionService
             var trackEventConfig = selectedEvent.data.serialize()
-            trackEventConfig.timestamp += acc.offset
+            trackEventConfig.timestamp = clamp(trackEventConfig.timestamp + acc.offset, 0.0, acc.duration - 0.2)
             var sizeBefore = transactionService.applied.size()
             var uiItem = acc.context.addEvent(channel, new TrackEvent(trackEventConfig, {
               handlers: Beans.get(BeanVisuController).trackService.handlers,
@@ -1579,6 +1628,7 @@ function VETimeline(_editor) constructor {
             sourceChannel: sourceChannel,
             targetChannel: targetChannel,
             newEvents: newEvents,
+            duration: Beans.get(BeanVisuController).trackService.duration,
           })
 
           var transaction = new Transaction({
@@ -1765,7 +1815,7 @@ function VETimeline(_editor) constructor {
                   var channel = acc.context.getMovedChannelName(acc.sourceChannel, acc.targetChannel, selectedEvent.channel)
                   var transactionService = acc.context.controller.transactionService
                   var trackEventConfig = selectedEvent.data.serialize()
-                  trackEventConfig.timestamp += acc.offset
+                  trackEventConfig.timestamp = clamp(trackEventConfig.timestamp + acc.offset, 0.0, acc.duration - 0.2)
                   var sizeBefore = transactionService.applied.size()
                   var uiItem = acc.context.addEvent(channel, new TrackEvent(trackEventConfig, {
                     handlers: Beans.get(BeanVisuController).trackService.handlers,
@@ -1801,6 +1851,7 @@ function VETimeline(_editor) constructor {
                   targetChannel: targetChannel,
                   newEvents: newEvents,
                   contextEvent: contextEvent,
+                  duration: Beans.get(BeanVisuController).trackService.duration,
                 })
 
                 var transaction = new Transaction({
@@ -1900,6 +1951,12 @@ function VETimeline(_editor) constructor {
             return
           }
 
+          var store = Beans.get(BeanVisuEditorController).store
+          var tool = store.getValue("tool")
+          if (tool != ToolType.SELECT) {
+            return
+          }
+
           var timestampFrom = this.getTimestampFromMouseX(event.data.x)
           var channelIndexFrom = this.getChannelIndexFromMouseY(event.data.y)
           if (!Optional.is(channelIndexFrom)) {
@@ -1982,7 +2039,7 @@ function VETimeline(_editor) constructor {
         }),
 
         ///@param {Number} mouseY
-        ///@return {Number}
+        ///@return {?Number}
         getChannelIndexFromMouseY: new BindIntent(function(mouseY) {
           var channel = this.controller.containers
             .get("ve-timeline-channels").collection
@@ -2068,7 +2125,7 @@ function VETimeline(_editor) constructor {
                 
                 var store = Beans.get(BeanVisuEditorController).store
                 var tool = store.getValue("tool")
-                if (tool == ToolType.ERASE) {
+                if (tool != ToolType.SELECT) {
                   return
                 }
 
@@ -2123,6 +2180,7 @@ function VETimeline(_editor) constructor {
                     }
                     break
                   case ToolType.BRUSH:
+
                   case ToolType.CLONE:
                   case ToolType.SELECT:
                     ///@description select

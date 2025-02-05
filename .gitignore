@@ -1,9 +1,4 @@
-dist
-dist/*
-gm_modules
-gm_modules/*
-yyp/tmp/*
-visu-project*vm.zip
-visu-project*yyc.zip
-bin
 bin/*
+gm_modules/*
+yyp/out/*
+yyp/tmp/*

@@ -338,25 +338,25 @@ function PlayerStats(_player, json) constructor {
               }))
 
             controller.visuRenderer.hudRenderer.sendGlitchEvent()
-            view_old_track_event.brush_view_old_glitch.run({
-              "view-glitch_shader-rng-seed":0.26406799999999998,
-              "view-glitch_use-factor":true,
-              "view-glitch_shader-intensity":0.3015499999999999,
-              "view-glitch_factor":0.9789500000000001,
-              "view-glitch_use-config":true,
-              "view-glitch_line-speed":0.104141,
-              "view-glitch_line-shift":0.085999999999999999,
-              "view-glitch_line-resolution":0.253488,
-              "view-glitch_line-vertical-shift":0.13178300000000001,
-              "view-glitch_line-drift":0.1760000000000003,
-              "view-glitch_jumble-speed":0.4160780000000001,
-              "view-glitch_jumble-shift":0.4046299999999999,
-              "view-glitch_jumble-resolution":0.34000000000000002,
-              "view-glitch_jumble-jumbleness":0.82999999999999996,
-              "view-glitch_shader-dispersion":0.3000000000000001,
-              "view-glitch_shader-channel-shift":0.054421000000000002,
-              "view-glitch_shader-noise-level":0.5883700000000001,
-              "view-glitch_shader-shakiness":3.9549329999999996,
+            effect_track_event.brush_effect_glitch.run({
+              "ef-glt_shd-rng-seed":0.26406799999999998,
+              "ef-glt_use-fade-out":true,
+              "ef-glt_shd-intensity":0.3015499999999999,
+              "ef-glt_fade-out":0.9789500000000001,
+              "ef-glt_use-config":true,
+              "ef-glt_line-spd":0.104141,
+              "ef-glt_line-shift":0.085999999999999999,
+              "ef-glt_line-res":0.253488,
+              "ef-glt_line-v-shift":0.13178300000000001,
+              "ef-glt_line-drift":0.1760000000000003,
+              "ef-glt_jumb-spd":0.4160780000000001,
+              "ef-glt_jumb-shift":0.4046299999999999,
+              "ef-glt_jumb-res":0.34000000000000002,
+              "ef-glt_jumb-chaos":0.82999999999999996,
+              "ef-glt_shd-dispersion":0.3000000000000001,
+              "ef-glt_shd-ch-shift":0.054421000000000002,
+              "ef-glt_shd-noise":0.5883700000000001,
+              "ef-glt_shd-shakiness":3.9549329999999996,
             })
           })
         controller.executor.add(task)

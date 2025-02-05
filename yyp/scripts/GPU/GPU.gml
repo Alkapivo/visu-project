@@ -134,7 +134,7 @@ function BlendConfig(config = null) constructor {
       GPU.set.blendEquation(this.previousEquation)
     }
 
-    if (Optional.is(this.equationAlpha)
+    if (Optional.is(this.previousEquationAlpha)
         && this.previousEquationAlpha != this.equationAlpha) {
       GPU.set.blendEquationAlpha(this.previousEquationAlpha)
     }
@@ -487,7 +487,7 @@ function _GPU() constructor {
 
       ///@return {BlendEquation}
       equationAlpha: function() {
-        return gpu_get_blendequation_sepalpha()
+        return gpu_get_blendequation_sepalpha()[1]
       },
     },
 

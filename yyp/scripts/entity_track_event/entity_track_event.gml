@@ -1,4 +1,16 @@
 
+///@type {Number}
+#macro SHROOM_SPAWN_CHANNEL_AMOUNT 50
+
+///@type {Number}
+#macro SHROOM_SPAWN_CHANNEL_SIZE 8
+
+///@type {Number}
+#macro SHROOM_SPAWN_ROW_AMOUNT 50
+
+///@type {Number}
+#macro SHROOM_SPAWN_ROW_SIZE 8
+
 ///@type {Struct}
 global.__entity_track_event = {
   "brush_entity_shroom": {

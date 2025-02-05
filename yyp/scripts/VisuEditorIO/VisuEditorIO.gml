@@ -158,6 +158,16 @@ function VisuEditorIO() constructor {
 
       var item = editor.store.get("timeline-zoom")
       item.set(clamp(item.get() - 1, 5, 20))
+
+      var ruler = editor.uiService.find("ve-timeline-ruler")
+      if (Optional.is(ruler)) {
+        ruler.finishUpdateTimer()
+      }
+
+      var events = editor.uiService.find("ve-timeline-events")
+      if (Optional.is(events)) {
+        events.finishUpdateTimer()
+      }
     }
 
     if (this.keyboard.keys.zoomOut.pressed 
@@ -165,6 +175,16 @@ function VisuEditorIO() constructor {
 
       var item = editor.store.get("timeline-zoom")
       item.set(clamp(item.get() + 1, 5, 20))
+
+      var ruler = editor.uiService.find("ve-timeline-ruler")
+      if (Optional.is(ruler)) {
+        ruler.finishUpdateTimer()
+      }
+
+      var events = editor.uiService.find("ve-timeline-events")
+      if (Optional.is(events)) {
+        events.finishUpdateTimer()
+      }
     }
 
     if (this.keyboard.keys.shiftLeft.on

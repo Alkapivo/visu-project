@@ -408,7 +408,7 @@ global.__VEComponents = new Map(String, Callable, {
     ])
   },
 
-    ///@param {String} name
+  ///@param {String} name
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
   ///@return {Array<UIItem>}
@@ -460,62 +460,6 @@ global.__VEComponents = new Map(String, Callable, {
     ])
   },
 
-  ///@deprecated
-  ///@param {String} name
-  ///@param {UILayout} layout
-  ///@param {?Struct} [config]
-  ///@return {Array<UIItem>}
-  "image": function(name, layout, config = null) {
-    var items = new Array(UIItem, [
-      UIImage(
-        $"{name}_image",
-        Struct.appendRecursive(
-          { 
-            layout: layout.nodes.image,
-            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-          }, 
-          config,
-          false
-        )
-      )
-    ])
-
-    if (Struct.contains(config, "resolution")) {
-      items.add(UIText(
-        name,
-        Struct.appendRecursive(
-          {
-            layout: layout.nodes.resolution,
-            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-          },
-          Struct.appendRecursive(
-            Struct.appendRecursive(
-              { 
-                store: { 
-                  callback: function(value, data) {
-                    if (!Core.isType(value, Sprite)) {
-                      return
-                    }
-  
-                    data.label.text = $"width: {value.getWidth()} height: {value.getHeight()}"
-                  },
-                  set: function(value) { },
-                }
-              },
-              VEStyles.get("texture-field-ext").resolution,
-              false
-            ),
-            Struct.get(config, "resolution"),
-            false
-          ),
-          false
-        )
-      ))
-    }
-
-    return items
-  },
-  
   ///@param {String} name
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
@@ -1021,7 +965,7 @@ global.__VEComponents = new Map(String, Callable, {
     ])
   },
 
-    ///@param {String} name
+  ///@param {String} name
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
   ///@return {Array<UIItem>}
@@ -1115,6 +1059,10 @@ global.__VEComponents = new Map(String, Callable, {
     ])
   },
 
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
   "text-field-simple": function(name, layout, config = null) {
     return new Array(UIItem, [
       UITextField(
@@ -1217,197 +1165,6 @@ global.__VEComponents = new Map(String, Callable, {
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
   ///@return {Array<UIItem>}
-  "text-field-checkbox": function(name, layout, config = null) {
-    return new Array(UIItem, [
-      UIText(
-        $"label_{name}", 
-        Struct.appendRecursive(
-          Struct.appendRecursive(
-            { 
-              layout: layout.nodes.label,
-              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-            },
-            VEStyles.get("text-field-button").label,
-            false
-          ),
-          Struct.get(config, "label"),
-          false
-        )
-      ),
-      UITextField(
-        $"field_{name}", 
-        Struct.appendRecursive(
-          Struct.appendRecursive(
-            { 
-              layout: layout.nodes.field,
-              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayoutTextField")),
-            },
-            VEStyles.get("text-field-button").field,
-            false
-          ),
-          Struct.get(config, "field"),
-          false
-        )
-      ),
-      UICheckbox(
-        $"{name}_checkbox", 
-        Struct.appendRecursive(
-          { 
-            layout: layout.nodes.checkbox,
-            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-          }, 
-          Struct.get(config, "checkbox"),
-          false
-        )
-      ),
-      UIText(
-        $"{name}_title", 
-        Struct.appendRecursive(
-          Struct.appendRecursive(
-            { 
-              layout: layout.nodes.title,
-              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-            },
-            VEStyles.get("text-field-checkbox").title,
-            false
-          ),
-          Struct.get(config, "title"),
-          false
-        )
-      ),
-    ])
-  },
-
-  ///@param {String} name
-  ///@param {UILayout} layout
-  ///@param {?Struct} [config]
-  ///@return {Array<UIItem>}
-  "text-field-increase": function(name, layout, config = null) {
-    return new Array(UIItem, [
-      UIText(
-        $"label_{name}", 
-        Struct.appendRecursive(
-          Struct.appendRecursive(
-            { 
-              layout: layout.nodes.label,
-              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-            },
-            VEStyles.get("text-field-button").label,
-            false
-          ),
-          Struct.get(config, "label"),
-          false
-        )
-      ),
-      UITextField(
-        $"field_{name}", 
-        Struct.appendRecursive(
-          Struct.appendRecursive(
-            { 
-              layout: layout.nodes.field,
-              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayoutTextField")),
-            },
-            VEStyles.get("text-field-button").field,
-            false
-          ),
-          Struct.get(config, "field"),
-          false
-        )
-      ),
-      UIButton(
-        $"{name}_decrease", 
-        Struct.appendRecursive(
-          { 
-            factor: -1.0,
-            label: {
-              text: "-",
-              font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              align: { v: VAlign.CENTER, h: HAlign.CENTER },
-            },
-            backgroundColor: VETheme.color.button,
-            backgroundColorSelected: VETheme.color.buttonHover,
-            backgroundColorOut: VETheme.color.button,
-            layout: layout.nodes.decrease,
-            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-            callback: function() {
-              var factor = Struct.get(this, "factor")
-              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
-                return
-              }
-
-              var item = this.store.get()
-              if (!Core.isType(item, StoreItem)) {
-                return
-              }
-              item.set(item.get() + factor)
-            },
-            onMouseHoverOver: function(event) {
-              if (Struct.get(this.enable, "value") == false) {
-                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-                return
-              }
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
-            },
-            onMouseHoverOut: function(event) {
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-            },
-          },
-          Struct.get(config, "decrease"),
-          false
-        )
-      ),
-      UIButton(
-        $"{name}_increase", 
-        Struct.appendRecursive(
-          { 
-            factor: 1.0,
-            label: { 
-              text: "+",
-              font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              align: { v: VAlign.CENTER, h: HAlign.CENTER },
-            },
-            backgroundColor: VETheme.color.button,
-            backgroundColorSelected: VETheme.color.buttonHover,
-            backgroundColorOut: VETheme.color.button,
-            layout: layout.nodes.increase,
-            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-            callback: function() {
-              var factor = Struct.get(this, "factor")
-              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
-                return
-              }
-
-              var item = this.store.get()
-              if (!Core.isType(item, StoreItem)) {
-                return
-              }
-
-              item.set(item.get() + factor)
-            },
-            onMouseHoverOver: function(event) {
-              if (Struct.get(this.enable, "value") == false) {
-                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-                return
-              }
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
-            },
-            onMouseHoverOut: function(event) {
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-            },
-          },
-          Struct.get(config, "increase"),
-          false
-        )
-      ),
-    ])
-  },
-
-  ///@param {String} name
-  ///@param {UILayout} layout
-  ///@param {?Struct} [config]
-  ///@return {Array<UIItem>}
   "text-field-increase-checkbox": function(name, layout, config = null) {
     return new Array(UIItem, [
       UIText(
@@ -1441,57 +1198,14 @@ global.__VEComponents = new Map(String, Callable, {
         )
       ),
       UIButton(
-        $"{name}_decrease", 
-        Struct.appendRecursive(
-          { 
-            factor: -1.0,
-            label: {
-              text: "-",
-              font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              align: { v: VAlign.CENTER, h: HAlign.CENTER },
-            },
-            backgroundColor: VETheme.color.button,
-            backgroundColorSelected: VETheme.color.buttonHover,
-            backgroundColorOut: VETheme.color.button,
-            layout: layout.nodes.decrease,
-            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-            callback: function() {
-              var factor = Struct.get(this, "factor")
-              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
-                return
-              }
-
-              var item = this.store.get()
-              if (!Core.isType(item, StoreItem)) {
-                return
-              }
-              item.set(item.get() + factor)
-            },
-            onMouseHoverOver: function(event) {
-              
-              if (Struct.get(this.enable, "value") == false) {
-                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-                return
-              }
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
-            },
-            onMouseHoverOut: function(event) {
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-            },
-          },
-          Struct.get(config, "decrease"),
-          false
-        )
-      ),
-      UIButton(
         $"{name}_increase", 
         Struct.appendRecursive(
           { 
             factor: 1.0,
             label: { 
               text: "+",
-              font: "font_inter_10_bold",
+              font: "font_inter_10_regular",
+              useScale: false,
               color: VETheme.color.textFocus,
               align: { v: VAlign.CENTER, h: HAlign.CENTER },
             },
@@ -1525,6 +1239,51 @@ global.__VEComponents = new Map(String, Callable, {
             },
           },
           Struct.get(config, "increase"),
+          false
+        )
+      ),
+      UIButton(
+        $"{name}_decrease", 
+        Struct.appendRecursive(
+          { 
+            factor: -1.0,
+            label: {
+              text: "-",
+              font: "font_inter_10_regular",
+              useScale: false,
+              color: VETheme.color.textFocus,
+              align: { v: VAlign.CENTER, h: HAlign.CENTER },
+            },
+            backgroundColor: VETheme.color.button,
+            backgroundColorSelected: VETheme.color.buttonHover,
+            backgroundColorOut: VETheme.color.button,
+            layout: layout.nodes.decrease,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return
+              }
+              item.set(item.get() + factor)
+            },
+            onMouseHoverOver: function(event) {
+              
+              if (Struct.get(this.enable, "value") == false) {
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+                return
+              }
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
+            },
+            onMouseHoverOut: function(event) {
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+            },
+          },
+          Struct.get(config, "decrease"),
           false
         )
       ),
@@ -1594,57 +1353,14 @@ global.__VEComponents = new Map(String, Callable, {
         )
       ),
       UIButton(
-        $"{name}_decrease", 
-        Struct.appendRecursive(
-          { 
-            factor: -1.0,
-            label: {
-              text: "-",
-              font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              align: { v: VAlign.CENTER, h: HAlign.CENTER },
-            },
-            backgroundColor: VETheme.color.button,
-            backgroundColorSelected: VETheme.color.buttonHover,
-            backgroundColorOut: VETheme.color.button,
-            layout: layout.nodes.decrease,
-            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-            callback: function() {
-              var factor = Struct.get(this, "factor")
-              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
-                return
-              }
-
-              var item = this.store.get()
-              if (!Core.isType(item, StoreItem)) {
-                return
-              }
-              item.set(item.get() + factor)
-            },
-            onMouseHoverOver: function(event) {
-              
-              if (Struct.get(this.enable, "value") == false) {
-                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-                return
-              }
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
-            },
-            onMouseHoverOut: function(event) {
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-            },
-          },
-          Struct.get(config, "decrease"),
-          false
-        )
-      ),
-      UIButton(
         $"{name}_increase", 
         Struct.appendRecursive(
           { 
             factor: 1.0,
             label: { 
               text: "+",
-              font: "font_inter_10_bold",
+              font: "font_inter_10_regular",
+              useScale: false,
               color: VETheme.color.textFocus,
               align: { v: VAlign.CENTER, h: HAlign.CENTER },
             },
@@ -1678,6 +1394,51 @@ global.__VEComponents = new Map(String, Callable, {
             },
           },
           Struct.get(config, "increase"),
+          false
+        )
+      ),
+      UIButton(
+        $"{name}_decrease", 
+        Struct.appendRecursive(
+          { 
+            factor: -1.0,
+            label: {
+              text: "-",
+              font: "font_inter_10_regular",
+              useScale: false,
+              color: VETheme.color.textFocus,
+              align: { v: VAlign.CENTER, h: HAlign.CENTER },
+            },
+            backgroundColor: VETheme.color.button,
+            backgroundColorSelected: VETheme.color.buttonHover,
+            backgroundColorOut: VETheme.color.button,
+            layout: layout.nodes.decrease,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return
+              }
+              item.set(item.get() + factor)
+            },
+            onMouseHoverOver: function(event) {
+              
+              if (Struct.get(this.enable, "value") == false) {
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+                return
+              }
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
+            },
+            onMouseHoverOut: function(event) {
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+            },
+          },
+          Struct.get(config, "decrease"),
           false
         )
       ),
@@ -1810,108 +1571,7 @@ global.__VEComponents = new Map(String, Callable, {
       ),
     ])
   },
-
-  ///@deprecated
-  ///@param {String} name
-  ///@param {UILayout} layout
-  ///@param {?Struct} [config]
-  ///@return {Array<UIItem>}
-  "text-field-button-checkbox": function(name, layout, config = null) {
-    return new Array(UIItem, [
-      UICheckbox(
-        $"{name}_checkbox", 
-        Struct.appendRecursive(
-          { 
-            layout: layout.nodes.checkbox,
-            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-          }, 
-          Struct.get(config, "checkbox"),
-          false
-        )
-      ),
-      UIText(
-        $"label_{name}", 
-        Struct.appendRecursive(
-          Struct.appendRecursive(
-            { 
-              layout: layout.nodes.label,
-              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-            },
-            VEStyles.get("text-field-button").label,
-            false
-          ),
-          Struct.get(config, "label"),
-          false
-        )
-      ),
-      UITextField(
-        $"field_{name}", 
-        Struct.appendRecursive(
-          Struct.appendRecursive(
-            { 
-              layout: layout.nodes.field,
-              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayoutTextField")),
-            },
-            VEStyles.get("text-field-button").field,
-            false
-          ),
-          Struct.get(config, "field"),
-          false
-        )
-      ),
-      UIButton(
-        $"button_{name}", 
-        Struct.appendRecursive(
-          Struct.appendRecursive(
-            { 
-              layout: layout.nodes.button,
-              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-            }, 
-            VEStyles.get("text-field-button").button,
-            false
-          ),
-          Struct.get(config, "button"),
-          false
-        )
-      ),
-    ])
-  },
   
-  ///@param {String} name
-  ///@param {UILayout} layout
-  ///@param {?Struct} [config]
-  ///@return {Array<UIItem>}
-  "boolean-field": function(name, layout, config = null) {
-    return new Array(UIItem, [
-      UIText(
-        $"label_{name}", 
-        Struct.appendRecursive(
-          Struct.appendRecursive(
-            { 
-              layout: layout.nodes.label,
-              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-            },
-            VEStyles.get("text-field_label"),
-            false
-          ),
-          Struct.get(config, "label"),
-          false
-        )
-      ),
-      UICheckbox(
-        $"{name}_checkbox", 
-        Struct.appendRecursive(
-          { 
-            layout: layout.nodes.field,
-            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-          }, 
-          Struct.get(config, "field"),
-          false
-        )
-      ),
-    ])
-  },
-
   ///@param {String} name
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
@@ -1957,19 +1617,6 @@ global.__VEComponents = new Map(String, Callable, {
         name: name,
         template: VEComponents.get("text-field-checkbox"),
         layout: VELayouts.get("text-field-checkbox"),
-        config: config,
-      }).toUIItems(layout)
-    }
-
-    ///@param {String} name
-    ///@param {UILayout} layout
-    ///@param {?Struct} [config]
-    ///@return {UIComponent}
-    static factoryTextFieldIncrease = function(name, layout, config) {
-      return new UIComponent({
-        name: name,
-        template: VEComponents.get("text-field-increase"),
-        layout: VELayouts.get("text-field-increase"),
         config: config,
       }).toUIItems(layout)
     }
@@ -4159,56 +3806,14 @@ global.__VEComponents = new Map(String, Callable, {
         )
       ),
       UIButton(
-        $"{name}_decrease", 
-        Struct.appendRecursive(
-          { 
-            factor: -1.0,
-            label: {
-              text: "-",
-              font: "font_inter_10_bold",
-              color: VETheme.color.textFocus,
-              align: { v: VAlign.CENTER, h: HAlign.CENTER },
-            },
-            backgroundColor: VETheme.color.button,
-            backgroundColorSelected: VETheme.color.buttonHover,
-            backgroundColorOut: VETheme.color.button,
-            layout: layout.nodes.decrease,
-            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-            callback: function() {
-              var factor = Struct.get(this, "factor")
-              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
-                return
-              }
-
-              var item = this.store.get()
-              if (!Core.isType(item, StoreItem)) {
-                return
-              }
-              item.set(item.get() + factor)
-            },
-            onMouseHoverOver: function(event) {
-              if (Struct.get(this.enable, "value") == false) {
-                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-                return
-              }
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
-            },
-            onMouseHoverOut: function(event) {
-              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
-            },
-          },
-          Struct.get(config, "decrease"),
-          false
-        )
-      ),
-      UIButton(
         $"{name}_increase", 
         Struct.appendRecursive(
           { 
             factor: 1.0,
             label: { 
               text: "+",
-              font: "font_inter_10_bold",
+              font: "font_inter_10_regular",
+              useScale: false,
               color: VETheme.color.textFocus,
               align: { v: VAlign.CENTER, h: HAlign.CENTER },
             },
@@ -4242,6 +3847,50 @@ global.__VEComponents = new Map(String, Callable, {
             },
           },
           Struct.get(config, "increase"),
+          false
+        )
+      ),
+      UIButton(
+        $"{name}_decrease", 
+        Struct.appendRecursive(
+          { 
+            factor: -1.0,
+            label: {
+              text: "-",
+              font: "font_inter_10_regular",
+              useScale: false,
+              color: VETheme.color.textFocus,
+              align: { v: VAlign.CENTER, h: HAlign.CENTER },
+            },
+            backgroundColor: VETheme.color.button,
+            backgroundColorSelected: VETheme.color.buttonHover,
+            backgroundColorOut: VETheme.color.button,
+            layout: layout.nodes.decrease,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            callback: function() {
+              var factor = Struct.get(this, "factor")
+              if (!Core.isType(factor, Number) || !Core.isType(this.store, UIStore)) {
+                return
+              }
+
+              var item = this.store.get()
+              if (!Core.isType(item, StoreItem)) {
+                return
+              }
+              item.set(item.get() + factor)
+            },
+            onMouseHoverOver: function(event) {
+              if (Struct.get(this.enable, "value") == false) {
+                this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+                return
+              }
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
+            },
+            onMouseHoverOut: function(event) {
+              this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
+            },
+          },
+          Struct.get(config, "decrease"),
           false
         )
       ),
@@ -4300,77 +3949,6 @@ global.__VEComponents = new Map(String, Callable, {
             false
           ),
           Struct.get(config, "slider"),
-          false
-        )
-      ),
-    ])
-  },
-
-  ///@param {String} name
-  ///@param {UILayout} layout
-  ///@param {?Struct} [config]
-  ///@return {Array<UIItem>}
-  "numeric-slider-button": function(name, layout, config = null) {
-    return new Array(UIItem, [
-      UIText(
-        $"label_{name}", 
-        Struct.appendRecursive(
-          Struct.appendRecursive(
-            { 
-              layout: layout.nodes.label,
-              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-            }, 
-            VEStyles.get("text-field_label"),
-            false
-          ),
-          Struct.get(config, "label"),
-          false
-        )
-      ),
-      UIButton(
-        $"decrease_{name}", 
-        Struct.appendRecursive(
-          Struct.appendRecursive(
-            { 
-              layout: layout.nodes.decrease,
-              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-            }, 
-            VEStyles.get("text-field-button").button,
-            false
-          ),
-          Struct.get(config, "decrease"),
-          false
-        )
-      ),
-      UISliderHorizontal(
-        $"slider_{name}",
-        Struct.appendRecursive(
-          Struct.appendRecursive(
-            { 
-              layout: Assert.isType(Struct.get(layout.nodes, "slider"), Struct),
-              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-              getClipboard: Beans.get(BeanVisuEditorIO).mouse.getClipboard,
-              setClipboard: Beans.get(BeanVisuEditorIO).mouse.setClipboard,
-            },
-            VEStyles.get("slider-horizontal"),
-            false
-          ),
-          Struct.get(config, "slider"),
-          false
-        )
-      ),
-      UIButton(
-        $"increase_{name}", 
-        Struct.appendRecursive(
-          Struct.appendRecursive(
-            { 
-              layout: layout.nodes.increase,
-              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-            }, 
-            VEStyles.get("text-field-button").button,
-            false
-          ),
-          Struct.get(config, "increase"),
           false
         )
       ),
@@ -5569,119 +5147,6 @@ global.__VEComponents = new Map(String, Callable, {
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
   ///@return {Array<UIItem>}
-  "transform-numeric-property": function(name, layout, config = null) {
-    ///@todo move to Lambda util
-    static addItem = function(item, index, items) {
-      items.add(item)
-    }
-
-    static factoryTitle = function(name, layout, config) {
-      return new UIComponent({
-        name: name,
-        template: VEComponents.get("property"),
-        layout: VELayouts.get("property"),
-        config: config,
-      }).toUIItems(layout)
-    }
-
-    static factoryTextField = function(name, layout, config) {
-      return new UIComponent({
-        name: name,
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
-        config: Struct.appendRecursive(
-          config, 
-          {
-            field: {
-              store: {
-                callback: function(value, data) { 
-                  var item = data.store.get()
-                  if (item == null) {
-                    return 
-                  }
-
-                  var key = Struct.get(data, "transformNumericProperty")
-                  var transformer = item.get()
-                  if (!Core.isType(transformer, NumberTransformer) 
-                    || !Struct.contains(transformer, key)
-                    || GMTFContext.get() == data.textField) {
-                    return 
-                  }
-
-                  data.textField.setText(Struct.get(transformer, key))
-                },
-                set: function(value) {
-                  var item = this.get()
-                  if (item == null) {
-                    return 
-                  }
-
-                  var parsedValue = NumberUtil.parse(value, null)
-                  if (parsedValue == null) {
-                    return
-                  }
-
-                  var key = Struct.get(this.context, "transformNumericProperty")
-                  var transformer = item.get()
-                  if (!Core.isType(transformer, NumberTransformer) 
-                    || !Struct.contains(transformer, key)) {
-                    return 
-                  }
-                  item.set(Struct.set(transformer, key, parsedValue))
-                },
-              },
-            },
-          },
-          false
-        )
-      }).toUIItems(layout)
-    }
-
-    var items = new Array(UIItem)
-
-    factoryTitle(
-      $"{name}_title",
-      layout.nodes.title,
-      Struct.get(config, "title")
-    ).forEach(addItem, items)
-
-    factoryTextField(
-      $"{name}_target",
-      layout.nodes.target,
-      Struct.appendRecursive(
-        Struct.get(config, "target"),
-        { field: { transformNumericProperty: "target" } },
-        false
-      )
-    ).forEach(addItem, items)
-
-    factoryTextField(
-      $"{name}_factor", 
-      layout.nodes.factor, 
-      Struct.appendRecursive(
-        Struct.get(config, "factor"), 
-        { field: { transformNumericProperty: "factor" } },
-        false
-      )
-    ).forEach(addItem, items)
-
-    factoryTextField(
-      $"{name}_increment",
-      layout.nodes.increment, 
-      Struct.appendRecursive(
-        Struct.get(config, "increment"), 
-        { field: { transformNumericProperty: "increase" } },
-        false
-      )
-    ).forEach(addItem, items)
-
-    return items
-  },
-
-  ///@param {String} name
-  ///@param {UILayout} layout
-  ///@param {?Struct} [config]
-  ///@return {Array<UIItem>}
   "transform-numeric-uniform": function(name, layout, config = null) {
     ///@todo move to Lambda util
     static addItem = function(item, index, items) {
@@ -6162,322 +5627,6 @@ global.__VEComponents = new Map(String, Callable, {
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
   ///@return {Array<UIItem>}
-  "vec4": function(name, layout, config = null) {
-    ///@todo move to Lambda util
-    static addItem = function(item, index, items) {
-      items.add(item)
-    }
-
-    static factoryTextField = function(name, layout, config) {
-      return new UIComponent({
-        name: name,
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
-        config: Struct.appendRecursive(
-          config, 
-          {
-            field: {
-              store: {
-                callback: function(value, data) { 
-                  var item = data.store.get()
-                  if (item == null) {
-                    return 
-                  }
-
-                  var key = Struct.get(data, "vec4Property")
-                  var vec4 = item.get()
-                  if (!Core.isType(vec4, Vector4) 
-                    || !Struct.contains(vec4, key)
-                    || GMTFContext.get() == data.textField) {
-                    return 
-                  }
-                  data.textField.setText(Struct.get(vec4, key))
-                },
-                set: function(value) {
-                  var item = this.get()
-                  if (item == null) {
-                    return 
-                  }
-
-                  var parsedValue = NumberUtil.parse(value, null)
-                  if (parsedValue == null) {
-                    return
-                  }
-
-                  var key = Struct.get(this.context, "vec4Property")
-                  var vec4 = item.get()
-                  if (!Core.isType(vec4, Vector4) || !Struct.contains(vec4, key)) {
-                    return 
-                  }
-                  item.set(Struct.set(vec4, key, parsedValue))
-                },
-              },
-            },
-          },
-          false
-        )
-      }).toUIItems(layout)
-    }
-
-    var items = new Array(UIItem)
-
-    factoryTextField(
-      $"{name}_x",
-      layout.nodes.x,
-      Struct.appendRecursive(
-        Struct.get(config, "x"),
-        { field: { vec4Property: "x" } },
-        false
-      )
-    ).forEach(addItem, items)
-
-    factoryTextField(
-      $"{name}_y",
-      layout.nodes.y,
-      Struct.appendRecursive(
-        Struct.get(config, "y"),
-        { field: { vec4Property: "y" } },
-        false
-      )
-    ).forEach(addItem, items)
-
-    factoryTextField(
-      $"{name}_z",
-      layout.nodes.z,
-      Struct.appendRecursive(
-        Struct.get(config, "z"),
-        { field: { vec4Property: "z" } },
-        false
-      )
-    ).forEach(addItem, items)
-
-    factoryTextField(
-      $"{name}_a",
-      layout.nodes.a,
-      Struct.appendRecursive(
-        Struct.get(config, "a"),
-        { field: { vec4Property: "a" } },
-        false
-      )
-    ).forEach(addItem, items)
-
-    return items
-  },
-
-  ///@deprecated
-  ///@param {String} name
-  ///@param {UILayout} layout
-  ///@param {?Struct} [config]
-  ///@return {Array<UIItem>}
-  "vec4-slider": function(name, layout, config = null) {
-    ///@todo move to Lambda util
-    static addItem = function(item, index, items) {
-      items.add(item)
-    }
-
-    ///@param {String} name
-    ///@param {UILayout} layout
-    ///@param {?Struct} [config]
-    ///@return {UIComponent}
-    static factoryNumericSliderField = function(name, layout, config) {
-      return new UIComponent({
-        name: name,
-        template: VEComponents.get("numeric-slider-field"),
-        layout: VELayouts.get("numeric-slider-field"),
-        config: Struct.appendRecursive(
-          config, 
-          {
-            field: {
-              store: {
-                callback: function(value, data) { 
-                  var item = data.store.get()
-                  if (item == null) {
-                    return 
-                  }
-
-                  var key = Struct.get(data, "vec4Property")
-                  var vec4 = item.get()
-                  if (!Core.isType(vec4, Vector4) 
-                    || !Struct.contains(vec4, key)
-                    || GMTFContext.get() == data.textField) {
-                    return 
-                  }
-                  data.textField.setText(Struct.get(vec4, key))
-                },
-                set: function(value) {
-                  var item = this.get()
-                  if (item == null) {
-                    return 
-                  }
-
-                  var parsedValue = NumberUtil.parse(value, null)
-                  if (parsedValue == null) {
-                    return
-                  }
-
-                  var key = Struct.get(this.context, "vec4Property")
-                  var vec4 = item.get()
-                  if (!Core.isType(vec4, Vector4) || !Struct.contains(vec4, key)) {
-                    return 
-                  }
-                  item.set(Struct.set(vec4, key, parsedValue))
-                },
-              },
-            },
-            slider: {
-              store: {
-                callback: function(value, data) { 
-                  var item = data.store.get()
-                  if (item == null) {
-                    return 
-                  }
-
-                  var key = Struct.get(data, "vec4Property")
-                  var vec4 = item.get()
-                  if (!Core.isType(vec4, Vector4) 
-                    || !Struct.contains(vec4, key)) {
-                    return 
-                  }
-                  data.value = Struct.get(vec4, key)
-                },
-                set: function(value) {
-                  var item = this.get()
-                  if (item == null) {
-                    return 
-                  }
-
-                  var parsedValue = NumberUtil.parse(value, null)
-                  if (parsedValue == null) {
-                    return
-                  }
-
-                  var key = Struct.get(this.context, "vec4Property")
-                  var vec4 = item.get()
-                  if (!Core.isType(vec4, Vector4) || !Struct.contains(vec4, key)) {
-                    return 
-                  }
-                  item.set(Struct.set(vec4, key, parsedValue))
-                },
-              },
-            }
-          },
-          false
-        )
-      }).toUIItems(layout)
-    }
-
-    static factoryTextField = function(name, layout, config) {
-      return new UIComponent({
-        name: name,
-        template: VEComponents.get("text-field"),
-        layout: VELayouts.get("text-field"),
-        config: Struct.appendRecursive(
-          config, 
-          {
-            field: {
-              store: {
-                callback: function(value, data) { 
-                  var item = data.store.get()
-                  if (item == null) {
-                    return 
-                  }
-
-                  var key = Struct.get(data, "vec4Property")
-                  var vec4 = item.get()
-                  if (!Core.isType(vec4, Vector4) 
-                    || !Struct.contains(vec4, key)
-                    || GMTFContext.get() == data.textField) {
-                    return 
-                  }
-                  data.textField.setText(Struct.get(vec4, key))
-                },
-                set: function(value) {
-                  var item = this.get()
-                  if (item == null) {
-                    return 
-                  }
-
-                  var parsedValue = NumberUtil.parse(value, null)
-                  if (parsedValue == null) {
-                    return
-                  }
-
-                  var key = Struct.get(this.context, "vec4Property")
-                  var vec4 = item.get()
-                  if (!Core.isType(vec4, Vector4) || !Struct.contains(vec4, key)) {
-                    return 
-                  }
-                  item.set(Struct.set(vec4, key, parsedValue))
-                },
-              },
-            },
-          },
-          false
-        )
-      }).toUIItems(layout)
-    }
-
-    var items = new Array(UIItem)
-
-    factoryNumericSliderField(
-      $"{name}_x",
-      layout.nodes.x,
-      Struct.appendRecursive(
-        Struct.get(config, "x"),
-        {
-          field: { vec4Property: "x" },
-          slider: { vec4Property: "x" },
-        },
-        false
-      )
-    ).forEach(addItem, items)
-
-    factoryNumericSliderField(
-      $"{name}_y",
-      layout.nodes.y,
-      Struct.appendRecursive(
-        Struct.get(config, "y"),
-        { 
-          field: { vec4Property: "y" },
-          slider: { vec4Property: "y" },
-        },
-        false
-      )
-    ).forEach(addItem, items)
-
-    factoryNumericSliderField(
-      $"{name}_z",
-      layout.nodes.z,
-      Struct.appendRecursive(
-        Struct.get(config, "z"),
-        {
-          field: { vec4Property: "z" },
-          slider: { vec4Property: "z" },
-        },
-        false
-      )
-    ).forEach(addItem, items)
-
-    factoryNumericSliderField(
-      $"{name}_a",
-      layout.nodes.a,
-      Struct.appendRecursive(
-        Struct.get(config, "a"),
-        {
-          field: { vec4Property: "a" },
-          slider: { vec4Property: "a" },
-        },
-        false
-      )
-    ).forEach(addItem, items)
-
-    return items
-  },
-
-  ///@param {String} name
-  ///@param {UILayout} layout
-  ///@param {?Struct} [config]
-  ///@return {Array<UIItem>}
   "vec4-slider-increase": function(name, layout, config = null) {
     ///@todo move to Lambda util
     static addItem = function(item, index, items) {
@@ -6835,8 +5984,7 @@ global.__VEComponents = new Map(String, Callable, {
 
     return items
   },
-  
-  ///@deprecated
+
   ///@param {String} name
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
@@ -7137,6 +6285,41 @@ global.__VEComponents = new Map(String, Callable, {
     ).forEach(addItem, items)
 
     return items
+  },
+
+  ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "boolean-field": function(name, layout, config = null) {
+    return new Array(UIItem, [
+      UIText(
+        $"label_{name}", 
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.label,
+              updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+            },
+            VEStyles.get("text-field_label"),
+            false
+          ),
+          Struct.get(config, "label"),
+          false
+        )
+      ),
+      UICheckbox(
+        $"{name}_checkbox", 
+        Struct.appendRecursive(
+          { 
+            layout: layout.nodes.field,
+            updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+          }, 
+          Struct.get(config, "field"),
+          false
+        )
+      ),
+    ])
   },
 })
 #macro VEComponents global.__VEComponents

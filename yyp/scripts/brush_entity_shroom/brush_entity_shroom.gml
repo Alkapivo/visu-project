@@ -220,9 +220,17 @@ function brush_entity_shroom(json) {
                 _y = _y - (view.y - floor(view.y / view.height) * view.height)
               }
 
+              if (!Struct.contains(this, "spawnerAngleTimer")) {
+                Struct.set(this, "spawnerAngleTimer", new Timer(pi * 2, { 
+                  loop: Infinity,
+                  amount: FRAME_MS * 4,
+                  shuffle: true
+                }))
+              }
+
               var angle = store.getValue("en-shr_dir")
               if (store.getValue("en-shr_use-dir-rng")) {
-                angle += choose(1.0, -1.0) * (store.getValue("en-shr_dir-rng") / 2.0)
+                angle += sin(this.spawnerAngleTimer.update().time) * (store.getValue("en-shr_dir-rng") / 2.0)
               }
 
               var inspectorType = this.context.state.get("inspectorType")
@@ -641,10 +649,17 @@ function brush_entity_shroom(json) {
                 Struct.set(this, "sprite", sprite)
               }
 
+              if (!Struct.contains(this, "spawnerAngleTimer")) {
+                Struct.set(this, "spawnerAngleTimer", new Timer(pi * 2, { 
+                  loop: Infinity,
+                  amount: FRAME_MS * 4,
+                  shuffle: true
+                }))
+              }
+
               var angle = sprite.getAngle()
               if (this.store != null && this.store.getStore().getValue("en-shr_use-dir-rng")) {
-                var rng = this.store.getStore().getValue("en-shr_dir-rng")
-                sprite.setAngle(angle + (random(rng / 2.0) * choose(1, -1)))
+                sprite.setAngle(angle + sin(this.spawnerAngleTimer.update().time) * (this.store.getStore().getValue("en-shr_dir-rng") / 2.0))
               }
               
               sprite

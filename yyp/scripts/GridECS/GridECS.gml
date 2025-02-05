@@ -146,9 +146,9 @@ function GridECS(_controller) constructor {
     var baseY = GRID_SERVICE_PIXEL_HEIGHT + GRID_SERVICE_PIXEL_HEIGHT * 0.5
     renderer.camera.viewMatrix = matrix_build_lookat(xfrom, yfrom, zfrom, xto, yto, zto, 0, 0, 1)
     renderer.camera.projectionMatrix = matrix_build_projection_perspective_fov(-60, -1 * renderer.gridSurface.width / renderer.gridSurface.height, 1, 32000) ///@todo extract parameters
-    camera_set_view_mat(renderer.camera.gmCamera, renderer.camera.viewMatrix)
-    camera_set_proj_mat(renderer.camera.gmCamera, renderer.camera.projectionMatrix)
-    camera_apply(renderer.camera.gmCamera)
+    camera_set_view_mat(renderer.camera.get(), renderer.camera.viewMatrix)
+    camera_set_proj_mat(renderer.camera.get(), renderer.camera.projectionMatrix)
+    camera_apply(renderer.camera.get())
 
     
     gpu_set_alphatestenable(true)
