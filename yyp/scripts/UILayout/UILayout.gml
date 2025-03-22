@@ -37,25 +37,29 @@ function UILayoutIterator(config = null) constructor {
   size = Struct.getIfType(config, "size", Number, 1.0)
   
   ///@return {Number}
-  getIndex = function() { 
+  static getIndex = function() { 
+    gml_pragma("forceinline")
     return this.index
   }
   
   ///@return {Number}
-  getSize = function() {
+  static getSize = function() {
+    gml_pragma("forceinline")
     return this.size
   }
   
   ///@param {Number} index
   ///@return {UILayoutIterator}
-  setIndex = function(index) { 
+  static setIndex = function(index) { 
+    gml_pragma("forceinline")
     this.index = index
     return this
   }
 
   ///@param {Number} size
   ///@return {UILayoutIterator}
-  setSize = function(size) { 
+  static setSize = function(size) { 
+    gml_pragma("forceinline")
     this.size = size
     return this
   }
@@ -69,6 +73,7 @@ function UILayout(config, _context = null) constructor {
   ///@private
   ///@return {Callable}
   static parseX = function() {
+    gml_pragma("forceinline")
     if (this.context == null) {
       return function() { return this.margin.left }
     } 
@@ -83,6 +88,7 @@ function UILayout(config, _context = null) constructor {
   ///@private
   ///@return {Callable}
   static parseY = function() {
+    gml_pragma("forceinline")
     if (this.context == null) {
       return function() { return this.margin.top }
     }
@@ -99,6 +105,7 @@ function UILayout(config, _context = null) constructor {
   ///@param {?Struct} [config]
   ///@return {Struct}
   static parseNodes = function(config = null, context = null) {
+    gml_pragma("forceinline")
     static parseNode = function(node, name, context) {
       return new UILayout(node, context)
     }

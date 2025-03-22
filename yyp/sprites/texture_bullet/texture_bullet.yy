@@ -29,8 +29,8 @@
   "nineSlice":null,
   "origin":4,
   "parent":{
-    "name":"texture",
-    "path":"folders/io.alkapivo.visu/resource/texture.yy",
+    "name":"bullet",
+    "path":"folders/io.alkapivo.visu/resource/texture/bullet.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",
@@ -97,8 +97,8 @@
   "swatchColours":null,
   "swfPrecision":2.525,
   "textureGroupId":{
-    "name":"Default",
-    "path":"texturegroups/Default",
+    "name":"texturegroup_game",
+    "path":"texturegroups/texturegroup_game",
   },
   "type":0,
   "VTile":false,

@@ -30,7 +30,8 @@ function TexturedLine(json = null) constructor {
   ///@param {Number} toX
   ///@param {Number} toY
   ///@return {TexturedLine}
-  render = function(fromX, fromY, toX, toY) {
+  static render = function(fromX, fromY, toX, toY) {
+    gml_pragma("forceinline")
     var angle = Math.fetchPointsAngle(fromX, fromY, toX, toY)
     var scale = Math.fetchLength(fromX, fromY, toX, toY) / this.line.texture.width
     this.cornerFrom

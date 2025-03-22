@@ -1,5 +1,15 @@
 ///@package io.alkapivo.core.util.event
 
+///@enum
+function _EventPumpFreeStrategyType(): Enum() constructor {
+  NONE = "NONE"
+  EXECUTE = "EXECUTE"
+  REJECT = "REJECT"
+}
+global.__EventPumpFreeStrategyType = new _EventPumpFreeStrategyType()
+#macro EventPumpFreeStrategyType global.__EventPumpFreeStrategyType
+
+
 ///@static
 function _EventPumpUtil() constructor {
   
@@ -58,6 +68,10 @@ function EventPump(_context, _dispatchers, config = {}) constructor {
   ///@private
   ///@type {?Callable}
   exceptionCallback = Struct.getIfType(config, "exceptionCallback", Callable)
+
+  ///@private
+  ///@type {EventPumpFreeStrategyType}
+  freeStrategy = Struct.getIfEnum(config, "freeStrategy", EventPumpFreeStrategyType, EventPumpFreeStrategyType.NONE)
 
   ///@param {Event} event
   ///@return {?Promise}
@@ -136,6 +150,41 @@ function EventPump(_context, _dispatchers, config = {}) constructor {
       this.execute(this.container.pop())
     }
 
+    return this
+  }
+
+  ///@return {EventPump}
+  static free = function() {
+    static freeExecute = function(event, iterator, eventPump) {
+      try {
+        eventPump.execute(event)
+      } catch (exception) {
+        Logger.error(eventPump.loggerPrefix, $"eventPump.free(freeStrategy=EXECUTE) fatal error: {exception.message}")
+        Core.printStackTrace()
+      }
+    }
+
+    static freeReject = function(event, iterator, eventPump) {
+      try {
+        if (Optional.is(event.promise)) {
+          promise.reject()
+        }
+      } catch (exception) {
+        Logger.error(eventPump.loggerPrefix, $"eventPump.free(freeStrategy=REJECT) fatal error: {exception.message}")
+        Core.printStackTrace()
+      }
+    }
+
+    switch (this.freeStrategy) {
+      case EventPumpFreeStrategyType.EXECUTE:
+        this.container.forEach(freeExecute, this)
+        break
+      case EventPumpFreeStrategyType.REJECT:
+        this.container.forEach(freeReject, this)
+        break
+    }
+
+    this.container.clear()
     return this
   }
 }

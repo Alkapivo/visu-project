@@ -166,15 +166,17 @@ function GMTF(style_struct = null) constructor {
 	
 	///@type {Struct}
 	style = {
-		w: 256, 
+		w: 112, 
 		w_min: 0,
-		h: 110, 
+		h: 28, 
 		lh: 24, 
 		text: "", 
 		font: -1, 
 		padding: { top: 4, bottom: 4, left: 4, right: 4 },
 		c_bkg_unfocused: { c: c_gray, a: 1 }, 
 		c_bkg_focused: { c: c_ltgray, a: 1 },
+    c_outline_unfocused: { c: c_ltgray, a: 1 },
+		c_outline_focused: { c: c_black, a: 1 },
 		c_text_unfocused: { c: c_black, a: 1 },
 		c_text_focused: { c: c_black, a: 1 },
 		c_selection: { c: c_blue, a: 0.275 },
@@ -486,8 +488,8 @@ function GMTF(style_struct = null) constructor {
 			|| ds_list_size(chars) > style.char_limit) {
 			
 			if (this.style.v_grow) {
-				this.style.h = this.style.lh 
-					* ds_list_size(this.lines) 
+				this.style.h = this.style.lh
+          * ds_list_size(this.lines)
 					+ this.style.padding.top 
 					+ this.style.padding.bottom
 				this.updateStyle()
@@ -680,9 +682,9 @@ function GMTF(style_struct = null) constructor {
 				var line = lines[| i]
 				draw_rectangle(
 					pad_atx,
-					pad_aty + i * style.lh,
+					pad_aty + (i * style.lh),
 					pad_atx + getRangeWidth(line[1], line[2]),
-					pad_aty + i * style.lh + style.lh,
+					pad_aty + (i * style.lh) + style.lh,
 					false
 				)
 			}
@@ -1100,9 +1102,14 @@ function GMTF(style_struct = null) constructor {
 		var prevColor = draw_get_color()
 		var prevAlpha = draw_get_alpha()
 		draw_set_font(style.font)
+
+    draw_set_alpha(has_focus ? style.c_bkg_focused.a : style.c_bkg_unfocused.a)
 		draw_set_color(has_focus ? style.c_bkg_focused.c : style.c_bkg_unfocused.c)
-		draw_set_alpha(has_focus ? style.c_bkg_focused.a : style.c_bkg_unfocused.a)
-		draw_rectangle(atx, aty, atx + style.w, aty + style.h, false)
+    draw_rectangle(atx, aty, atx + style.w, aty + style.h, false)
+
+    draw_set_alpha(has_focus ? style.c_outline_focused.a : style.c_outline_unfocused.a)
+		draw_set_color(has_focus ? style.c_outline_focused.c : style.c_outline_unfocused.c)
+    draw_rectangle(atx + 1, aty + 1, atx + style.w - 1, aty + style.h - 1, true)
 		
 		if (has_focus && cursor1.pos != cursor2.pos) {
 			this.renderSelection()

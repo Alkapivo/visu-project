@@ -422,11 +422,13 @@ function template_coin(json = null) {
               enable: { key: "coin_use-mask" },
               factor: 1.0,
             },
-            slider: {
+            stick: {
               store: { key: "coin_mask" },
               enable: { key: "coin_use-mask" },
-              factor: 0.1,
+              factor: 1.0,
+              treshold: 1024,
             },
+            checkbox: { },
           },
           y: {
             label: {
@@ -448,11 +450,13 @@ function template_coin(json = null) {
               enable: { key: "coin_use-mask" },
               factor: 1.0,
             },
-            slider: {
+            stick: {
               store: { key: "coin_mask" },
               enable: { key: "coin_use-mask" },
-              factor: 0.1,
+              factor: 1.0,
+              treshold: 1024,
             },
+            checkbox: { },
           },
           z: {
             label: {
@@ -474,11 +478,13 @@ function template_coin(json = null) {
               enable: { key: "coin_use-mask" },
               factor: 1.0,
             },
-            slider: {
+            stick: {
               store: { key: "coin_mask" },
               enable: { key: "coin_use-mask" },
-              factor: 0.1,
+              factor: 1.0,
+              treshold: 1024,
             },
+            checkbox: { },
           },
           a: {
             label: {
@@ -500,11 +506,13 @@ function template_coin(json = null) {
               enable: { key: "coin_use-mask" },
               factor: 1.0,
             },
-            slider: {
+            stick: {
               store: { key: "coin_mask" },
               enable: { key: "coin_use-mask" },
-              factor: 0.1,
+              factor: 1.0,
+              treshold: 1024,
             },
+            checkbox: { },
           },
         },
       },

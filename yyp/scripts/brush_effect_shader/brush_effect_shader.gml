@@ -52,7 +52,7 @@ function brush_effect_shader(json) {
         type: String,
         value: JSON.stringify(Struct.get(json, "ef-shd_merge-cfg"), { pretty: true }),
         serialize: UIUtil.serialize.getStringStruct(),
-        validate: UIUtil.validate.getStringStruct(),
+        passthrough: UIUtil.passthrough.getStringStruct(),
       },
     }),
     components: new Array(Struct, [
@@ -137,15 +137,15 @@ function brush_effect_shader(json) {
           },
           decrease: {
             store: { key: "ef-shd_duration" },
-            factor: -1.0,
+            factor: -0.01,
           },
           increase: {
             store: { key: "ef-shd_duration" },
-            factor: 1.0,
+            factor: 0.01,
           },
           stick: {
             store: { key: "ef-shd_duration" },
-            factor: 0.001,
+            factor: 0.01,
           },
           checkbox: { },
         },
@@ -170,15 +170,15 @@ function brush_effect_shader(json) {
           },
           decrease: {
             store: { key: "ef-shd_fade-in" },
-            factor: -1.0,
+            factor: -0.01,
           },
           increase: {
             store: { key: "ef-shd_fade-in" },
-            factor: 1.0,
+            factor: 0.01,
           },
           stick: {
             store: { key: "ef-shd_fade-in" },
-            factor: 0.001,
+            factor: 0.01,
           },
           checkbox: { },
         },
@@ -197,15 +197,15 @@ function brush_effect_shader(json) {
           },
           decrease: {
             store: { key: "ef-shd_fade-out" },
-            factor: -1.0,
+            factor: -0.01,
           },
           increase: {
             store: { key: "ef-shd_fade-out" },
-            factor: 1.0,
+            factor: 0.01,
           },
           stick: {
             store: { key: "ef-shd_fade-out" },
-            factor: 0.001,
+            factor: 0.01,
           },
           checkbox: { },
         },

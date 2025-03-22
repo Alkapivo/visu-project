@@ -70,10 +70,20 @@ function SubtitleRenderer() constructor {
             * (subtitle.fontHeight / guiHeight))
         }
         
-        _x = guiX + (_x * guiWidth)
-        _y = guiY + (_y * guiHeight)
-
-        GPU.render.text(_x, _y, text, color, outline, alpha, subtitle.font, subtitle.align.h, subtitle.align.v, (1.0 - alpha) * 8.0)
+        GPU.render.text(
+          guiX + (_x * guiWidth),
+          guiY + (_y * guiHeight),
+          text,
+          1.0,
+          0.0,
+          alpha,
+          color,
+          subtitle.font,
+          subtitle.align.h,
+          subtitle.align.v,
+          outline,
+          (1.0 - alpha) * 8.0
+        )
       }
     }, canvas)
 

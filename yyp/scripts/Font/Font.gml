@@ -19,7 +19,8 @@ function _FontUtil() constructor {
   ///@param {Struct} _json
   ///@param {?Struct} [defaultJson]
   ///@return {?Font}
-  parse = function(_json, defaultJson = null) {
+  static parse = function(_json, defaultJson = null) {
+    gml_pragma("forceinline")
     var font = null
     try {
       var json = JSON.clone(_json)
@@ -36,7 +37,8 @@ function _FontUtil() constructor {
 
   ///@param {String} name
   ///@return {?Font}
-  fetch = function(name) {
+  static fetch = function(name) {
+    gml_pragma("forceinline")
     var asset = asset_get_index(name)
     if (!Core.isType(asset, GMFont)) {
       Logger.warn("FontUtil", $"Font does not exists: '{name}'")

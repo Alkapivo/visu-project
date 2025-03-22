@@ -13,7 +13,6 @@ function Transformer(json = null) constructor {
   ///@type {Boolean}
   finished = false
 
-  ///@override
   ///@type {Boolean}
   overrideValue = Struct.get(json, "overrideValue") == true
 
@@ -48,26 +47,41 @@ function Transformer(json = null) constructor {
 }
 
 
-///@param {Struct} [json]
-function ColorTransformer(json = { value: "#ffffff" }): Transformer(json) constructor {
+///@param {?Struct} [json]
+function ColorTransformer(json = null) constructor {
 
-  ///@override
-  ///@type {Color}
-  this.value = ColorUtil.fromHex(Struct.get(json, "value"))
+  ///@type {String}
+  startValue = Struct.getIfType(json, "value", String, "#ffffff")
 
-  ///@override
   ///@type {Color}
-  this.startValue = ColorUtil.fromHex(Struct.get(json, "value"))
+  value = ColorUtil.fromHex(this.startValue)
+
+  ///@type {Boolean}
+  finished = false
+
+  ///@type {Boolean}
+  overrideValue = Struct.get(json, "overrideValue") == true
 
   ///@type {Color}
   target = ColorUtil.fromHex(Struct.get(json, "target"))
 
   ///@type {Number}
-  factor = Struct.getDefault(json, "factor", 1)
+  factor = Struct.getIfType(json, "factor", Number, 1)
 
-  ///@override
+  ///@return {any}
+  static get = function() {
+    return this.value
+  }
+
+  ///@param {any} value
+  ///@return {Transformer}
+  static set = function(value) {
+    this.value = value 
+    return this
+  }
+
   ///@return {ColorTransformer}
-  update = function() {
+  static update = function() {
     if (this.finished) {
       return this
     }
@@ -84,42 +98,69 @@ function ColorTransformer(json = { value: "#ffffff" }): Transformer(json) constr
   }
 
   ///@return {Struct}
-  serialize = function() {
+  static serialize = function() {
     return {
       value: this.value,
       factor: this.factor,
       target: this.target
     }
   }
+
+  ///@return {ColorTransformer}
+  static reset = function() {
+    this.finished = false
+
+    var color = ColorUtil.fromHex(this.startValue)
+    this.value.r = color.r
+    this.value.g = color.g
+    this.value.b = color.b
+    this.value.a = color.a
+    return this
+  }
 }
 
 
-///@param {Struct} [json]
-function NumberTransformer(json = null): Transformer(json) constructor {
+///@param {?Struct} [json]
+function NumberTransformer(json = null) constructor {
 
-  ///@override
   ///@type {Number}
-  value = Assert.isType(Struct.getDefault(json, "value", 0), Number)
+  value = Struct.getIfType(json, "value", Number, 0.0)
 
-  ///@override
   ///@type {Number}
   startValue = this.value
 
-  ///@type {Number}
-  target = Assert.isType(Struct.getDefault(json, "target", this.value), Number)
+  ///@type {Boolean}
+  finished = false
+
+  ///@type {Boolean}
+  overrideValue = Struct.get(json, "overrideValue") == true
 
   ///@type {Number}
-  factor = Assert.isType(Struct.getDefault(json, "factor", 1), Number)
+  target = Struct.getIfType(json, "target", Number, this.value)
+
+  ///@type {Number}
+  factor = Struct.getIfType(json, "factor", Number, 1.0)
 
   ///@type {Number}
   startFactor = this.factor
 
   ///@type {Number}
-  increase = Assert.isType(Struct.getDefault(json, "increase", 0), Number)
+  increase = Struct.getIfType(json, "increase", Number, 0.0)
   
-  ///@override
+  ///@return {any}
+  static get = function() {
+    return this.value
+  }
+
+  ///@param {any} value
+  ///@return {Transformer}
+  static set = function(value) {
+    this.value = value 
+    return this
+  }
+  
   ///@return {NumberTransformer}
-  update = function() {
+  static update = function() {
     if (this.finished) {
       return this
     }
@@ -134,7 +175,7 @@ function NumberTransformer(json = null): Transformer(json) constructor {
   }
 
   ///@return {Struct}
-  serialize = function() {
+  static serialize = function() {
     return {
       value: this.value,
       target: this.target,
@@ -144,7 +185,7 @@ function NumberTransformer(json = null): Transformer(json) constructor {
   }
 
   ///@return {NumberTransformer}
-  reset = function() {
+  static reset = function() {
     this.finished = false 
     this.value = this.startValue
     this.factor = this.startFactor
@@ -153,8 +194,8 @@ function NumberTransformer(json = null): Transformer(json) constructor {
 }
 
 
-///@param {Struct} [json]
-function Vector2Transformer(json = {}): Transformer(json) constructor {
+///@param {?Struct} [json]
+function Vector2Transformer(json = null) constructor {
 
   ///@type {NumberTransformer}
   x = new NumberTransformer(Struct.get(json, "x"))
@@ -162,17 +203,29 @@ function Vector2Transformer(json = {}): Transformer(json) constructor {
   ///@type {NumberTransformer}
   y = new NumberTransformer(Struct.get(json, "y"))
 
-  ///@override
   ///@type {Vector2}
   value = new Vector2(this.x.value, this.y.value)
 
-  ///@override
-  ///@type {Vector2}
-  startValue = new Vector2(this.x.value, this.y.value)
+  ///@type {Boolean}
+  finished = false
 
-  ///@override
+  ///@type {Boolean}
+  overrideValue = Struct.get(json, "overrideValue") == true
+
+  ///@return {any}
+  static get = function() {
+    return this.value
+  }
+
+  ///@param {any} value
+  ///@return {Transformer}
+  static set = function(value) {
+    this.value = value 
+    return this
+  }
+
   ///@return {Vector2Transformer}
-  update = function() {
+  static update = function() {
     if (this.finished) {
       return this
     }
@@ -190,16 +243,15 @@ function Vector2Transformer(json = {}): Transformer(json) constructor {
   }
 
   ///@return {Struct}
-  serialize = function() {
+  static serialize = function() {
     return {
       x: this.x.serialize(),
       y: this.y.serialize(),
     }
   }
 
-  ///@override
   ///@return {Vector2Transformer}
-  reset = function() {
+  static reset = function() {
     this.finished = false 
     this.x.reset()
     this.y.reset()
@@ -208,8 +260,8 @@ function Vector2Transformer(json = {}): Transformer(json) constructor {
 }
 
 
-///@param {Struct} [json]
-function Vector3Transformer(json = {}): Transformer(json) constructor {
+///@param {?Struct} [json]
+function Vector3Transformer(json = null) constructor {
 
   ///@type {NumberTransformer}
   x = new NumberTransformer(Struct.get(json, "x"))
@@ -220,13 +272,29 @@ function Vector3Transformer(json = {}): Transformer(json) constructor {
   ///@type {NumberTransformer}
   z = new NumberTransformer(Struct.get(json, "z"))
 
-  ///@override
   ///@type {Vector3}
   value = new Vector3(this.x.value, this.y.value, this.z.value)
 
-  ///@override
+  ///@type {Boolean}
+  finished = false
+
+  ///@type {Boolean}
+  overrideValue = Struct.get(json, "overrideValue") == true
+
+  ///@return {any}
+  static get = function() {
+    return this.value
+  }
+
+  ///@param {any} value
+  ///@return {Transformer}
+  static set = function(value) {
+    this.value = value 
+    return this
+  }
+
   ///@return {Vector3Transformer}
-  update = function() {
+  static update = function() {
     if (this.finished) {
       return this
     }
@@ -248,7 +316,7 @@ function Vector3Transformer(json = {}): Transformer(json) constructor {
   }
 
   ///@return {Struct}
-  serialize = function() {
+  static serialize = function() {
     return {
       x: this.x.serialize(),
       y: this.y.serialize(),
@@ -256,9 +324,8 @@ function Vector3Transformer(json = {}): Transformer(json) constructor {
     }
   }
 
-  ///@override
   ///@return {Vector3Transformer}
-  reset = function() {
+  static reset = function() {
     this.finished = false 
     this.x.reset()
     this.y.reset()
@@ -268,8 +335,8 @@ function Vector3Transformer(json = {}): Transformer(json) constructor {
 }
 
 
-///@param {Struct} [json]
-function Vector4Transformer(json = {}): Transformer(json) constructor {
+///@param {?Struct} [json]
+function Vector4Transformer(json = null) constructor {
 
   ///@type {NumberTransformer}
   x = new NumberTransformer(Struct.get(json, "x"))
@@ -283,13 +350,28 @@ function Vector4Transformer(json = {}): Transformer(json) constructor {
   ///@type {NumberTransformer}
   a = new NumberTransformer(Struct.get(json, "a"))
 
-  ///@override
   ///@type {Vector4}
   value = new Vector4(this.x.value, this.y.value, this.z.value, this.a.value)
 
-  ///@override
+  ///@type {Boolean}
+  finished = false
+
+  ///@type {Boolean}
+  overrideValue = Struct.get(json, "overrideValue") == true
+
+  ///@return {any}
+  static get = function() {
+    return this.value
+  }
+
+  ///@param {any} value
+  ///@return {Transformer}
+  static set = function(value) {
+    this.value = value 
+    return this
+  }
   ///@return {Vector4Transformer}
-  update = function() {
+  static update = function() {
     if (this.finished) {
       return this
     }
@@ -314,7 +396,7 @@ function Vector4Transformer(json = {}): Transformer(json) constructor {
   }
 
   ///@return {Struct}
-  serialize = function() {
+  static serialize = function() {
     return {
       x: this.x.serialize(),
       y: this.y.serialize(),
@@ -323,29 +405,44 @@ function Vector4Transformer(json = {}): Transformer(json) constructor {
     }
   }
 
-  ///@override
   ///@return {Vector4Transformer}
-  reset = function() {
+  static reset = function() {
     this.finished = false 
-    this.x.reset()
-    this.y.reset()
-    this.z.reset()
-    this.a.reset()
+    this.value.x = this.x.reset().get()
+    this.value.y = this.y.reset().get()
+    this.value.z = this.z.reset().get()
+    this.value.a = this.a.reset().get()
     return this
   }
 }
 
 
-///@param {Struct} [json]
-function ResolutionTransformer(json = {}): Transformer(json) constructor {
+///@param {?Struct} [json]
+function ResolutionTransformer(json = null) constructor {
 
-  ///@override
   ///@type {Vector2}
   value = new Vector2(GuiWidth(), GuiHeight())
 
-  ///@override
+  ///@type {Boolean}
+  finished = false
+
+  ///@type {Boolean}
+  overrideValue = Struct.getDefault(json, "overrideValue", true)
+
+  ///@return {any}
+  static get = function() {
+    return this.value
+  }
+
+  ///@param {any} value
+  ///@return {Transformer}
+  static set = function(value) {
+    this.value = value 
+    return this
+  }
+
   ///@return {Vector2}
-  update = function() {
+  static update = function() {
     if (this.overrideValue) {
       return this
     }
@@ -355,7 +452,19 @@ function ResolutionTransformer(json = {}): Transformer(json) constructor {
     return this
   }
 
-  ///@override
-  ///@type {Boolean}
-  overrideValue = Struct.getDefault(json, "overrideValue", true)
+  ///@return {Struct}
+  static serialize = function() {
+    return {
+      x: this.x.serialize(),
+      y: this.y.serialize(),
+    }
+  }
+
+  ///@return {ResolutionTransformer}
+  static reset = function() {
+    this.finished = false 
+    this.x.reset()
+    this.y.reset()
+    return this
+  }
 }

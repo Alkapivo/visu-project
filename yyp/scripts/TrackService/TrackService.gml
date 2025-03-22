@@ -16,6 +16,12 @@ function TrackService(_context, config = {}): Service() constructor {
   ///@type {Number}
   duration = 0.0
 
+  ///@type {?Number}
+  rewindFrom = null
+
+  ///@type {?Number}
+  rewindTo = null
+
   ///@type {Map<String, Callable>}
   handlers = Struct.contains(config, "handlers")
     ? Assert.isType(config.handlers, Map)
@@ -100,20 +106,26 @@ function TrackService(_context, config = {}): Service() constructor {
     if (this.isTrackLoaded()) {
       this.track.audio.stop()
     }
+
     this.time = 0.0
+    this.rewindFrom = null
+    this.rewindTo = null
     return this
   }
 
   ///@param {Number} timestamp
   ///@return {TrackService}
   rewind = function(timestamp) {
-    if (this.isTrackLoaded) {
-      if (this.track.audio.isLoaded()) {
-        this.track.rewind(timestamp)
-      } else {
-        this.time = timestamp
-        this.track.audio.play().rewind(timestamp).pause()
-      }
+    if (!this.isTrackLoaded) {
+      return this
+    }
+
+    this.rewindFrom = this.time
+    this.rewindTo = timestamp
+    this.time = timestamp
+    this.track.rewind(timestamp)
+    if (!this.track.audio.isLoaded()) {
+      this.track.audio.play().rewind(timestamp).pause()
     }
     return this
   }
@@ -121,12 +133,26 @@ function TrackService(_context, config = {}): Service() constructor {
   ///@return {TrackService}
   update = function() {
     this.dispatcher.update()
-    if (this.isTrackLoaded()) {
+    if (!this.isTrackLoaded()) {
+      return this
+    }
+
+    if (Optional.is(this.rewindFrom) && Optional.is(this.rewindTo)) {
+      var audioPosition = this.track.audio.isLoaded() 
+        ? this.track.audio.getPosition() 
+        : this.time
+      if (audioPosition >= this.rewindTo) {
+        this.time = audioPosition
+        this.rewindFrom = null
+        this.rewindTo = null
+      }
+    } else {
       this.time = this.track.audio.isLoaded()
         ? this.track.audio.getPosition()
         : this.time
-      this.track.update(this.time)
     }
+    
+    this.track.update(this.time)
     return this
   }
 

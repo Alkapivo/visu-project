@@ -112,9 +112,9 @@ function brush_effect_glitch(json = null) {
     }),
     components: new Array(Struct, [
       {
-        name: "ef-glt_fade-out",
-        template: VEComponents.get("text-field-increase-checkbox"),
-        layout: VELayouts.get("text-field-increase-checkbox"),
+        name: "ef-glt_fade-out-slider",  
+        template: VEComponents.get("numeric-slider"),
+        layout: VELayouts.get("numeric-slider"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
@@ -123,7 +123,23 @@ function brush_effect_glitch(json = null) {
             color: VETheme.color.textShadow,
             offset: { y: 14 },
             //enable: { key: "ef-glt_use-fade-out" },
-          },  
+          },
+          slider: {
+            minValue: 0.0,
+            maxValue: 1.0,
+            snapValue: 0.001 / 1.0,
+            store: { key: "ef-glt_fade-out" },
+            enable: { key: "ef-glt_use-fade-out" },
+          },
+        },
+      },
+      {
+        name: "ef-glt_fade-out",
+        template: VEComponents.get("text-field-increase-checkbox"),
+        layout: VELayouts.get("text-field-increase-checkbox"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { text: "" },
           field: { 
             store: { key: "ef-glt_fade-out"
           },
@@ -146,22 +162,6 @@ function brush_effect_glitch(json = null) {
           },
           title: { 
             text: "Enable",
-            enable: { key: "ef-glt_use-fade-out" },
-          },
-        },
-      },
-      {
-        name: "ef-glt_fade-out-slider",  
-        template: VEComponents.get("numeric-slider"),
-        layout: VELayouts.get("numeric-slider"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { text: "" },
-          slider: {
-            minValue: 0.0,
-            maxValue: 1.0,
-            snapValue: 0.001 / 1.0,
-            store: { key: "ef-glt_fade-out" },
             enable: { key: "ef-glt_use-fade-out" },
           },
         },
@@ -228,7 +228,7 @@ function brush_effect_glitch(json = null) {
           slider: { 
             minValue: 0.0,
             maxValue: 0.5,
-            snapValue: 0.001 / 0.5,
+            snapValue: 0.01 / 0.5,
             store: { key: "ef-glt_line-spd" },
             enable: { key: "ef-glt_use-config" },
           },
@@ -261,7 +261,7 @@ function brush_effect_glitch(json = null) {
           slider: {
             minValue: 0.0,
             maxValue: 0.05,
-            snapValue: 0.0001 / 0.05,
+            snapValue: 0.001 / 0.05,
             store: { key: "ef-glt_line-shift" },
             enable: { key: "ef-glt_use-config" },
           },
@@ -301,12 +301,12 @@ function brush_effect_glitch(json = null) {
           decrease: {
             store: { key: "ef-glt_line-res" },
             enable: { key: "ef-glt_use-config" },
-            factor: -0.075,
+            factor: -0.01,
           },
           increase: {
             store: { key: "ef-glt_line-res" },
             enable: { key: "ef-glt_use-config" },
-            factor: 0.075,
+            factor: 0.01,
           },
         }
       },
@@ -334,12 +334,12 @@ function brush_effect_glitch(json = null) {
           decrease: {
             store: { key: "ef-glt_line-v-shift" },
             enable: { key: "ef-glt_use-config" },
-            factor: -0.025,
+            factor: -0.01,
           },
           increase: {
             store: { key: "ef-glt_line-v-shift" },
             enable: { key: "ef-glt_use-config" },
-            factor: 0.025,
+            factor: 0.01,
           },
         }
       },
@@ -370,12 +370,12 @@ function brush_effect_glitch(json = null) {
           decrease: {
             store: { key: "ef-glt_line-drift" },
             enable: { key: "ef-glt_use-config" },
-            factor: -0.025,
+            factor: -0.01,
           },
           increase: {
             store: { key: "ef-glt_line-drift" },
             enable: { key: "ef-glt_use-config" },
-            factor: 0.025,
+            factor: 0.01,
           },
         }
       },
@@ -421,19 +421,19 @@ function brush_effect_glitch(json = null) {
           slider: {
             minValue: 0.0,
             maxValue: 25.0,
-            snapValue: 0.25 / 25.0,
+            snapValue: 0.1 / 25.0,
             store: { key: "ef-glt_jumb-spd" },
             enable: { key: "ef-glt_use-config" },
           },
           decrease: {
             store: { key: "ef-glt_jumb-spd" },
             enable: { key: "ef-glt_use-config" },
-            factor: -0.5,
+            factor: -0.1,
           },
           increase: {
             store: { key: "ef-glt_jumb-spd" },
             enable: { key: "ef-glt_use-config" },
-            factor: 0.5,
+            factor: 0.1,
           },
         }
       },
@@ -461,12 +461,12 @@ function brush_effect_glitch(json = null) {
           decrease: {
             store: { key: "ef-glt_jumb-shift" },
             enable: { key: "ef-glt_use-config" },
-            factor: -0.025,
+            factor: -0.01,
           },
           increase: {
             store: { key: "ef-glt_jumb-shift" },
             enable: { key: "ef-glt_use-config" },
-            factor: 0.025,
+            factor: 0.01,
           },
         }
       },
@@ -494,12 +494,12 @@ function brush_effect_glitch(json = null) {
           decrease: {
             store: { key: "ef-glt_jumb-res" },
             enable: { key: "ef-glt_use-config" },
-            factor: -0.025,
+            factor: -0.01,
           },
           increase: {
             store: { key: "ef-glt_jumb-res" },
             enable: { key: "ef-glt_use-config" },
-            factor: 0.025,
+            factor: 0.01,
           },
         }
       },
@@ -530,12 +530,12 @@ function brush_effect_glitch(json = null) {
           decrease: {
             store: { key: "ef-glt_jumb-chaos" },
             enable: { key: "ef-glt_use-config" },
-            factor: -0.025,
+            factor: -0.01,
           },
           increase: {
             store: { key: "ef-glt_jumb-chaos" },
             enable: { key: "ef-glt_use-config" },
-            factor: 0.025,
+            factor: 0.01,
           },
         }
       },
@@ -588,12 +588,12 @@ function brush_effect_glitch(json = null) {
           decrease: {
             store: { key: "ef-glt_shd-dispersion" },
             enable: { key: "ef-glt_use-config" },
-            factor: -0.01,
+            factor: -0.001,
           },
           increase: {
             store: { key: "ef-glt_shd-dispersion" },
             enable: { key: "ef-glt_use-config" },
-            factor: 0.01,
+            factor: 0.001,
           },
         }
       },
@@ -654,12 +654,12 @@ function brush_effect_glitch(json = null) {
           decrease: {
             store: { key: "ef-glt_shd-noise" },
             enable: { key: "ef-glt_use-config" },
-            factor: -0.025,
+            factor: -0.01,
           },
           increase: {
             store: { key: "ef-glt_shd-noise" },
             enable: { key: "ef-glt_use-config" },
-            factor: 0.025,
+            factor: 0.01,
           },
         }
       },
@@ -720,12 +720,12 @@ function brush_effect_glitch(json = null) {
           decrease: {
             store: { key: "ef-glt_shd-rng-seed" },
             enable: { key: "ef-glt_use-config" },
-            factor: -0.025,
+            factor: -0.01,
           },
           increase: {
             store: { key: "ef-glt_shd-rng-seed" },
             enable: { key: "ef-glt_use-config" },
-            factor: 0.025,
+            factor: 0.01,
           },
         }
       },
@@ -756,12 +756,12 @@ function brush_effect_glitch(json = null) {
           decrease: {
             store: { key: "ef-glt_shd-intensity" },
             enable: { key: "ef-glt_use-config" },
-            factor: -0.05,
+            factor: -0.01,
           },
           increase: {
             store: { key: "ef-glt_shd-intensity" },
             enable: { key: "ef-glt_use-config" },
-            factor: 0.05,
+            factor: 0.01,
           },
         }
       },

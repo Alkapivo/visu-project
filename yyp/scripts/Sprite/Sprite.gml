@@ -43,68 +43,81 @@ function Sprite(_texture, config = {}) constructor {
   randomFrame = Struct.getDefault(config, "randomFrame", false)
 
   ///@return {String}
-  getName = function() {
+  static getName = function() {
+    gml_pragma("forceinline")
     return this.texture.name
   }
 
   ///@return {Number}
-  getWidth = function() {
+  static getWidth = function() {
+    gml_pragma("forceinline")
     return this.texture.width
   }
 
   ///@return {Number}
-  getHeight = function() {
+  static getHeight = function() {
+    gml_pragma("forceinline")
     return this.texture.height
   }
 
   ///@return {Number}
-  getFrame = function() {
+  static getFrame = function() {
+    gml_pragma("forceinline")
     return this.frame
   }
 
   ///@return {Number}
-  getSpeed = function() {
+  static getSpeed = function() {
+    gml_pragma("forceinline")
     return this.speed
   }
 
   ///@return {Number}
-  getScaleX = function() {
+  static getScaleX = function() {
+    gml_pragma("forceinline")
     return this.scaleX
   }
 
   ///@return {Number}
-  getScaleY = function() {
+  static getScaleY = function() {
+    gml_pragma("forceinline")
     return this.scaleY
   }
 
   ///@return {Number}
-  getAlpha = function() {
+  static getAlpha = function() {
+    gml_pragma("forceinline")
     return this.alpha
   }
 
   ///@return {Number}
-  getAngle = function() {
+  static getAngle = function() {
+    gml_pragma("forceinline")
     return this.angle
   }
 
   ///@return {GMColor}
-  getBlend = function() {
+  static getBlend = function() {
+    gml_pragma("forceinline")
     return this.blend
   }
 
   ///@return {Boolean}
-  getAnimate = function() {
+  static getAnimate = function() {
+    gml_pragma("forceinline")
     return this.animate
   }
 
   ///@return {Boolean}
-  getRandomFrame = function() {
+  static getRandomFrame = function() {
+    gml_pragma("forceinline")
     return this.randomFrame
   }
 
   ///@param {Number} frame
   ///@return {Sprite}
-  setFrame = function(frame) {
+  static setFrame = function(frame) {
+    gml_pragma("forceinline")
     //this.frame = clamp(frame, 0, this.texture.frames - (this.texture.frames > 0 ? 1 : 0))
     this.frame = clamp(frame, 0, this.texture.frames)
     return this
@@ -112,56 +125,64 @@ function Sprite(_texture, config = {}) constructor {
 
   ///@param {Number} speed
   ///@return {Sprite}
-  setSpeed = function(speed) {
+  static setSpeed = function(speed) {
+    gml_pragma("forceinline")
     this.speed = speed
     return this
   }
 
   ///@param {Number} scaleX
   ///@return {Sprite}
-  setScaleX = function(scaleX) {
+  static setScaleX = function(scaleX) {
+    gml_pragma("forceinline")
     this.scaleX = scaleX
     return this
   }
 
   ///@param {Number} scaleY
   ///@return {Sprite}
-  setScaleY = function(scaleY) {
+  static setScaleY = function(scaleY) {
+    gml_pragma("forceinline")
     this.scaleY = scaleY
     return this
   }
 
   ///@param {Number} alpha
   ///@return {Sprite}
-  setAlpha = function(alpha) {
+  static setAlpha = function(alpha) {
+    gml_pragma("forceinline")
     this.alpha = clamp(alpha, 0.0, 1.0)
     return this
   }
 
   ///@param {Number} angle
   ///@return {Sprite}
-  setAngle = function(angle) {
+  static setAngle = function(angle) {
+    gml_pragma("forceinline")
     this.angle = angle
     return this
   }
 
   ///@param {GMColor} blend
   ///@return {Sprite}
-  setBlend = function(blend) {
+  static setBlend = function(blend) {
+    gml_pragma("forceinline")
     this.blend = blend
     return this
   }
 
   ///@param {Boolean} animate
   ///@return {Sprite}
-  setAnimate = function(animate) {
+  static setAnimate = function(animate) {
+    gml_pragma("forceinline")
     this.animate = animate
     return this
   }
 
   ///@param {Boolean} randomFrame
   ///@return {Sprite}
-  setRandomFrame = function(randomFrame) {
+  static setRandomFrame = function(randomFrame) {
+    gml_pragma("forceinline")
     this.randomFrame = randomFrame
     if (this.randomFrame) {
       //this.setFrame(irandom(this.texture.frames))
@@ -173,7 +194,8 @@ function Sprite(_texture, config = {}) constructor {
   ///@param {Number} x
   ///@param {Number} y
   ///@return {Sprite}
-  render = function(x, y) {
+  static render = function(x, y) {
+    gml_pragma("forceinline")
     if (this.scaleX == 0 || this.scaleY == 0) {
       return this
     }
@@ -194,7 +216,8 @@ function Sprite(_texture, config = {}) constructor {
   ///@param {Number} x
   ///@param {Number} y
   ///@return {Sprite}
-  renderTiled = function(x, y) {
+  static renderTiled = function(x, y) {
+    gml_pragma("forceinline")
     if (this.scaleX == 0 || this.scaleY == 0) {
       return this
     }
@@ -217,7 +240,8 @@ function Sprite(_texture, config = {}) constructor {
   ///@param {Number} width
   ///@param {Number} height
   ///@return {Sprite}
-  scaleToFillStretched = function(width, height) {
+  static scaleToFillStretched = function(width, height) {
+    gml_pragma("forceinline")
     this.scaleX = width / this.texture.width
     this.scaleY = height / this.texture.height
     return this
@@ -226,7 +250,8 @@ function Sprite(_texture, config = {}) constructor {
   ///@param {Number} width
   ///@param {Number} height
   ///@return {Sprite}
-  scaleToFill = function(width, height) {
+  static scaleToFill = function(width, height) {
+    gml_pragma("forceinline")
     var scale = max(
       width / this.texture.width, 
       height / this.texture.height
@@ -240,7 +265,8 @@ function Sprite(_texture, config = {}) constructor {
   ///@param {Number} width
   ///@param {Number} height
   ///@return {Sprite}
-  scaleToFit = function(width, height) {
+  static scaleToFit = function(width, height) {
+    gml_pragma("forceinline")
     var scale = min(
       width / this.texture.width, 
       height / this.texture.height
@@ -252,7 +278,8 @@ function Sprite(_texture, config = {}) constructor {
   }
 
   ///@return {Struct}
-  serialize = function() {
+  static serialize = function() {
+    gml_pragma("forceinline")
     var json = {
       name: this.getName(),
       frame: this.getFrame(),
@@ -319,7 +346,8 @@ function _SpriteUtil() constructor {
   ///@param {Struct} _json
   ///@param {?Struct} [defaultJson]
   ///@return {?Sprite}
-  parse = function(_json, defaultJson = null) {
+  static parse = function(_json, defaultJson = null) {
+    gml_pragma("forceinline")
     var sprite = null
     try {
       if (!Optional.is(Struct.getIfType(_json, "name", String))

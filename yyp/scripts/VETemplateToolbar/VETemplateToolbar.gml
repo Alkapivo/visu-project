@@ -869,7 +869,9 @@ global.__VisuTemplateContainers = new Map(String, Callable, {
                 this.label.render(
                   // todo VALIGN HALIGN
                   this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
-                  this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2)
+                  this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2),
+                  this.area.getWidth(),
+                  this.area.getHeight()
                 )
               }
               return this

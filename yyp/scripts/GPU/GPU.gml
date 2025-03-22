@@ -324,48 +324,61 @@ function _GPU() constructor {
 
     ///@param {Number} _x
     ///@param {Number} _y
-    ///@param {String} text
-    ///@param {GMColor} [color]
-    ///@param {?GMColor} [outline]
+    ///@param {any} text
+    ///@param {Number} [scale]
+    ///@param {Number} [angle]
     ///@param {Number} [alpha]
+    ///@param {GMColor} [color]
     ///@param {Font} [font]
     ///@param {HAlign} [h]
     ///@param {VAlign} [v]
+    ///@param {?GMColor} [outline]
     ///@param {Number} [outlineAlphaFactor]
-    ///@return {Struct}
     ///@return {GPU}
-    text: function(_x, _y, text, color = c_white, outline = null, alpha = 1.0, font = GPU_DEFAULT_FONT, h = HAlign.LEFT, v = VAlign.TOP, outlineAlphaFactor = 1.0) {
-      if (font.asset != draw_get_font()) {
-        draw_set_font(font.asset)
+    text: function(x, y, text, scale = 1.0, angle = 0.0, alpha = 1.0, color = c_white, font = GPU_DEFAULT_FONT, h = HAlign.LEFT, v = VAlign.TOP, outline = null, outlineAlphaFactor = 1.0) {
+      if (text == "" || alpha <= 0.0 || !Core.isType(text, String) ) {
+        return GPU
       }
 
-      if (h != draw_get_halign()) {
-        draw_set_halign(h)
-      }
+      if (font.asset != GPU.get.font()) {
+        GPU.set.font(font.asset)
+      }    
   
-      if (v != draw_get_valign()) {
-        draw_set_valign(v)
+      if (h != GPU.get.align.h()) {
+        GPU.set.align.h(h)
+      }
+
+      if (v != GPU.get.align.v()) {
+        GPU.set.align.v(v)
       }
 
       if (outline != null) {
-        var _alpha = alpha / outlineAlphaFactor
-        draw_text_color(_x + 1, _y + 1, text, outline, outline, outline, outline, _alpha)
-        draw_text_color(_x - 1, _y - 1, text, outline, outline, outline, outline, _alpha)
-        draw_text_color(_x    , _y + 1, text, outline, outline, outline, outline, _alpha)
-        draw_text_color(_x + 1, _y    , text, outline, outline, outline, outline, _alpha)
-        draw_text_color(_x    , _y - 1, text, outline, outline, outline, outline, _alpha)
-        draw_text_color(_x - 1, _y    , text, outline, outline, outline, outline, _alpha)
-        draw_text_color(_x - 1, _y + 1, text, outline, outline, outline, outline, _alpha)
-        draw_text_color(_x + 1, _y - 1, text, outline, outline, outline, outline, _alpha)
+        var outlineAlpha = alpha / max(outlineAlphaFactor, 1.0)
+        draw_text_transformed_colour(x + 1, y + 1, text, scale, scale, angle, outline, outline, outline, outline, outlineAlpha)
+        draw_text_transformed_colour(x - 1, y - 1, text, scale, scale, angle, outline, outline, outline, outline, outlineAlpha)
+        draw_text_transformed_colour(x    , y + 1, text, scale, scale, angle, outline, outline, outline, outline, outlineAlpha)
+        draw_text_transformed_colour(x + 1, y    , text, scale, scale, angle, outline, outline, outline, outline, outlineAlpha)
+        draw_text_transformed_colour(x    , y - 1, text, scale, scale, angle, outline, outline, outline, outline, outlineAlpha)
+        draw_text_transformed_colour(x - 1, y    , text, scale, scale, angle, outline, outline, outline, outline, outlineAlpha)
+        draw_text_transformed_colour(x - 1, y + 1, text, scale, scale, angle, outline, outline, outline, outline, outlineAlpha)
+        draw_text_transformed_colour(x + 1, y - 1, text, scale, scale, angle, outline, outline, outline, outline, outlineAlpha)
       }
 
-      draw_text_color(_x, _y, text, color, color, color, color, alpha)
+      draw_text_transformed_colour(x, y, text, scale, scale, angle, color, color, color, color, alpha)
       return GPU
     }
   }
 
   ///@type {Struct}
   set = {
+
+    ///@param {Number}
+    ///@return {GPU}
+    alpha: function(alpha) {
+      draw_set_alpha(alpha)
+      return GPU
+    },
+
     ///@param {Shader}
     ///@return {GPU}
     shader: function(shader) {
@@ -430,17 +443,17 @@ function _GPU() constructor {
 
     ///@type {Struct}
     align: {
-      ///@param {Struct} align
+      ///@param {HAlign} align
       ///@return {GPU}
       h: function(align) {
-        draw_set_halign(align.h)
+        draw_set_halign(align)
         return GPU
       },
 
-      ///@param {Struct} align
+      ///@param {VAlign} align
       ///@return {GPU}
       v: function(align) {
-        draw_set_valign(align.v)
+        draw_set_valign(align)
         return GPU
       },
     },
@@ -458,6 +471,19 @@ function _GPU() constructor {
 
   ///@type {Struct}
   get = {
+
+    ///@return {Number}
+    alpha: draw_get_alpha,
+
+    ///@type {Struct}
+    align: {
+      ///@return {HAlign}
+      h: draw_get_halign,
+
+      ///@return {VAlign}
+      v: draw_get_valign,
+    },
+
     ///@return {?GMSurface}
     surface: function() {
       var target = surface_get_target()
@@ -465,9 +491,7 @@ function _GPU() constructor {
     },
 
     ///@return {Boolean}
-    blendEnable: function() {
-      return gpu_get_blendenable()
-    },
+    blendEnable: gpu_get_blendenable,
 
     blendModeExt: {
       ///@return {BlendModeExt}
@@ -491,16 +515,11 @@ function _GPU() constructor {
       },
     },
 
-    ///@return {Struct}
-    colorWrite: function() {
-      var array = gpu_get_colorwriteenable()
-      return {
-        red: array[0],
-        green: array[1],
-        blue: array[2],
-        alpha: array[3],
-      }
-    },
+    ///@return {GMArray<Boolean>}
+    colorWrite: gpu_get_colorwriteenable,
+
+    ///@return {GMFont}
+    font: draw_get_font,
   }
 
   ///@type {Struct}

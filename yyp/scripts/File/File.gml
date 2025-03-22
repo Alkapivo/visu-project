@@ -36,6 +36,20 @@ function File(json) constructor {
 
 
 ///@enum
+function _FileAttribute(): Enum() constructor {
+  NONE = fa_none
+  READ_ONLY = fa_readonly
+  HIDDEN = fa_hidden
+  SYSTEM = fa_sysfile
+  VOLUME_ID = fa_volumeid
+  DIRECTORY = fa_directory
+  ARCHIVE = fa_archive
+}
+global.__FileAttribute = new _FileAttribute()
+#macro FileAttribute global.__FileAttribute
+
+
+///@enum
 function _PathType(): Enum() constructor {
   FILE = "file"
   DIRECTORY = "directory"
@@ -224,6 +238,26 @@ function _FileUtil() constructor {
     Logger.info("File", $"save-file-sync successfully: {path}")
   }
 
+  ///@param {String} _path
+  ///@param {String} [mask]
+  ///@param {FileAttribute} [attribute]
+  ///@param {Boolean} [appendPath]
+  ///@return {Array<String>}
+  static listDirectory = function(_path, mask = "*", attribute = FileAttribute.NONE, appendPath = false) {
+    var path = FileUtil.get(_path)
+    var list = new Array(String)
+    if (!FileUtil.directoryExists(path)) {
+      return list
+    }
+
+    var filename = file_find_first($"{path}{mask}", attribute)
+    while (filename != "") {
+      list.add(appendPath ? $"{path}{filename}" : filename)
+      filename = file_find_next()
+    }
+
+    return list
+  }
 }
 global.__FileUtil = new _FileUtil()
 #macro FileUtil global.__FileUtil

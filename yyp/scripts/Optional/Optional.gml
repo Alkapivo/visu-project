@@ -13,14 +13,16 @@ function _Optional() constructor {
   
   ///@param {Prototype}
   ///@return {OptionalType}
-  of = function(prototype) {
+  static of = function(prototype) {
+    gml_pragma("forceinline")
     return new OptionalType(prototype)
   }
 
   ///@param {any} object
   ///@param {Type} [type]
   ///@return {Boolean}
-  is = function(object, type = null) {
+  static is = function(object, type = null) {
+    gml_pragma("forceinline")
     return object != null 
       ? (type != null ? Core.isType(object, type) : true) 
       : false

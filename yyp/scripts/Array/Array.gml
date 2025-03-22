@@ -36,19 +36,22 @@ function Array(_type = any, _container = null) constructor {
   ///@private
   ///@param {Number} index
   ///@param {any} value
-  _forEachWrapper = function(value, index) {
+  static _forEachWrapper = function(value, index) {
+    gml_pragma("forceinline")
     this._callback(value, index, this._acc)
   }
 
   ///@override
   ///@return {Number}
   static size = function() {
+    gml_pragma("forceinline")
     return array_length(this.container)
   }
 
   ///@param {Number} index
   ///@return {Array}
   static remove = function(index) {
+    gml_pragma("forceinline")
     array_delete(this.container, index, 1)
     return this
   }
@@ -56,12 +59,14 @@ function Array(_type = any, _container = null) constructor {
   ///@param {Number} index
   ///@return {any}
   static get = function(index) {
+    gml_pragma("forceinline")
     return this.container[index]
   }
 
   ///@param {Number} index
   ///@return {Array}
   static set = function(index, value) {
+    gml_pragma("forceinline")
     Assert.isType(value, this.type)
     this.container[index] = value
     return this
@@ -71,6 +76,7 @@ function Array(_type = any, _container = null) constructor {
   ///@param {Number} [index]
   ///@return {Array}
   static add = function(item, index = null) {
+    gml_pragma("forceinline")
     if (this.type != null && !Core.isType(item, this.type)) {
       throw new InvalidClassException()
     }
@@ -86,6 +92,7 @@ function Array(_type = any, _container = null) constructor {
   ///@override
   ///@return {Array}
   static clear = function() {
+    gml_pragma("forceinline")
     if (Core.isType(this.gc, Stack)) {
       this.gc.clear()
     }
@@ -98,6 +105,7 @@ function Array(_type = any, _container = null) constructor {
   ///@param {any} [acc]
   ///@return {any}
   static find = function(callback, acc = null) {
+    gml_pragma("forceinline")
     var size = this.size()
     for (var index = 0; index < size; index++) {
       var item = this.container[index]
@@ -112,6 +120,7 @@ function Array(_type = any, _container = null) constructor {
   ///@param {any} [acc]
   ///@return {?Number}
   static findIndex = function(callback, acc = null) {
+    gml_pragma("forceinline")
     var size = this.size()
     for (var index = 0; index < size; index++) {
       var item = this.container[index]
@@ -127,6 +136,7 @@ function Array(_type = any, _container = null) constructor {
   ///@param {any} [acc]
   ///@return {Array}
   static forEach = function(callback, acc = null) {
+    gml_pragma("forceinline")
     this._callback = callback
     this._acc = acc
     array_foreach(this.getContainer(), this._forEachWrapper)
@@ -140,6 +150,7 @@ function Array(_type = any, _container = null) constructor {
   ///@param {any} [acc]
   ///@return {Array}
   static filter = function(callback, acc = null) {
+    gml_pragma("forceinline")
     var filtered = new Array(this.type)
     var size = this.size()
     for (var index = 0; index < size; index++) {
@@ -157,6 +168,7 @@ function Array(_type = any, _container = null) constructor {
   ///@param {?Type} [type]
   ///@return {Array}
   static map = function(callback, acc = null, type = any) {
+    gml_pragma("forceinline")
     var mapped = new Array(type)
     var size = this.size()
     for (var index = 0; index < size; index++) {
@@ -175,6 +187,7 @@ function Array(_type = any, _container = null) constructor {
   ///@param {Callable} [comparator]
   ///@return {Boolean}
   static contains = function(searchItem, comparator = function(a, b) { return a == b }) {
+    gml_pragma("forceinline")
     var size = this.size()
     var found = false
     for (var index = 0; index < size; index++) {
@@ -190,6 +203,7 @@ function Array(_type = any, _container = null) constructor {
   ///@param {String} [delimiter]
   ///@return {String}
   static join = function(delimiter = ", ") {
+    gml_pragma("forceinline")
     var size = this.size()
     var buffer = ""
     if (size > 1) {
@@ -207,17 +221,20 @@ function Array(_type = any, _container = null) constructor {
 
   ///@return {any}
   static getFirst = function() {
+    gml_pragma("forceinline")
     return this.size() > 0 ? this.get(0) : null
   }
 
   ///@return {any}
   static getLast = function() {
+    gml_pragma("forceinline")
     var size = this.size()
     return size > 0 ? this.get(size - 1) : null
   }
 
   ///@return {any}
   static getRandom = function() {
+    gml_pragma("forceinline")
     var size = this.size()
     if (size == 0) {
       return null
@@ -230,6 +247,7 @@ function Array(_type = any, _container = null) constructor {
   ///@param {Number} indexB
   ///@return {Array}
   static swapItems = function(indexA, indexB) {
+    gml_pragma("forceinline")
     var size = this.size()
     if (indexA >= size || indexB >= size) {
       return this //todo throw OutOfBoundary?
@@ -303,12 +321,14 @@ function Array(_type = any, _container = null) constructor {
 
   ///@return {GMArray}
   static getContainer = function() {
+    gml_pragma("forceinline")
     return this.container
   }
 
   ///@param {GMArray} container
   ///@return {Array}
   static setContainer = function(container) {
+    gml_pragma("forceinline")
     Assert.isTrue((typeof(this.container) == "array"))
     this.container = container
     return this
@@ -323,6 +343,7 @@ function Array(_type = any, _container = null) constructor {
   static toMap = function(keyType = any, valueType = any, valueCallback = null, 
     acc = null, keyCallback = null) {
 
+    gml_pragma("forceinline")
     return GMArray.toMap(this.container, keyType, valueType, valueCallback, 
       acc, keyCallback)
   }
@@ -332,6 +353,7 @@ function Array(_type = any, _container = null) constructor {
   ///@param {?Callable} [keyCallback]
   ///@return {Struct}
   static toStruct = function(valueCallback = null, acc = null, keyCallback = null) {
+    gml_pragma("forceinline")
     return GMArray.toStruct(this.container, keyCallback, acc, valueCallback)
   }
 
@@ -339,6 +361,7 @@ function Array(_type = any, _container = null) constructor {
   ///@param {Number} to
   ///@return {Array}
   static move = function(from, to) {
+    gml_pragma("forceinline")
     var size = this.size()
     if (from < 0 || from >= size)
       || (to < 0 || to >= size) {
@@ -353,12 +376,14 @@ function Array(_type = any, _container = null) constructor {
 
   ///@return {Array}
   static enableGC = function() {
+    gml_pragma("forceinline")
     this.gc = !Core.isType(this.gc, Stack) ? new Stack(Number) : this.gc
     return this
   }
 
   ///@return {Array}
   static disableGC = function() {
+    gml_pragma("forceinline")
     this.gc = null
     return this
   }
@@ -422,6 +447,7 @@ function _GMArray() constructor {
   ///@param {GMArray} arr
   ///@return {Number}
   static size = function(arr) {
+    gml_pragma("forceinline")
     return array_length(arr)
   }
 
@@ -430,6 +456,7 @@ function _GMArray() constructor {
 	///@param {any} [value]
 	///@return {Array}
 	static create = function(type = any, size = 0, value = null) {
+    gml_pragma("forceinline")
 		return new Array(type, this.createGMArray(size, value))
 	}
 
@@ -437,6 +464,7 @@ function _GMArray() constructor {
   ///@param {any} [value]
   ///@return {GMArray}
   static createGMArray = function(size, value = null) {
+    gml_pragma("forceinline")
     return array_create(size, value)
   }
 
@@ -445,6 +473,7 @@ function _GMArray() constructor {
   ///@param {Number} [index]
   ///@return {GMArray}
   static add = function(arr, item, index = null) {
+    gml_pragma("forceinline")
     var size = this.size(arr)
     if (size < 32000) { ///@description GML array limitation
       index = Core.isType(index, Number)
@@ -459,6 +488,7 @@ function _GMArray() constructor {
   ///@param {GMArray} arr
   ///@return {GMArray}
   static clear = function(arr) {
+    gml_pragma("forceinline")
     array_delete(arr, 0, this.size(arr))
     return arr
   }
@@ -467,17 +497,20 @@ function _GMArray() constructor {
   ///@param {Number} index
   ///@return {any}
   static get = function(arr, index) {
+    gml_pragma("forceinline")
     return index >= 0 && index < this.size(arr) ? arr[index] : null
   }
 
   ///@param {GMArray} arr
   ///@return {any}
   static getFirst = function(arr) {
+    gml_pragma("forceinline")
     return this.get(arr, 0)
   }
 
   ///@return {any}
   static getLast = function(arr) {
+    gml_pragma("forceinline")
     var size = this.size(arr)
     return size > 0 ? this.get(arr, size - 1) : null
   }
@@ -485,6 +518,7 @@ function _GMArray() constructor {
   ///@param {GMArray} arr
   ///@return {any}
   static getRandom = function(arr) {
+    gml_pragma("forceinline")
     var size = this.size(arr)
     return size > 0 ? this.get(arr, irandom(size - 1)) : null
   }
@@ -494,6 +528,7 @@ function _GMArray() constructor {
   ///@param {any} [acc]
   ///@return {any}
   static find = function(arr, callback, acc = null) {
+    gml_pragma("forceinline")
     var size = this.size(arr)
     for (var index = 0; index < size; index++) {
       var item = arr[index]
@@ -509,6 +544,7 @@ function _GMArray() constructor {
   ///@param {any} [acc]
   ///@return {?Number}
   static findIndex = function(arr, callback, acc = null) {
+    gml_pragma("forceinline")
     var size = this.size(arr)
     for (var index = 0; index < size; index++) {
       var item = arr[index]
@@ -523,6 +559,7 @@ function _GMArray() constructor {
   ///@param {Number} index
   ///@return {GMArray}
   static remove = function(arr, index) {
+    gml_pragma("forceinline")
     array_delete(arr, index, 1)
     return arr
   }
@@ -533,6 +570,7 @@ function _GMArray() constructor {
   ///@param {Callable} [comparator]
   ///@return {Boolean}
   static contains = function(arr, searchItem, comparator = function(a, b) { return a == b }) {
+    gml_pragma("forceinline")
     var size = this.size(arr)
     var found = false
     for (var index = 0; index < size; index++) {
@@ -550,6 +588,7 @@ function _GMArray() constructor {
   ///@param {any} [acc]
   ///@return {GMArray}
   static forEach = function(arr, callback, acc = null) {
+    gml_pragma("forceinline")
     this._callback = callback
     this._acc = acc
     array_foreach(arr, this._forEachWrapper)
@@ -563,6 +602,7 @@ function _GMArray() constructor {
   ///@param {any} [acc]
   ///@return {GMArray}
   static filter = function(arr, callback, acc = null) {
+    gml_pragma("forceinline")
     var filtered = []
     var size = this.size(arr)
     for (var index = 0; index < size; index++) {
@@ -579,6 +619,7 @@ function _GMArray() constructor {
   ///@param {any} [acc]
   ///@return {GMArray}
   static map = function(arr, callback, acc = null) {
+    gml_pragma("forceinline")
     var mapped = []
     var size = this.size(arr)
     for (var index = 0; index < size; index++) {
@@ -616,6 +657,7 @@ function _GMArray() constructor {
   ///@param {?Calllable} [keyCallback]
   ///@return {Map}
   static toMap = function(arr, keyType = any, valueType = any, valueCallback = null, acc = null, keyCallback = null) {
+    gml_pragma("forceinline")
     var map = new Map(keyType, valueType)
     var size = this.size(arr)
     var isValueCallback = Core.isType(valueCallback, Callable)
@@ -652,6 +694,7 @@ function _GMArray() constructor {
   ///@param {Calllable} [valueCallback]
   ///@return {Struct}
   static toStruct = function(arr, keyCallback = null, acc = null, valueCallback = null) {
+    gml_pragma("forceinline")
     var struct = {}
     var size = this.size(arr)
     var isValueCallback = Core.isType(valueCallback, Callable)
@@ -686,6 +729,7 @@ function _GMArray() constructor {
   ///@param {Callable|Boolean} [callback]
   ///@return {GMArray}
   static sort = function(arr, callback = true) {
+    gml_pragma("forceinline")
     array_sort(arr, callback)
     return arr
   }
@@ -693,6 +737,7 @@ function _GMArray() constructor {
   ///@param {GMArray|any} value
   ///@return {any}
   static resolveRandom = function(value) {
+    gml_pragma("forceinline")
     return Core.isType(value, GMArray) ? GMArray.getRandom(value) : value
   }
 }

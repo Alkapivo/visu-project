@@ -498,10 +498,15 @@ function VisuProjectForm(json = null) constructor {
       visuTrack.video = null
     }
     
-    Beans.get(BeanVisuEditorController).autosave.save()
+    var editor = Beans.get(BeanVisuEditorController)
+    editor.autosave.save()
 
-    Beans.get(BeanVisuController).send(new Event("spawn-popup", 
-      { message: $"Project '{track.name}' updated successfully at: '{path}'" }))
+    controller.send(new Event("load", {
+      manifest: $"{path}manifest.visu",
+      autoplay: false
+    }))
+
+    editor.projectModal.send(new Event("close"))
 
     return this
   }
@@ -596,13 +601,15 @@ function VEProjectModal(_config = null) constructor {
                 48 + 640 + 24 + 24,
                 20 + (index * 32) + 16,
                 $"{color.toHex()}: {colorName}",
-                c_black,
-                c_white,
                 1.0,
+                0.0,
+                1.0,
+                c_black,
                 GPU_DEFAULT_FONT_BOLD,
                 HAlign.LEFT,
                 VAlign.CENTER,
-                1.0,
+                c_white,
+                1.0
               )
             }, this)
 

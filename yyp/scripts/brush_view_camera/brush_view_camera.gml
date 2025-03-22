@@ -34,7 +34,7 @@ function brush_view_camera(json) {
         type: Number,
         value: Struct.get(json, "vw-cam_follow-x"),
         passthrough: UIUtil.passthrough.getClampedStringNumber(),
-        data: new Vector2(0.0, 0.5),
+        data: new Vector2(-25.0, 25.0),
       },
       "vw-cam_use-follow-y": {
         type: Boolean,
@@ -44,7 +44,7 @@ function brush_view_camera(json) {
         type: Number,
         value: Struct.get(json, "vw-cam_follow-y"),
         passthrough: UIUtil.passthrough.getClampedStringNumber(),
-        data: new Vector2(0.0, 0.5),
+        data: new Vector2(-25.0, 25.0),
       },
       "vw-cam_follow-smooth": {
         type: Number,

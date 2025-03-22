@@ -26,19 +26,22 @@ function Color(_red = 0.0, _green = 0.0, _blue = 0.0, _alpha = 1.0) constructor 
   alpha = _alpha
 
   ///@return {GMColor}
-  toGMColor = function() {
+  static toGMColor = function() {
+    gml_pragma("forceinline")
     return ColorUtil.toGMColor(this)
   }
 
   ///@param {Boolean} [useAlpha]
   ///@return {String}
-  toHex = function(useAlpha = false) {
+  static toHex = function(useAlpha = false) {
+    gml_pragma("forceinline")
     return ColorUtil.toHex(this, useAlpha)
   }
 
   ///@param {String} hex
   ///@return {Color}
-  parse = function(hex) {
+  static parse = function(hex) {
+    gml_pragma("forceinline")
     var _red = this.red
     var _green = this.green
     var _blue = this.blue
@@ -72,7 +75,8 @@ function Color(_red = 0.0, _green = 0.0, _blue = 0.0, _alpha = 1.0) constructor 
 
   ///@param {Color} color
   ///@return {Color}
-  set = function(color) {
+  static set = function(color) {
+    gml_pragma("forceinline")
     this.red = color.red
     this.green = color.green
     this.blue = color.blue
@@ -81,7 +85,8 @@ function Color(_red = 0.0, _green = 0.0, _blue = 0.0, _alpha = 1.0) constructor 
   }
 
   ///@return {String}
-  serialize = function() {
+  static serialize = function() {
+    gml_pragma("forceinline")
     return this.toHex(this.alpha != 1.0 ? true : false)
   }
 }
@@ -102,7 +107,8 @@ function _ColorUtil() constructor {
   ///@param {String} hex
   ///@param {String} defaultValue
   ///@return {Color}
-  parse = function(hex, defaultValue = "#000000") {
+  static parse = function(hex, defaultValue = "#000000") {
+    gml_pragma("forceinline")
     if (!Core.isType(hex, String)) {
       return Core.isType(defaultValue, String)
         ? ColorUtil.parse(defaultValue)
@@ -139,7 +145,8 @@ function _ColorUtil() constructor {
   ///@param {?Color} defaultValue
   ///@return {Color}
   ///@throws {ParseException}
-  fromHex = function(hex, defaultValue = null) {
+  static fromHex = function(hex, defaultValue = null) {
+    gml_pragma("forceinline")
     try {
       var hexLength = String.size(hex)
       var hasAlpha = hexLength == 9
@@ -184,7 +191,8 @@ function _ColorUtil() constructor {
   ///@param {GMColor} color
   ///@param {Number} [alpha]
   ///@return {Color}
-  fromGMColor = function(color, alpha = 1.0) {
+  static fromGMColor = function(color, alpha = 1.0) {
+    gml_pragma("forceinline")
     return new Color(
       colour_get_red(color) / 255,
       colour_get_green(color) / 255,
@@ -195,7 +203,8 @@ function _ColorUtil() constructor {
 
   ///@param {Color} color
   ///@return {String}
-  toHex = function(color, useAlpha = false) {
+  static toHex = function(color, useAlpha = false) {
+    gml_pragma("forceinline")
     var red = round(color.red * 255)
     var green = round(color.green * 255)
     var blue = round(color.blue * 255)
@@ -217,7 +226,8 @@ function _ColorUtil() constructor {
 
   ///@param {Color} color
   ///@return {GMColor}
-  toGMColor = function(color) {
+  static toGMColor = function(color) {
+    gml_pragma("forceinline")
     return make_color_rgb(
       color.red * 255, 
       color.green * 255, 
@@ -228,7 +238,8 @@ function _ColorUtil() constructor {
   ///@param {Color} source
   ///@param {Color} target
   ///@return {Boolean}
-  areEqual = function(source, target) {
+  static areEqual = function(source, target) {
+    gml_pragma("forceinline")
     return source.red == target.red
       && source.green == target.green
       && source.blue == target.blue
@@ -237,7 +248,8 @@ function _ColorUtil() constructor {
 
   ///@param {String} key
   ///@return {Boolean}
-  isColorProperty = function(key) {
+  static isColorProperty = function(key) {
+    gml_pragma("forceinline")
     return key == "red" || key == "green" || key == "blue" || key == "alpha"
   }
 }

@@ -31,7 +31,8 @@ function Timer(_duration, config = {}) constructor {
 
   ///@param {any} [callbackData]
   ///@return {Timer}
-  update = function(callbackData = null) {
+  static update = function(callbackData = null) {
+    gml_pragma("forceinline")
     if (this.finished && (this.loop == Infinity || this.loopCounter < this.loop)) {
       this.finished = false
     } else if (this.finished) {
@@ -64,26 +65,30 @@ function Timer(_duration, config = {}) constructor {
   }
 
   ///@return {Number}
-  getProgress = function() {
+  static getProgress = function() {
+    gml_pragma("forceinline")
     return this.finished ? 1.0 : clamp(this.time / this.duration, 0.0, 1.0)
   }
 
   ///@param {Number} amount
   ///@return {Timer}
-  setAmount = function(amount) {
+  static setAmount = function(amount) {
+    gml_pragma("forceinline")
     this.amount = amount
     return this
   }
 
   ///@param {Number} duration
   ///@return {Timer}
-  setDuration = function(duration) {
+  static setDuration = function(duration) {
+    gml_pragma("forceinline")
     this.duration = duration
     return this
   }
 
   ///@return {Timer}
-  reset = function() {
+  static reset = function() {
+    gml_pragma("forceinline")
     this.time = 0
     this.loopCounter = 0
     this.finished = false
@@ -91,7 +96,8 @@ function Timer(_duration, config = {}) constructor {
   }
 
   ///@return {Struct}
-  serialize = function() {
+  static serialize = function() {
+    gml_pragma("forceinline")
     return {
       time: this.time,
       loopCounter: this.loopCounter,
@@ -103,14 +109,16 @@ function Timer(_duration, config = {}) constructor {
   }
 
   ///@return {Timer}
-  finish = function() {
+  static finish = function() {
+    gml_pragma("forceinline")
     this.time = this.amount > 0 ? this.duration : 0.0
     return this
   }
 
   ///@param {Number} duration
   ///@return {Timer}
-  changeDuration = function(duration) {
+  static changeDuration = function(duration) {
+    gml_pragma("forceinline")
     this.duration = duration
     return this
   }

@@ -38,10 +38,10 @@ function VisuEditorIO() constructor {
     controlTrackBackward: 188, // + ctrl
     controlTrackForward: 190, // + ctrl
     
-    renderLeftPane: KeyboardKeyType.F1,
-    renderBottomPane: KeyboardKeyType.F2,
-    renderRightPane: KeyboardKeyType.F3,
-    renderTrackControl: KeyboardKeyType.F4,
+    renderLeftPane: KeyboardKeyType.F2,
+    renderBottomPane: KeyboardKeyType.F3,
+    renderRightPane: KeyboardKeyType.F4,
+    renderTrackControl: KeyboardKeyType.F1,
     renderSceneConfigPreview: KeyboardKeyType.F12,
     renderUI: KeyboardKeyType.F5,
     renderEventInspector: KeyboardKeyType.F6,
@@ -157,7 +157,7 @@ function VisuEditorIO() constructor {
       || this.keyboard.keys.numZoomIn.pressed) {
 
       var item = editor.store.get("timeline-zoom")
-      item.set(clamp(item.get() - 1, 5, 20))
+      item.set(clamp(item.get() - 1, 5, 30))
 
       var ruler = editor.uiService.find("ve-timeline-ruler")
       if (Optional.is(ruler)) {
@@ -174,7 +174,7 @@ function VisuEditorIO() constructor {
       || this.keyboard.keys.numZoomOut.pressed) {
 
       var item = editor.store.get("timeline-zoom")
-      item.set(clamp(item.get() + 1, 5, 20))
+      item.set(clamp(item.get() + 1, 5, 30))
 
       var ruler = editor.uiService.find("ve-timeline-ruler")
       if (Optional.is(ruler)) {

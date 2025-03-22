@@ -60,17 +60,20 @@ function Map(_keyType = any, _valueType = any, _container = null, config = { val
   ///@param {any} key
   ///@return {any}
   static get = function(key) {
+    gml_pragma("forceinline")
     return Struct.get(this.container, key)
   }
 
   ///@return {any}
   static getFirst = function() {
+    gml_pragma("forceinline")
     var key = this.keys().getFirst()
     return key != null ? this.get(key) : null
   }
 
   ///@return {any}
   static getLast = function() {
+    gml_pragma("forceinline")
     var key = this.keys().getLast()
     return key != null ? this.get(key) : null
   }
@@ -80,6 +83,7 @@ function Map(_keyType = any, _valueType = any, _container = null, config = { val
   ///@param {any} defaultValue
   ///@return {any}
   static getDefault = function(key, defaultValue) {
+    gml_pragma("forceinline")
     return this.contains(key) ? this.get(key) : defaultValue
   }
 
@@ -88,6 +92,7 @@ function Map(_keyType = any, _valueType = any, _container = null, config = { val
   ///@param {any} [defaultValue]
   ///@return {any}
   static getIfType = function(key, type, defaultValue = null) {
+    gml_pragma("forceinline")
     return Struct.getIfType(this.container, key, type, defaultValue)
   }
 
@@ -95,6 +100,7 @@ function Map(_keyType = any, _valueType = any, _container = null, config = { val
   ///@param key
   ///@return {Boolean}
   static contains = function(key) {
+    gml_pragma("forceinline")
     return Struct.contains(this.container, key)
   }
 
@@ -103,6 +109,7 @@ function Map(_keyType = any, _valueType = any, _container = null, config = { val
   ///@throws {InvalidClassException}
   ///@return {Map}
   static set = function(key, item) {
+    gml_pragma("forceinline")
     Assert.isType(key, this.keyType)
     Assert.isType(item, this.valueType)
     Struct.set(this.container, key, item)
@@ -115,6 +122,7 @@ function Map(_keyType = any, _valueType = any, _container = null, config = { val
   ///@throws {Exception}
   ///@return {Map}
   static add = function(item, key = null) {
+    gml_pragma("forceinline")
     var _key = key
     if (_key == null) {
       _key = this.generateKey()
@@ -131,18 +139,21 @@ function Map(_keyType = any, _valueType = any, _container = null, config = { val
   ///@override
   ///@return {Number}
   static size = function() {
+    gml_pragma("forceinline")
     return Struct.size(this.container)
   }
 
   ///@param {any} key
   ///@return {Map}
   static remove = function(key) {
+    gml_pragma("forceinline")
     Struct.remove(this.container, key)
     return this
   }
 
   ///@return {Array}
   static keys = function() {
+    gml_pragma("forceinline")
     this._keys.setContainer(Struct.keys(this.container))
     return this._keys
   }
@@ -150,6 +161,7 @@ function Map(_keyType = any, _valueType = any, _container = null, config = { val
   ///@param {any} key
   ///@return {any} item
   static inject = function(key, item) {
+    gml_pragma("forceinline")
     if (!this.contains(key)) {
       this.set(key, item)
     }
@@ -161,6 +173,7 @@ function Map(_keyType = any, _valueType = any, _container = null, config = { val
   ///@param {any} [acc]
   ///@return {Map}
   static _forEach = function(callback, acc = null) {
+    gml_pragma("forceinline")
     var keys = this.keys()
     var size = keys.size()
     for (var index = 0; index < size; index++) {
@@ -179,6 +192,7 @@ function Map(_keyType = any, _valueType = any, _container = null, config = { val
   ///@param {any} [acc]
   ///@return {Map}
   static forEach = function(callback, acc = null) {
+    gml_pragma("forceinline")
     this._callback = callback
     this._acc = acc
     struct_foreach(this.getContainer(), this._forEachWrapper)
@@ -192,6 +206,7 @@ function Map(_keyType = any, _valueType = any, _container = null, config = { val
   ///@param {any} [acc]
   ///@return {Map}
   static filter = function(callback, acc = null) {
+    gml_pragma("forceinline")
     var filtered = new Map(this.keyType, this.valueType)
     var keys = this.keys()
     var size = keys.size()
@@ -212,6 +227,7 @@ function Map(_keyType = any, _valueType = any, _container = null, config = { val
   ///@param {Type} [valueType]
   ///@return {Map}
   static map = function(callback, acc = null, keyType = null, valueType = null) {
+    gml_pragma("forceinline")
     var mapped = new Map(keyType == null ? this.keyType : keyType, 
       valueType == null ? this.valueType : valueType)
     var keys = this.keys()
@@ -233,6 +249,7 @@ function Map(_keyType = any, _valueType = any, _container = null, config = { val
   ///@param {any} [acc]
   ///@return {any}
   static find = function(callback, acc = null) {
+    gml_pragma("forceinline")
     var keys = this.keys()
     var size = keys.size()
     for (var index = 0; index < size; index++) {
@@ -249,6 +266,7 @@ function Map(_keyType = any, _valueType = any, _container = null, config = { val
   ///@param {any} [acc]
   ///@return {any}
   static findKey = function(callback, acc = null) {
+    gml_pragma("forceinline")
     var keys = this.keys()
     var size = keys.size()
     for (var index = 0; index < size; index++) {
@@ -264,6 +282,7 @@ function Map(_keyType = any, _valueType = any, _container = null, config = { val
   ///@override
   ///@return {Map}
   static clear = function() {
+    gml_pragma("forceinline")
     var keys = this.keys()
     var size = keys.size()
     for (var index = 0; index < size; index++) {
@@ -277,6 +296,7 @@ function Map(_keyType = any, _valueType = any, _container = null, config = { val
   ///@return {String}
   ///@throws {Exception}
   static generateKey = function(seed = random(100000)) {
+    gml_pragma("forceinline")
     var size = this.size()
     var key = md5_string_utf8(string(seed))
     if (this.contains(key)) {
@@ -299,6 +319,7 @@ function Map(_keyType = any, _valueType = any, _container = null, config = { val
   ///@param {any} [acc]
   ///@return {Struct}
   static toStruct = function(callback = null, acc = null) {
+    gml_pragma("forceinline")
     var struct = null
     if (callback) {
       struct = {}
@@ -320,6 +341,7 @@ function Map(_keyType = any, _valueType = any, _container = null, config = { val
   ///@param {Type} [keyType]
   ///@return {Array}
   static toArray = function(callback, acc = null, keyType = null) {
+    gml_pragma("forceinline")
     var keys = this.keys()
     var size = keys.size()
     var arr = new Array(keyType == null ? this.keyType : keyType, GMArray.createGMArray(size))
@@ -333,12 +355,14 @@ function Map(_keyType = any, _valueType = any, _container = null, config = { val
 
   ///@return {Struct}
   static getContainer = function() {
+    gml_pragma("forceinline")
     return this.container
   }
 
   ///@param {Struct} container
   ///@return {Map}
   static setContainer = function(container) {
+    gml_pragma("forceinline")
     this.container = container
     return this
   }
@@ -346,6 +370,7 @@ function Map(_keyType = any, _valueType = any, _container = null, config = { val
   ///@param {...Map} map
   ///@return {Map}
   static merge = function(/*...map*/) {
+    gml_pragma("forceinline")
     for (var index = 0; index < argument_count; index++) {
       var map = argument[index]
       map.forEach(function(item, key, items) {

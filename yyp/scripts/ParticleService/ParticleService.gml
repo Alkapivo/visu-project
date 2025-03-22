@@ -1,5 +1,9 @@
 ///@package io.alkapivo.core.service.particle
 
+#macro GMParticleSystem "GMParticleSystem"
+#macro GMParticleEmitter "GMParticleEmitter"
+
+
 ///@enum
 function _ParticleEmitterShape(): Enum() constructor {
   RECTANGLE = ps_shape_rectangle
@@ -28,6 +32,7 @@ function ParticleSystem(_layerName) constructor {
 
   ///@type {GMParticleSystem}
   asset = part_system_create_layer(this.layerName, false)
+  part_system_automatic_update(this.asset, false)
   part_system_automatic_draw(this.asset, false)
 
   ///@type {GMEmitter}
@@ -37,39 +42,62 @@ function ParticleSystem(_layerName) constructor {
   ///@type {TaskExecutor}
   executor = new TaskExecutor(this)
 
+  clear = function() {
+    this.executor.tasks.forEach(TaskUtil.fullfill).clear()
+    if (Core.isType(this.asset, GMParticleSystem)) {
+      part_particles_clear(this.asset)
+    }
+  }
   ///@return {ParticleSystem}
   update = function() {
-    if (!part_system_exists(this.asset)) {
+    if (!Core.isType(this.asset, GMParticleSystem)) {
       this.asset = part_system_create_layer(this.layerName, false)
+      this.emitter = part_emitter_create(this.asset)
+      part_system_automatic_update(this.asset, false)
       part_system_automatic_draw(this.asset, false)
     }
 
-    if (!part_emitter_exists(this.asset, this.emitter)) {
+    if (typeof(this.emitter) != "ref" || !part_emitter_exists(this.asset, this.emitter)) {
       this.emitter = part_emitter_create(this.asset)
     }
 
     this.executor.update()
+
+    part_system_update(this.asset)
     return this
   }
 
   render = function() {
-    part_system_drawit(this.asset);
+    if (!Core.isType(this.asset, GMParticleSystem)) {
+      this.asset = part_system_create_layer(this.layerName, false)
+      this.emitter = part_emitter_create(this.asset)
+      part_system_automatic_update(this.asset, false)
+      part_system_automatic_draw(this.asset, false)
+    }
+
+    if (typeof(this.emitter) != "ref" || !part_emitter_exists(this.asset, this.emitter)) {
+      this.emitter = part_emitter_create(this.asset)
+    }
+    
+    part_system_drawit(this.asset)
   }
     
   free = function() {
-    if (part_system_exists(this.asset)) {
+    if (Core.isType(this.asset, GMParticleSystem)) {
+      if (typeof(this.emitter) == "ref" || part_emitter_exists(this.asset, this.emitter)) {
+        part_emitter_destroy(this.asset, this.emitter)
+        this.emitter = null
+      }
+
       part_system_destroy(this.asset)
+      this.asset = null
     }
   }
 }
 
 
-///@param {Controller} _controller
-///@param {Struct} [config]
-function ParticleService(_controller, config = {}): Service() constructor {
-
-  ///@type {Controller}
-  controller = Assert.isType(_controller, Struct)
+///@param {?Struct} [config]
+function ParticleService(config = null): Service() constructor {
 
   ///@type {Map<String, ParticleTemplate>}
   templates = new Map(String, ParticleTemplate)
@@ -130,10 +158,13 @@ function ParticleService(_controller, config = {}): Service() constructor {
       event.data.system.executor.add(task)
     },
     "clear-particles": function(event) {
-      this.templates.clear()
+      this.systems.forEach(function(system) {
+        system.clear()
+      })
     },
     "reset-templates": function(event) {
       this.templates.clear()
+      this.dispatcher.container.clear()
     },
   }))
 
@@ -144,9 +175,9 @@ function ParticleService(_controller, config = {}): Service() constructor {
     return template != null ? new Particle(template) : null
   }
 
-  ///@param {Struct} [config]
+  ///@param {Struct} config
   ///@return {Event}
-  factoryEventSpawnParticleEmitter = function(config = {}) {
+  factoryEventSpawnParticleEmitter = function(config) {
     return new Event("spawn-particle-emitter", {
       particle: this.factoryParticle(Struct.getDefault(config, "particleName", "particle-default")),
       system: this.systems.get(Struct.getDefault(config, "systemName", "main")),
@@ -170,7 +201,6 @@ function ParticleService(_controller, config = {}): Service() constructor {
     return this.dispatcher.send(event)
   }
 
-  ///@override
   ///@return {ParticleService}
   update = function() {
     this.dispatcher.update()
@@ -178,6 +208,12 @@ function ParticleService(_controller, config = {}): Service() constructor {
       system.update()
     })
     return this
+  }
+
+  free = function() {
+    this.systems.forEach(function(system) {
+      system.free()
+    })
   }
 
   this.send(new Event("reset-templates"))

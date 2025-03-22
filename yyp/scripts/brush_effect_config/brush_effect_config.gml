@@ -101,6 +101,20 @@ function brush_effect_config(json) {
         type: Boolean,
         value: Struct.get(json, "ef-cfg_change-cls-frame-alpha"),
       },
+      "ef-cfg_use-particle-z": {
+        type: Boolean,
+        value: Struct.get(json, "ef-cfg_use-particle-z"),
+      },
+      "ef-cfg_particle-z": {
+        type: NumberTransformer,
+        value: Struct.get(json, "ef-cfg_particle-z"),
+        passthrough: UIUtil.passthrough.getClampedNumberTransformer(),
+        data: new Vector2(0.0, 99999.9),
+      },
+      "ef-cfg_change-particle-z": {
+        type: Boolean,
+        value: Struct.get(json, "ef-cfg_change-particle-z"),
+      },
     }),
     components: new Array(Struct, [
       {
@@ -469,17 +483,17 @@ function brush_effect_config(json) {
           decrease: {
             store: { key: "ef-cfg_cls-frame-col-spd" },
             enable: { key: "ef-cfg_use-cls-frame-col" },
-            factor: -1.0,
+            factor: -0.01,
           },
           increase: {
             store: { key: "ef-cfg_cls-frame-col-spd" },
             enable: { key: "ef-cfg_use-cls-frame-col" },
-            factor: 1.0,
+            factor: 0.01,
           },
           stick: {
             store: { key: "ef-cfg_cls-frame-col-spd" },
             enable: { key: "ef-cfg_use-cls-frame-col" },
-            factor: 0.001,
+            factor: 0.01,
           },
           checkbox: { },
         },
@@ -515,7 +529,7 @@ function brush_effect_config(json) {
             increase: { 
               store: { key: "ef-cfg_cls-frame-alpha" },
               enable: { key: "ef-cfg_use-cls-frame-alpha" },
-              factor: 0.01,
+              factor: 0.001,
             },
             stick: {
               store: { key: "ef-cfg_cls-frame-alpha" },
@@ -549,7 +563,7 @@ function brush_effect_config(json) {
             increase: { 
               store: { key: "ef-cfg_cls-frame-alpha" },
               enable: { key: "ef-cfg_change-cls-frame-alpha" },
-              factor: 0.01,
+              factor: 0.001,
             },
             stick: {
               store: { key: "ef-cfg_cls-frame-alpha" },
@@ -583,12 +597,12 @@ function brush_effect_config(json) {
             increase: { 
               store: { key: "ef-cfg_cls-frame-alpha" },
               enable: { key: "ef-cfg_change-cls-frame-alpha" },
-              factor: 0.01,
+              factor: 0.001,
             },
             stick: {
               store: { key: "ef-cfg_cls-frame-alpha" },
               enable: { key: "ef-cfg_change-cls-frame-alpha" },
-              factor: 0.001,
+              factor: 0.01,
             },
           },
           increase: {
@@ -603,7 +617,7 @@ function brush_effect_config(json) {
             decrease: { 
               store: { key: "ef-cfg_cls-frame-alpha" },
               enable: { key: "ef-cfg_change-cls-frame-alpha" },
-              factor: 0.001,
+              factor: 0.01,
             },
             increase: { 
               store: { key: "ef-cfg_cls-frame-alpha" },
@@ -613,12 +627,145 @@ function brush_effect_config(json) {
             stick: {
               store: { key: "ef-cfg_cls-frame-alpha" },
               enable: { key: "ef-cfg_change-cls-frame-alpha" },
-              factor: 0.0001,
+              factor: 0.01,
             },
           },
         },
       },
-      
+      {
+        name: "ef-cfg_cls-frame-alpha-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "ef-cfg_particle-z",
+        template: VEComponents.get("number-transformer-increase-checkbox"),
+        layout: VELayouts.get("number-transformer-increase-checkbox"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          value: {
+            label: {
+              text: "Particle Z",
+              font: "font_inter_10_bold",
+              color: VETheme.color.textShadow,
+              //enable: { key: "ef-cfg_use-z" },
+            },
+            field: {
+              store: { key: "ef-cfg_particle-z" },
+              enable: { key: "ef-cfg_use-particle-z" },
+            },
+            decrease: { 
+              store: { key: "ef-cfg_particle-z" },
+              enable: { key: "ef-cfg_use-particle-z" },
+              factor: -1.0,
+            },
+            increase: { 
+              store: { key: "ef-cfg_particle-z" },
+              enable: { key: "ef-cfg_use-particle-z" },
+              factor: 1.0,
+            },
+            stick: { 
+              store: { key: "ef-cfg_particle-z" },
+              enable: { key: "ef-cfg_use-particle-z" },
+              factor: 1.0,
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "ef-cfg_use-particle-z" },
+            },
+            title: { 
+              text: "Override",
+              enable: { key: "ef-cfg_use-particle-z" },
+            },
+          },
+          target: {
+            label: {
+              text: "Target",
+              enable: { key: "ef-cfg_change-particle-z" },
+            },
+            field: {
+              store: { key: "ef-cfg_particle-z" },
+              enable: { key: "ef-cfg_change-particle-z" },
+            },
+            decrease: { 
+              store: { key: "ef-cfg_particle-z" },
+              enable: { key: "ef-cfg_change-particle-z" },
+              factor: -1.0,
+            },
+            increase: { 
+              store: { key: "ef-cfg_particle-z" },
+              enable: { key: "ef-cfg_change-particle-z" },
+              factor: 1.0,
+            },
+            stick: { 
+              store: { key: "ef-cfg_particle-z" },
+              enable: { key: "ef-cfg_change-particle-z" },
+              factor: 1.0,
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "ef-cfg_change-particle-z" },
+            },
+            title: { 
+              text: "Change",
+              enable: { key: "ef-cfg_change-particle-z" },
+            },
+          },
+          factor: {
+            label: {
+              text: "Factor",
+              enable: { key: "ef-cfg_change-particle-z" },
+            },
+            field: {
+              store: { key: "ef-cfg_particle-z" },
+              enable: { key: "ef-cfg_change-particle-z" },
+            },
+            decrease: { 
+              store: { key: "ef-cfg_particle-z" },
+              enable: { key: "ef-cfg_change-particle-z" },
+              factor: -0.01,
+            },
+            increase: { 
+              store: { key: "ef-cfg_particle-z" },
+              enable: { key: "ef-cfg_change-particle-z" },
+              factor: 0.01,
+            },
+            stick: { 
+              store: { key: "ef-cfg_particle-z" },
+              enable: { key: "ef-cfg_change-particle-z" },
+              factor: 0.01,
+            },
+          },
+          increase: {
+            label: {
+              text: "Increase",
+              enable: { key: "ef-cfg_change-particle-z" },
+            },
+            field: {
+              store: { key: "ef-cfg_particle-z" },
+              enable: { key: "ef-cfg_change-particle-z" },
+            },
+            decrease: { 
+              store: { key: "ef-cfg_particle-z" },
+              enable: { key: "ef-cfg_change-particle-z" },
+              factor: -0.001,
+            },
+            increase: { 
+              store: { key: "ef-cfg_particle-z" },
+              enable: { key: "ef-cfg_change-particle-z" },
+              factor: 0.001,
+            },
+            stick: { 
+              store: { key: "ef-cfg_particle-z" },
+              enable: { key: "ef-cfg_change-particle-z" },
+              factor: 0.001,
+            },
+          },
+        },
+      },
     ]),
   }
 }

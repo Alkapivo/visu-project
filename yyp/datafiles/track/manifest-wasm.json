@@ -3,66 +3,10 @@
   "model": "Collection<io.alkapivo.visu.ui.VisuMenuNode>",
   "data": {
     "root.artists": {
-      "title": "Select artist",
+      "title": "Choose Artist",
       "back": "root",
       "entries": [
-        {
-          "name": "kedy_selma",
-          "event": {
-            "type": "open-node",
-            "data": {
-              "node": "root.artists.kedy_selma"
-            }
-          }
-        },
-        {
-          "name": "Zoogies",
-          "event": {
-            "type": "open-node",
-            "data": {
-              "node": "root.artists.zoogies"
-            }
-          }
-        }
-      ]
-    },
-    "root.artists.kedy_selma": {
-      "title": "Select track",
-      "back": "root.artists",
-      "entries": [
-        {
-          "name": "Just To Create Something",
-          "event": {
-            "type": "load-track",
-            "data": {
-              "path": "track/kedy_selma/Just-To-Create-Something/Just-To-Create-Something/manifest.visu"
-            }
-          }
-        },
-        {
-          "name": "Passion",
-          "event": {
-            "type": "load-track",
-            "data": {
-              "path": "track/kedy_selma/Singles/Passion/manifest.visu"
-            }
-          }
-        }
-      ]
-    },
-    "root.artists.zoogies": {
-      "title": "Select track",
-      "back": "root.artists",
-      "entries": [
-        {
-          "name": "digitalshadow",
-          "event": {
-            "type": "load-track",
-            "data": {
-              "path": "track/Zoogies/Singles/digitalshadow/manifest.visu"
-            }
-          }
-        }
+        
       ]
     }
   }

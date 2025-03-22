@@ -134,11 +134,19 @@ function generateVEStyles() {
         }
       },
     },
+    "label": { 
+      label: {
+        font: "font_inter_10_regular",
+        offset: { y: 1 },
+        color: VETheme.color.textShadow,
+        align: { v: VAlign.CENTER, h: HAlign.LEFT },
+      },
+    },
     "ve-title-bar": {
       menu: {
         backgroundColorSelected: VETheme.color.primaryLight,
-        backgroundColorOut: VETheme.color.sideDark,  
-        backgroundColor: VETheme.color.sideDark,  
+        backgroundColorOut: VETheme.color.sideDark,
+        backgroundColor: VETheme.color.sideDark,
         label: {
           font: "font_inter_10_bold",
           color: VETheme.color.textShadow,
@@ -152,7 +160,11 @@ function generateVEStyles() {
         outlineColor: VETheme.color.primaryDark,
         align: { v: VAlign.CENTER, h: HAlign.CENTER },
       },
-      checkbox: {}
+      checkbox: {
+        backgroundColorSelected: VETheme.color.primaryLight,
+        backgroundColorOut: VETheme.color.sideDark,
+        backgroundColor: VETheme.color.sideDark,
+      }
     },
     "ve-status-bar": {
       label: {
@@ -206,16 +218,16 @@ function generateVEStyles() {
       spriteOff: { name: "visu_texture_checkbox_off" },
     },
     "category-button": {
-      backgroundColorSelected: VETheme.color.accent,
-      backgroundColor: VETheme.color.accentDark,
-      backgroundColorHover: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
-      backgroundColorOn: ColorUtil.fromHex(VETheme.color.accent).toGMColor(),
-      backgroundColorOff: ColorUtil.fromHex(VETheme.color.accentDark).toGMColor(),
-      colorHoverOver: VETheme.color.accentShadow,
-      colorHoverOut: VETheme.color.accentDark,
+      backgroundColorSelected: VETheme.color.accentShadow,
+      backgroundColor: VETheme.color.primaryDark,
+      backgroundColorHover: ColorUtil.fromHex(VETheme.color.primary).toGMColor(),
+      backgroundColorOn: ColorUtil.fromHex(VETheme.color.accentShadow).toGMColor(),
+      backgroundColorOff: ColorUtil.fromHex(VETheme.color.primaryShadow).toGMColor(),
+      colorHoverOver: VETheme.color.primaryShadow,
+      colorHoverOut: VETheme.color.primaryDark,
       label: {
         font: "font_inter_8_regular",
-        color: VETheme.color.textFocus,
+        color: VETheme.color.text,
         align: { v: VAlign.CENTER, h: HAlign.CENTER },
       },
     },
@@ -460,35 +472,35 @@ function generateVEStyles() {
         backgroundColor: VETheme.color.accentShadow,
       },
     },
-    "text-field": { 
-      font: "font_inter_10_regular",
-      colorBackgroundUnfocused: VETheme.color.primaryDark,
-      colorBackgroundFocused: VETheme.color.primaryShadow,
-      colorTextUnfocused: VETheme.color.textShadow,
-      colorTextFocused: VETheme.color.textFocus,
-      colorSelection: VETheme.color.textSelected,
-      lh: 22.0000,
-      padding: { top: 0, bottom: 0, left: 4, right: 0 }
+    "text-field": {
+      field: {
+        font: "font_inter_10_regular",
+        colorBackgroundUnfocused: VETheme.color.primaryDark,
+        colorBackgroundFocused: VETheme.color.primaryShadow,
+        colorOutlineUnfocused: VETheme.color.primaryShadow,
+        colorOutlineFocused: VETheme.color.primary,
+        colorTextUnfocused: VETheme.color.textShadow,
+        colorTextFocused: VETheme.color.textFocus,
+        colorSelection: VETheme.color.textSelected,
+        lh: 20.0000,
+        padding: { top: 2, bottom: 0, left: 4, right: 4 },
+      },
     },
     "text-field-simple": { 
-      font: "font_inter_10_regular",
-      colorBackgroundUnfocused: VETheme.color.primaryDark,
-      colorBackgroundFocused: VETheme.color.primaryShadow,
-      colorTextUnfocused: VETheme.color.textShadow,
-      colorTextFocused: VETheme.color.textFocus,
-      colorSelection: VETheme.color.textSelected,
-      lh: 20.0000,
-      padding: { top: 0, bottom: 0, left: 4, right: 0 }
+      field: {
+        font: "font_inter_10_regular",
+        colorBackgroundUnfocused: VETheme.color.side,
+        colorBackgroundFocused: VETheme.color.primaryShadow,
+        colorOutlineUnfocused: VETheme.color.primaryShadow,
+        colorOutlineFocused: VETheme.color.primary,
+        colorTextUnfocused: VETheme.color.textShadow,
+        colorTextFocused: VETheme.color.textFocus,
+        colorSelection: VETheme.color.textSelected,
+        lh: 20.0000,
+        padding: { top: 2, bottom: 0, left: 4, right: 4 },
+      },
     },
     "text-field-button": { 
-      font: "font_inter_10_regular",
-      colorBackgroundUnfocused: VETheme.color.primaryDark,
-      colorBackgroundFocused: VETheme.color.primaryShadow,
-      colorTextUnfocused: VETheme.color.textShadow,
-      colorTextFocused: VETheme.color.textFocus,
-      colorSelection: VETheme.color.textSelected,
-      lh: 22.0000,
-      padding: { top: 0, bottom: 0, left: 4, right: 0 },
       label: {
         font: "font_inter_10_regular",
         color: VETheme.color.textShadow,
@@ -498,11 +510,13 @@ function generateVEStyles() {
         font: "font_inter_10_regular",
         colorBackgroundUnfocused: VETheme.color.primaryDark,
         colorBackgroundFocused: VETheme.color.primaryShadow,
+        colorOutlineUnfocused: VETheme.color.primaryShadow,
+        colorOutlineFocused: VETheme.color.primary,
         colorTextUnfocused: VETheme.color.textShadow,
         colorTextFocused: VETheme.color.textFocus,
         colorSelection: VETheme.color.textSelected,
-        lh: 22.0000,
-        padding: { top: 0, bottom: 0, left: 4, right: 0 },
+        lh: 20.0000,
+        padding: { top: 2, bottom: 0, left: 4, right: 4 },
       },
       button: {
         backgroundColor: VETheme.color.button,
@@ -516,30 +530,6 @@ function generateVEStyles() {
       },
     },
     "text-field-checkbox": { 
-      font: "font_inter_10_regular",
-      colorBackgroundUnfocused: VETheme.color.primaryDark,
-      colorBackgroundFocused: VETheme.color.primaryShadow,
-      colorTextUnfocused: VETheme.color.textShadow,
-      colorTextFocused: VETheme.color.textFocus,
-      colorSelection: VETheme.color.textSelected,
-      lh: 22.0000,
-      padding: { top: 0, bottom: 0, left: 4, right: 0 },
-      label: {
-        font: "font_inter_10_regular",
-        color: VETheme.color.textShadow,
-        align: { v: VAlign.CENTER, h: HAlign.RIGHT },
-      },
-      field: {
-        font: "font_inter_10_regular",
-        colorBackgroundUnfocused: VETheme.color.primaryDark,
-        colorBackgroundFocused: VETheme.color.primaryShadow,
-        colorTextUnfocused: VETheme.color.textShadow,
-        colorTextFocused: VETheme.color.textFocus,
-        colorSelection: VETheme.color.textSelected,
-        lh: 22.0000,
-        padding: { top: 0, bottom: 0, left: 4, right: 0 },
-      },
-      checkbox: { },
       title: {
         font: "font_inter_8_regular",
         color: VETheme.color.text,
@@ -552,23 +542,19 @@ function generateVEStyles() {
       align: { v: VAlign.CENTER, h: HAlign.RIGHT },
     },
     "text-area": { 
-      font: "font_consolas_10_regular",
-      colorBackgroundUnfocused: VETheme.color.primaryDark,
-      colorBackgroundFocused: VETheme.color.primaryShadow,
-      colorTextUnfocused: VETheme.color.textShadow,
-      colorTextFocused: VETheme.color.textFocus,
-      colorSelection: VETheme.color.textSelected,
-      lh: 22.0000,
-      padding: { top: 0, bottom: 0, left: 4, right: 0 },
       field: {
         font: "font_consolas_10_regular",
         colorBackgroundUnfocused: VETheme.color.primaryDark,
         colorBackgroundFocused: VETheme.color.primaryShadow,
+        colorOutlineUnfocused: VETheme.color.primaryShadow,
+        colorOutlineFocused: VETheme.color.primary,
+        colorOutlineUnfocused: VETheme.color.primaryShadow,
+        colorOutlineFocused: VETheme.color.primary,
         colorTextUnfocused: VETheme.color.textShadow,
         colorTextFocused: VETheme.color.textFocus,
         colorSelection: VETheme.color.textSelected,
-        lh: 22.0000,
-        padding: { top: 0, bottom: 0, left: 4, right: 0 }
+        lh: 20.0000,
+        padding: { top: 2, bottom: 0, left: 4, right: 4 },
       }
     },
     "slider-horizontal": {
@@ -586,6 +572,27 @@ function generateVEStyles() {
       background: {
         thickness: 1.1,
         blend: VETheme.color.sideShadow,
+        line: { name: "texture_grid_line_bold" },
+      },
+    },
+    "slider-horizontal-2": {
+      pointer: {
+        name: "texture_slider_pointer_simple",
+        scaleX: 0.125,
+        scaleY: 0.125,
+        alpha: 0.9,
+        blend: VETheme.color.accentLight,
+      },
+      progress: {
+        thickness: 1.0,
+        alpha: 1.0,
+        blend: VETheme.color.accent,
+        line: { name: "texture_grid_line_bold" },
+      },
+      background: {
+        thickness: 0.75,
+        alpha: 0.75,
+        blend: VETheme.color.primary,
         line: { name: "texture_grid_line_bold" },
       },
     },

@@ -19,10 +19,10 @@ global.__grid_track_event = {
         "icon": Struct.parse.sprite(data, "icon"),
         "gr-area_use-h": Struct.parse.boolean(data, "gr-area_use-h"),
         "gr-area_h": Struct.parse.numberTransformer(data, "gr-area_h", {
-          clampValue: { from: 0.0, to: 10.0 },
-          clampTarget: { from: 0.0, to: 10.0 },
+          clampValue: { from: 0.0, to: 100.0 },
+          clampTarget: { from: 0.0, to: 100.0 },
         }),
-        "gr-area_change-h": Struct.parse.boolean(data, "gr-area_change-h"),
+        " ": Struct.parse.boolean(data, "gr-area_change-h"),
         "gr-area_use-h-col": Struct.parse.boolean(data, "gr-area_use-h-col"),
         "gr-area_h-col": Struct.parse.color(data, "gr-area_h-col"),
         "gr-area_h-col-spd": Struct.parse.number(data, "gr-area_h-col-spd", 1.0, 0.0, 999.9),
@@ -131,7 +131,7 @@ global.__grid_track_event = {
       return {
         "icon": Struct.parse.sprite(data, "icon"),
         "gr-c_use-mode": Struct.parse.boolean(data, "gr-c_use-mode"),
-        "gr-c_mode": Struct.parse.enumerable(data, "gr-c_mode", GridMode, GridMode.DUAL),
+        "gr-c_mode": Struct.parse.enumerableKey(data, "gr-c_mode", GridMode, GridMode.DUAL),
         "gr-c_use-amount": Struct.parse.boolean(data, "gr-c_use-amount"),
         "gr-c_amount": Struct.parse.numberTransformer(data, "gr-c_amount", {
           clampValue: { from: 0.0, to: 999.9 },
@@ -172,8 +172,8 @@ global.__grid_track_event = {
 
       ///@description feature TODO grid.column.mode
       Visu.resolvePropertyTrackEvent(data,
-        "grid-channel_use-mode",
-        "grid-channel_mode",
+        "gr-c_use-mode",
+        "gr-c_mode",
         "channelsMode",
         properties)
       
@@ -239,7 +239,7 @@ global.__grid_track_event = {
       return {
         "icon": Struct.parse.sprite(data, "icon"),
         "gr-r_use-mode": Struct.parse.boolean(data, "gr-r_use-mode"),
-        "gr-r_mode": Struct.parse.enumerable(data, "gr-r_mode", GridMode, GridMode.DUAL),
+        "gr-r_mode": Struct.parse.enumerableKey(data, "gr-r_mode", GridMode, GridMode.DUAL),
         "gr-r_use-amount": Struct.parse.boolean(data, "gr-r_use-amount"),
         "gr-r_amount": Struct.parse.numberTransformer(data, "gr-r_amount", {
           clampValue: { from: 0.0, to: 999.9 },
@@ -280,8 +280,8 @@ global.__grid_track_event = {
 
       ///@description feature TODO grid.row.mode
       Visu.resolvePropertyTrackEvent(data,
-        "grid-channel_use-mode",
-        "grid-channel_mode",
+        "gr-r_use-mode",
+        "gr-r_mode",
         "separatorsMode",
         properties)
       

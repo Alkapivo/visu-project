@@ -135,8 +135,8 @@
   "size":28.0,
   "styleName":"Regular",
   "textureGroupId":{
-    "name":"Default",
-    "path":"texturegroups/Default",
+    "name":"texturegroup_ui",
+    "path":"texturegroups/texturegroup_ui",
   },
   "TTFName":"C:\\Users\\1\\projects\\io.alkapivo\\visu-project\\yyp\\fonts\\font_kodeo_mono_28_regular\\KodeMono-Regular.ttf",
   "usesSDF":false,

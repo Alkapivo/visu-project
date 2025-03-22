@@ -265,6 +265,13 @@ global.__effect_track_event = {
         "ef-cfg_cls-frame-alpha": Struct.parse.normalizedNumberTransformer(data, "ef-cfg_cls-frame-alpha"),
         "ef-cfg_use-cls-frame-alpha": Struct.parse.boolean(data, "ef-cfg_use-cls-frame-alpha"),
         "ef-cfg_change-cls-frame-alpha": Struct.parse.boolean(data, "ef-cfg_change-cls-frame-alpha"),
+        "ef-cfg_use-particle-z": Struct.parse.boolean(data, "ef-cfg_use-particle-z", false),
+        "ef-cfg_particle-z": Struct.parse.numberTransformer(data, "ef-cfg_particle-z", {
+          value: 2045,
+          clampValue: { from: 0.0, to: 99999.9 },
+          clampTarget: { from: 0.0, to: 99999.9 },
+        }),
+        "ef-cfg_change-particle-z": Struct.parse.boolean(data, "ef-cfg_change-particle-z", false),
       }
     },
     run: function(data) {
@@ -338,6 +345,14 @@ global.__effect_track_event = {
         "clear-shaders",
         null,
         controller.shaderCombinedPipeline.dispatcher)
+
+      ///@description feature TODO grid.z
+      Visu.resolveNumberTransformerTrackEvent(data, 
+        "ef-cfg_use-particle-z",
+        "ef-cfg_particle-z",
+        "ef-cfg_change-particle-z",
+        "particleZ",
+        properties.depths, pump, executor)
     },
   },
 }

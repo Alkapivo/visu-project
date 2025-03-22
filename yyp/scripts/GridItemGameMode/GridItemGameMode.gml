@@ -17,6 +17,7 @@ function GridItemGameMode(json = {}) constructor {
   ///@param {VisuController} controller
   ///@return {GridItemGameMode}
   static updateFeatures = function(item, controller) {
+    gml_pragma("forceinline")
     var features = item.gameMode.features
     var size = features.size()
     for (var index = 0; index < size; index++) {
@@ -32,6 +33,7 @@ function GridItemGameMode(json = {}) constructor {
   ///@param {VisuController} controller
   ///@return {GridItemGameMode}
   static update = function(item, controller) {
+    gml_pragma("forceinline")
     if (Optional.is(this._update)) {
       this._update(item, controller)
     }

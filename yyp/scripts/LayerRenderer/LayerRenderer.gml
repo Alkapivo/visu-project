@@ -82,20 +82,29 @@ function LayerRenderer(config = null) {
     var sprite = task.state.get("sprite").scaleToFill(width, height)
       .setScaleX(sprite.getScaleX() * task.state.get("xScale"))
       .setScaleY(sprite.getScaleY() * task.state.get("yScale"))
-    var render = task.state.get("tiled") 
-      ? sprite.renderTiled
-      : sprite.render
 
     GPU.set.blendModeExt(task.state.get("blendModeSource"), task.state.get("blendModeTarget"))
     GPU.set.blendEquation(task.state.get("blendEquation"), task.state.get("blendEquationAlpha"))
-    render(
-      ((sprite.texture.offsetX / sprite.getWidth()) * width) 
-        - ceil(((sprite.getWidth() * sprite.getScaleX()) - width) / 2.0) 
-        + task.state.get("x"),
-      ((sprite.texture.offsetY / sprite.getHeight()) * height) 
-        - ceil(((sprite.getHeight() * sprite.getScaleY()) - height) / 2.0) 
-        + task.state.get("y")
-    )
+    if (task.state.get("tiled")) {
+      sprite.renderTiled(
+        ((sprite.texture.offsetX / sprite.getWidth()) * width) 
+          - ceil(((sprite.getWidth() * sprite.getScaleX()) - width) / 2.0) 
+          + task.state.get("x"),
+        ((sprite.texture.offsetY / sprite.getHeight()) * height) 
+          - ceil(((sprite.getHeight() * sprite.getScaleY()) - height) / 2.0) 
+          + task.state.get("y")
+      )
+    } else {
+      sprite.render(
+        ((sprite.texture.offsetX / sprite.getWidth()) * width) 
+          - ceil(((sprite.getWidth() * sprite.getScaleX()) - width) / 2.0) 
+          + task.state.get("x"),
+        ((sprite.texture.offsetY / sprite.getHeight()) * height) 
+          - ceil(((sprite.getHeight() * sprite.getScaleY()) - height) / 2.0) 
+          + task.state.get("y")
+      )
+    }
+    
     GPU.reset.blendEquation()
     GPU.reset.blendMode()
 

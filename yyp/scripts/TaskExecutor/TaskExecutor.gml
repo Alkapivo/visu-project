@@ -1,5 +1,15 @@
 ///@package io.alkapivo.core.task
 
+///@enum
+function _TaskExecutorFreeStrategyType(): Enum() constructor {
+  NONE = "NONE"
+  FULLFILL = "FULLFILL"
+  REJECT = "REJECT"
+}
+global.__TaskExecutorFreeStrategyType = new _TaskExecutorFreeStrategyType()
+#macro TaskExecutorFreeStrategyType global.__TaskExecutorFreeStrategyType
+
+
 ///@param {Struct} _context
 ///@param {Struct} [config]
 function TaskExecutor(_context, config = {}) constructor {
@@ -26,6 +36,10 @@ function TaskExecutor(_context, config = {}) constructor {
   ///@private
   ///@type {?Callable}
   exceptionCallback = Struct.getIfType(config, "exceptionCallback", Callable)
+
+  ///@private
+  ///@type {TaskExecutorFreeStrategyType}
+  freeStrategy = Struct.getIfEnum(config, "freeStrategy", TaskExecutorFreeStrategyType, TaskExecutorFreeStrategyType.NONE)
 
   ///@param {Task} task
   ///@param {Number} index
@@ -99,6 +113,45 @@ function TaskExecutor(_context, config = {}) constructor {
   ///@return {TaskExecutor}
   static update = function() {
     this.tasks.forEach(this.execute, this).runGC()
+    return this
+  }
+
+  ///@return {TaskExecutor}
+  static free = function() {
+    static freeFullfill = function(task, iterator, executor) {
+      try {
+        TaskUtil.fullfill(task, iterator, executor)
+        if (Optional.is(task.onFinish)) {
+          task.onFinish(executor)
+        }
+      } catch (exception) {
+        Logger.error(executor.loggerPrefix, $"executor.free(freeStrategy=FULLFILL) fatal error: {exception.message}")
+        Core.printStackTrace()
+      }
+    }
+
+    static freeReject = function(task, iterator, executor) {
+      try {
+        TaskUtil.reject(task, iterator, executor)
+        if (Optional.is(task.onFinish)) {
+          task.onFinish(executor)
+        }
+      } catch (exception) {
+        Logger.error(executor.loggerPrefix, $"executor.free(freeStrategy=REJECT) fatal error: {exception.message}")
+        Core.printStackTrace()
+      }
+    }
+
+    switch (this.freeStrategy) {
+      case TaskExecutorFreeStrategyType.FULLFILL:
+        this.tasks.forEach(freeFullfill, this)
+        break
+      case TaskExecutorFreeStrategyType.REJECT:
+        this.tasks.forEach(freeReject, this)
+        break
+    }
+
+    this.tasks.clear()
     return this
   }
 }

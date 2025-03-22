@@ -1227,6 +1227,15 @@ function _UIUtil() constructor {
           : (contains(this.value) ? this.value : Struct.get(this.data, "defaultValue"))
       }
     },
+
+    ///@return {Callable}
+    getStringStruct: function() {
+      return function(value) {
+        return Core.isType(JSON.parse(value), Struct)
+          ? value
+          : Struct.getIfType(this, "value", String, "{\n  \n}")
+      }
+    },
   }
 
   ///@param {UI} container
@@ -1252,7 +1261,7 @@ function _UIUtil() constructor {
       }
     },
   }
-  
+
   ///@param {Struct}
   validate = {
     getStringStruct: function() {

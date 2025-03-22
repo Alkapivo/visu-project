@@ -187,18 +187,22 @@ function _TaskUtil() constructor {
   }
 
   ///@param {Task} task
-  fullfill = function(task) { 
+  ///@param {any} [iterator]
+  ///@param {any} [data]
+  fullfill = function(task, iterator = null, data = null) { 
     if (task.status != TaskStatus.FULLFILLED 
         && task.status != TaskStatus.REJECTED) {
-      task.fullfill()
+      task.fullfill(data)
     }
   }
 
   ///@param {Task} task
-  reject = function(task) { 
+  ///@param {any} [iterator]
+  ///@param {any} [data]
+  reject = function(task, iterator = null, data = null) { 
     if (task.status != TaskStatus.FULLFILLED 
         && task.status != TaskStatus.REJECTED) {
-      task.reject()
+      task.reject(data)
     }
   }
 }

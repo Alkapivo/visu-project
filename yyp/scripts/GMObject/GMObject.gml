@@ -59,6 +59,14 @@ function _GMObjectUtil() constructor {
         }
       }
     },
+    onHTTPEvent: {
+      gmObject: "__onHTTPEvent",
+      factoryWrapper: function() {
+        return function() {
+          this.__context.onHTTPEvent()
+        }
+      }
+    },
     onTextureLoadedEvent: {
       gmObject: "__onTextureLoadedEvent",
       factoryWrapper: function() {

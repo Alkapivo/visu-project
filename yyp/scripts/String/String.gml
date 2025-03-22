@@ -6,12 +6,13 @@ function _String() constructor {
 
   ///@param {...String} value
   ///@return {String}
-  concat = string_concat
+  static concat = string_concat
 
   ///@param {String} text
   ///@param {String} pattern
   ///@return {Boolean}
-  contains = function(text, pattern) {
+  static contains = function(text, pattern) {
+    gml_pragma("forceinline")
     return string_pos(pattern, text) > 0
   }
 
@@ -19,14 +20,16 @@ function _String() constructor {
   ///@param {Number} position
   ///@param {Number} count
   ///@return {String}
-  copy = function(text, position, count) {
+  static copy = function(text, position, count) {
+    gml_pragma("forceinline")
     return string_copy(text, position, count)
   }
 
   ///@param {String} text
   ///@param {String} substr
   ///@return {Number}
-  count = function(text, substr) {
+  static count = function(text, substr) {
+    gml_pragma("forceinline")
     return string_count(substr, text)
   }
 
@@ -34,13 +37,15 @@ function _String() constructor {
   ///@param {Number} total
   ///@param {Number} decimal
   ///@return {String}
-  format = function(text, total, decimal) {
+  static format = function(text, total, decimal) {
+    gml_pragma("forceinline")
     return string_format(text, total, decimal)
   }
 
   ///@param {Number} time in seconds
   ///@return {String}
-  formatTimestamp = function(time) {
+  static formatTimestamp = function(time) {
+    gml_pragma("forceinline")
     var seconds = String.replace(String.format(time mod 60, 2, 0), " ", "0")
     var minutes = String.replace(String.format(time div 60, 2, 0), " ", "0")
     return $"{minutes}:{seconds}"
@@ -48,7 +53,8 @@ function _String() constructor {
 
   ///@param {Number} time in seconds
   ///@return {String}
-  formatTimestampMilisecond = function(time) {
+  static formatTimestampMilisecond = function(time) {
+    gml_pragma("forceinline")
     var miliSeconds = String.copy(String.format(time - floor(time), 0, 2), 3, 2)
     var seconds = String.replace(String.format(time mod 60, 2, 0), " ", "0")
     var minutes = String.replace(String.format(time div 60, 2, 0), " ", "0")
@@ -58,38 +64,43 @@ function _String() constructor {
   ///@param {String} text
   ///@param {Number} position
   ///@return {String}
-  getChar = function(text, position) {
+  static getChar = function(text, position) {
+    gml_pragma("forceinline")
     return position > 0 ? string_char_at(text, position) : ""
   }
 
   ///@param {String} text
   ///@return {String}
-  getFirstChar = function(text) {
+  static getFirstChar = function(text) {
+    gml_pragma("forceinline")
     return String.getChar(String.size() > 0 ? 1 : 0)
   }
 
   ///@param {String} text
   ///@return {String}
-  getLastChar = function(text) {
+  static getLastChar = function(text) {
+    gml_pragma("forceinline")
     return String.getChar(String.size(text))
   }
 
   ///@param {String} text
   ///@return {Boolean}
-  isEmpty = function(text) {
+  static isEmpty = function(text) {
+    gml_pragma("forceinline")
     return String.size(text) == 0
   }
 
   ///@param {String} delimiter
   ///@param {...String} value
   ///@return {String}
-  join = string_join
+  static join = string_join
 
   ///@param {String} text
   ///@param {Number} position
   ///@param {Number} count
   ///@return {String}
-  remove = function(text, position, count) {
+  static remove = function(text, position, count) {
+    gml_pragma("forceinline")
     return string_delete(text, position, count)
   }
 
@@ -97,7 +108,8 @@ function _String() constructor {
   ///@param {String} pattern
   ///@param {String} replacement
   ///@return {String}
-  replace = function(text, pattern, replacement) {
+  static replace = function(text, pattern, replacement) {
+    gml_pragma("forceinline")
     return string_replace(text, pattern, replacement)
   }
 
@@ -106,27 +118,31 @@ function _String() constructor {
   ///@param {String} pattern
   ///@param {String} replacement
   ///@return {String}
-  replaceAll = function(text, pattern, replacement) {
+  static replaceAll = function(text, pattern, replacement) {
+    gml_pragma("forceinline")
     return string_replace_all(text, pattern, replacement)
   }
 
   ///@param {String} text
   ///@return {Number}
-  size = function(text) {
+  static size = function(text) {
+    gml_pragma("forceinline")
     return string_length(text)
   }
 
   ///@param {String} text
   ///@param {String} pattern
   ///@return {Boolean}
-  startsWith = function(text, pattern) {
+  static startsWith = function(text, pattern) {
+    gml_pragma("forceinline")
     return string_starts_with(text, pattern)
   }
 
   ///@param {String} text
   ///@param {String} delimiter
   ///@return {Array<String>}
-  split = function(text, delimiter) {
+  static split = function(text, delimiter) {
+    gml_pragma("forceinline")
     var size = this.count(text, delimiter) + 1
     var delimiterSize = this.size(delimiter)
     var array = GMArray.create(String, size, "")
@@ -147,7 +163,8 @@ function _String() constructor {
   ///@param {String} template
   ///@param {...String} parameter
   ///@return {String}
-  template = function(template/*, ...parameter*/) {
+  static template = function(template/*, ...parameter*/) {
+    gml_pragma("forceinline")
     var text = template
     if (argument_count > 1) {
       for (var index = 1; index < argument_count; index++) {
@@ -161,7 +178,8 @@ function _String() constructor {
 
   ///@param {String} text
   ///@return {Array<String>}
-  toArray = function(text) {
+  static toArray = function(text) {
+    gml_pragma("forceinline")
     var size = String.size(text)
     var array = GMArray.create(String, size, "")
     for (var index = 0; index < size; index++) {
@@ -172,13 +190,15 @@ function _String() constructor {
 
   ///@param {String} text
   ///@return {String}
-  toLowerCase = function(text) {
+  static toLowerCase = function(text) {
+    gml_pragma("forceinline")
     return string_lower(text)
   }
 
   ///@param {String} text
   ///@return {String}
-  toUpperCase = function(text) {
+  static toUpperCase = function(text) {
+    gml_pragma("forceinline")
     return string_upper(text)
   }
 
@@ -189,16 +209,17 @@ function _String() constructor {
   ///@param {Number} [wordsplitSize] size of the smallest undivided word
   ///@param {?GMFont} [font]
   ///@return {String}
-  wrapText = function(text, width, delimiter = "\n", wordsplitSize = 0, font = null) {
+  static wrapText = function(text, width, delimiter = "\n", wordsplitSize = 0, font = null) {
+    gml_pragma("forceinline")
     var currentText = text
     var spacePosition = -1
     var currentPosition = 1
     var result = ""
     var _font = null
-    if (Optional.is(font) && Core.isType(font, GMFont)) {
-      _font = draw_get_font()
+    if (Core.isType(font, GMFont)) {
+      _font = GPU.get.font()
       if (font != _font) {
-        draw_set_font(font)
+        GPU.set.font(font)
       }
     }
 
@@ -237,7 +258,7 @@ function _String() constructor {
     }
 
     if (Optional.is(_font) && _font != font) {
-      draw_set_font(_font)
+      GPU.set.font(_font)
     }
     return result
   }
@@ -253,13 +274,13 @@ function StringBuilder(_text = "") constructor {
   text = Assert.isType(_text, String, "StringBuilder::text must be type of String")
 
   ///@return {String}
-  get = function() {
+  static get = function() {
     return this.text
   }
 
   ///@param {String} text
   ///@return {StringBuilder}
-  set = function(text) {
+  static set = function(text) {
     this.text = Assert.isType(text, String, "StringBuilder::text must be type of String")
     return this
   }
@@ -267,19 +288,19 @@ function StringBuilder(_text = "") constructor {
   ///@param {String} text
   ///@param {String} [delimiter]
   ///@return {StringBuilder}
-  append = function(text, delimiter = "") {
+  static append = function(text, delimiter = "") {
     return this.set(this.text != "" ? $"{this.text}{delimiter}{text}" : text)
   }
 
   ///@param {String} pattern
   ///@param {String} replacemenet
   ///@return {StringBuilder}
-  replace = function(pattern, replacement) {
+  static replace = function(pattern, replacement) {
     return this.set(String.replace(this.text, pattern, replacement))
   }
 
   ///@return {StringBuilder}
-  clear = function() {
+  static clear = function() {
     return this.set("")
   }
 }

@@ -199,20 +199,8 @@ function template_texture(json = null) {
                 item.set(intent)
               },
             },
-            updateValue: function(mouseX, mouseY) {
-              this.factor = sprite_get_width(this.store.getValue().asset) / GuiWidth()
-              var isUIStore = Core.isType(this.store, UIStore)
-              this.base = !Core.isType(this.base, Number) 
-                ? (isUIStore ? this.store.getValue().originX : this.value)
-                : this.base 
-
-              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
-              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
-              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
-              this.value = this.base + (distance * this.factor)
-              if (isUIStore && this.value != this.store.getValue().originX) {
-                this.store.set(this.value)
-              }
+            getValue: function(uiItem) {
+              return uiItem.store.getValue().originX
             },
           },
           checkbox: { },
@@ -329,20 +317,8 @@ function template_texture(json = null) {
                 item.set(intent)
               },
             },
-            updateValue: function(mouseX, mouseY) {
-              this.factor = sprite_get_height(this.store.getValue().asset) / GuiHeight()
-              var isUIStore = Core.isType(this.store, UIStore)
-              this.base = !Core.isType(this.base, Number) 
-                ? (isUIStore ? this.store.getValue().originY : this.value)
-                : this.base 
-
-              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
-              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
-              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
-              this.value = this.base + (distance * this.factor)
-              if (isUIStore && this.value != this.store.getValue().originY) {
-                this.store.set(this.value)
-              }
+            getValue: function(uiItem) {
+              return uiItem.store.getValue().originY
             },
           },
           checkbox: { },

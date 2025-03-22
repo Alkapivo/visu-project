@@ -22,6 +22,9 @@
   
   ///@type {?Calllable}
 	__onNetworkEvent = null
+	
+	///@type {?Calllable}
+	__onHTTPEvent = null
   
   ///@type {?Callable}
   __onTextureLoadedEvent = null

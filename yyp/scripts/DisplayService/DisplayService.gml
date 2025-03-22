@@ -33,6 +33,12 @@ function DisplayService(_controller, config = {}): Service() constructor {
 	windowHeight = 0
 
   ///@type {Number}
+  previousGuiWidth = 0
+
+  ///@type {Number}
+  previousGuiHeight = 0
+
+  ///@type {Number}
   minWidth = Core.isType(Struct.get(config, "minWidth"), Number) ? config.minWidth : 320
 
   ///@type {Number}
@@ -142,14 +148,14 @@ function DisplayService(_controller, config = {}): Service() constructor {
     var width = max(this.minWidth, _width)
     var height = max(this.minHeight, _height)
     try {
-      Logger.debug("DisplayService", $"Resize from {this.previousWidth}x{this.previousHeight} to {width}x{height}")
-      display_set_gui_size(width / this.scale, height / this.scale)
+      var guiWidth = width / this.scale
+      var guiHeight = height / this.scale
+      Logger.debug("DisplayService", $"Resize window from {this.previousWidth}x{this.previousHeight} to {width}x{height}, scale: {this.scale}")
+      display_set_gui_size(guiWidth, guiHeight)
       window_set_size(width, height)
-      surface_resize(application_surface, width / this.scale, height / this.scale)
-      if (!this.getFullscreen()) {
-        this.windowWidth = this.getWidth()
-        this.windowHeight = this.getHeight()
-      }
+      surface_resize(application_surface, guiWidth, guiHeight)
+      this.windowWidth = this.getWidth()
+      this.windowHeight = this.getHeight()
     } catch (exception) {
       Logger.error("ResizeEvent", exception.message)
     }
@@ -159,35 +165,33 @@ function DisplayService(_controller, config = {}): Service() constructor {
   ///@return {DisplayService}
   update = function() {
     static isResizeRequired = function(context) {
-      return context.previousWidth != display_get_gui_width()
-        || context.previousHeight != display_get_gui_height()
+      return context.previousWidth != window_get_width()
+        || context.previousHeight != window_get_height()
+        || context.previousGuiWidth != display_get_gui_width()
+        || context.previousGuiHeight != display_get_gui_height()
     }
 
-    if (this.state == "resized") {
-      this.state = "idle"
-    }
-
-    if (this.state == "idle") {
+    if (this.state == "idle" || this.state == "resized") {
       this.state = isResizeRequired(this)
         ? "required"
         : "idle"
     }
 
-    if (this.state == "required") {
-      if (this.timer.update().finished) {
-        var width = window_get_width()
-        var height = window_get_height()
-        if (width > 0 && height > 0) {
-          this.resize(width, height)
-          this.timer.reset()
-          this.state = "resized"
-        }
+    if (this.state == "required" && this.timer.update().finished) {
+      var width = window_get_width()
+      var height = window_get_height()
+      if (width > 0 && height > 0) {
+        this.resize(width, height)
+        this.timer.reset()
+        this.state = "resized"
       }
     }
 
     if (this.state == "idle" || this.state == "resized") {
       this.previousWidth = window_get_width()
       this.previousHeight = window_get_height()
+      this.previousGuiWidth = display_get_gui_width()
+      this.previousGuiHeight = display_get_gui_height()
     }
     return this
   }

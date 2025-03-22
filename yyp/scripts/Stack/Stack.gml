@@ -16,12 +16,14 @@ function Stack(_type = any, items = null, config = { validate: false }) construc
   ///@throws {InvalidClassException}
   ///@return {Stack}
   static push = function(item) {
+    gml_pragma("forceinline")
     this.container.add(item)
     return this
   }
 
   ///@return {any}
   static pop = function() {
+    gml_pragma("forceinline")
     var size = this.container.size()
     if (size == 0) {
       return null
@@ -34,6 +36,7 @@ function Stack(_type = any, items = null, config = { validate: false }) construc
 
   ///@return {any}
   static peek = function() {
+    gml_pragma("forceinline")
     return this.container.getLast()
   }
 
@@ -42,12 +45,14 @@ function Stack(_type = any, items = null, config = { validate: false }) construc
   ///@param {any} [key]
   ///@return {Queue}
   static add = function(item, key = null) {
+    gml_pragma("forceinline")
     return this.push(item)
   }
 
   ///@override
   ///@return {Queue}
   static clear = function() {
+    gml_pragma("forceinline")
     this.container.clear()
     return this
   }
@@ -57,6 +62,7 @@ function Stack(_type = any, items = null, config = { validate: false }) construc
   ///@param {Callable} [comparator]
   ///@return {Boolean}
   static contains = function(searchItem, comparator = function(a, b) { return a == b }) {
+    gml_pragma("forceinline")
     return this.container.contains(searchItem, comparator)
   }
 
@@ -65,6 +71,7 @@ function Stack(_type = any, items = null, config = { validate: false }) construc
   ///@param {any} [defaultValue]
   ///@return {any}
   static get = function(key, defaultValue = null) {
+    gml_pragma("forceinline")
     var item = this.peek()
     return item == null ? defaultValue : item
   }
@@ -76,6 +83,7 @@ function Stack(_type = any, items = null, config = { validate: false }) construc
   ///@override
   ///@return {any}
   static getLast = function() {
+    gml_pragma("forceinline")
     return this.container.getFirst()
   }
 
@@ -83,6 +91,7 @@ function Stack(_type = any, items = null, config = { validate: false }) construc
   ///@param {any} key
   ///@return {Collection}
   static remove = function(key) {
+    gml_pragma("forceinline")
     this.pop()
     return this
   }
@@ -92,11 +101,13 @@ function Stack(_type = any, items = null, config = { validate: false }) construc
   ///@param {any} item
   ///@return {Queue}
   static set = function(key, item) {
+    gml_pragma("forceinline")
     return this.add(item)
   }
 
   ///@return {Number}
   static size = function() {
+    gml_pragma("forceinline")
     return this.container.size()
   }
 
@@ -106,6 +117,7 @@ function Stack(_type = any, items = null, config = { validate: false }) construc
   ///@throws {Exception}
   ///@return {Stack}
   static forEach = function(callback, acc = null) {
+    gml_pragma("forceinline")
     var size = this.container.size()
     for (index = size - 1; index >= 0; index--) {
       if (callback(this.pop(), index, acc) == BREAK_LOOP) {
@@ -121,6 +133,7 @@ function Stack(_type = any, items = null, config = { validate: false }) construc
   ///@throws {Exception}
   ///@return {Stack}
   static filter = function(callback, acc = null) {
+    gml_pragma("forceinline")
     var filtered = []
     var size = this.container.size()
     for (var index = size - 1; index >= 0; index--) {
@@ -138,6 +151,7 @@ function Stack(_type = any, items = null, config = { validate: false }) construc
   ///@throws {Exception}
   ///@return {Stack}
   static map = function(callback, acc = null) {
+    gml_pragma("forceinline")
     var mapped = []
     var size = this.container.size()
     for (var index = size - 1; index >= 0; index--) {
@@ -156,6 +170,7 @@ function Stack(_type = any, items = null, config = { validate: false }) construc
   ///@throws {Exception}
   ///@return {any}
   static find = function(callback, acc = null) {
+    gml_pragma("forceinline")
     var size = this.size()
     for (var index = size - 1; index >= 0; index--) {
       var item = this.pop()
@@ -172,6 +187,7 @@ function Stack(_type = any, items = null, config = { validate: false }) construc
   ///@throws {Exception}
   ///@return {?Number}
   static findKey = function(callback, acc = null) {
+    gml_pragma("forceinline")
     var size = this.size()
     for (var index = size - 1; index >= 0; index--) {
       var item = this.pop()

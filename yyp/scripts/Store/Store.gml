@@ -17,39 +17,45 @@ function Store(json) constructor {
   ///@param {String} name
   ///@return {Boolean}
   static findStoreItemByName = function(item, index, name) {
+    gml_pragma("forceinline")
     return item.name == name
   }
 
   ///@param {String} name
   ///@return {?StoreItem}
-  get = function(name) {
+  static get = function(name) {
+    gml_pragma("forceinline")
     return this.container.find(this.findStoreItemByName, name)
   }
 
   ///@type {String} name
   ///@param {any} [defaultValue]
   ///@return {?any}
-  getValue = function(name, defaultValue = null) {
+  static getValue = function(name, defaultValue = null) {
+    gml_pragma("forceinline")
     var item = this.get(name)
     return Core.isType(item, StoreItem) ? item.get() : defaultValue
   }
 
   ///@param {StoreItem} item
   ///@return {Store}
-  add = function(item) {
+  static add = function(item) {
+    gml_pragma("forceinline")
     this.container.add(item, item.name)
     return this
   }
 
   ///@param {String} name
   ///@return {Boolean}
-  contains = function(name) {
+  static contains = function(name) {
+    gml_pragma("forceinline")
     return Core.isType(this.container.find(this.findStoreItemByName, name), StoreItem)
   }
 
   ///@param {String} name
   ///@return {Store}
-  remove = function(name) {
+  static remove = function(name) {
+    gml_pragma("forceinline")
     var key = this.container.findKey(this.findStoreItemByName, name)
     if (Core.isType(key, String)) {
       this.container.remove(key)
@@ -58,7 +64,8 @@ function Store(json) constructor {
   }
 
   ///@return {Struct}
-  stringify = function() {
+  static stringify = function() {
+    gml_pragma("forceinline")
     return this.container.toStruct(function(item) { 
       return item.serialize()
     })
@@ -67,7 +74,8 @@ function Store(json) constructor {
   ///@param {Struct} json
   ///@return {Store}
   ///@throws {Exception}
-  parse = function(json) {
+  static parse = function(json) {
+    gml_pragma("forceinline")
     Struct.forEach(json, function(value, key, store) {
       var item = store.get(key)
       if (!Core.isType(item, StoreItem)) {

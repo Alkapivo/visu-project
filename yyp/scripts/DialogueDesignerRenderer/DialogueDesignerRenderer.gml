@@ -211,7 +211,7 @@ function DialogueRenderer() constructor {
     }
   
     var font = FontUtil.parse({ name: "font_consolas_28_regular" })
-    draw_set_font(font.asset)
+    GPU.set.font(font.asset)
 
     this.bazylTheta += choose(0.05, 0.1, 0.1, 0.15)
     if (this.bazylTheta > pi * 2) {
@@ -233,16 +233,20 @@ function DialogueRenderer() constructor {
     
     this.bazyl.render(avatar.x() + sin(this.bazylTheta), avatar.y() + cos(this.bazylTheta))
 
+    var text = String.wrapText($"{parsed.buffer}{displayText}", this.layout.nodes.text.width(), "\n", 1),
     GPU.render.text(
       this.layout.nodes.text.x(),
       this.layout.nodes.text.y(),
-      String.wrapText($"{parsed.buffer}{displayText}", this.layout.nodes.text.width(), "\n", 1),
-      c_white,
-      c_black,
+      text,
       1.0,
-      font, 
+      0.0,
+      1.0,
+      c_white,
+      font,
       HAlign.LEFT,
-      VAlign.TOP
+      VAlign.TOP,
+      c_black,
+      1.0
     )
 
     return this
@@ -296,12 +300,18 @@ function DialogueRenderer() constructor {
           }
 
           GPU.render.text(
-            _x, _y,
+            _x, 
+            _y,
             $"{index + 1}. {choice}",
-            hoverColor, c_black,
             1.0,
-            acc.font, 
-            HAlign.LEFT, VAlign.TOP
+            0.0,
+            1.0,
+            hoverColor,
+            acc.font,
+            HAlign.LEFT,
+            VAlign.TOP,
+            c_black,
+            1.0
           )
         }, {
           font: this.font,

@@ -43,60 +43,77 @@ function UILabel(json) constructor {
   ///@type {Boolean}
   useScale = Struct.getIfType(json, "useScale", Boolean, true)
 
+  ///@type {Boolean}
+  useScaleWithOffset = Struct.getIfType(json, "useScaleWithOffset", Boolean, false)
+
   ///@param {Number} x
   ///@param {Number} y
-  ///@param {Number} maxWidth
-  ///@param {Number} maxHeight
+  ///@param {Number} [maxWidth]
+  ///@param {Number} [maxHeight]
   ///@param {Number} [forceScale]
   ///@return {UILabel}
-  render = function(x, y, maxWidth, maxHeight, forceScale = 1.0) {  
-    var _x = x + this.offset.x
-    var _y = y + this.offset.y
-    var config = gpu_get_colorwriteenable()
-    var enableBlend = gpu_get_blendenable()
-    gpu_set_blendenable(true)
+  render = function(x, y, maxWidth = 0, maxHeight = 0, forceScale = 1.0) { 
+    var enableBlend = GPU.get.blendEnable()
+    if (!enableBlend) {
+      GPU.set.blendEnable(true)
+    }
+
+    var colorWriteConfig = null
     if (this.enableColorWrite) {
+      colorWriteConfig = GPU.get.colorWrite()
       GPU.set.colorWrite(true, true, true, false)
     }
 
-    if (this.font.asset != draw_get_font()) {
-      draw_set_font(this.font.asset)
-    }    
+    if (this.font.asset != GPU.get.font()) {
+      GPU.set.font(this.font.asset)
+    } 
 
-    if (this.align.v != draw_get_valign()) {
-      draw_set_valign(this.align.v)
+    var _x = x + this.offset.x
+    var _y = y + this.offset.y
+    var _width = string_width(this.text)
+    var _height = string_height(this.text)
+    var _includeOffset = this.useScaleWithOffset ? 1 : 0
+    var _maxWidth = maxWidth - (this.offset.x * _includeOffset)
+    var _maxHeight = maxHeight - (this.offset.y * _includeOffset)
+    var _outline = this.outline ? this.outlineColor : null
+    var _scale = this.useScale 
+      ? min(
+        (_width > _maxWidth ? (_maxWidth / _width) : 1.0),
+        (_height > _maxHeight ? (_maxHeight / _height) : 1.0)
+      )
+      : 1.0
+
+    _scale = _scale < 1.0
+      ? clamp(floor((_scale * 0.95) / 0.125) * 0.125, 0.0, 1.0)
+      : _scale
+
+    if (_scale <= 0.0) {
+      return this
     }
-
-    if (this.align.h != draw_get_halign()) {
-      draw_set_halign(this.align.h)
-    }
-
-    var width = string_width(this.text)
-    var height = string_height(this.text)
-    var scale = min(
-      (width > maxWidth ? maxWidth / width : 1.0),
-      (height > maxHeight ? maxHeight / height : 1.0)
-    )
-    if (scale < 1.0) {
-      scale = floor((scale * 0.95) / 0.125) * 0.125
-    }
-
-    scale = this.useScale ? scale : forceScale
-
-    if (this.outline) {
-      draw_text_transformed_colour(_x + 1, _y + 1, this.text, scale, scale, 0.0, this.outlineColor, this.outlineColor, this.outlineColor, this.outlineColor, this.alpha)
-      draw_text_transformed_colour(_x - 1, _y - 1, this.text, scale, scale, 0.0, this.outlineColor, this.outlineColor, this.outlineColor, this.outlineColor, this.alpha)
-      draw_text_transformed_colour(_x    , _y + 1, this.text, scale, scale, 0.0, this.outlineColor, this.outlineColor, this.outlineColor, this.outlineColor, this.alpha)
-      draw_text_transformed_colour(_x + 1, _y    , this.text, scale, scale, 0.0, this.outlineColor, this.outlineColor, this.outlineColor, this.outlineColor, this.alpha)
-      draw_text_transformed_colour(_x    , _y - 1, this.text, scale, scale, 0.0, this.outlineColor, this.outlineColor, this.outlineColor, this.outlineColor, this.alpha)
-      draw_text_transformed_colour(_x - 1, _y    , this.text, scale, scale, 0.0, this.outlineColor, this.outlineColor, this.outlineColor, this.outlineColor, this.alpha)
-      draw_text_transformed_colour(_x - 1, _y + 1, this.text, scale, scale, 0.0, this.outlineColor, this.outlineColor, this.outlineColor, this.outlineColor, this.alpha)
-      draw_text_transformed_colour(_x + 1, _y - 1, this.text, scale, scale, 0.0, this.outlineColor, this.outlineColor, this.outlineColor, this.outlineColor, this.alpha)
-    }
-
-    draw_text_transformed_colour(_x, _y, this.text, scale, scale, 0.0, this.color, this.color, this.color, this.color, this.alpha)
     
-    GPU.set.colorWrite(config[0], config[1], config[2], config[3]).set.blendEnable(enableBlend)
+    GPU.render.text(
+      _x, 
+      _y, 
+      this.text,
+      _scale,
+      0.0,
+      this.alpha,
+      this.color,
+      this.font,
+      this.align.h,
+      this.align.v,
+      _outline,
+      1.0
+    )
+    
+    if (!enableBlend) {
+      GPU.set.blendEnable(enableBlend)
+    }
+
+    if (Optional.is(colorWriteConfig)) {
+      GPU.set.colorWrite(colorWriteConfig[0], colorWriteConfig[1], colorWriteConfig[2], colorWriteConfig[3])
+    }
+
     return this
   }
 }

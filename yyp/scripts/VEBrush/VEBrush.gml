@@ -15,7 +15,7 @@ function _VEBrushType(): Enum() constructor {
   GRID_ROW = "brush_grid_row"
   GRID_CONFIG = "brush_grid_config"
   VIEW_CAMERA = "brush_view_camera"
-  VIEW_WALLPAPER = "brush_view_wallpaper"
+  VIEW_LAYER = "brush_view_layer"
   VIEW_SUBTITLE = "brush_view_subtitle"
   VIEW_CONFIG = "brush_view_config"
 }
@@ -39,7 +39,7 @@ global.__VEBrushTypeNames = {
   "brush_grid_row": "Grid row",
   "brush_grid_config": "Grid config",
   "brush_view_camera": "View camera",
-  "brush_view_wallpaper": "View layer",
+  "brush_view_layer": "View layer",
   "brush_view_subtitle": "View subtitle",
   "brush_view_config": "View config"
 }

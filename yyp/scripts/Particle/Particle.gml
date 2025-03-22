@@ -2,6 +2,7 @@
 
 #macro GMParticle "GMParticle"
 
+
 ///@enum
 function _ParticleShape(): Enum() constructor {
   PIXEL = pt_shape_pixel
@@ -23,75 +24,72 @@ global.__ParticleShape = new _ParticleShape()
 #macro ParticleShape global.__ParticleShape
 
 
-///@param {Struct} json
-function ParticlePropertyNumeric(json) constructor {
+///@param {?Struct} [json]
+function ParticlePropertyNumeric(json = null) constructor {
 
   ///@type {Number}
-  minValue = Assert.isType(Struct.get(json, "minValue"), Number)
+  minValue = Struct.getIfType(json, "minValue", Number, 0.0)
 
   ///@type {Number}
-  maxValue = Assert.isType(Struct.get(json, "maxValue"), Number)
+  maxValue = Struct.getIfType(json, "maxValue", Number, 0.0)
 }
 
 
-///@param {Struct} json
-function ParticlePropertyNumericTransform(json): ParticlePropertyNumeric(json) constructor {
+///@param {?Struct} [json]
+function ParticlePropertyNumericTransform(json = null): ParticlePropertyNumeric(json) constructor {
 
   ///@type {Number}
-  increase = Assert.isType(Struct.get(json, "increase"), Number)
+  increase = Struct.getIfType(json, "increase", Number, 0.0)
 
   ///@type {Number}
-  wiggle = Assert.isType(Struct.get(json, "wiggle"), Number)
+  wiggle = Struct.getIfType(json, "wiggle", Number, 0.0)
 }
 
 
-///@param {Struct} json
-function ParticlePropertyOrientation(json): ParticlePropertyNumericTransform(json) constructor {
+///@param {?Struct} [json]
+function ParticlePropertyOrientation(json = null): ParticlePropertyNumericTransform(json) constructor {
 
   ///@type {Boolean}
-  relative = Assert.isType(Struct.get(json, "relative"), Boolean)
+  relative = Struct.getIfType(json, "relative", Boolean, false)
 }
 
 
-///@param {Struct} json
-function ParticlePropertyColor(json) constructor {
+///@param {?Struct} [json]
+function ParticlePropertyColor(json = null) constructor {
 
   ///@type {GMColor}
-  start = ColorUtil.fromHex(Struct.get(json, "start")).toGMColor()
-  Assert.isType(this.start, GMColor, "start")
+  start = ColorUtil.parse(Struct.get(json, "start")).toGMColor()
 
   ///@type {GMColor}
-  halfway = ColorUtil.fromHex(Struct.get(json, "halfway")).toGMColor()
-  Assert.isType(this.halfway, GMColor, "halfway")
+  halfway = ColorUtil.parse(Struct.get(json, "halfway")).toGMColor()
 
   ///@type {GMColor}
-  finish = ColorUtil.fromHex(Struct.get(json, "finish")).toGMColor()
-  Assert.isType(this.finish, GMColor, "finish")
+  finish = ColorUtil.parse(Struct.get(json, "finish")).toGMColor()
 }
 
 
-///@param {Struct} json
-function ParticlePropertyAlpha(json) constructor {
+///@param {?Struct} [json]
+function ParticlePropertyAlpha(json = null) constructor {
 
   ///@type {Number}
-  start = Assert.isType(Struct.get(json, "start"), Number)
+  start = Struct.getIfType(json, "start", Number, 0.0)
 
   ///@type {Number}
-  halfway = Assert.isType(Struct.get(json, "halfway"), Number)
+  halfway = Struct.getIfType(json, "halfway", Number, 0.0)
 
   ///@type {Number}
-  finish = Assert.isType(Struct.get(json, "finish"), Number)
+  finish = Struct.getIfType(json, "finish", Number, 0.0)
 }
 
 
-///@param {Struct} json
-function ParticlePropertyGravity(json) constructor {
+///@param {?Struct} [json]
+function ParticlePropertyGravity(json = null) constructor {
 
   ///@type {Number}
-  amount = Assert.isType(Struct.get(json, "amount"), Number)
+  amount = Struct.getIfType(json, "amount", Number, 0.0)
 
   ///@type {Number}
-  angle = Assert.isType(Struct.get(json, "angle"), Number)
+  angle = Struct.getIfType(json, "angle", Number, 0.0)
 }
 
 
@@ -102,13 +100,13 @@ function ParticlePropertySprite(json) constructor {
   texture = Assert.isType(TextureUtil.parse(Struct.get(json, "name")), Texture)
   
   ///@type {Boolean}
-  animate = Assert.isType(Struct.getDefault(json, "animate", false), Boolean)
+  animate = Struct.getIfType(json, "animate", Boolean, false)
 
   ///@type {Boolean}
-  stretch = Assert.isType(Struct.getDefault(json, "stretch", false), Boolean)
+  stretch = Struct.getIfType(json, "stretch", Boolean, false)
 
   ///@type {Boolean}
-  randomValue = Assert.isType(Struct.getDefault(json, "randomValue", false), Boolean)
+  randomValue = Struct.getIfType(json, "randomValue", Boolean, false)
 }
 
 
@@ -120,7 +118,7 @@ function ParticleTemplate(_name, json) constructor {
   name = Assert.isType(_name, String)
 
   ///@type {String}
-  shape = Struct.getDefault(json, "shape", "CIRCLE")
+  shape = Struct.getIfType(json, "shape", String, "CIRCLE")
 
   ///@type {Struct}
   size = Struct.appendRecursiveUnique(
@@ -180,7 +178,7 @@ function ParticleTemplate(_name, json) constructor {
   )
 
   ///@type {Boolean}
-  blend = Struct.contains(json, "blend") ? json.blend : false
+  blend = Struct.getIfType(json, "blend", Boolean, false)
 
   ///@type {Struct}
   life = Struct.appendRecursiveUnique(
@@ -261,7 +259,7 @@ function Particle(json) constructor {
   name = Assert.isType(Struct.get(json, "name"), String)
 
   ///@type {ParticleShape}
-  shape = Assert.isEnum(ParticleShape.get(Struct.getDefault(json, "shape", "CIRCLE")), ParticleShape)
+  shape = Assert.isEnum(ParticleShape.get(Struct.getIfType(json, "shape", String, "CIRCLE")), ParticleShape)
 
   ///@type {ParticlePropertyNumeric}
   size = new ParticlePropertyNumericTransform(Struct.get(json, "size"))
@@ -279,7 +277,7 @@ function Particle(json) constructor {
   alpha = new ParticlePropertyAlpha(Struct.get(json, "alpha")) 
 
   ///@type {Boolean}
-  blend = Assert.isType(Struct.get(json, "blend"), "Boolean")
+  blend = Struct.getIfType(json, "blend", Boolean, false)
 
   ///@type {ParticlePropertyNumeric}
   life = new ParticlePropertyNumeric(Struct.get(json, "life"))

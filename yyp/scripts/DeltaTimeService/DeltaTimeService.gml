@@ -1,22 +1,24 @@
 ///@package io.alkapivo.core.service.deltatime
 
 #macro BeanDeltaTimeService "DeltaTimeService"
-function DeltaTimeService(): Service() constructor {
+function DeltaTimeService() constructor {
 
   ///@return {Number}
-  get = function() { 
+  static get = function() { 
     return DeltaTime.get()
   }
 
   ///@param {Number} value
   ///@return {Number}
-  apply = function(value) {
+  static apply = function(value) {
+    gml_pragma("forceinline")
     return DeltaTime.apply(value)
   }
 
   ///@override
   ///@return {DeltaTimeService}
-  updateBegin = function() {
+  static updateBegin = function() {
+    gml_pragma("forceinline")
     DeltaTime.update()
     return this
   }

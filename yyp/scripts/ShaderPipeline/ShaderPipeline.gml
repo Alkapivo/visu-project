@@ -29,18 +29,18 @@ function ShaderPipelineTaskTemplate(_name, json) constructor {
   shader = Assert.isType(ShaderUtil.fetch(Struct.get(json, "shader")), Shader)
 
   ///@type {Map<String, Struct>}
-  properties = new Map(String, Transformer)
+  properties = new Map(String, Struct)
 
   var jsonProperties = Struct.get(json, "properties")
   if (Core.isType(jsonProperties, Struct)) {
     this.properties = Struct.toMap(
       jsonProperties,
       String,
-      Transformer,
+      Struct,
       function(struct, name, shader) { 
         var uniform = Assert.isType(shader.uniforms.get(name), ShaderUniform)
         var prototype = Assert.isEnum(ShaderPipelineTaskTransformerType.get(uniform.type), ShaderPipelineTaskTransformerType)
-        var transformer = Assert.isType(new prototype(struct), prototype)
+        var transformer = new prototype(struct)
         return transformer
       },
       this.shader
@@ -58,7 +58,7 @@ function ShaderPipelineTaskProperty(_uniform, _transformer) constructor {
   uniform = Assert.isType(_uniform, ShaderUniform)
 
   ///@type {Transformer}
-  transformer = Assert.isType(_transformer, Transformer)
+  transformer = Assert.isType(_transformer, Struct)
 
   ///@return {String}
   toString = function() {
@@ -251,7 +251,7 @@ function ShaderPipeline(config = {}) constructor {
       this.executor.add(task)
     },
     "clear-shaders": function(event) {
-      this.executor.tasks.clear()
+      this.executor.tasks.forEach(TaskUtil.fullfill).clear()
     },
     "reset-templates": function(event) {
       this.templates.clear()

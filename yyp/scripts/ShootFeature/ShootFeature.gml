@@ -69,17 +69,26 @@ function ShootFeature(json) {
       }
 
       for (var index = 0; index < amount; index++) {
-        controller.bulletService.send(new Event("spawn-bullet", {
-          x: item.x,
-          y: item.y,
-          angle: angle 
-            + (index * this.angleStep) 
-            + (random(this.randomAngle) * choose(1, -1)),
-          speed: this.speed
-            + (random(this.randomSpeed) * choose(1, -1)),
-          producer: Shroom,
-          template: this.bullet,
-        }))
+        controller.bulletService.spawnBullet(
+          this.bullet, 
+          item.x, 
+          item.y,
+          angle + (index * this.angleStep) + (random(this.randomAngle) * choose(1, -1)),
+          this.speed + (random(this.randomSpeed) * choose(1, -1)),
+          Shroom
+        )
+
+        //controller.bulletService.send(new Event("spawn-bullet", {
+        //  x: item.x,
+        //  y: item.y,
+        //  angle: angle 
+        //    + (index * this.angleStep) 
+        //    + (random(this.randomAngle) * choose(1, -1)),
+        //  speed: this.speed
+        //    + (random(this.randomSpeed) * choose(1, -1)),
+        //  producer: Shroom,
+        //  template: this.bullet,
+        //}))
       }
     },
   }))

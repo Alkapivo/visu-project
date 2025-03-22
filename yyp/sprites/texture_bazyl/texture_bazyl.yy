@@ -81,8 +81,8 @@
   "swatchColours":null,
   "swfPrecision":2.525,
   "textureGroupId":{
-    "name":"txg_core",
-    "path":"texturegroups/txg_core",
+    "name":"texturegroup_game",
+    "path":"texturegroups/texturegroup_game",
   },
   "type":0,
   "VTile":false,

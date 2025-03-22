@@ -83,7 +83,7 @@ function VETrackControl(_editor) constructor {
             name: "track-control.clearShaderBkg",
             width: function() { return 20 },
             height: function() { return 20 },
-            margin: { top: 1, bottom: 1, left: 8, right: 0 },
+            margin: { top: 1, bottom: 1, left: 20, right: 0 },
             x: function() { return this.margin.left },
             y: function() { return this.context.height()
               - this.margin.bottom 
@@ -196,7 +196,7 @@ function VETrackControl(_editor) constructor {
             name: "track-control.zoom",
             width: function() { return 84 },
             height: function() { return 24 },
-            margin: { top: 1, bottom: 1, left: 15, right: 15 },
+            margin: { top: 1, bottom: 1, left: 15, right: 35 },
             x: function() { return this.context.width() 
               - this.margin.right
               - this.width() },
@@ -271,7 +271,7 @@ function VETrackControl(_editor) constructor {
             var context = Struct.get(Struct.get(mousePromise, "state"), "context")
             var ruler = Beans.get(BeanVisuEditorController).timeline.containers.get("ve-timeline-ruler")
             if (context == this) {
-              this.updatePosition(MouseUtil.getMouseX() - this.context.area.getX())
+              this.updatePosition(MouseUtil.getMouseX() - this.context.area.getX(), MouseUtil.getMouseY() - this.context.area.getY())
               return
             } else if (context != null && context == ruler) {
               var mouseXTime = ruler.state.get("mouseXTime")
@@ -303,7 +303,7 @@ function VETrackControl(_editor) constructor {
               this.maxValue
             )
           },
-          updatePosition: function(mouseX) {
+          updatePosition: function(mouseX, mouseY) {
             var width = this.area.getWidth() - (this.area.getX() * 2)
             this.value = clamp(mouseX / width, this.minValue, this.maxValue)
 
@@ -322,10 +322,10 @@ function VETrackControl(_editor) constructor {
             }
           },
           onMousePressedLeft: function(event) {
-            this.updatePosition(event.data.x)
+            this.updatePosition(event.data.x - this.context.area.getX(), event.data.y - this.context.area.getY())
           },
           onMouseReleasedLeft: function(event) {
-            this.updatePosition(event.data.x)
+            this.updatePosition(event.data.x - this.context.area.getX(), event.data.y - this.context.area.getY())
             this.sendEvent()
           },
           onMouseDragLeft: function(event) {
@@ -435,7 +435,7 @@ function VETrackControl(_editor) constructor {
         type: UIButton,
         label: { 
           text: "",
-          align: { v: VAlign.BOTTOM, h: HAlign.CENTER },
+          align: { v: VAlign.CENTER, h: HAlign.CENTER },
           color: VETheme.color.textShadow,
           outline: true,
           outlineColor: VETheme.color.sideDark,
@@ -447,9 +447,9 @@ function VETrackControl(_editor) constructor {
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
         backgroundMargin: { top: 1, bottom: 1, left: 1, right: 1 },
         backgroundAlpha: 0.75,
-        backgroundColor: VETheme.color.primaryShadow,
-        backgroundColorSelected: VETheme.color.accentShadow,
-        backgroundColorOut: VETheme.color.primaryShadow,
+        backgroundColor: VETheme.color.button,
+        backgroundColorSelected: VETheme.color.primaryLight,
+        backgroundColorOut: VETheme.color.button,
         onMouseHoverOver: function(event) {
           this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
         },
@@ -486,14 +486,19 @@ function VETrackControl(_editor) constructor {
           if (this.isHoverOver) {
             var text = this.label.text
             this.label.text = this.description
+            var useScale = this.label.useScale
+            this.label.useScale = false
             var alignH = this.label.align.h
             this.label.align.h = this.hAlign
             this.label.render(
               // todo VALIGN HALIGN
               this.context.area.getX() + this.area.getX(),
-              this.context.area.getY() + this.area.getY() - (24 - this.area.getHeight())
+              this.context.area.getY() + this.area.getY() - (28 - this.area.getHeight()),
+              this.area.getWidth(),
+              this.area.getHeight()
             )
             this.label.align.h = alignH
+            this.label.useScale = useScale
             this.label.text = text
           }
 
@@ -583,7 +588,9 @@ function VETrackControl(_editor) constructor {
               this.label.render(
                 // todo VALIGN HALIGN
                 this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
-                this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 1)
+                this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 1),
+                this.area.getWidth(),
+                this.area.getHeight()
               )
               this.label.text = text
             },
@@ -607,7 +614,9 @@ function VETrackControl(_editor) constructor {
               this.label.render(
                 // todo VALIGN HALIGN
                 this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
-                this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 1)
+                this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 1),
+                this.area.getWidth(),
+                this.area.getHeight()
               )
               this.label.text = text
             },
@@ -631,7 +640,9 @@ function VETrackControl(_editor) constructor {
               this.label.render(
                 // todo VALIGN HALIGN
                 this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
-                this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 1)
+                this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 1),
+                this.area.getWidth(),
+                this.area.getHeight()
               )
               this.label.text = text
             },
@@ -662,7 +673,9 @@ function VETrackControl(_editor) constructor {
               this.label.render(
                 // todo VALIGN HALIGN
                 this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
-                this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 1) + 1
+                this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 1) + 1,
+                this.area.getWidth(),
+                this.area.getHeight()
               )
               this.label.text = text
             },
@@ -770,7 +783,7 @@ function VETrackControl(_editor) constructor {
               },
               sprite: {
                 name: "texture_ve_trackcontrol_button_redo",
-                alpha: 0.75,
+                alpha: 0.9,
               },
               layout: layout.nodes.redo,
               updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -785,9 +798,9 @@ function VETrackControl(_editor) constructor {
                 editor.timeline.transactionService.redo()
               },
               backgroundMargin: { top: 1, bottom: 1, left: 0, right: 1 },
-              backgroundColor: VETheme.color.primaryShadow,
-              backgroundColorSelected: VETheme.color.accentShadow,
-              backgroundColorOut: VETheme.color.primaryShadow,
+              backgroundColor: VETheme.color.button,
+              backgroundColorSelected: VETheme.color.primaryLight,
+              backgroundColorOut: VETheme.color.button,
               onMouseHoverOver: function(event) {
                 if (Struct.get(this.enable, "value") == false) {
                   this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
@@ -840,7 +853,9 @@ function VETrackControl(_editor) constructor {
                   this.label.render(
                     // todo VALIGN HALIGN
                     this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
-                    this.context.area.getY() + this.area.getY() - 4.0// + (this.area.getHeight() / 2)
+                    this.context.area.getY() + this.area.getY() - 4.0,// + (this.area.getHeight() / 2)
+                    this.area.getWidth(),
+                    this.area.getHeight()
                   )
                   this.label.text = text
                 }
@@ -864,7 +879,7 @@ function VETrackControl(_editor) constructor {
               },
               sprite: {
                 name: "texture_ve_trackcontrol_button_undo",
-                alpha: 0.75,
+                alpha: 0.9,
               },
               layout: layout.nodes.undo,
               updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
@@ -879,9 +894,9 @@ function VETrackControl(_editor) constructor {
                 editor.timeline.transactionService.undo()
               },
               backgroundMargin: { top: 1, bottom: 1, left: 0, right: 1 },
-              backgroundColor: VETheme.color.primaryShadow,
-              backgroundColorSelected: VETheme.color.accentShadow,
-              backgroundColorOut: VETheme.color.primaryShadow,
+              backgroundColor: VETheme.color.button,
+              backgroundColorSelected: VETheme.color.primaryLight,
+              backgroundColorOut: VETheme.color.button,
               onMouseHoverOver: function(event) {
                 if (Struct.get(this.enable, "value") == false) {
                   this.backgroundColor = ColorUtil.fromHex(this.backgroundColorOut).toGMColor()
@@ -934,7 +949,9 @@ function VETrackControl(_editor) constructor {
                   this.label.render(
                     // todo VALIGN HALIGN
                     this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
-                    this.context.area.getY() + this.area.getY() - 4.0 // + (this.area.getHeight() / 2)
+                    this.context.area.getY() + this.area.getY() - 4.0,// + (this.area.getHeight() / 2)
+                    this.area.getWidth(),
+                    this.area.getHeight()
                   )
                   this.label.text = text
                 }
@@ -951,12 +968,12 @@ function VETrackControl(_editor) constructor {
             getClipboard: Beans.get(BeanVisuEditorIO).mouse.getClipboard,
             setClipboard: Beans.get(BeanVisuEditorIO).mouse.setClipboard,
             minValue: 5.0,
-            maxValue: 20.0,
+            maxValue: 30.0,
             //snapValue: 1.0 / 15.0,
             store: { key: "timeline-zoom" },
             onMouseHoverOver: function(event) { },
             onMouseHoverOut: function(event) { },
-            updatePosition: function(mouseX) {
+            updatePosition: function(mouseX, mouseY) {
               var controller = Beans.get(BeanVisuController)
               var editor = Beans.get(BeanVisuEditorController)
               var ruler = editor.uiService.find("ve-timeline-ruler")
@@ -992,10 +1009,12 @@ function VETrackControl(_editor) constructor {
               this.label.render(
                 // todo VALIGN HALIGN
                 this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
-                this.context.area.getY() + this.area.getY()// + (this.area.getHeight() / 2)
+                this.context.area.getY() + this.area.getY(),// + (this.area.getHeight() / 2)
+                this.area.getWidth(),
+                this.area.getHeight()
               )
             }
-          }, VEStyles.get("slider-horizontal"), false),
+          }, VEStyles.get("slider-horizontal-2"), false),
         },
       })
     })

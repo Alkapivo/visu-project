@@ -123,6 +123,7 @@ function Coin(config) constructor {
   ///@param {Player} target
   ///@return {Boolean}
   static collide = function(target) {
+    gml_pragma("forceinline")
     var halfSourceWidth = (this.mask.getWidth() * this.sprite.scaleX) / 2.0
     var halfSourceHeight = (this.mask.getHeight() * this.sprite.scaleY) / 2.0
     var halfTargetWidth = (target.mask.getWidth() * target.sprite.scaleX) / 2.0
@@ -151,6 +152,7 @@ function Coin(config) constructor {
   ///@param {?Player} player
   ///@return {Coin}
   static move = function(player = null) {
+    gml_pragma("forceinline")
     var value = (this.speed.update().value / 100.0)
     if (player != null && Math.fetchLength(this.x, this.y, player.x, player.y) < 0.4) {
       var to = Math.fetchPointsAngle(this.x, this.y, player.x, player.y)

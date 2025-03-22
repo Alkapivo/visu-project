@@ -78,8 +78,8 @@ function GridView(config = {}) constructor {
       this.follow.target.y = clamp(targetY, 0, this.worldHeight)
     }
 
-    this.x = clamp(this.x, 0.0, this.worldWidth - this.width) //this.x = clamp(this.x, -1 * this.width, this.worldWidth) 
-    this.y = clamp(this.y, 0.0, this.worldHeight - this.height)
+    this.x = clamp(this.x, 0.0, this.worldWidth)
+    this.y = clamp(this.y, 0.0, this.worldHeight)
     return this
   }
 }

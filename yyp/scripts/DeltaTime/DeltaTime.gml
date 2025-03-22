@@ -31,11 +31,13 @@ function _DeltaTime() constructor {
 
   ///@return {Number}
   static get = function() {
+    gml_pragma("forceinline")
     return this.deltaTime
   }
 
   ///@return {DeltaTime}
   static update = function() {
+    gml_pragma("forceinline")
     this.deltaTimePrevious = this.deltaTime;
     this.deltaTime = delta_time / this.deltaTimePrecision;
     if (this.deltaTime > 1 / this.fpsMin) {

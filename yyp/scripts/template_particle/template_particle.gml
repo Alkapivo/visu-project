@@ -69,7 +69,156 @@ function template_particle(json = null) {
         },
       },
       {
-        name: "particle_use-preview-line-h",
+        name: "particle_blend",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: {
+            text: "Blend",
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "particle-blend" },
+          },
+        },
+      },
+      {
+        name: "particle_blend-line-h",
+        template: VEComponents.get("line-h"),
+        layout: VELayouts.get("line-h"),
+        config: { layout: { type: UILayoutType.VERTICAL } },
+      },
+      {
+        name: "particle_sprite",
+        template: VEComponents.get("texture-field-simple"),
+        layout: VELayouts.get("texture-field-simple"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          title: {
+            label: { 
+              text: "Particle texture",
+              enable: { key: "particle-use-sprite" },
+              backgroundColor: VETheme.color.side,
+            },  
+            input: {
+              backgroundColor: VETheme.color.side,
+            },
+            checkbox: { 
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              store: { key: "particle-use-sprite" },
+              backgroundColor: VETheme.color.side,
+            },
+          },
+          texture: {
+            label: {
+              text: "Texture",
+              enable: { key: "particle-use-sprite" },
+            }, 
+            field: {
+              store: { key: "particle-sprite" },
+              enable: { key: "particle-use-sprite" },
+            },
+          },
+          preview: {
+            image: { name: "texture_empty" },
+            store: { key: "particle-sprite" },
+            enable: { key: "particle-use-sprite" },
+          },
+          resolution: {
+            store: { key: "particle-sprite" },
+            enable: { key: "particle-use-sprite" },
+          },
+          frame: {
+            label: {
+              text: "Frame",
+              enable: { key: "particle-use-sprite" },
+            },
+            field: { 
+              store: { key: "particle-sprite" },
+              enable: { key: "particle-use-sprite" },
+            },
+            decrease: { 
+              store: { key: "particle-sprite" },
+              enable: { key: "particle-use-sprite" },
+            },
+            increase: { 
+              store: { key: "particle-sprite" },
+              enable: { key: "particle-use-sprite" },
+            },
+            checkbox: { 
+              store: { key: "particle-sprite" },
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              enable: { key: "particle-use-sprite" },
+            },
+            title: { 
+              enable: { key: "particle-use-sprite" }
+            },
+            stick: { 
+              store: { key: "particle-sprite" },
+              enable: { key: "particle-use-sprite" },
+            },
+          },
+          speed: {
+            label: {
+              text: "Speed",
+              enable: { key: "particle-use-sprite" },
+            },
+            field: { 
+              store: { key: "particle-sprite" },
+              enable: { key: "particle-use-sprite" },
+            },
+            decrease: { 
+              store: { key: "particle-sprite" },
+              enable: { key: "particle-use-sprite" },
+            },
+            increase: { 
+              store: { key: "particle-sprite" },
+              enable: { key: "particle-use-sprite" },
+            },
+            checkbox: { 
+              store: { key: "particle-sprite" },
+              spriteOn: { name: "visu_texture_checkbox_on" },
+              spriteOff: { name: "visu_texture_checkbox_off" },
+              enable: { key: "particle-use-sprite" },
+            },
+            title: {
+              enable: { key: "particle-use-sprite" },
+            },
+            stick: {
+              store: { key: "particle-sprite" },
+              enable: { key: "particle-use-sprite" },
+            },
+          },
+        },
+      },
+      {
+        name: "particle_sprite-stretch",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: {
+            text: "Stretch",
+            color: VETheme.color.textShadow,
+            enable: { key: "particle-use-sprite" },
+            backgroundColor: VETheme.color.side,
+          },
+          input: { backgroundColor: VETheme.color.side },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "particle-sprite-stretch" },
+            enable: { key: "particle-use-sprite" },
+            backgroundColor: VETheme.color.side,
+          },
+        },
+      },
+      {
+        name: "particle_sprite-stretch-line-h",
         template: VEComponents.get("line-h"),
         layout: VELayouts.get("line-h"),
         config: { layout: { type: UILayoutType.VERTICAL } },
@@ -184,151 +333,12 @@ function template_particle(json = null) {
         config: { layout: { type: UILayoutType.VERTICAL } },
       },
       {
-        name: "particle_sprite",
-        template: VEComponents.get("texture-field-simple"),
-        layout: VELayouts.get("texture-field-simple"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          title: {
-            label: { 
-              text: "Particle texture",
-              enable: { key: "particle-use-sprite" },
-              backgroundColor: VETheme.color.side,
-            },  
-            input: {
-              backgroundColor: VETheme.color.side,
-            },
-            checkbox: { 
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              store: { key: "particle-use-sprite" },
-              backgroundColor: VETheme.color.side,
-            },
-          },
-          texture: {
-            label: {
-              text: "Texture",
-              enable: { key: "particle-use-sprite" },
-            }, 
-            field: {
-              store: { key: "particle-sprite" },
-              enable: { key: "particle-use-sprite" },
-            },
-          },
-          preview: {
-            image: { name: "texture_empty" },
-            store: { key: "particle-sprite" },
-            enable: { key: "particle-use-sprite" },
-          },
-          resolution: {
-            store: { key: "particle-sprite" },
-            enable: { key: "particle-use-sprite" },
-          },
-          frame: {
-            label: {
-              text: "Frame",
-              enable: { key: "particle-use-sprite" },
-            },
-            field: { 
-              store: { key: "particle-sprite" },
-              enable: { key: "particle-use-sprite" },
-            },
-            decrease: { 
-              store: { key: "particle-sprite" },
-              enable: { key: "particle-use-sprite" },
-            },
-            increase: { 
-              store: { key: "particle-sprite" },
-              enable: { key: "particle-use-sprite" },
-            },
-            checkbox: { 
-              store: { key: "particle-sprite" },
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              enable: { key: "particle-use-sprite" },
-            },
-            title: { 
-              enable: { key: "particle-use-sprite" }
-            },
-            stick: { 
-              store: { key: "particle-sprite" },
-              enable: { key: "particle-use-sprite" },
-            },
-          },
-          speed: {
-            label: {
-              text: "Speed",
-              enable: { key: "particle-use-sprite" },
-            },
-            field: { 
-              store: { key: "particle-sprite" },
-              enable: { key: "particle-use-sprite" },
-            },
-            decrease: { 
-              store: { key: "particle-sprite" },
-              enable: { key: "particle-use-sprite" },
-            },
-            increase: { 
-              store: { key: "particle-sprite" },
-              enable: { key: "particle-use-sprite" },
-            },
-            checkbox: { 
-              store: { key: "particle-sprite" },
-              spriteOn: { name: "visu_texture_checkbox_on" },
-              spriteOff: { name: "visu_texture_checkbox_off" },
-              enable: { key: "particle-use-sprite" },
-            },
-            title: {
-              enable: { key: "particle-use-sprite" },
-            },
-            stick: {
-              store: { key: "particle-sprite" },
-              enable: { key: "particle-use-sprite" },
-            },
-          },
-        },
-      },
-      {
-        name: "particle_sprite-blend-stretch",
-        template: VEComponents.get("double-checkbox"),
-        layout: VELayouts.get("double-checkbox"),
-        config: { 
-          layout: { type: UILayoutType.VERTICAL },
-          label: { 
-            text: "",
-            enable: { key: "particle-use-sprite" },
-          },
-          checkbox1: { 
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "particle-blend" },
-            enable: { key: "particle-use-sprite" },
-          },
-          label1: {
-            text: "Blend",
-            //font: "font_inter_10_regular",
-            enable: { key: "particle-use-sprite" },
-          },
-          checkbox2: { 
-            spriteOn: { name: "visu_texture_checkbox_on" },
-            spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "particle-sprite-stretch" },
-            enable: { key: "particle-use-sprite" },
-          },
-          label2: {
-            text: "Stretch",
-            //font: "font_inter_10_regular",
-            enable: { key: "particle-use-sprite" },
-          },
-        },
-      },
-      {
         name: "particle_color-start",
         template: VEComponents.get("color-picker"),
         layout: VELayouts.get("color-picker"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
-          //line: { disable: true },
+          line: { disable: false },
           title: {
             label: {
               text: "Start color",
@@ -860,19 +870,8 @@ function template_particle(json = null) {
               },
             },
             factor: 0.01,
-            updateValue: function(mouseX, mouseY) {
-              var isUIStore = Core.isType(this.store, UIStore)
-              this.base = !Core.isType(this.base, Number) 
-                ? (isUIStore ? this.store.getValue().angle.wiggle : this.value)
-                : this.base 
-
-              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
-              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
-              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
-              this.value = this.base + (distance * this.factor)
-              if (isUIStore && this.value != this.store.getValue().angle.wiggle) {
-                this.store.set(this.value)
-              }
+            getValue: function(uiItem) {
+              return uiItem.store.getValue().angle.wiggle
             },
           },
           checkbox: { 
@@ -994,19 +993,8 @@ function template_particle(json = null) {
               },
             },
             factor: 0.01,
-            updateValue: function(mouseX, mouseY) {
-              var isUIStore = Core.isType(this.store, UIStore)
-              this.base = !Core.isType(this.base, Number) 
-                ? (isUIStore ? this.store.getValue().angle.increase : this.value)
-                : this.base 
-
-              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
-              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
-              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
-              this.value = this.base + (distance * this.factor)
-              if (isUIStore && this.value != this.store.getValue().angle.increase) {
-                this.store.set(this.value)
-              }
+            getValue: function(uiItem) {
+              return uiItem.store.getValue().angle.increase
             },
           },
           checkbox: { },
@@ -1299,19 +1287,8 @@ function template_particle(json = null) {
               },
             },
             factor: 0.01,
-            updateValue: function(mouseX, mouseY) {
-              var isUIStore = Core.isType(this.store, UIStore)
-              this.base = !Core.isType(this.base, Number) 
-                ? (isUIStore ? this.store.getValue().size.wiggle : this.value)
-                : this.base 
-
-              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
-              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
-              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
-              this.value = this.base + (distance * this.factor)
-              if (isUIStore && this.value != this.store.getValue().size.wiggle) {
-                this.store.set(this.value)
-              }
+            getValue: function(uiItem) {
+              return uiItem.store.getValue().size.wiggle
             },
           },
           checkbox: { },
@@ -1396,19 +1373,8 @@ function template_particle(json = null) {
               },
             },
             factor: 0.01,
-            updateValue: function(mouseX, mouseY) {
-              var isUIStore = Core.isType(this.store, UIStore)
-              this.base = !Core.isType(this.base, Number) 
-                ? (isUIStore ? this.store.getValue().size.increase : this.value)
-                : this.base 
-
-              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
-              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
-              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
-              this.value = this.base + (distance * this.factor)
-              if (isUIStore && this.value != this.store.getValue().size.increase) {
-                this.store.set(this.value)
-              }
+            getValue: function(uiItem) {
+              return uiItem.store.getValue().size.increase
             },
           },
           checkbox: { },
@@ -1493,19 +1459,8 @@ function template_particle(json = null) {
               },
             },
             factor: 0.01,
-            updateValue: function(mouseX, mouseY) {
-              var isUIStore = Core.isType(this.store, UIStore)
-              this.base = !Core.isType(this.base, Number) 
-                ? (isUIStore ? this.store.getValue().size.minValue : this.value)
-                : this.base 
-
-              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
-              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
-              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
-              this.value = this.base + (distance * this.factor)
-              if (isUIStore && this.value != this.store.getValue().size.minValue) {
-                this.store.set(this.value)
-              }
+            getValue: function(uiItem) {
+              return uiItem.store.getValue().size.minValue
             },
           },
           checkbox: { },
@@ -1590,19 +1545,8 @@ function template_particle(json = null) {
               },
             },
             factor: 0.01,
-            updateValue: function(mouseX, mouseY) {
-              var isUIStore = Core.isType(this.store, UIStore)
-              this.base = !Core.isType(this.base, Number) 
-                ? (isUIStore ? this.store.getValue().size.maxValue : this.value)
-                : this.base 
-
-              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
-              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
-              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
-              this.value = this.base + (distance * this.factor)
-              if (isUIStore && this.value != this.store.getValue().size.maxValue) {
-                this.store.set(this.value)
-              }
+            getValue: function(uiItem) {
+              return uiItem.store.getValue().size.maxValue
             },
           },
           checkbox: { },
@@ -1711,19 +1655,8 @@ function template_particle(json = null) {
               },
             },
             factor: 0.01,
-            updateValue: function(mouseX, mouseY) {
-              var isUIStore = Core.isType(this.store, UIStore)
-              this.base = !Core.isType(this.base, Number) 
-                ? (isUIStore ? this.store.getValue().speed.wiggle : this.value)
-                : this.base 
-
-              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
-              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
-              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
-              this.value = this.base + (distance * this.factor)
-              if (isUIStore && this.value != this.store.getValue().speed.wiggle) {
-                this.store.set(this.value)
-              }
+            getValue: function(uiItem) {
+              return uiItem.store.getValue().speed.wiggle
             },
           },
           checkbox: { },
@@ -1808,19 +1741,8 @@ function template_particle(json = null) {
               },
             },
             factor: 0.01,
-            updateValue: function(mouseX, mouseY) {
-              var isUIStore = Core.isType(this.store, UIStore)
-              this.base = !Core.isType(this.base, Number) 
-                ? (isUIStore ? this.store.getValue().speed.increase : this.value)
-                : this.base 
-
-              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
-              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
-              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
-              this.value = this.base + (distance * this.factor)
-              if (isUIStore && this.value != this.store.getValue().speed.increase) {
-                this.store.set(this.value)
-              }
+            getValue: function(uiItem) {
+              return uiItem.store.getValue().speed.increase
             },
           },
           checkbox: { },
@@ -1905,19 +1827,8 @@ function template_particle(json = null) {
               },
             },
             factor: 0.01,
-            updateValue: function(mouseX, mouseY) {
-              var isUIStore = Core.isType(this.store, UIStore)
-              this.base = !Core.isType(this.base, Number) 
-                ? (isUIStore ? this.store.getValue().speed.minValue : this.value)
-                : this.base 
-
-              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
-              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
-              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
-              this.value = this.base + (distance * this.factor)
-              if (isUIStore && this.value != this.store.getValue().speed.minValue) {
-                this.store.set(this.value)
-              }
+            getValue: function(uiItem) {
+              return uiItem.store.getValue().speed.minValue
             },
           },
           checkbox: { },
@@ -2002,19 +1913,8 @@ function template_particle(json = null) {
               },
             },
             factor: 0.01,
-            updateValue: function(mouseX, mouseY) {
-              var isUIStore = Core.isType(this.store, UIStore)
-              this.base = !Core.isType(this.base, Number) 
-                ? (isUIStore ? this.store.getValue().speed.maxValue : this.value)
-                : this.base 
-
-              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
-              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
-              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
-              this.value = this.base + (distance * this.factor)
-              if (isUIStore && this.value != this.store.getValue().speed.maxValue) {
-                this.store.set(this.value)
-              }
+            getValue: function(uiItem) {
+              return uiItem.store.getValue().speed.maxValue
             },
           },
           checkbox: { },
@@ -2123,19 +2023,8 @@ function template_particle(json = null) {
               },
             },
             factor: 0.005,
-            updateValue: function(mouseX, mouseY) {
-              var isUIStore = Core.isType(this.store, UIStore)
-              this.base = !Core.isType(this.base, Number) 
-                ? (isUIStore ? this.store.getValue().scale.x : this.value)
-                : this.base 
-
-              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
-              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
-              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
-              this.value = this.base + (distance * this.factor)
-              if (isUIStore && this.value != this.store.getValue().scale.x) {
-                this.store.set(this.value)
-              }
+            getValue: function(uiItem) {
+              return uiItem.store.getValue().scale.x
             },
           },
           checkbox: { },
@@ -2220,19 +2109,8 @@ function template_particle(json = null) {
               },
             },
             factor: 0.005,
-            updateValue: function(mouseX, mouseY) {
-              var isUIStore = Core.isType(this.store, UIStore)
-              this.base = !Core.isType(this.base, Number) 
-                ? (isUIStore ? this.store.getValue().scale.y : this.value)
-                : this.base 
-
-              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
-              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
-              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
-              this.value = this.base + (distance * this.factor)
-              if (isUIStore && this.value != this.store.getValue().scale.y) {
-                this.store.set(this.value)
-              }
+            getValue: function(uiItem) {
+              return uiItem.store.getValue().scale.y
             },
           },
           checkbox: { },
@@ -2433,19 +2311,8 @@ function template_particle(json = null) {
               },
             },
             factor: 0.01,
-            updateValue: function(mouseX, mouseY) {
-              var isUIStore = Core.isType(this.store, UIStore)
-              this.base = !Core.isType(this.base, Number) 
-                ? (isUIStore ? this.store.getValue().gravity.amount : this.value)
-                : this.base 
-
-              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
-              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
-              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
-              this.value = this.base + (distance * this.factor)
-              if (isUIStore && this.value != this.store.getValue().gravity.amount) {
-                this.store.set(this.value)
-              }
+            getValue: function(uiItem) {
+              return uiItem.store.getValue().gravity.amount
             },
           },
           checkbox: { },
@@ -2554,19 +2421,8 @@ function template_particle(json = null) {
               },
             },
             factor: 0.5,
-            updateValue: function(mouseX, mouseY) {
-              var isUIStore = Core.isType(this.store, UIStore)
-              this.base = !Core.isType(this.base, Number) 
-                ? (isUIStore ? this.store.getValue().life.minValue : this.value)
-                : this.base 
-
-              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
-              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
-              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
-              this.value = this.base + (distance * this.factor)
-              if (isUIStore && this.value != this.store.getValue().life.minValue) {
-                this.store.set(this.value)
-              }
+            getValue: function(uiItem) {
+              return uiItem.store.getValue().life.minValue
             },
           },
           checkbox: { },
@@ -2651,19 +2507,8 @@ function template_particle(json = null) {
               },
             },
             factor: 0.5,
-            updateValue: function(mouseX, mouseY) {
-              var isUIStore = Core.isType(this.store, UIStore)
-              this.base = !Core.isType(this.base, Number) 
-                ? (isUIStore ? this.store.getValue().life.maxValue : this.value)
-                : this.base 
-
-              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
-              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
-              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
-              this.value = this.base + (distance * this.factor)
-              if (isUIStore && this.value != this.store.getValue().life.maxValue) {
-                this.store.set(this.value)
-              }
+            getValue: function(uiItem) {
+              return uiItem.store.getValue().life.maxValue
             },
           },
           checkbox: { },
@@ -2771,20 +2616,9 @@ function template_particle(json = null) {
                 item.set(item.get())
               },
             },
-            factor: 0.2,
-            updateValue: function(mouseX, mouseY) {
-              var isUIStore = Core.isType(this.store, UIStore)
-              this.base = !Core.isType(this.base, Number) 
-                ? (isUIStore ? this.store.getValue().orientation.relative : this.value)
-                : this.base 
-
-              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
-              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
-              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
-              this.value = this.base + (distance * this.factor)
-              if (isUIStore && this.value != this.store.getValue().orientation.relative) {
-                this.store.set(this.value)
-              }
+            factor: 0.01,
+            getValue: function(uiItem) {
+              return uiItem.store.getValue().orientation.relative
             },
           },
           checkbox: { },
@@ -2869,19 +2703,8 @@ function template_particle(json = null) {
               },
             },
             factor: 0.01,
-            updateValue: function(mouseX, mouseY) {
-              var isUIStore = Core.isType(this.store, UIStore)
-              this.base = !Core.isType(this.base, Number) 
-                ? (isUIStore ? this.store.getValue().orientation.wiggle : this.value)
-                : this.base 
-
-              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
-              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
-              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
-              this.value = this.base + (distance * this.factor)
-              if (isUIStore && this.value != this.store.getValue().orientation.wiggle) {
-                this.store.set(this.value)
-              }
+            getValue: function(uiItem) {
+              return uiItem.store.getValue().orientation.wiggle
             },
           },
           checkbox: { },
@@ -2966,19 +2789,8 @@ function template_particle(json = null) {
               },
             },
             factor: 0.01,
-            updateValue: function(mouseX, mouseY) {
-              var isUIStore = Core.isType(this.store, UIStore)
-              this.base = !Core.isType(this.base, Number) 
-                ? (isUIStore ? this.store.getValue().orientation.increase : this.value)
-                : this.base 
-
-              var distanceX = mouseX - (this.area.getX() + (this.area.getWidth() / 2))
-              var distanceY = (this.area.getY() + this.context.offset.y) - mouseY
-              var distance = abs(distanceX) > abs(distanceY) ? distanceX : distanceY
-              this.value = this.base + (distance * this.factor)
-              if (isUIStore && this.value != this.store.getValue().orientation.increase) {
-                this.store.set(this.value)
-              }
+            getValue: function(uiItem) {
+              return uiItem.store.getValue().orientation.increase
             },
           },
           checkbox: { },

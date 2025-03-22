@@ -22,6 +22,13 @@ function brush_effect_particle(json) {
       "ef-part_area": {
         type: Rectangle,
         value: Struct.get(json, "ef-part_area"),
+        passthrough: function(value) {
+          value.x = clamp(value.x, -5.0, 5.0)
+          value.y = clamp(value.y, -5.0, 5.0)
+          value.z = clamp(value.z, 0.0, 10.0)
+          value.a = clamp(value.a, 0.0, 10.0)
+          return value
+        }
       },
       "ef-part_amount": {
         type: Number,
@@ -120,7 +127,8 @@ function brush_effect_particle(json) {
           increase: { store: { key: "ef-part_amount" } },
           stick: {
             store: { key: "ef-part_amount" },
-            factor: 0.1,
+            factor: 1,
+            step: 10,
           },
           checkbox: { },
         },
@@ -135,15 +143,15 @@ function brush_effect_particle(json) {
           field: { store: { key: "ef-part_duration" } },
           decrease: {
             store: { key: "ef-part_duration" },
-            factor: -1.0,
+            factor: -0.01,
           },
           increase: {
             store: { key: "ef-part_duration" },
-            factor: 1.0,
+            factor: 0.01,
           },
           stick: {
             store: { key: "ef-part_duration" },
-            factor: 0.001,
+            factor: 0.01,
           },
           checkbox: { },
         },
@@ -158,11 +166,11 @@ function brush_effect_particle(json) {
           field: { store: { key: "ef-part_interval" } },
           decrease: {
             store: { key: "ef-part_interval" },
-            factor: -1.0 * 0.016, //FRAME_MS
+            factor: -0.001,
           },
           increase: {
             store: { key: "ef-part_interval" },
-            factor: 0.016, //FRAME_MS
+            factor: 0.001,
           },
           stick: {
             store: { key: "ef-part_interval" },
@@ -307,72 +315,72 @@ function brush_effect_particle(json) {
             label: { text: "X" },
             field: { store: { key: "ef-part_area" } },
             slider: {
-              snapValue: 0.01 / 5.0,
-              minValue: -2.5,
-              maxValue: 2.5,
+              snapValue: 0.01 / 10.0,
+              minValue: -5.0,
+              maxValue: 5.0,
               store: { key: "ef-part_area" }
             },
             decrease: {
               store: { key: "ef-part_area" },
-              factor: -0.1,
+              factor: -0.01,
             },
             increase: {
               store: { key: "ef-part_area" },
-              factor: 0.1,
+              factor: 0.01,
             },
           },
           y: {
             label: { text: "Y" },
             field: { store: { key: "ef-part_area" } },
             slider: {
-              snapValue: 0.01 / 5.0,
-              minValue: -2.5,
-              maxValue: 2.5,
+              snapValue: 0.01 / 10.0,
+              minValue: -5.0,
+              maxValue: 5.0,
               store: { key: "ef-part_area" }
             },
             decrease: {
               store: { key: "ef-part_area" },
-              factor: -0.1,
+              factor: -0.01,
             },
             increase: {
               store: { key: "ef-part_area" },
-              factor: 0.1,
+              factor: 0.01,
             },
           },
           z: {
             label: { text: "Width" },
             field: { store: { key: "ef-part_area" } },
             slider: {
-              snapValue: 0.01 / 5.0,
+              snapValue: 0.01 / 10.0,
               minValue: 0.0,
-              maxValue: 5.0,
+              maxValue: 10.0,
               store: { key: "ef-part_area" }
             },
             decrease: {
               store: { key: "ef-part_area" },
-              factor: -0.1,
+              factor: -0.01,
             },
             increase: {
               store: { key: "ef-part_area" },
-              factor: 0.1,
+              factor: 0.01,
             },
           },
           a: {
             label: { text: "Height" },
             field: { store: { key: "ef-part_area" } },
             slider: {
-              snapValue: 0.01 / 5.0,
+              snapValue: 0.01 / 10.0,
               minValue: 0.0,
-              maxValue: 5.0,
+              maxValue: 10.0,
               store: { key: "ef-part_area" },
             },
             decrease: {
               store: { key: "ef-part_area" },
-              factor: -0.1,
+              factor: -0.01,
             },
             increase: {
               store: { key: "ef-part_area" },
-              factor: 0.1,
+              factor: 0.01,
             },
           },
         },

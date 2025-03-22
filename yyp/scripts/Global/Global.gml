@@ -7,14 +7,16 @@ function _Global() constructor {
   ///@param {any} [defaultValue]
   ///@return {any}
   static get = function(name, defaultValue = null) {
-    return this.exists(name) ? variable_global_get(name) : defaultValue
+    gml_pragma("forceinline")
+    return Global.exists(name) ? variable_global_get(name) : defaultValue
   }
 
   ///@param {?String} name
   ///@param {any} value
   ///@return {Global}
   static set = function(name, value) {
-    if (this.exists(name)) {
+    gml_pragma("forceinline")
+    if (Global.exists(name)) {
       variable_global_set(name, value)
     }
     
@@ -25,8 +27,9 @@ function _Global() constructor {
   ///@param {any} [defaultValue]
   ///@return {any}
   static inject = function(name, defaultValue) {
-    if (!this.exists(name)) {
-      this.set(name, defaultValue)
+    gml_pragma("forceinline")
+    if (!Global.exists(name)) {
+      Global.set(name, defaultValue)
     }
 
     return this.get(name, defaultValue)
@@ -35,6 +38,7 @@ function _Global() constructor {
   ///@param {?String} name
   ///@return {Boolean}
   static exists = function(name) {
+    gml_pragma("forceinline")
     return Core.isType(name, String) && variable_global_exists(name)
   }
 }

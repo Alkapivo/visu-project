@@ -70,183 +70,6 @@ function VEStatusBar(_editor) constructor {
 
   ///@private
   ///@param {UIlayout} parent
-  ///@return {UILayout}
-  __factoryLayout = function(parent) {
-    return new UILayout(
-      {
-        name: "status-bar",
-        nodes: {
-          fpsLabel: {
-            name: "status-bar.fpsLabel",
-            x: function() { return this.context.x() + this.margin.left },
-            y: function() { return 0 },
-            width: function() { return 32 },
-          },
-          fpsValue: {
-            name: "status-bar.fpsValue",
-            x: function() { return this.context.nodes.fpsLabel.right() + this.margin.left },
-            y: function() { return 0 },
-            margin: { left: 2 },
-            width: function() { return 24 },
-          },
-          timestampLabel: {
-            name: "status-bar.timestampLabel",
-            x: function() { return this.context.nodes.fpsValue.right() + this.margin.left },
-            y: function() { return 0 },
-            width: function() { return 34 },
-          },
-          timestampValue: {
-            name: "status-bar.timestampValue",
-            x: function() { return this.context.nodes.timestampLabel.right() + this.margin.left },
-            y: function() { return 0 },
-            margin: { left: 2 },
-            width: function() { return 48 },
-          },
-          durationLabel: {
-            name: "status-bar.durationLabel",
-            x: function() { return this.context.nodes.timestampValue.right()
-              + this.margin.left },
-            y: function() { return 0 },
-            width: function() { return 52 },
-          },
-          durationValue: {
-            name: "status-bar.durationValue",
-            x: function() { return this.context.nodes.durationLabel.right()
-              + this.margin.left },
-            y: function() { return 0 },
-            margin: { left: 2 },
-            width: function() { return 48 },
-          },
-          bpmLabel: {
-            name: "status-bar.bpmLabel",
-            x: function() { return this.context.nodes.durationValue.right()
-              + this.margin.left },
-            y: function() { return 0 },
-            width: function() { return 30 },
-          },
-          bpmValue: {
-            name: "status-bar.bpmValue",
-            x: function() { return this.context.nodes.bpmLabel.right() + this.margin.left },
-            y: function() { return 0 },
-            margin: { left: 2 },
-            width: function() { return 32 },
-          },
-          bpmCountLabel: {
-            name: "status-bar.bpmCountLabel",
-            margin: { left: 4 },
-            x: function() { return this.context.nodes.bpmValue.right()
-              + this.margin.left },
-            y: function() { return 0 },
-            width: function() { return 44 },
-          },
-          bpmCountValue: {
-            name: "status-bar.bpmCountValue",
-            x: function() { return this.context.nodes.bpmCountLabel.right() + this.margin.left },
-            y: function() { return 0 },
-            margin: { left: 2 },
-            width: function() { return 32 },
-          },
-          bpmSubLabel: {
-            name: "status-bar.bpmSubLabel",
-            margin: { left: 4 },
-            x: function() { return this.context.nodes.bpmCountValue.right()
-              + this.margin.left },
-            y: function() { return 0 },
-            width: function() { return 30 },
-          },
-          bpmSubValue: {
-            name: "status-bar.bpmSubValue",
-            x: function() { return this.context.nodes.bpmSubLabel.right() + this.margin.left },
-            y: function() { return 0 },
-            margin: { left: 2 },
-            width: function() { return 32 },
-          },
-          gameModeLabel: {
-            name: "status-bar.gameModeLabel",
-            x: function() { return this.context.nodes.bpmSubValue.right()
-              + this.margin.left },
-            y: function() { return 0 },
-            width: function() { return 46 },
-          },
-          gameModeValue: {
-            name: "status-bar.gameModeValue",
-            x: function() { return this.context.nodes.gameModeLabel.right() + this.margin.left },
-            y: function() { return 0 },
-            margin: { left: 2 },
-            width: function() { return 74 },
-          },
-          autosaveLabel: {
-            name: "status-bar.autosaveLabel",
-            x: function() { return this.context.nodes.gameModeValue.right() + this.margin.left },
-            y: function() { return 0 },
-            margin: { left: 6 },
-            width: function() { return 64 },
-          },
-          autosaveCheckbox: {
-            name: "status-bar.autosaveLabel",
-            x: function() { return this.context.nodes.autosaveLabel.right() + this.margin.left },
-            y: function() { return 0 },
-            width: function() { return 24 },
-          },
-          updateLabel: {
-            name: "status-bar.updateLabel",
-            x: function() { return this.context.nodes.autosaveCheckbox.right() + this.margin.left },
-            y: function() { return 0 },
-            margin: { left: 6 },
-            width: function() { return 48 },
-          },
-          updateCheckbox: {
-            name: "status-bar.updateLabel",
-            x: function() { return this.context.nodes.updateLabel.right() + this.margin.left },
-            y: function() { return 0 },
-            width: function() { return 24 },
-          },
-          ws: {
-            name: "status-bar.ws",
-            x: function() { return this.context.nodes.stateLabel.left() 
-              - this.width() },
-            y: function() { return 0 },
-            margin: { left: 4 },
-            width: function() { return 58 },
-          },
-          stateLabel: {
-            name: "status-bar.stateLabel",
-            x: function() { return this.context.nodes.stateValue.left() 
-              - this.width() },
-            y: function() { return 0 },
-            width: function() { return 48 },
-          },
-          stateValue: {
-            name: "status-bar.stateValue",
-            x: function() { return this.context.nodes.videoLabel.left() 
-              - this.width() },
-            y: function() { return 0 },
-            margin: { left: 4 },
-            width: function() { return 52 },
-          },
-          videoLabel: {
-            name: "status-bar.videoLabel",
-            x: function() { return this.context.nodes.videoValue.left() 
-              - this.width() },
-            y: function() { return 0 },
-            width: function() { return 48 },
-          },
-          videoValue: {
-            name: "status-bar.videoValue",
-            x: function() { return this.context.x() + this.context.width()
-              - this.width() },
-            y: function() { return 0 },
-            margin: { left: 2 },
-            width: function() { return 64 },
-          }
-        }
-      }, 
-      parent
-    )
-  }
-
-  ///@private
-  ///@param {UIlayout} parent
   ///@return {Map<String, UI>}
   factoryContainers = function(parent) {
     static factoryLabel = function(json) {
@@ -296,165 +119,6 @@ function VEStatusBar(_editor) constructor {
       )
     }
 
-    static factoryBPMField = function(json) {
-      var struct = {
-        type: UITextField,
-        layout: json.layout,
-        text: 60,
-        updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-        config: {
-          key: "bpm",
-        },
-        store: {
-          key: "bpm",
-          callback: function(value, data) { 
-            var item = data.store.get("bpm")
-            if (item == null) {
-              return 
-            }
-
-            var bpm = item.get()
-            if (!Core.isType(bpm, Number)) {
-              return 
-            }
-            data.textField.setText(string(bpm))
-          },
-          set: function(value) {
-            var item = this.get()
-            if (item == null) {
-              return 
-            }
-
-            var parsedValue = NumberUtil.parse(value, null)
-            if (parsedValue == null) {
-              return
-            }
-            item.set(parsedValue)
-
-            Struct.set(Beans.get(BeanVisuController).track, "bpm", parsedValue)
-          },
-        },
-      }
-
-      return Struct.appendRecursiveUnique(
-        struct,
-        VEStyles.get("text-field"),
-        false
-      )
-    }
-
-    static factoryCountField = function(json) {
-      var struct = {
-        type: UITextField,
-        layout: json.layout,
-        text: 0,
-        updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-        config: { key: "bpm-count" },
-        store: {
-          key: "bpm-count",
-          callback: function(value, data) { 
-            var item = data.store.get("bpm-count")
-            if (item == null) {
-              return 
-            }
-
-            var bpmCount = item.get()
-            if (!Core.isType(bpmCount, Number)) {
-              return 
-            }
-            data.textField.setText(string(bpmCount))
-          },
-          set: function(value) {
-            var item = this.get()
-            if (item == null) {
-              return 
-            }
-
-            var parsedValue = NumberUtil.parse(value, null)
-            if (parsedValue == null) {
-              return
-            }
-            item.set(parsedValue)
-
-            Struct.set(Beans.get(BeanVisuController).track, "bpmCount", parsedValue)
-          },
-        },
-      }
-
-      return Struct.appendRecursiveUnique(
-        struct,
-        VEStyles.get("text-field"),
-        false
-      )
-    }
-
-    static factorySubField = function(json) {
-      var struct = {
-        type: UITextField,
-        layout: json.layout,
-        text: 0,
-        updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-        config: { key: "bpm-sub" },
-        store: {
-          key: "bpm-sub",
-          callback: function(value, data) { 
-            var item = data.store.get("bpm-sub")
-            if (item == null) {
-              return 
-            }
-
-            var bpmSub = item.get()
-            if (!Core.isType(bpmSub, Number)) {
-              return 
-            }
-            data.textField.setText(string(bpmSub))
-          },
-          set: function(value) {
-            var item = this.get()
-            if (item == null) {
-              return 
-            }
-
-            var parsedValue = NumberUtil.parse(value, null)
-            if (parsedValue == null) {
-              return
-            }
-            item.set(parsedValue)
-
-            Struct.set(Beans.get(BeanVisuController).track, "bpmSub", parsedValue)
-          },
-        },
-      }
-
-      return Struct.appendRecursiveUnique(
-        struct,
-        VEStyles.get("text-field"),
-        false
-      )
-    }
-
-    static factoryCheckbox = function(json) {
-      var struct = {
-        type: UICheckbox,
-        value: Struct.get(json, "value") == true,
-        layout: json.layout,
-        updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
-      }
-
-      if (Struct.contains(json, "callback")) {
-        Struct.set(struct, "callback", json.callback)
-      }
-
-      return Struct.appendRecursiveUnique(
-        struct,
-        {
-          spriteOn: { name: "visu_texture_checkbox_on" },
-          spriteOff: { name: "visu_texture_checkbox_off" },
-        },
-        false
-      )
-    }
-
     var controller = this
     var layout = this.factoryLayout(parent)
     var autosaveEnabled = Beans.get(BeanVisuEditorController).autosave.value
@@ -473,7 +137,7 @@ function VEStatusBar(_editor) constructor {
                 layout: { 
                   type: UILayoutType.HORIZONTAL,
                   width: function() { return 36 },
-                  margin: { left: 2, right: 2 },
+                  margin: { left: 6, right: 2 },
                 },
                 label: { text: "FPS" },
               },
@@ -485,14 +149,36 @@ function VEStatusBar(_editor) constructor {
               config: {
                 layout: { 
                   type: UILayoutType.HORIZONTAL,
-                  width: function() { return 24 },
-                  margin: { left: 2, right: 2 },
+                  width: (Core.getProperty("visu.editor.status-bar.render-real-fps", true)
+                    ? function() { return 34 }
+                    : function() { return 24 }),
+                  margin: { left: 0, right: 0 },
                 },
                 label: {
                   text: string(GAME_FPS),
-                  updateCustom: (Core.getProperty("visu.editor.status-bar.render-average-fps", true)
-                    ? function() { this.label.text = string(fps) }
-                    : function() { this.label.text = string(clamp(ceil(fps_real + 1), 0, 60)) }),
+                  updateCustom: (Core.getProperty("visu.editor.status-bar.render-real-fps", true)
+                    ? function() {
+                      var realFPS = Struct.getIfType(this, "realFPS", Number, round(fps_real))
+                      var realFPSCounter = Struct.getIfType(this, "realFPSCounter", Number, 0.0)
+                      var realFPSSum = Struct.getIfType(this, "realFPSSum", Number, 0.0)
+
+                      realFPSCounter += DeltaTime.apply(1.0)
+                      realFPSSum += fps_real
+                      if (realFPSCounter > (GAME_FPS / 2.0)) {
+                        realFPS = round(realFPSSum / realFPSCounter)
+                        realFPSCounter = 0.0
+                        realFPSSum = 0.0
+                      }
+
+                      Struct.set(this, "realFPS", realFPS)
+                      Struct.set(this, "realFPSCounter", realFPSCounter)
+                      Struct.set(this, "realFPSSum", realFPSSum)
+                      
+                      this.label.text = string(realFPS)
+                    }
+                    : function() {
+                      this.label.text = string(clamp(ceil(fps_real + 1), 1, GAME_FPS))
+                    }),
                 },
               },
             },

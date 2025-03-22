@@ -41,6 +41,7 @@ function CoinService(config = {}): Service() constructor {
     },
     "reset-templates": function(event) {
       this.templates.clear()
+      this.dispatcher.container.clear()
     },
   }))
 
@@ -85,5 +86,7 @@ function CoinService(config = {}): Service() constructor {
     }).runGC()
 
     return this
-  } 
+  }
+
+  this.send(new Event("reset-templates"))
 }

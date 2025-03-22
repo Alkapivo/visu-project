@@ -14,68 +14,80 @@ function ShroomTemplate(_name, json) constructor {
   mask = Struct.getIfType(json, "mask", Struct, null)
 
   ///@type {?Number}
-  lifespawnMax = Struct.getIfType(json, "lifespawnMax", Number)
+  lifespawnMax = Struct.getIfType(json, "lifespawnMax", Number, 15.0)
 
   ///@type {?Number}
-  healthPoints = Struct.getIfType(json, "healthPoints", Number)
+  healthPoints = Struct.getIfType(json, "healthPoints", Number, 1.0)
   
   ///@type {Boolean}
   hostile = Struct.getIfType(json, "hostile", Boolean, true)
 
   ///@type {Struct}
-  gameModes = Struct.appendUnique(
-    Struct.filter(Struct.getDefault(json, "gameModes", {}), function(gameMode, key) { 
-      return Core.isType(gameMode, Struct) && Core.isEnum(key, GameMode)
-    }),
-    SHROOM_GAME_MODES
-  )
+  //gameModes = Struct.appendUnique(
+  //  Struct.filter(Struct.getDefault(json, "gameModes", {}), function(gameMode, key) { 
+  //    return Core.isType(gameMode, Struct) && Core.isEnum(key, GameMode)
+  //  }),
+  //  SHROOM_GAME_MODES
+  //)
+  var _bulletHell = Struct.get(Struct.get(json, "gameModes"), "bulletHell")
+  gameModes = {
+    bulletHell: Optional.is(_bulletHell) ? _bulletHell : {},
+    platformer: {},
+    racing: {}
+  }
 
   //@return {Struct}
   serialize = function() {
-    var json = {
+    return {
       name: this.name,
-      sprite: this.sprite,
-      gameModes: this.gameModes,
+      sprite: JSON.clone(this.sprite),
+      mask: Optional.is(this.mask) ? JSON.clone(this.mask) : null,
+      lifespawnMax: this.lifespawnMax,
+      healthPoints: this.healthPoints,
+      hostile: this.hostile,
+      gameModes: JSON.clone(this.gameModes),
     }
+  }
 
-    if (Optional.is(this.mask)) {
-      Struct.set(json, "mask", this.mask)
+  serializeSpawn = function(x, y, speed, angle, uid) {
+    return {
+      name: this.name,
+      sprite: JSON.clone(this.sprite),
+      mask: Optional.is(this.mask) ? JSON.clone(this.mask) : null,
+      lifespawnMax: this.lifespawnMax,
+      healthPoints: this.healthPoints,
+      hostile: this.hostile,
+      gameModes: JSON.clone(this.gameModes),
+      x: x,
+      y: y,
+      speed: speed,
+      angle: angle,
+      uid: uid,
     }
-
-    if (Optional.is(this.lifespawnMax)) {
-      Struct.set(json, "lifespawnMax", this.lifespawnMax)
-    }
-
-    if (Optional.is(this.healthPoints)) {
-      Struct.set(json, "healthPoints", this.healthPoints)
-    }
-
-    return JSON.clone(json)
   }
 }
 
  
-///@param {ShroomTemplate} template
+///@param {Struct} template
 function Shroom(template): GridItem(template) constructor {
-  
-  ///@private
-  ///@type {Map<String, any>}
-  state = Struct.getDefault(template, "state", new Map(String, any))
 
   ///@type {Number}
-  lifespawnMax = Struct.getIfType(template, "lifespawnMax", Number, 15.0)
+  lifespawnMax = template.lifespawnMax
 
   ///@type {Number}
-  healthPoints = Core.isType(Struct.get(template, "healthPoints"), Number) 
-    ? template.healthPoints 
-    : 1
+  healthPoints = template.healthPoints
 
   ///@type {Boolean}
-  hostile = Struct.getIfType(template, "hostile", Boolean, true)
+  hostile = template.hostile
+
+  ///@private
+  ///@type {Map<String, any>}
+  state = new Map(String, any)
 
   ///@param {VisuController} controller
   ///@return {Shroom}
   static update = function(controller) {
+    gml_pragma("forceinline")
     if (Optional.is(this.gameMode)) {
       gameMode.update(this, controller)
     }
@@ -92,11 +104,9 @@ function Shroom(template): GridItem(template) constructor {
     return this
   }
 
-  this.gameModes
-    .set(GameMode.RACING, ShroomRacingGameMode(Struct
-      .getDefault(Struct.get(template, "gameModes"), "racing", {})))
-    .set(GameMode.BULLETHELL, ShroomBulletHellGameMode(Struct
-      .getDefault(Struct.get(template, "gameModes"), "bulletHell", {})))
-    .set(GameMode.PLATFORMER, ShroomPlatformerGameMode(Struct
-      .getDefault(Struct.get(template, "gameModes"), "platformer", {})))
+  this.gameModes.set(GameMode.BULLETHELL, ShroomBulletHellGameMode(template.gameModes.bulletHell))
+  //this.gameModes
+    //.set(GameMode.BULLETHELL, ShroomBulletHellGameMode(Struct.getDefault(Struct.get(template, "gameModes"), "bulletHell", {})))
+    //.set(GameMode.RACING, ShroomRacingGameMode(Struct.getDefault(Struct.get(template, "gameModes"), "racing", {})))
+    //.set(GameMode.PLATFORMER, ShroomPlatformerGameMode(Struct.getDefault(Struct.get(template, "gameModes"), "platformer", {})))
 }

@@ -6,32 +6,37 @@ function _Struct() constructor {
   ///@param {?Struct} struct
   ///@param {any} key
   ///@return {Boolean}
-  contains = function(struct, key) {
+  static contains = function(struct, key) {
+    gml_pragma("forceinline")
     return key != null && is_struct(struct) ? variable_struct_exists(struct, key) : false
   }
 
   ///@param {?Struct} struct
   ///@param {any} key
   ///@return {Boolean}
-  containsType = function(struct, key, type) {
-
-    return key != null && is_struct(struct) ? (Struct.getIfType(struct, key, type) !=  null) : false
+  static containsType = function(struct, key, type) {
+    gml_pragma("forceinline")
+    return key != null && is_struct(struct) 
+      ? (Struct.getIfType(struct, key, type) != null) :
+      false
   }
 
   ///@param {?Struct} struct
   ///@param {any} key
   ///@return {any}
-  get = function(struct, key) {
-    return key != null && is_struct(struct) ? variable_struct_get(struct, key) : null
+  static get = function(struct, key) {
+    gml_pragma("forceinline")
+    return key != null && is_struct(struct) ? struct[$ key] : null
   }
 
   ///@param {?Struct} struct
   ///@param {any} key
   ///@param {any} [defaultValue]
   ///@return {any}
-  getDefault = function(struct, key, defaultValue = null) {
+  static getDefault = function(struct, key, defaultValue = null) {
+    gml_pragma("forceinline")
     return key != null && is_struct(struct) && variable_struct_exists(struct, key)
-      ? variable_struct_get(struct, key)
+      ? struct[$ key]
       : defaultValue
   }
 
@@ -40,7 +45,8 @@ function _Struct() constructor {
   ///@param {Type} type
   ///@param {any} [defaultValue]
   ///@return {any}
-  getIfType = function(struct, key, type, defaultValue = null) {
+  static getIfType = function(struct, key, type, defaultValue = null) {
+    gml_pragma("forceinline")
     var value = Struct.get(struct, key)
     return Core.isType(value, type) ? value : defaultValue
   }
@@ -50,7 +56,8 @@ function _Struct() constructor {
   ///@param {Type} type
   ///@param {any} [defaultValue]
   ///@return {any}
-  getIfEnum = function(struct, key, type, defaultValue = null) {
+  static getIfEnum = function(struct, key, type, defaultValue = null) {
+    gml_pragma("forceinline")
     var value = Struct.get(struct, key)
     return Core.isEnum(value, type) ? value : defaultValue
   }
@@ -59,7 +66,8 @@ function _Struct() constructor {
   ///@param {any} key
   ///@param {any} value
   ///@return {?Struct}
-  inject = function(struct, key, value) {
+  static inject = function(struct, key, value) {
+    gml_pragma("forceinline")
     return Struct.contains(struct, key)
       ? Struct.get(struct, key) 
       : Struct.get(Struct.set(struct, key, value), key)
@@ -67,7 +75,8 @@ function _Struct() constructor {
 
   ///@param {?Struct} struct
   ///@return {?GMArray}
-  keys = function(struct) {
+  static keys = function(struct) {
+    gml_pragma("forceinline")
     return is_struct(struct) ? variable_struct_get_names(struct) : null
   }
 
@@ -75,23 +84,27 @@ function _Struct() constructor {
   ///@param {any} key
   ///@param {any} value
   ///@return {?Struct}
-  set = function(struct, key, value) {
+  static set = function(struct, key, value) {
+    gml_pragma("forceinline")
     if (key != null && is_struct(struct)) {
       variable_struct_set(struct, key, value)
     }
+
     return struct
   }
 
   ///@param {?Struct} struct
   ///@return {Number}
-  size = function(struct) {
+  static size = function(struct) {
+    gml_pragma("forceinline")
     return is_struct(struct) ? variable_struct_names_count(struct) : 0
   }
 
   ///@param {?Struct} struct
   ///@param {any} key
   ///@return {?Struct}
-  remove = function(struct, key)  {
+  static remove = function(struct, key) {
+    gml_pragma("forceinline")
     if (Struct.contains(struct, key)) {
       variable_struct_remove(struct, key)
     }
@@ -103,7 +116,8 @@ function _Struct() constructor {
   ///@param {Callable} callback
   ///@param {any} [acc]
   ///@return {Struct}
-  forEach = function(struct, callback, acc = null) {
+  static forEach = function(struct, callback, acc = null) {
+    gml_pragma("forceinline")
     var keys = Struct.keys(struct)
     var size = GMArray.size(keys)
     for (var index = 0; index < size; index++) {
@@ -119,7 +133,8 @@ function _Struct() constructor {
   ///@param {Callable} callback
   ///@param {any} [acc]
   ///@return {Struct}
-  filter = function(struct, callback, acc = null) {
+  static filter = function(struct, callback, acc = null) {
+    gml_pragma("forceinline")
     var filtered = {}
     var keys = Struct.keys(struct)
     var size = GMArray.size(keys)
@@ -138,7 +153,8 @@ function _Struct() constructor {
   ///@param {Callable} callback
   ///@param {any} [acc]
   ///@return {Struct}
-  map = function(struct, callback, acc = null) {
+  static map = function(struct, callback, acc = null) {
+    gml_pragma("forceinline")
     var mapped = {}
     var keys = Struct.keys(struct)
     var size = GMArray.size(keys)
@@ -155,7 +171,8 @@ function _Struct() constructor {
   ///@param {Callable} callback
   ///@param {any} [acc]
   ///@return {any}
-  find = function(struct, callback, acc = null) {
+  static find = function(struct, callback, acc = null) {
+    gml_pragma("forceinline")
     var keys = Struct.keys(struct)
     var size = GMArray.size(keys)
     for (var index = 0; index < size; index++) {
@@ -172,7 +189,8 @@ function _Struct() constructor {
   ///@param {Callable} callback
   ///@param {any} [acc]
   ///@return {any}
-  findKey = function(callback, acc = null) {
+  static findKey = function(callback, acc = null) {
+    gml_pragma("forceinline")
     var keys = Struct.keys(struct)
     var size = GMArray.size(keys)
     for (var index = 0; index < size; index++) {
@@ -190,7 +208,8 @@ function _Struct() constructor {
   ///@param {?Callable} [callback]
   ///@param {any} [acc]
   ///@return {Map}
-  toMap = function(struct, keyType = any, valueType = any, callback = null, acc = null) {
+  static toMap = function(struct, keyType = any, valueType = any, callback = null, acc = null) {
+    gml_pragma("forceinline")
     var map = new Map(keyType, valueType)
     var keys = Struct.keys(struct)
     var size = GMArray.size(keys)
@@ -214,7 +233,8 @@ function _Struct() constructor {
   ///@param {Callable} callback
   ///@param {any} [acc]
   ///@return {Array}
-  toArray = function(struct, callback, acc = null) {
+  static toArray = function(struct, callback, acc = null) {
+    gml_pragma("forceinline")
     var keys = Struct.keys(struct)
     var size = GMArray.size(keys)
     var arr = GMArray.create(any, size)
@@ -231,7 +251,7 @@ function _Struct() constructor {
   ///@param {any} value
   ///@param {Boolean} [bind]
   ///@return {Struct}
-  appendField = function(source, key, value, bind = true) {
+  static appendField = function(source, key, value, bind = true) {
     var struct = Core.isType(source, Struct) ? source : {}
     var _value = bind ? (Core.isType(value, BindIntent) ? value.bind(struct) : value) : value
     Struct.set(struct, key, _value)
@@ -242,7 +262,7 @@ function _Struct() constructor {
   ///@param {?Struct} [json]
   ///@param {Boolean} [bind]
   ///@return {Struct}
-  append = function(source = null, json = null, bind = true) {
+  static append = function(source = null, json = null, bind = true) {
     static _append = function(value, key, data) {
       Struct.appendField(data.source, key, value, data.bind)
     }
@@ -258,7 +278,7 @@ function _Struct() constructor {
   ///@param {?Struct} [json]
   ///@param {Boolean} [bind]
   ///@return {Struct}
-  appendRecursive = function(source = null, json = null, bind = true) {
+  static appendRecursive = function(source = null, json = null, bind = true) {
     static append = function(value, key, data) {
       if (Core.isType(value, Struct)) {
         if (Core.hasConstructor(value)) {
@@ -285,7 +305,7 @@ function _Struct() constructor {
   ///@param {any} value
   ///@param {Boolean} [bind]
   ///@return {Struct}
-  appendUniqueField = function(source, key, value, bind = true) {
+  static appendUniqueField = function(source, key, value, bind = true) {
     var struct = Core.isType(source, Struct) ? source : {}
     if (!Struct.contains(struct, key)) {
       this.appendField(struct, key, value, bind)
@@ -297,7 +317,7 @@ function _Struct() constructor {
   ///@param {?Struct} [json]
   ///@param {Boolean} [bind]
   ///@return {Struct}
-  appendUnique = function(source = null, json = null, bind = true) {
+  static appendUnique = function(source = null, json = null, bind = true) {
     static append = function(value, key, data) {
       Struct.appendUniqueField(data.source, key, value, data.bind)
     }
@@ -313,7 +333,7 @@ function _Struct() constructor {
   ///@param {?Struct} [json]
   ///@param {Boolean} [bind]
   ///@return {Struct}
-  appendRecursiveUnique = function(source = null, json = null, bind = true) {
+  static appendRecursiveUnique = function(source = null, json = null, bind = true) {
     static append = function(value, key, data) {
       if (Core.isType(value, Struct)) {
         if (Core.hasConstructor(value)) {
@@ -346,7 +366,7 @@ function _Struct() constructor {
   }
 
   ///@type {Struct}
-  parse = {
+  static parse = {
     ///@param {Struct} struct
     ///@param {String} key
     ///@param {?Boolean} defaultValue

@@ -14,3 +14,5 @@
   ///@type {?Callable}
   __onNetworkEvent = null
   
+	///@type {?Calllable}
+	__onHTTPEvent = null

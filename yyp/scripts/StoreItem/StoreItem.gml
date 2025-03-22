@@ -78,13 +78,15 @@ function StoreItem(_name, json) constructor {
   ///@param {String} name
   ///@return {Boolean}
   static findSubscriberByName = function(subscriber, index, name) {
+    gml_pragma("forceinline")
     return subscriber.name == name
   }
 
   ///@param {Struct} config
   ///@return {StoreItem}
   ///@throws {Exception}
-  addSubscriber = function(config) {
+  static addSubscriber = function(config) {
+    gml_pragma("forceinline")
     var subscriber = new StoreItemSubscriber(config)
     if (this.containsSubscriber(subscriber.name)) {
       if (Struct.get(config, "overrideSubscriber")) {
@@ -103,13 +105,15 @@ function StoreItem(_name, json) constructor {
 
   ///@param {String} name
   ///@return {?StoreItemSubscriber}
-  getSubscriber = function(name) {
+  static getSubscriber = function(name) {
+    gml_pragma("forceinline")
     return this.subscribers.find(this.findSubscriberByName, name)
   }
 
   ///@param {String} name
   ///@return {?StoreItemSubscriber}
-  removeSubscriber = function(name) {
+  static removeSubscriber = function(name) {
+    gml_pragma("forceinline")
     var index = this.subscribers.findIndex(this.findSubscriberByName, name)
     if (Core.isType(index, Number)) {
       subscribers.remove(index)
@@ -120,7 +124,8 @@ function StoreItem(_name, json) constructor {
 
   ///@param {String} name
   ///@return {Boolean}
-  containsSubscriber = function(name) {
+  static containsSubscriber = function(name) {
+    gml_pragma("forceinline")
     return Core.isType(this.subscribers
       .find(this.findSubscriberByName, name), StoreItemSubscriber)
   }

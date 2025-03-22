@@ -78,7 +78,7 @@ function VisuEditorController() constructor {
     },
     "tool": {
       type: String,
-      value: ToolType.BRUSH,
+      value: ToolType.SELECT,
       passthrough: function(value) {
         return Core.isEnum(value, ToolType) ? value : this.value
       }
@@ -161,7 +161,7 @@ function VisuEditorController() constructor {
       type: Number,
       value: Assert.isType(Visu.settings.getValue("visu.editor.timeline-zoom", 10), Number),
       passthrough: function(value) {
-        return clamp(value, 5, 20)
+        return clamp(value, 5, 30)
       },
     },
   })
@@ -447,10 +447,10 @@ function VisuEditorController() constructor {
     this.store.get("render-event").addSubscriber(Visu.generateSettingsSubscriber("visu.editor.render-event"))
     this.store.get("render-timeline").addSubscriber(Visu.generateSettingsSubscriber("visu.editor.render-timeline"))
     this.store.get("render-trackControl").addSubscriber(Visu.generateSettingsSubscriber("visu.editor.render-track-control"))
-    this.store.get("render-sceneConfigPreview").addSubscriber(Visu.generateSettingsSubscriber("visu.editor.render-sceneConfigPreview"))
+    this.store.get("render-sceneConfigPreview").addSubscriber(Visu.generateSettingsSubscriber("visu.editor.render-scene-config-preview"))
     this.store.get("render-brush").addSubscriber(Visu.generateSettingsSubscriber("visu.editor.render-brush"))
     this.store.get("timeline-zoom").addSubscriber(Visu.generateSettingsSubscriber("visu.editor.timeline-zoom"))
-
+    
     this.layout = this.factoryLayout()
 
     if (this.renderUI) {
@@ -553,55 +553,116 @@ function VisuEditorController() constructor {
   ///@private
   ///@return {VisuEditorController}
   updateLayout = function() {
-    static updateAccordion = function(container, key, enable) {
+    static updateAccordion = function(container, key, acc) {
       if (key == "_ve-accordion_accordion-items"
           || key == "_ve-accordion_accordion-options") {
-        container.enable = enable
-      } else if (!enable) {
+        container.enable = acc.enable
+      } else if (!acc.enable) {
         container.enable = false
       }
+
+      if (!acc.updateTimer) {
+        return
+      }
+
+      container.finishUpdateTimer()
     }
 
+    var lerpFactor = 0.2
     var renderBrush = this.store.getValue("render-brush")
     var brushNode = Struct.get(this.layout.nodes, "brush-toolbar")
-    brushNode.minWidth = renderBrush ? 288 : 0
-    brushNode.maxWidth = renderBrush ? round(GuiWidth() * 0.37) : 0
-    this.brushToolbar.containers.forEach(function(container, key, enable) {
-      container.enable = enable
-    }, renderBrush)
+    var brushNodePreviousMaxWidth = brushNode.maxWidth
+    brushNode.minWidth = floor(renderBrush 
+      ? lerp(brushNode.minWidth, 288, lerpFactor)
+      : lerp(brushNode.minWidth, 0, lerpFactor))
+    brushNode.maxWidth = floor(renderBrush
+      ? lerp(brushNode.maxWidth, round(GuiWidth() * 0.37), lerpFactor)
+      : lerp(brushNode.maxWidth, 0, lerpFactor))
+    this.brushToolbar.containers.forEach(function(container, key, acc) {
+      container.enable = acc.enable
+      if (!acc.updateTimer) {
+        return
+      }
+
+      container.finishUpdateTimer()
+    }, {
+      enable: brushNode.maxWidth > 24,
+      updateTimer: brushNodePreviousMaxWidth != brushNode.maxWidth
+          && choose(false, false, true),
+    })
 
     var renderTimeline = this.store.getValue("render-timeline")
     var timelineNode = Struct.get(this.layout.nodes, "timeline")
-    timelineNode.minHeight = renderTimeline ? 96 : 0
-    timelineNode.maxHeight = renderTimeline ? round(GuiHeight() * 0.58) : 0
+    var timelineNodePreviousMaxHeight = timelineNode.maxHeight
+    timelineNode.minHeight = floor(renderTimeline
+      ? lerp(timelineNode.minHeight, 96, lerpFactor)
+      : lerp(timelineNode.minHeight, 0, lerpFactor))
+    timelineNode.maxHeight = floor(renderTimeline
+      ? lerp(timelineNode.maxHeight, round(GuiHeight() * 0.58), lerpFactor)
+      : lerp(timelineNode.maxHeight, 0, lerpFactor))
+    var timelineAcc = {
+      enable: timelineNode.maxHeight > 24,
+      updateTimer: timelineNodePreviousMaxHeight != timelineNode.maxHeight
+          || brushNodePreviousMaxWidth != brushNode.maxWidth
+          && choose(false, false, true),
+    }
     switch (this.timeline.channelsMode) {
       case "list":
-        this.timeline.containers.forEach(function(container, key, enable) {
-          container.enable = key == "ve-timeline-channel-settings" ? false : enable
-        }, renderTimeline)
+        this.timeline.containers.forEach(function(container, key, acc) {
+          container.enable = key == "ve-timeline-channel-settings" 
+            ? false
+            : acc.enable
+
+          if (!acc.updateTimer) {
+            return
+          }
+    
+          container.finishUpdateTimer()
+        }, timelineAcc)
         break
       case "settings":
-        this.timeline.containers.forEach(function(container, key, enable) {
-          container.enable = key == "ve-timeline-channels" || key == "ve-timeline-form" ? false : enable
-        }, renderTimeline)
+        this.timeline.containers.forEach(function(container, key, acc) {
+          container.enable = key == "ve-timeline-channels" || key == "ve-timeline-form"
+            ? false
+            : acc.enable
+
+          if (!acc.updateTimer) {
+            return
+          }
+    
+          container.finishUpdateTimer()
+        }, timelineAcc)
         break
     }
-    
 
     var renderEvent = this.store.getValue("render-event")
     var accordionNode = Struct.get(this.layout.nodes, "accordion")
-    accordionNode.minWidth = renderEvent ? 288 : 0
-    accordionNode.maxWidth = renderEvent ? round(GuiWidth() * 0.37) : 0
-    this.accordion.containers.forEach(updateAccordion, renderEvent)
-    this.accordion.templateToolbar.containers.forEach(updateAccordion, renderEvent)
-    this.accordion.eventInspector.containers.forEach(updateAccordion, renderEvent)
+    var accordionNodePreviousMaxWidth = accordionNode.maxWidth
+    accordionNode.minWidth = floor(renderEvent
+      ? lerp(accordionNode.minWidth, 288, lerpFactor)
+      : lerp(accordionNode.minWidth, 0, lerpFactor))
+    accordionNode.maxWidth = floor(renderEvent
+      ? lerp(accordionNode.maxWidth, round(GuiWidth() * 0.37), lerpFactor)
+      : lerp(accordionNode.maxWidth, 0, lerpFactor))
+    var accordionAcc = {
+      enable: accordionNode.maxWidth > 24,
+      updateTimer: timelineNodePreviousMaxHeight != timelineNode.maxHeight
+          || accordionNodePreviousMaxWidth != accordionNode.maxWidth
+          && choose(false, false, true),
+    }
+
+    this.accordion.containers.forEach(updateAccordion, accordionAcc)
+    this.accordion.templateToolbar.containers.forEach(updateAccordion, accordionAcc)
+    this.accordion.eventInspector.containers.forEach(updateAccordion, accordionAcc)
 
     var renderTrackControl = this.store.getValue("render-trackControl")
     var trackControlNode = Struct.get(this.layout.nodes, "track-control")
-    trackControlNode.percentageHeight = renderTrackControl ? 1.0 : 0.0
+    trackControlNode.percentageHeight = renderTrackControl
+      ? lerp(trackControlNode.percentageHeight, 1.0, lerpFactor * 2.0)
+      : lerp(trackControlNode.percentageHeight, 0.0, lerpFactor * 2.0)
     this.trackControl.containers.forEach(function(container, key, enable) {
       container.enable = enable
-    }, renderTrackControl)
+    }, trackControlNode.percentageHeight > 0)
 
     var renderSceneConfigPreview = this.store.getValue("render-sceneConfigPreview")
     this.sceneConfigPreview.containers.forEach(function(container, key, enable) {
@@ -679,18 +740,18 @@ function VisuEditorController() constructor {
       return this
     }
 
-    //try {
+    try {
       ///@description reset UI timers after resize to avoid ghost effect
       if (Beans.get(BeanVisuController).displayService.state == "resized") {
         this.uiService.containers.forEach(this.resetUITimer)
       }
       this.uiService.update()
-    //} catch (exception) {
-    //  var message = $"'updateUIService' set fatal error: {exception.message}"
-    //  Logger.error(BeanVisuEditorController, message)
-    //  Core.printStackTrace()
-    //  this.send(new Event("spawn-popup", { message: message }))
-    //}
+    } catch (exception) {
+      var message = $"'updateUIService' set fatal error: {exception.message}"
+      Logger.error(BeanVisuEditorController, message)
+      Core.printStackTrace()
+      this.send(new Event("spawn-popup", { message: message }))
+    }
 
     return this
   }

@@ -106,7 +106,7 @@ function VEAccordion(_editor, config = null) constructor {
           "options": {
             name: "ve-accordion.options",
             x: function() { return this.context.x() + this.context.width() },
-            width: function() { return 24 },
+            width: function() { return 20 },
             height: function() { return 420 },
           },
         }

@@ -19,7 +19,9 @@ function SubtitleService(config = null) constructor {
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "add": function(event) {
       var lines = new Array(String)
-      var template = Assert.isType(this.getTemplate(event.data.template), SubtitleTemplate)
+      var template = Core.isType(event.data.template, SubtitleTemplate)
+        ? event.data.template
+        : Assert.isType(this.getTemplate(event.data.template), SubtitleTemplate)
 
       GPU.set.font(event.data.font.asset)
       template.lines.forEach(function(line, index, acc) {
@@ -38,7 +40,7 @@ function SubtitleService(config = null) constructor {
       })
 
       var subtitle = new Subtitle({
-        template: event.data.template,
+        template: template.name,
         lines: lines,
         font: event.data.font,
         fontHeight: event.data.fontHeight,
@@ -116,10 +118,11 @@ function SubtitleService(config = null) constructor {
       this.executor.add(task)
     },
     "clear-subtitle": function(event) {
-      this.executor.tasks.clear()
+      this.executor.tasks.forEach(TaskUtil.fullfill).clear()
     },
     "reset-templates": function(event) {
       this.templates.clear()
+      this.dispatcher.container.clear()
     },
   }))
 

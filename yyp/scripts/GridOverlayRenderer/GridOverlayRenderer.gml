@@ -51,11 +51,18 @@ function GridOverlayRenderer() constructor {
       GPU.set.blendModeExt(task.state.get("blendModeSource"), task.state.get("blendModeTarget"))
       GPU.set.blendEquation(task.state.get("blendEquation"), task.state.get("blendEquationAlpha"))
       
-      var render = task.state.get("tiled") ? sprite.renderTiled : sprite.render
-      render(
-        ((sprite.texture.offsetX / sprite.texture.width) * acc.width) - _x,
-        ((sprite.texture.offsetY / sprite.texture.height) * acc.height) - _y
-      )
+      if (task.state.get("tiled")) {
+        sprite.renderTiled(
+          ((sprite.texture.offsetX / sprite.texture.width) * acc.width) - _x,
+          ((sprite.texture.offsetY / sprite.texture.height) * acc.height) - _y
+        )
+      } else {
+        sprite.render(
+          ((sprite.texture.offsetX / sprite.texture.width) * acc.width) - _x,
+          ((sprite.texture.offsetY / sprite.texture.height) * acc.height) - _y
+        )
+      }
+
       GPU.reset.blendEquation()
       GPU.reset.blendMode()
     }
@@ -92,11 +99,17 @@ function GridOverlayRenderer() constructor {
       GPU.set.blendModeExt(task.state.get("blendModeSource"), task.state.get("blendModeTarget"))
       GPU.set.blendEquation(task.state.get("blendEquation"), task.state.get("blendEquationAlpha"))
 
-      var render = task.state.get("tiled") ? sprite.renderTiled : sprite.render
-      render(
-        ((sprite.texture.offsetX / sprite.texture.width) * acc.width) - _x,
-        ((sprite.texture.offsetY / sprite.texture.height) * acc.height) - _y
-      )
+      if (task.state.get("tiled")) {
+        sprite.renderTiled(
+          ((sprite.texture.offsetX / sprite.texture.width) * acc.width) - _x,
+          ((sprite.texture.offsetY / sprite.texture.height) * acc.height) - _y
+        )
+      } else {
+        sprite.render(
+          ((sprite.texture.offsetX / sprite.texture.width) * acc.width) - _x,
+          ((sprite.texture.offsetY / sprite.texture.height) * acc.height) - _y
+        )
+      }
       GPU.reset.blendEquation()
       GPU.reset.blendMode()
     }

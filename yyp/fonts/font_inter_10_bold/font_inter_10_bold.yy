@@ -135,8 +135,8 @@
   "size":10.0,
   "styleName":"Bold",
   "textureGroupId":{
-    "name":"Default",
-    "path":"texturegroups/Default",
+    "name":"texturegroup_ui",
+    "path":"texturegroups/texturegroup_ui",
   },
   "TTFName":"${project_dir}\\fonts\\font_inter_12_regular\\Inter-Regular.ttf",
   "usesSDF":false,

@@ -9,7 +9,8 @@ function _Assert() constructor {
   ///@param {?String} [message]
   ///@throws {InvalidAssertException}
   ///@return {Boolean}
-  areEqual = function(a, b, message = null) {
+  static areEqual = function(a, b, message = null) {
+    gml_pragma("forceinline")
     if (a != b) {
       Logger.error("Assert.areEqual", message == null ? "Assert exception." : message)
       throw new InvalidAssertException(message)
@@ -21,7 +22,8 @@ function _Assert() constructor {
   ///@param {?String} [message]
   ///@throws {InvalidAssertException}
   ///@return {Boolean}
-  isTrue = function(object, message = null) {
+  static isTrue = function(object, message = null) {
+    gml_pragma("forceinline")
     if (object != true) {
       Logger.error("Assert.isTrue", message == null ? "Assert exception." : message)
       throw new InvalidAssertException(message)
@@ -33,7 +35,8 @@ function _Assert() constructor {
   ///@param {?String} [message]
   ///@throws {InvalidAssertException}
   ///@return {Boolean}
-  isFalse = function(object, message = null) {
+  static isFalse = function(object, message = null) {
+    gml_pragma("forceinline")
     if (object != false) {
       Logger.error("Assert.isFalse", message == null ? "Assert exception." : message)
       throw new InvalidAssertException(message)
@@ -46,7 +49,8 @@ function _Assert() constructor {
   ///@param {?String} [message]
   ///@throws {InvalidAssertException}
   ///@return {any}
-  isType = function(object, type, message = null) {
+  static isType = function(object, type, message = null) {
+    gml_pragma("forceinline")
     if (!Core.isType(object, type)) {
       Logger.error("Assert.isType", message == null ? "Assert exception." : message)
       throw new InvalidAssertException(message)
@@ -59,7 +63,8 @@ function _Assert() constructor {
   ///@param {?String} [message]
   ///@throws {InvalidAssertException}
   ///@return {Enum}
-  isEnum = function(object, enumerable, message = null) {
+  static isEnum = function(object, enumerable, message = null) {
+    gml_pragma("forceinline")
     if (!Core.isEnum(object, enumerable)) {
       Logger.error("Assert.isEnum", message == null ? "Assert exception." : message)
       throw new InvalidAssertException(message)
@@ -72,7 +77,8 @@ function _Assert() constructor {
   ///@param {?String} [message]
   ///@throws {InvalidAssertException}
   ///@return {Enum}
-  isEnumKey = function(object, enumerable, message = null) {
+  static isEnumKey = function(object, enumerable, message = null) {
+    gml_pragma("forceinline")
     if (!Core.isEnumKey(object, enumerable)) {
       Logger.error("Assert.isEnumKey", message == null ? "Assert exception." : message)
       throw new InvalidAssertException(message)
@@ -84,7 +90,8 @@ function _Assert() constructor {
   ///@throws {InvalidAssertException}
   ///@param {?String} [message]
   ///@return {String}
-  fileExists = function(path, message = null) {
+  static fileExists = function(path, message = null) {
+    gml_pragma("forceinline")
     if (!Core.isType(path, String) && !file_exists(path)) {
       Logger.error("Assert.fileExists", message == null ? "Assert exception." : message)
       throw new InvalidAssertException(message)

@@ -26,6 +26,14 @@ function _Visu() constructor {
   _assets = null
 
   ///@private
+  ///@type {?String}
+  _version = null
+
+  ///@private
+  ///@type {?String}
+  _serverVersion = null
+
+  ///@private
   ///@type {?CLIParamParser}
   _cliParser = null
 
@@ -275,11 +283,11 @@ function _Visu() constructor {
     "particle-player-bomb":{
       "shape":"RING",
       "alpha":{
-        "halfway":0.80000000000000004,
+        "halfway":1.0,
         "finish":0.0,
-        "start":0.5
+        "start":0.7
       },
-      "blend":false,
+      "blend":true,
       "scale":{
         "x":1.0,
         "y":1.0
@@ -302,8 +310,8 @@ function _Visu() constructor {
         "relative":0.0
       },
       "life":{
-        "minValue":30.0,
-        "maxValue":45.0
+        "minValue":45.0,
+        "maxValue":60.0
       },
       "color":{
         "halfway":"#FFB400",
@@ -328,9 +336,9 @@ function _Visu() constructor {
       "alpha":{
         "halfway":0.80000000000000004,
         "finish":0.0,
-        "start":0.20000000000000001
+        "start":1.00000000000000001
       },
-      "blend":false,
+      "blend":true,
       "scale":{
         "x":1.0,
         "y":1.0
@@ -379,9 +387,9 @@ function _Visu() constructor {
       "alpha":{
         "halfway":0.5,
         "finish":0.0,
-        "start":0.80000000000000004
+        "start":1.00000000000000004
       },
-      "blend":false,
+      "blend":true,
       "scale":{
         "x":1.0,
         "y":1.0
@@ -430,9 +438,9 @@ function _Visu() constructor {
       "alpha":{
         "halfway":0.80000000000000004,
         "finish":0.0,
-        "start":0.29999999999999999
+        "start":1.09999999999999999
       },
-      "blend":false,
+      "blend":true,
       "scale":{
         "x":1.0,
         "y":1.0
@@ -474,6 +482,108 @@ function _Visu() constructor {
         "minValue":0.0,
         "maxValue":0.20000000000000001,
         "wiggle":0.0
+      }
+    },
+    "particle-shroom-death":{
+      "shape":"RING",
+      "alpha":{
+        "halfway":1.0,
+        "finish":0.0,
+        "start":1.0
+      },
+      "blend":true,
+      "speed":{
+        "increase":0.0,
+        "minValue":0.0,
+        "wiggle":0.0,
+        "maxValue":0.0
+      },
+      "gravity":{
+        "angle":0.0,
+        "amount":0.0
+      },
+      "angle":{
+        "increase":-3.0,
+        "minValue":0.0,
+        "wiggle":2.0,
+        "maxValue":360.0
+      },
+      "color":{
+        "halfway":"#0049FF",
+        "finish":"#74C7FF",
+        "start":"#8FCFFF"
+      },
+      "size":{
+        "increase":0.5,
+        "minValue":0.0,
+        "wiggle":0.0,
+        "maxValue":0.20000000000000001
+      },
+      "life":{
+        "minValue":50.0,
+        "maxValue":70.0
+      },
+      "scale":{
+        "x":1.0,
+        "y":1.0
+      },
+      "orientation":{
+        "increase":5.0,
+        "minValue":0.0,
+        "wiggle":1.0,
+        "relative":0.0,
+        "maxValue":360.0
+      }
+    },
+    "particle-shroom-damage":{
+      "shape":"RING",
+      "alpha":{
+        "halfway":1.0,
+        "finish":0.0,
+        "start":1.0
+      },
+      "blend":true,
+      "speed":{
+        "increase":0.0,
+        "minValue":0.0,
+        "wiggle":0.0,
+        "maxValue":0.0
+      },
+      "gravity":{
+        "angle":0.0,
+        "amount":0.0
+      },
+      "angle":{
+        "increase":-3.0,
+        "minValue":0.0,
+        "wiggle":2.0,
+        "maxValue":360.0
+      },
+      "color":{
+        "halfway":"#FF0061",
+        "finish":"#4961FF",
+        "start":"#FFCF00"
+      },
+      "size":{
+        "increase":1.0,
+        "minValue":0.0,
+        "wiggle":0.0,
+        "maxValue":2.0
+      },
+      "life":{
+        "minValue":30.0,
+        "maxValue":45.0
+      },
+      "scale":{
+        "x":1.0,
+        "y":1.0
+      },
+      "orientation":{
+        "increase":5.0,
+        "minValue":0.0,
+        "wiggle":1.0,
+        "relative":0.0,
+        "maxValue":360.0
       }
     },
   }
@@ -549,6 +659,74 @@ function _Visu() constructor {
       "asset": texture_white,
       "file": ""
     },
+    "texture_hechan_3": {
+      "asset": texture_hechan_3,
+      "file": "",
+    },
+    "texture_hechan_3_background": {
+      "asset": texture_hechan_3_background,
+      "file": "",
+    },
+    "texture_hechan_3_abstract": {
+      "asset": texture_hechan_3_abstract,
+      "file": "",
+    },
+    "texture_bullet_blue": {
+      "asset": texture_bullet_blue,
+      "file": "",
+    },
+    "texture_bullet_circle_blue": {
+      "asset": texture_bullet_circle_blue,
+      "file": "",
+    },
+    "texture_shroom_baron": {
+      "asset": texture_shroom_baron,
+      "file": "",
+    },
+    "texture_shroom_baron_blue": {
+      "asset": texture_shroom_baron_blue,
+      "file": "",
+    },
+    "texture_shroom_baron_green": {
+      "asset": texture_shroom_baron_green,
+      "file": "",
+    },
+    "texture_shroom_baron_magenta": {
+      "asset": texture_shroom_baron_magenta,
+      "file": "",
+    },
+    "texture_shroom_baron_red": {
+      "asset": texture_shroom_baron_red,
+      "file": "",
+    },
+    "texture_shroom_baron_yellow": {
+      "asset": texture_shroom_baron_yellow,
+      "file": "",
+    },
+    "texture_shroom_bazyl": {
+      "asset": texture_shroom_bazyl,
+      "file": "",
+    },
+    "texture_shroom_bazyl_blue": {
+      "asset": texture_shroom_bazyl_blue,
+      "file": "",
+    },
+    "texture_shroom_bazyl_green": {
+      "asset": texture_shroom_bazyl_green,
+      "file": "",
+    },
+    "texture_shroom_bazyl_magenta": {
+      "asset": texture_shroom_bazyl_magenta,
+      "file": "",
+    },
+    "texture_shroom_bazyl_red": {
+      "asset": texture_shroom_bazyl_red,
+      "file": "",
+    },
+    "texture_shroom_bazyl_yellow": {
+      "asset": texture_shroom_bazyl_yellow,
+      "file": "",
+    },
   } 
 
   ///@return {Struct}
@@ -594,6 +772,23 @@ function _Visu() constructor {
     }
 
     return this._assets
+  }
+
+  ///@return {String}
+  static version = function() {
+    if (this._version == null) {
+      var year = string_replace(string_format(date_get_year(GM_build_date) mod 100, 2, 0), " ", "0")
+      var month = string_replace(string_format(date_get_month(GM_build_date), 2, 0), " ", "0")
+      var day = string_replace(string_format(date_get_day(GM_build_date), 2, 0), " ", "0")
+      this._version = $"{year}.{month}.{day}"
+    }
+
+    return this._version
+  }
+
+  ///@return {?String}
+  static serverVersion = function() {
+    return this._serverVersion
   }
 
   ///@return {CLIParamParser}
@@ -803,13 +998,14 @@ function _Visu() constructor {
     this.settings.set(new SettingEntry({ name: "visu.editor.autosave", type: SettingTypes.BOOLEAN, defaultValue: false }))
       .set(new SettingEntry({ name: "visu.language", type: SettingTypes.STRING, defaultValue: LanguageType.en_EN }))
       .set(new SettingEntry({ name: "visu.fullscreen", type: SettingTypes.BOOLEAN, defaultValue: false }))
+      .set(new SettingEntry({ name: "visu.server.enable", type: SettingTypes.BOOLEAN, defaultValue: false }))
       .set(new SettingEntry({ name: "visu.debug", type: SettingTypes.BOOLEAN, defaultValue: false }))
       .set(new SettingEntry({ name: "visu.debug.render-entities-mask", type: SettingTypes.BOOLEAN, defaultValue: false }))
       .set(new SettingEntry({ name: "visu.debug.render-debug-chunks", type: SettingTypes.BOOLEAN, defaultValue: false }))
       .set(new SettingEntry({ name: "visu.debug.render-surfaces", type: SettingTypes.BOOLEAN, defaultValue: false }))
       .set(new SettingEntry({ name: "visu.god-mode", type: SettingTypes.BOOLEAN, defaultValue: false }))
-      .set(new SettingEntry({ name: "visu.optimalization.sort-entities-by-txgroup", type: SettingTypes.BOOLEAN, defaultValue: true }))
-      .set(new SettingEntry({ name: "visu.optimalization.iterate-entities-once", type: SettingTypes.BOOLEAN, defaultValue: true }))
+      .set(new SettingEntry({ name: "visu.optimalization.sort-entities-by-txgroup", type: SettingTypes.BOOLEAN, defaultValue: false }))
+      .set(new SettingEntry({ name: "visu.optimalization.iterate-entities-once", type: SettingTypes.BOOLEAN, defaultValue: false }))
       .set(new SettingEntry({ name: "visu.window.width", type: SettingTypes.NUMBER, defaultValue: 1400 }))
       .set(new SettingEntry({ name: "visu.window.height", type: SettingTypes.NUMBER, defaultValue: 900 }))
       .set(new SettingEntry({ name: "visu.interface.scale", type: SettingTypes.NUMBER, defaultValue: 1 }))
@@ -827,17 +1023,18 @@ function _Visu() constructor {
       .set(new SettingEntry({ name: "visu.graphics.shader-quality", type: SettingTypes.NUMBER, defaultValue: 0.5 }))
       .set(new SettingEntry({ name: "visu.audio.ost-volume", type: SettingTypes.NUMBER, defaultValue: 1.0 }))
       .set(new SettingEntry({ name: "visu.audio.sfx-volume", type: SettingTypes.NUMBER, defaultValue: 0.5 }))
+      .set(new SettingEntry({ name: "visu.editor.enable", type: SettingTypes.BOOLEAN, defaultValue: false }))
       .set(new SettingEntry({ name: "visu.editor.bpm", type: SettingTypes.NUMBER, defaultValue: 120 }))
       .set(new SettingEntry({ name: "visu.editor.bpm-count", type: SettingTypes.NUMBER, defaultValue: 0 }))
       .set(new SettingEntry({ name: "visu.editor.bpm-sub", type: SettingTypes.NUMBER, defaultValue: 2 }))
       .set(new SettingEntry({ name: "visu.editor.snap", type: SettingTypes.BOOLEAN, defaultValue: true }))
       .set(new SettingEntry({ name: "visu.editor.render-event", type: SettingTypes.BOOLEAN, defaultValue: false }))
       .set(new SettingEntry({ name: "visu.editor.render-timeline", type: SettingTypes.BOOLEAN, defaultValue: false }))
-      .set(new SettingEntry({ name: "visu.editor.render-track-control", type: SettingTypes.BOOLEAN, defaultValue: true }))
-      .set(new SettingEntry({ name: "visu.editor.render-scene-config-preview", type: SettingTypes.BOOLEAN, defaultValue: true }))
+      .set(new SettingEntry({ name: "visu.editor.render-track-control", type: SettingTypes.BOOLEAN, defaultValue: false }))
+      .set(new SettingEntry({ name: "visu.editor.render-scene-config-preview", type: SettingTypes.BOOLEAN, defaultValue: false }))
       .set(new SettingEntry({ name: "visu.editor.render-brush", type: SettingTypes.BOOLEAN, defaultValue: false }))
       .set(new SettingEntry({ name: "visu.editor.accordion.render-event-inspector", type: SettingTypes.BOOLEAN, defaultValue: false }))
-      .set(new SettingEntry({ name: "visu.editor.accordion.render-template-toolbar", type: SettingTypes.BOOLEAN, defaultValue: true }))
+      .set(new SettingEntry({ name: "visu.editor.accordion.render-template-toolbar", type: SettingTypes.BOOLEAN, defaultValue: false }))
       .set(new SettingEntry({ name: "visu.editor.timeline-zoom", type: SettingTypes.NUMBER, defaultValue: 10 }))
       .set(new SettingEntry({ name: "visu.keyboard.player.up", type: SettingTypes.NUMBER, defaultValue: KeyboardKeyType.ARROW_UP }))
       .set(new SettingEntry({ name: "visu.keyboard.player.down", type: SettingTypes.NUMBER, defaultValue: KeyboardKeyType.ARROW_DOWN }))
@@ -892,6 +1089,18 @@ function _Visu() constructor {
 
     var layerId = Scene.fetchLayer(layerName, layerDefaultDepth)
 
+    if (!Beans.exists(BeanHTTPService)) {
+      Beans.add(Beans.factory(BeanHTTPService, GMServiceInstance, layerId,
+        new HTTPService({
+          eventPump: {
+            enableLogger: true,
+          },
+          executor: {
+            enableLogger: true,
+          }
+        })))
+    }
+
     if (!Beans.exists(BeanFileService)) {
       Beans.add(Beans.factory(BeanFileService, GMServiceInstance, layerId,
         new FileService({
@@ -945,7 +1154,7 @@ function _Visu() constructor {
         new TestRunner()))
     }
 
-    var enableEditor = Core.getProperty("visu.editor.enable", false)
+    var enableEditor = this.settings.getValue("visu.editor.enable", false)
     if (!Beans.exists(BeanVisuEditorIO) && enableEditor) {
       Beans.add(Beans.factory(BeanVisuEditorIO, GMServiceInstance, layerId,
         new VisuEditorIO()))

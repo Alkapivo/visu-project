@@ -18,12 +18,14 @@ function Display(json) constructor {
 
   ///@return {Number}
   static getWidth = function() {
+    gml_pragma("forceinline")
     return this.width
   }
 
   ///@param {Number} width
   ///@return {Display}
   static setWidth = function(width) {
+    gml_pragma("forceinline")
     Assert.isTrue(this.width >= 1)
     this.width = Assert.isType(width, Number)
     return this
@@ -31,11 +33,13 @@ function Display(json) constructor {
 
   ///@return {Number}
   static getHeight = function() {
+    gml_pragma("forceinline")
     return this.height
   }
 
   ///@return {Number}
   static setHeight = function(height) {
+    gml_pragma("forceinline")
     Assert.isTrue(this.height >= 1)
     this.height = Assert.isType(height, Number)
     return this
@@ -43,6 +47,7 @@ function Display(json) constructor {
 
   ///@return {Display}
   static update = function() {
+    gml_pragma("forceinline")
     if (Optional.is(this.healthcheck)) {
       this.healthcheck()
     }

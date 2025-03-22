@@ -182,32 +182,26 @@ function GridItemChunkService(_size) constructor {
 }
 
 
-///@param {VisuController} _controller
-///@param {Struct} [_config]
-function GridService(_controller, _config = {}): Service(_config) constructor {
+///@param {?Struct} [config]
+function GridService(_config = null) constructor {
 
-  ///@type {VisuController}
-  controller = Assert.isType(_controller, VisuController)
-
-  ///@type {Struct}
-  config = JSON.clone(_config)
+  ///@type {?Struct}
+  config = Core.isType(_config, Struct) ? JSON.clone(_config) : null
 
   ///@type {Number}
-  width = Assert.isType(Struct.getDefault(this.config, "width", 2048.0), Number)
+  width = Struct.getIfType(this.config, "width", Number, 2048.0)
 
   ///@type {Number}
-  height = Assert.isType(Struct.getDefault(this.config, "height", 2048.0), Number)
+  height = Struct.getIfType(this.config, "height", Number, 2048.0)
 
   ///@type {Number}
-  pixelWidth = Assert.isType(Struct
-    .getDefault(this.config, "pixelWidth", GRID_SERVICE_PIXEL_WIDTH), Number)
+  pixelWidth = Struct.getIfType(this.config, "pixelWidth", Number, GRID_SERVICE_PIXEL_WIDTH)
 
   ///@type {Number}
-  pixelHeight = Assert.isType(Struct
-    .getDefault(this.config, "pixelHeight", GRID_SERVICE_PIXEL_HEIGHT), Number)
+  pixelHeight = Struct.getIfType(this.config, "pixelHeight", Number, GRID_SERVICE_PIXEL_HEIGHT)
 
   ///@type {GridView}
-  view = new GridView({ 
+  view = new GridView({
     worldWidth: this.width, 
     worldHeight: this.height,
   })
@@ -215,12 +209,46 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
   this.view.x = (this.width - this.view.width) / 2.0
   this.view.y = this.height - this.view.height
 
+  ///@type {TaskExecutor}
+  executor = new TaskExecutor(this)
+
+  ///@type {GridProperties}
+  properties = new GridProperties(Struct.getIfType(this.config, "properties", Struct))
+
+  ///@private
+  ///@type {Number}
+  uidPointer = toInt(Struct.getIfType(config, "uidPointer", Number, 0)) 
+
+  ///@private
+  ///@type {DebugTimer}
+  moveGridItemsTimer = new DebugTimer("MoveGridItems")
+
+  ///@private
+  ///@type {DebugTimer}
+  signalGridItemsCollisionTimer = new DebugTimer("GrdCollission")
+
+  ///@private
+  ///@type {DebugTimer}
+  updatePlayerServiceTimer = new DebugTimer("PlayerService")
+
+  ///@private
+  ///@type {DebugTimer}
+  updateShroomServiceTimer = new DebugTimer("ShroomService")
+
+  ///@private
+  ///@type {DebugTimer}
+  updateBulletServiceTimer = new DebugTimer("BulletService")
+  
   ///@type {Struct}
-  this.targetLocked = {
+  targetLocked = {
     x: this.view.x + (this.view.width / 2.0),
     y: this.view.y + (this.view.height / 2.0),
     isLockedX: false,
     isLockedY: false,
+    lockX: null,
+    lockY: null,
+    snapH: floor(this.view.x / (this.view.width / 2.0)) * (this.view.width / 2.0),
+    snapV: floor(this.view.y / (this.view.height / 2.0)) * (this.view.height / 2.0),
     setX: function(x) {
       this.x = x
       return this
@@ -229,11 +257,73 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
       this.y = y
       return this
     },
-    margin: {
-      top: 0.2,
-      right: 0.5,
-      bottom: 0.2, 
-      left: 0.5,
+    updateMovement: function(gridService) {
+      var angle = DeltaTime.apply(gridService.movement.angle.update().get() / 500.0)
+      var spd = DeltaTime.apply(gridService.movement.speed.update().get())
+      this.setX(this.x + Math.fetchCircleX(spd, angle))
+      this.setY(this.y + Math.fetchCircleY(spd, angle))
+
+      return this
+    },
+    updateLock: function(gridService) {
+      var view = gridService.view
+      var follow = view.follow
+      var horizontal = gridService.properties.borderHorizontalLength / 2.0
+      var vertical = gridService.properties.borderVerticalLength / 2.0
+      var player = Beans.get(BeanVisuController).playerService.player
+      var isPlayer = Core.isType(player, Player) 
+      if (isPlayer) {
+        this.setX(clamp(player.x, follow.xMargin, view.worldWidth - follow.xMargin))
+        this.setY(clamp(player.y, follow.yMargin, view.worldHeight - follow.yMargin))
+      }
+      
+      if (this.isLockedX) {
+        this.lockX = Optional.is(this.lockX) 
+          ? this.lockX 
+          : (floor(view.x / view.width) * view.width) + 0.5 
+        var xMin = (this.lockX + (view.width / 2.0)) - horizontal + follow.xMargin
+        var xMax = (this.lockX + (view.width / 2.0)) + horizontal - follow.xMargin
+        var xMinOffset = xMin < 0 ? abs(xMin) : 0.0
+        var xMaxOffset = xMax > view.worldWidth ? xMax - view.worldWidth : 0.0
+        xMin = clamp(xMin - xMaxOffset, 0.0, view.worldWidth)
+        xMax = clamp(xMax + xMinOffset, 0.0, view.worldWidth)
+        this.setX(clamp(this.x, xMin, xMax))
+        this.snapH = clamp(this.lockX + xMinOffset - xMaxOffset, 0.0, view.worldWidth)
+      } else {
+        this.lockX = null
+        this.snapH = floor(view.x / (view.width / 2.0)) * (view.width / 2.0)
+      }
+  
+      if (this.isLockedY) {
+        this.lockY = Optional.is(this.lockY) 
+          ? this.lockY
+          : floor(view.y / view.height) * view.height
+        var yMin = (this.lockY + (view.height / 2.0)) - vertical + follow.yMargin
+        var yMax = (this.lockY + (view.height / 2.0)) + vertical - follow.yMargin
+        var yMinOffset = yMin < 0 ? abs(yMin) : 0.0
+        var yMaxOffset = yMax > view.worldHeight ? yMax - view.worldHeight : 0.0
+        yMin = clamp(yMin - yMaxOffset, 0.0, view.worldHeight)
+        yMax = clamp(yMax + yMinOffset, 0.0, view.worldHeight)
+        this.setY(clamp(this.y, yMin, yMax))
+        this.snapV = clamp(this.lockY + yMinOffset - yMaxOffset, 0.0, view.worldHeight)
+      } else {
+        this.lockY = null
+        this.snapV = floor(view.y / (view.height / 2.0)) * (view.height / 2.0)
+      }
+
+      if (isPlayer) {
+        player.x = clamp(player.x, 0.0, view.worldWidth)
+        player.y = clamp(player.y, 0.0, view.worldHeight)
+      }
+
+      view.setFollowTarget(this).update()
+
+      return this
+    },
+    update: function(gridService) {
+      return gridService.movement.enable
+        ? this.updateMovement(gridService)
+        : this.updateLock(gridService)
     },
   }
 
@@ -282,35 +372,6 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
       items.setContainer(GMArray.sort(items.getContainer(), this.compareItems))
     },
   }
-
-  ///@type {Struct}
-  properties = Optional.is(Struct.getIfType(this.config, "properties", Struct))
-    ? new GridProperties(this.config.properties)
-    : new GridProperties()
-
-  ///@private
-  ///@type {Number}
-  uidPointer = toInt(Struct.getIfType(config, "uidPointer", Number, 0)) 
-
-  ///@private
-  ///@type {DebugTimer}
-  moveGridItemsTimer = new DebugTimer("MoveGridItems")
-
-  ///@private
-  ///@type {DebugTimer}
-  signalGridItemsCollisionTimer = new DebugTimer("GrdCollission")
-
-  ///@private
-  ///@type {DebugTimer}
-  updatePlayerServiceTimer = new DebugTimer("PlayerService")
-
-  ///@private
-  ///@type {DebugTimer}
-  updateShroomServiceTimer = new DebugTimer("ShroomService")
-
-  ///@private
-  ///@type {DebugTimer}
-  updateBulletServiceTimer = new DebugTimer("BulletService")
   
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
@@ -318,39 +379,19 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
     "fade-sprite": Callable.run(Struct.get(EVENT_DISPATCHERS, "fade-sprite")),
     "fade-color": Callable.run(Struct.get(EVENT_DISPATCHERS, "fade-color")),
     "clear-grid": function(event) {
-
       this.view.x = (this.width - this.view.width) / 2.0
       this.view.y = this.height - this.view.height
-      
-      this.targetLocked = {
-        x: this.view.x + (this.view.width / 2.0),
-        y: this.view.y + (this.view.height / 2.0),
-        isLockedX: false,
-        isLockedY: false,
-        setX: function(x) {
-          this.x = x
-          return this
-        },
-        setY: function(y) {
-          this.y = y
-          return this
-        },
-        margin: {
-          top: 0.2,
-          right: 0.5,
-          bottom: 0.2, 
-          left: 0.5,
-        },
-      }
 
-      properties = Optional.is(Struct.get(this.config, "properties"))
-        ? new GridProperties(this.config.properties)
-        : new GridProperties()
+      this.targetLocked.x = this.view.x + (this.view.width / 2.0)
+      this.targetLocked.y = this.view.y + (this.view.height / 2.0)
+      this.targetLocked.isLockedX = false
+      this.targetLocked.isLockedY = false
+      this.targetLocked.lockX = null
+      this.targetLocked.lockY = null
+
+      properties = new GridProperties(Struct.getIfType(this.config, "properties", Struct))
     },
   }))
-
-  ///@type {TaskExecutor}
-  executor = new TaskExecutor(this)
 
   ///@private
   ///@return {String}
@@ -369,21 +410,95 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
       .setTimeout(3.0)
       .whenUpdate(function(executor) {
         var controller = Beans.get(BeanVisuController)
+
+        var lastX = null
+        var lastY = null
+        var scale = 1.0 + (random(1.0) * 0.25 * choose(1.0, -1.0))
+        var angle = random(7.5) * choose(1.0, -1.0)
+        var lastTask = controller.visuRenderer.gridRenderer.overlayRenderer.foregrounds.getLast()
+        if (Core.isType(lastTask, Task) && Core.isType(lastTask.state, Map)) {
+          lastX = lastTask.state.get("x")
+          lastY = lastTask.state.get("y")
+        }
+
         controller.send(new Event("fade-sprite", {
-          sprite: SpriteUtil.parse({ name: "texture_hechan_3" }),
-          collection: controller.visuRenderer.gridRenderer.overlayRenderer.foregrounds,
-          type: WallpaperType.FOREGROUND,
-          fadeInDuration: 0.5,
-          fadeOutDuration: 0.5,
-          angle: 3,
-          speed: 0.25,
+          sprite: SpriteUtil.parse({
+            name: "texture_hechan_3_abstract",
+            alpha: 0.33,
+            blend: "#FF00EE",
+          }),
+          collection: controller.visuRenderer.gridRenderer.overlayRenderer.backgrounds,
+          type: WallpaperType.BACKGROUND,
+          fadeInDuration: 1.0 + random(1.0),
+          fadeOutDuration: 3.0 + random(3.0),
+          angle: 90.0,
+          speed: 3.33 + random(6.66),
           blendModeSource: BlendModeExt.SRC_ALPHA,
           blendModeTarget: BlendModeExt.ONE,
+          blendEquation: BlendEquation.SUBTRACT,
+          blendEquationAlpha: BlendEquation.ADD,
           executor: executor,
+          tiled: true,
+          replace: true,
+          x: lastX,
+          y: lastY,
+          xScale: scale,
+          yScale: scale,
+        }))
+        //this.fullfill()
+        //return null;
+        controller.send(new Event("fade-sprite", {
+          sprite: SpriteUtil.parse({
+            name: "texture_hechan_3_background",
+            alpha: 0.9,
+            blend: "#FFFFFF",
+          }),
+          collection: controller.visuRenderer.gridRenderer.overlayRenderer.backgrounds,
+          type: WallpaperType.BACKGROUND,
+          fadeInDuration: 2.0 + random(1.0),
+          fadeOutDuration: 4.0 + random(1.0),
+          angle: 180.0 + angle,
+          speed: 1.25 + (random(1.0) * 0.5),
+          blendModeSource: BlendModeExt.SRC_ALPHA,
+          blendModeTarget: BlendModeExt.ONE,
+          blendEquation: BlendEquation.ADD,
+          blendEquationAlpha: BlendEquation.ADD,
+          executor: executor,
+          tiled: true,
+          replace: false,
+          x: lastX,
+          y: lastY,
+          xScale: scale,
+          yScale: scale,
+        }))
+
+        controller.send(new Event("fade-sprite", {
+          sprite: SpriteUtil.parse({
+            name: "texture_hechan_3",
+            alpha: 1.0,
+            blend: "#FFFFFF",
+          }),
+          collection: controller.visuRenderer.gridRenderer.overlayRenderer.foregrounds,
+          type: WallpaperType.FOREGROUND,
+          fadeInDuration: 1.0 + random(1.0),
+          fadeOutDuration: 3.0 + random(1.0),
+          angle: angle,
+          speed: 0.15 + (random(1.0) * 0.2),
+          blendModeSource: BlendModeExt.SRC_ALPHA,
+          blendModeTarget: BlendModeExt.ONE,
+          blendEquation: BlendEquation.ADD,
+          blendEquationAlpha: BlendEquation.ADD,
+          executor: executor,
+          tiled: true,
+          replace: true,
+          x: lastX,
+          y: lastY,
+          xScale: scale,
+          yScale: scale,
         }))
         this.fullfill()
       })
-    this.controller.executor.add(task)
+    Beans.get(BeanVisuController).executor.add(task)
     
     return this
   }
@@ -431,18 +546,19 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
   ///@private
   ///@return {GridService}
   moveGridItems = function() {
-    var view = this.controller.gridService.view
-    this.controller.bulletService.bullets.forEach(this.moveBullet, {
+    var controller = Beans.get(BeanVisuController)
+    var view = controller.gridService.view
+    controller.bulletService.bullets.forEach(this.moveBullet, {
       view: view,
-      chunkService: this.controller.bulletService.chunkService,
+      chunkService: controller.bulletService.chunkService,
     })
 
-    this.controller.shroomService.shrooms.forEach(this.moveShroom, {
+    controller.shroomService.shrooms.forEach(this.moveShroom, {
       view: view,
-      chunkService: this.controller.shroomService.chunkService,
+      chunkService: controller.shroomService.chunkService,
     })
 
-    var player = this.controller.playerService.player
+    var player = controller.playerService.player
     if (Core.isType(player, Player)) {
       player.move()
     }
@@ -451,8 +567,8 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
 
   ///@param {Bullet} bullet
   ///@param {Number} index
-  ///@param {GridService} context
-  bulletCollision = function(bullet, index, context) {
+  ///@param {VisuController} controller
+  bulletCollision = function(bullet, index, controller) {
     static playerBullet = function(shroom, index, bullet) {
       if (shroom.collide(bullet)) {
         shroom.signal("bulletCollision", bullet)
@@ -462,7 +578,7 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
       }
     }
     static shroomBullet = function(player, bullet) {
-      if (player.collide(bullet)) {
+      if (bullet.fadeIn >= 1.0 && player.collide(bullet)) {
         player.signal("bulletCollision", bullet)
         bullet.signal("playerCollision", player)
       }
@@ -474,14 +590,14 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
     switch (bullet.producer) {
       case Player:
         bullet.chunkPosition.keys.forEach(playerLambda, {
-          chunkService: context.controller.shroomService.chunkService,
+          chunkService: controller.shroomService.chunkService,
           playerBullet: playerBullet,
           bullet: bullet,
         })
-        //context.controller.shroomService.shrooms.forEach(playerBullet, bullet)
+        //controller.shroomService.shrooms.forEach(playerBullet, bullet)
         break
       case Shroom:
-        shroomBullet(context.controller.playerService.player, bullet)
+        shroomBullet(controller.playerService.player, bullet)
         break
       default:
         Logger.warn("GridService", "Found invalid bullet producer")
@@ -491,14 +607,14 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
 
   ///@param {Bullet} bullet
   ///@param {Number} index
-  ///@param {GridService} context
-  bulletCollisionNoPlayer = function(bullet, index, context) { }
+  ///@param {VisuController} controller
+  bulletCollisionNoPlayer = function(bullet, index, controller) { }
 
   ///@param {Shroom} shroom
   ///@param {Number} index
   ///@param {Player} player
   shroomCollision = function(shroom, index, player) {
-    if (shroom.collide(player)) {
+    if (shroom.fadeIn >= 1.0 && shroom.collide(player)) {
       player.signal("shroomCollision", shroom)
       shroom.signal("playerCollision", player)
       shroom.signal("damage", true)
@@ -524,17 +640,18 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
   ///@private
   ///@return {GridService}
   signalGridItemsCollision = function() {
-    var player = this.controller.playerService.player
+    var controller = Beans.get(BeanVisuController)
+    var player = controller.playerService.player
     var isPlayer = Core.isType(player, Player)
   
-    this.controller.bulletService.bullets.forEach(
+    controller.bulletService.bullets.forEach(
       isPlayer
         ? this.bulletCollision
         : this.bulletCollisionNoPlayer,
-      this
+      controller
     )
      
-    this.controller.shroomService.shrooms.forEach(
+    controller.shroomService.shrooms.forEach(
       isPlayer
         ? (player.stats.godModeCooldown > 0.0 
           ? this.shroomCollisionGodMode 
@@ -548,7 +665,9 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
 
   ///@private
   ///@return {GridService}
-  updateGridItems = function() {
+  updateGridItemsOriginal = function() {
+    var controller = Beans.get(BeanVisuController)
+
     this.moveGridItemsTimer.start()
     this.moveGridItems()
     this.moveGridItemsTimer.finish()
@@ -558,15 +677,15 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
     this.signalGridItemsCollisionTimer.finish()
 
     this.updatePlayerServiceTimer.start()
-    this.controller.playerService.update(this)
+    controller.playerService.update(this)
     this.updatePlayerServiceTimer.finish()
 
     this.updateShroomServiceTimer.start()
-    this.controller.shroomService.update(this)
+    controller.shroomService.update(this)
     this.updateShroomServiceTimer.finish()
 
     this.updateBulletServiceTimer.start()
-    this.controller.bulletService.update(this)
+    controller.bulletService.update(this)
     this.updateBulletServiceTimer.finish()
     return this
   }
@@ -576,7 +695,7 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
   updateGridItemsAlternative = function() {
     static bulletLambda = function(bullet, index, acc) {
       acc.moveBullet(bullet, index, acc)
-      acc.bulletCollision(bullet, index, acc.gridService)
+      acc.bulletCollision(bullet, index, acc.controller)
       acc.bulletService.updateBullet(bullet, index, acc.bulletService)
     }
 
@@ -588,13 +707,14 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
       }
     }
 
+    var controller = Beans.get(BeanVisuController)
     var gridService = this
-    var bulletService = this.controller.bulletService
-    var shroomService = this.controller.shroomService
-    var playerService = this.controller.playerService
+    var bulletService = controller.bulletService
+    var shroomService = controller.shroomService
+    var playerService = controller.playerService
     var player = playerService.player
     var isPlayer = Core.isType(player, Player)
-    var view = this.controller.gridService.view
+    var view = controller.gridService.view
 
     if (isPlayer) {
       player.move()
@@ -603,6 +723,7 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
     this.updateBulletServiceTimer.start()
     bulletService.dispatcher.update()
     bulletService.bullets.forEach(bulletLambda, {
+      controller: controller,
       moveBullet: this.moveBullet,
       view: view,
       chunkService: bulletService.chunkService,
@@ -613,8 +734,8 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
     this.updateBulletServiceTimer.finish()
 
     this.updateShroomServiceTimer.start()
-    if (this.controller.gameMode != shroomService.gameMode) {
-      shroomService.gameMode = this.controller.gameMode
+    if (controller.gameMode != shroomService.gameMode) {
+      shroomService.gameMode = controller.gameMode
       shroomService.shrooms.forEach(shroomService.updateGameMode, shroomService.gameMode)
     }
   
@@ -640,6 +761,14 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
     return this
   }
 
+  ///@private
+  ///@return {GridService}
+  updateGridItems = function() {
+    return Visu.settings.getValue("visu.optimalization.iterate-entities-once")
+      ? this.updateGridItemsAlternative()
+      : this.updateGridItemsOriginal()
+  }
+
   ///@param {Event} event
   ///@return {?Promise}
   send = function(event) {
@@ -651,46 +780,16 @@ function GridService(_controller, _config = {}): Service(_config) constructor {
     this.properties.update(this)
     this.dispatcher.update()
     this.executor.update()
-
-    var player = this.controller.playerService.player
-    var isPlayer = Core.isType(player, Player) 
-    if (this.movement.enable) {
-      this.movement.angle.update()
-      this.movement.speed.update()
-      this.targetLocked.setX(this.targetLocked.x + Math
-        .fetchCircleX(DeltaTime.apply(this.movement.speed.get()) / 500.0, this.movement.angle.get()))
-      this.targetLocked.setY(this.targetLocked.y + Math
-        .fetchCircleY(DeltaTime.apply(this.movement.speed.get()) / 500.0, this.movement.angle.get()))
-    } else {
-      if (isPlayer) {
-        this.targetLocked.setX(player.x)
-        this.targetLocked.setY(player.y)
-      }
-
-      if (this.targetLocked.isLockedX) {
-        this.targetLocked.setX((this.view.width * floor(this.view.x / this.view.width)) + (this.view.width / 2))
-      }
-  
-      if (this.targetLocked.isLockedY) {
-        this.targetLocked.setY((this.view.height * floor(this.view.y / this.view.height)) + (this.view.height / 2))
-      }
-    }
-
-    if (isPlayer) {
-      player.x = clamp(player.x, 0.0, this.width)
-      player.y = clamp(player.y, 0.0, this.height)
-    }
-
-    this.view.setFollowTarget(this.targetLocked).update()
-    
-    if (Visu.settings.getValue("visu.optimalization.iterate-entities-once")) {
-      this.updateGridItemsAlternative()
-    } else {
-      this.updateGridItems()
-    }
+    this.targetLocked.update(this)
+    this.updateGridItems()
     
     return this
   }
 
-  this.init()
+  this.executor.add(new Task("init")
+    .setTimeout(3.0)
+    .whenUpdate(function(executor) {
+      executor.context.init()
+      this.fullfill()
+    }))
 }

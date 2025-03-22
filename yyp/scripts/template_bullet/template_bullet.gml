@@ -419,11 +419,13 @@ function template_bullet(json = null) {
               enable: { key: "use_bullet_mask" },
               factor: 1.0,
             },
-            slider: {
+            stick: {
               store: { key: "bullet_mask" },
               enable: { key: "use_bullet_mask" },
-              factor: 0.1,
+              factor: 1.0,
+              treshold: 1024,
             },
+            checkbox: { },
           },
           y: {
             label: {
@@ -445,11 +447,13 @@ function template_bullet(json = null) {
               enable: { key: "use_bullet_mask" },
               factor: 1.0,
             },
-            slider: {
+            stick: {
               store: { key: "bullet_mask" },
               enable: { key: "use_bullet_mask" },
-              factor: 0.1,
+              factor: 1.0,
+              treshold: 1024,
             },
+            checkbox: { },
           },
           z: {
             label: {
@@ -471,11 +475,13 @@ function template_bullet(json = null) {
               enable: { key: "use_bullet_mask" },
               factor: 1.0,
             },
-            slider: {
+            stick: {
               store: { key: "bullet_mask" },
               enable: { key: "use_bullet_mask" },
-              factor: 0.1,
+              factor: 1.0,
+              treshold: 1024,
             },
+            checkbox: { },
           },
           a: {
             label: {
@@ -497,11 +503,13 @@ function template_bullet(json = null) {
               enable: { key: "use_bullet_mask" },
               factor: 1.0,
             },
-            slider: {
+            stick: {
               store: { key: "bullet_mask" },
               enable: { key: "use_bullet_mask" },
-              factor: 0.1,
+              factor: 1.0,
+              treshold: 1024,
             },
+            checkbox: { },
           },
         },
       },

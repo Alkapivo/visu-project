@@ -37,8 +37,8 @@ function VisuRenderer() constructor {
   spinner = Assert.isType(SpriteUtil
     .parse({ 
       name: "texture_spinner", 
-      scaleX: 0.25, 
-      scaleY: 0.25,
+      scaleX: 0.5, 
+      scaleY: 0.5,
     }), Sprite, "VisuRenderer.spiner must be type of Sprite")
 
   ///@private
@@ -47,15 +47,18 @@ function VisuRenderer() constructor {
 
   ///@private
   ///@type {Timer}
-  initTimer = new Timer(0.35)
+  initTimer = new Timer(3.0)
+
+  ///@type {Timer}
+  fadeTimer = new Timer(0.33)
 
   ///@private
   ///@type {NumberTransformer}
   blur = new NumberTransformer({
     value: 0.0,
-    target: 32.0,
+    target: 24.0,
     factor: 0.5,
-    increase: 0.005,
+    increase: 0.002,
   })
 
   ///@private
@@ -80,7 +83,7 @@ function VisuRenderer() constructor {
     var loaderState = controller.loader.fsm.getStateName()
     if (loaderState != "idle" && loaderState != "cooldown" && loaderState != "loaded") {
       var color = c_black
-      this.spinnerFactor = lerp(this.spinnerFactor, 100.0, 0.1)
+      this.spinnerFactor = lerp(this.spinnerFactor, 100.0, 0.08)
 
       GPU.render.rectangle(
         0, 0, 
@@ -91,15 +94,12 @@ function VisuRenderer() constructor {
       )
 
       this.spinner
-        .setAlpha(this.spinnerFactor / 100.0)
-        .render(
-          (GuiWidth() / 2) - ((this.spinner.getWidth() * this.spinner.getScaleX()) / 2),
-          (GuiHeight() / 2) - ((this.spinner.getHeight() * this.spinner.getScaleY()) / 2)
-            - (this.spinnerFactor / 2)
-      )
+        .setAngle(30.0 * (this.spinnerFactor / 100))
+        .setAlpha(0.85 * (this.spinnerFactor / 100))
+        .render(GuiWidth() / 2.0, (GuiHeight() * 0.75) - this.spinnerFactor)
     } else if (this.spinnerFactor > 0) {
       var color = c_black
-      this.spinnerFactor = lerp(this.spinnerFactor, 0.0, 0.1)
+      this.spinnerFactor = lerp(this.spinnerFactor, 0.0, 0.08)
 
       GPU.render.rectangle(
         0, 0, 
@@ -110,12 +110,9 @@ function VisuRenderer() constructor {
       )
 
       this.spinner
-        .setAlpha(this.spinnerFactor / 100.0)
-        .render(
-        (GuiWidth() / 2) - ((this.spinner.getWidth() * this.spinner.getScaleX()) / 2),
-        (GuiHeight() / 2) - ((this.spinner.getHeight() * this.spinner.getScaleY()) / 2)
-          - (this.spinnerFactor / 2)
-      )
+        .setAngle(-30.0 * (this.spinnerFactor / 100.0))
+        .setAlpha(0.85 * (this.spinnerFactor / 100.0))
+        .render(GuiWidth() / 2.0, (GuiHeight() * 0.75) - this.spinnerFactor)
     }
 
     return this
@@ -128,14 +125,30 @@ function VisuRenderer() constructor {
     var editor = Beans.get(BeanVisuEditorController)
     if (Optional.is(editor)) {
       editor.uiService.containers.forEach(function(container, index) {
-        GPU.render.text(60, 60 + (24 * index), $"#{index}: {container.name}", c_lime, c_black, 1.0, GPU_DEFAULT_FONT_BOLD)  
+        GPU.render.text(
+          60,
+          60 + (24 * index),
+          $"#{index}: {container.name}",
+          1.0,
+          0.0,
+          1.0,
+          c_lime,
+          GPU_DEFAULT_FONT_BOLD,
+          HAlign.LEFT,
+          VAlign.TOP,
+          c_black,
+          1.0
+        )  
       })
     }
     */
     
-    if (is_debug_overlay_open()) {
-      var controller = Beans.get(BeanVisuController)
-      var gridService = controller.gridService
+    var editor = Beans.get(BeanVisuEditorController)
+    var controller = Beans.get(BeanVisuController)
+    var gridService = controller.gridService
+    var enableEditor = Optional.is(editor) && editor.renderUI
+    var enableDebugOverlay = is_debug_overlay_open()
+    if (enableDebugOverlay) {
       var shrooms = controller.shroomService.shrooms.size()
       var bullets = controller.bulletService.bullets.size()
   
@@ -160,22 +173,58 @@ function VisuRenderer() constructor {
         + this.renderGUITimer.getMessage() + "\n"
         + $"Sum: {timeSum}ms" + "\n"
         + $"Avg: {gridService.avgTime.get()}ms" + "\n"
-      GPU.render.text(32, 32, text, c_lime, c_black, 1.0, GPU_DEFAULT_FONT_BOLD)  
+      GPU.render.text(
+        32,
+        32,
+        text,
+        1.0,
+        0.0,
+        1.0,
+        c_lime,
+        GPU_DEFAULT_FONT_BOLD,
+        HAlign.LEFT,
+        VAlign.TOP,
+        c_black,
+        1.0
+      )
     }
 
     var gridCamera = this.gridRenderer.camera
     var gridCameraMessage = ""
-    if (gridCamera.enableKeyboardLook || gridCamera.enableMouseLook) {
+    if ((enableEditor || enableDebugOverlay)
+        && (gridCamera.enableKeyboardLook || gridCamera.enableMouseLook)) {
       gridCameraMessage = gridCameraMessage 
         + $"x:     {gridCamera.x}\n"
         + $"y:     {gridCamera.y}\n"
         + $"z:     {gridCamera.z}\n"
-        + $"pitch: {gridCamera.pitch}\n"
-        + $"angle: {gridCamera.angle}\n"
+        + $"pitch: {gridCamera.pitch + (sin(this.gridRenderer.camera.breathTimer1.time) * BREATH_TIMER_FACTOR_1)}\n"
+        + $"angle: {gridCamera.angle + (sin(this.gridRenderer.camera.breathTimer2.time) * BREATH_TIMER_FACTOR_2)}\n"
+        + $"view.x: {gridService.view.x}\n"
+        + $"view.y: {gridService.view.y}\n"
+
+      var player = controller.playerService.player
+      if (Optional.is(player)) {
+        gridCameraMessage = gridCameraMessage 
+          + $"player.x: {player.x}\n"
+          + $"player.y: {player.y}\n"
+      }
     }
     
     if (gridCameraMessage != "") {
-      GPU.render.text(32, GuiHeight() - 32, gridCameraMessage, c_lime, c_black, 1.0, GPU_DEFAULT_FONT_BOLD, HAlign.LEFT, VAlign.BOTTOM)  
+      GPU.render.text(
+        32,
+        GuiHeight() - 32,
+        gridCameraMessage,
+        1.0,
+        0.0,
+        1.0,
+        c_lime,
+        GPU_DEFAULT_FONT_BOLD,
+        HAlign.LEFT,
+        VAlign.BOTTOM,
+        c_black,
+        1.0
+      )
     }
 
     return this
@@ -196,13 +245,11 @@ function VisuRenderer() constructor {
 
   ///@return {VisuRenderer}
   update = function() {
-    if (!this.initTimer.finished) {
-      this.initTimer.update()
-    }
+    this.initTimer.update()
+    this.fadeTimer.update()
 
     var editor = Beans.get(BeanVisuEditorController)
     var _layout = editor == null ? this.layout : editor.layout.nodes.preview
-
     this.gridRenderer.update(_layout)
     this.hudRenderer.update(_layout)
     this.dialogueRenderer.update()
@@ -242,8 +289,21 @@ function VisuRenderer() constructor {
         var _height = _layout.height()
         var xStart = _width * (1.0 - 0.061)
         var yStart = _height * (1.0 - 0.08)
-        var text = "EDITOR MODE [F5]"
-        GPU.render.text(_x + xStart, _y + yStart, text, c_white, c_lime, 0.6, this.font, HAlign.RIGHT, VAlign.BOTTOM, 8.0) 
+        var text = "SHOW EDITOR [F5]"
+        GPU.render.text(
+          _x + xStart,
+          _y + yStart,
+          text,
+          1.0,
+          0.0,
+          0.6,
+          c_white,
+          this.font,
+          HAlign.RIGHT,
+          VAlign.BOTTOM,
+          c_lime,
+          8.0
+        ) 
       }
       this.dialogueRenderer.render()
     } else {
@@ -251,10 +311,11 @@ function VisuRenderer() constructor {
         controller.gridService.properties.update(controller.gridService)
       }
       
+      this.blur.update()
       if (shader_is_compiled(shader_gaussian_blur)) {
         var uniformSize = shader_get_uniform(shader_gaussian_blur, "size")
         shader_set(shader_gaussian_blur)
-        shader_set_uniform_f(uniformSize, _layout.width(), _layout.height(), this.blur.update().value)
+        shader_set_uniform_f(uniformSize, _layout.width(), _layout.height(), this.blur.value)
         this.gridRenderer.renderGameplay(_layout)
         shader_reset()
       } else {
@@ -267,7 +328,23 @@ function VisuRenderer() constructor {
     this.renderDebugGUI()
 
     if (!this.initTimer.finished) {
-      GPU.render.clear(c_black, 1.0)
+      GPU.render.rectangle(
+        0, 0, 
+        GuiWidth(), GuiHeight(), 
+        false, 
+        c_black, c_black, c_black, c_black, 
+        clamp(this.initTimer.duration - this.initTimer.time, 0.0, 1.0)
+      )
+    }
+
+    if (!this.fadeTimer.finished) {
+      GPU.render.rectangle(
+        0, 0, 
+        GuiWidth(), GuiHeight(), 
+        false, 
+        c_black, c_black, c_black, c_black, 
+        clamp(this.fadeTimer.duration - this.fadeTimer.time, 0.0, 1.0)
+      )
     }
 
     return this

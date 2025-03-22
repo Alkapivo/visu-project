@@ -49,6 +49,7 @@ function Texture(_asset, config = null) constructor {
   ///@param {Color} [blend]
   ///@return {Texture}
   static render = function(x, y, frame = 0, scaleX = 1, scaleY = 1, alpha = 1, angle = 0, blend = c_white) {
+    gml_pragma("forceinline")
     if (scaleX == 0 || scaleY == 0) {
       return this
     }
@@ -90,8 +91,9 @@ function TextureTemplate(_name, json) constructor {
   prefetch = Assert.isType(Struct.getDefault(json, "prefetch", true), Boolean)
   
   sprite_set_offset(this.asset, this.originX, this.originY)
+  
   ///@return {Struct}
-  serialize = function() {
+  static serialize = function() {
     var template = this
     var acc = {
       template: template,
@@ -144,7 +146,8 @@ function _TextureUtil() constructor {
 
   ///@param {?String} name
   ///@return {Boolean}
-  exists = function(name) {
+  static exists = function(name) {
+    gml_pragma("forceinline")
     var textureService = Beans.get(BeanTextureService)
     if (Optional.is(textureService) 
       && Optional.is(textureService.templates.get(name))) {
@@ -158,7 +161,8 @@ function _TextureUtil() constructor {
   ///@param {String} name
   ///@param {?Struct} [config]
   ///@return {?Texture}
-  parse = function(name, config = null) {
+  static parse = function(name, config = null) {
+    gml_pragma("forceinline")
     if (!Core.isType(name, String)) {
       Logger.warn("TextureUtil", $"parse method invoked with non string name")
       return null

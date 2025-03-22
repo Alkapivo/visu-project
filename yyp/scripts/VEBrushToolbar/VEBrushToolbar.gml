@@ -329,9 +329,9 @@ global.__VisuBrushContainers = new Map(String, Callable, {
             brushType: VEBrushType.VIEW_CAMERA,
           },
           {
-            name: "button_category-view_type-wallpaper",
+            name: "button_category-view_type-layer",
             text: "Layer",
-            brushType: VEBrushType.VIEW_WALLPAPER,
+            brushType: VEBrushType.VIEW_LAYER,
           },
           {
             name: "button_category-view_type-subtitle",
@@ -952,7 +952,9 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               this.label.render(
                 // todo VALIGN HALIGN
                 this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
-                this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2)
+                this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2),
+                this.area.getWidth(),
+                this.area.getHeight()
               )
             }
 
@@ -962,7 +964,9 @@ global.__VisuBrushContainers = new Map(String, Callable, {
               this.label.render(
                 // todo VALIGN HALIGN
                 this.context.area.getX() + this.area.getX() + (this.area.getWidth() / 2),
-                this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2)
+                this.context.area.getY() + this.area.getY() + (this.area.getHeight() / 2),
+                this.area.getWidth(),
+                this.area.getHeight()
               )
               this.label.text = text
             }
@@ -1690,7 +1694,7 @@ function VEBrushToolbar(_editor) constructor {
     ]),
     "view": new Array(String, [
       VEBrushType.VIEW_CAMERA,
-      VEBrushType.VIEW_WALLPAPER,
+      VEBrushType.VIEW_LAYER,
       VEBrushType.VIEW_SUBTITLE,
       VEBrushType.VIEW_CONFIG
     ]),
@@ -1728,7 +1732,7 @@ function VEBrushToolbar(_editor) constructor {
           "category": {
             name: "brush-toolbar.category",
             x: function() { return this.context.x() - this.width() - 1 },
-            width: function() { return 24 },
+            width: function() { return 20 },
             height: function() { return 420 },
           },
           "type": {

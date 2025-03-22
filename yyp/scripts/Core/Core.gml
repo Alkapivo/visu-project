@@ -1,5 +1,9 @@
 ///@package io.alkapivo.core
 show_debug_message("init Core.gml")
+gml_pragma("optimise", "js_array_check", "push off")
+gml_pragma("optimise", "js_error_check", "push off")
+gml_pragma("optimise", "js_check_index", "push off")
+
 
 #macro this self
 #macro null undefined
@@ -73,6 +77,7 @@ function _Core() constructor {
   ///@param {any} type
   ///@return {Boolean}
   static isType = function(object, type) {
+    gml_pragma("forceinline")
     try {
       var result = typeof(object)
       switch (type) {
@@ -104,6 +109,7 @@ function _Core() constructor {
         case GMVideoSurface: return result == "ref" && surface_exists(object)
         case GMTileset: return result == "ref"
         case GMTexture: return (result == "ref" || result == "number") && sprite_exists(object)
+        case GMParticleSystem: return result == "ref" && part_system_exists(object)
         case GMAudioGroupID: return result == "ref"
         ///@todo bug, ref will be returned only when gamemaker is initalizing
         case NonNull: return object != null
@@ -129,6 +135,7 @@ function _Core() constructor {
   ///@param {?String} [message]
   ///@return {Boolean}
   static isEnum = function(object, enumerable) {
+    gml_pragma("forceinline")
     try {
       return enumerable.contains(object)
     } catch (exception) { }
@@ -140,6 +147,7 @@ function _Core() constructor {
   ///@param {?String} [message]
   ///@return {Boolean}
   static isEnumKey = function(object, enumerable) {
+    gml_pragma("forceinline")
     try {
       return enumerable.containsKey(object)
     } catch (exception) { }
@@ -149,6 +157,7 @@ function _Core() constructor {
   ///@param {any} object
   ///@return {?String}
   static getTypeName = function(object) {
+    gml_pragma("forceinline")
     var type = null
     try {
       type = Core.hasConstructor(object) 
@@ -161,6 +170,7 @@ function _Core() constructor {
   ///@param {?Prototype} prototype
   ///@return {?String}
   static getPrototypeName = function(prototype) {
+    gml_pragma("forceinline")
     return Core.isType(prototype, Prototype)
       ? script_get_name(prototype)
       : null
@@ -169,6 +179,7 @@ function _Core() constructor {
   ///@param {?Struct|?String} object
   ///@return {?Prototype}
   static getConstructor = function(object) {
+    gml_pragma("forceinline")
     var name = Core.isType(object, Struct) ? instanceof(object) : object
     if (!Core.isType(name, String)) {
       return null
@@ -181,6 +192,7 @@ function _Core() constructor {
   ///@param {any} object
   ///@return {Boolean}
   static hasConstructor = function(object) {
+    gml_pragma("forceinline")
     var type = typeof(object) != "struct" ? null : instanceof(object)
     return type != null && type != "struct"
   }
@@ -188,13 +200,10 @@ function _Core() constructor {
   ///@param {...any} message
   ///@return {Core}
   static print = function(/*...message*/) {
+    gml_pragma("forceinline")
     var buffer = ""
-    try {
-      for (var index = 0; index < argument_count; index++) {
-        buffer += (index == 0 ? "" : " ") + string(argument[index])
-      }
-    } catch (exception) {
-      buffer = $"'print' fatal error: {exception.message}"
+    for (var index = 0; index < argument_count; index++) {
+      buffer += (index == 0 ? "" : " ") + string(argument[index])
     }
     show_debug_message(buffer)
     return Core
@@ -202,6 +211,7 @@ function _Core() constructor {
 
   ///@return {Core}
   static printStackTrace = function() {
+    gml_pragma("forceinline")
     var stackTrace = debug_get_callstack(50)
     var size = GMArray.size(stackTrace)
     for (var index = 0; index < size; index++) {
@@ -248,6 +258,7 @@ function _Core() constructor {
   ///@param {any} [defaultValue]
   ///@return {any}
   static getProperty = function(key, defaultValue = null) {
+    gml_pragma("forceinline")
     return Core.properties.getDefault(key, defaultValue)
   }
 
@@ -255,6 +266,7 @@ function _Core() constructor {
   ///@param {any} value
   ///@return {Core}
   static setProperty = function(key, value) {
+    gml_pragma("forceinline")
     Core.properties.set(key, value)
     return this
   }
@@ -262,12 +274,14 @@ function _Core() constructor {
   ///@param {Boolean} value
   ///@return {Core}
   static debugOverlay = function(value) {
+    gml_pragma("forceinline")
     show_debug_overlay(value)
     return this
   }
 
   ///@return {RuntimeType}
   static getRuntimeType = function() {
+    gml_pragma("forceinline")
     switch (os_type) {
       case os_windows: return RuntimeType.WINDOWS
       case os_gxgames: return RuntimeType.GXGAMES
@@ -308,6 +322,7 @@ function _Core() constructor {
   ///@param {any} [defaultValue]
   ///@return {any}
   static getIfType = function(value, type, defaultValue = null) {
+    gml_pragma("forceinline")
     return Core.isType(value, type) ? value : defaultValue
   }
 
@@ -316,6 +331,7 @@ function _Core() constructor {
   ///@param {any} [defaultValue]
   ///@return {any}
   static getIfEnum = function(value, type, defaultValue = null) {
+    gml_pragma("forceinline")
     return Core.isEnum(value, type) ? value : defaultValue
   }
 }

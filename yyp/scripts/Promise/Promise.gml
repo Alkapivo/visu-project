@@ -57,6 +57,7 @@ function Promise(config = null) constructor {
     this.state = state
     return this
   }
+  this.setState(Struct.get(config, "state"))
 
   ///@param {PromiseStatus} status
   ///@return {Promise}

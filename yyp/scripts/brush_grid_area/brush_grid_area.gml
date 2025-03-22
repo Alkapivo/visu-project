@@ -73,7 +73,7 @@ function brush_grid_area(json) {
       },
       "gr-area_change-v": {
         type: Boolean,
-        value: Struct.get(json, "gr-area_use-v"),
+        value: Struct.get(json, "gr-area_change-v"),
       },
       "gr-area_use-v-col": {
         type: Boolean,

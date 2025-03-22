@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"HTTPService",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"HTTPService",
+  "parent":{
+    "name":"network",
+    "path":"folders/io.alkapivo.core/src/service/network.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

@@ -194,18 +194,43 @@ function VisuHUDRenderer() constructor {
       var yStart = _height * 0.08
       var offset = (this.glitchCooldown.duration - this.glitchCooldown.time) * 64
 
-      GPU.render.text(_x + xStart + offset, _y + _height - yStart, textLabel, c_fuchsia, null, 0.20 * this.fadeIn, this.font, HAlign.LEFT, VAlign.BOTTOM)  
-      GPU.render.text(_x + xStart, _y + _height - yStart - offset, textPoint, c_blue,    null, 0.66 * this.fadeIn, this.font, HAlign.LEFT, VAlign.BOTTOM)  
-      GPU.render.text(_x + xStart, _y + _height - yStart - offset, textForce, c_red,     null, 0.66 * this.fadeIn, this.font, HAlign.LEFT, VAlign.BOTTOM)  
-      GPU.render.text(_x + xStart + offset, _y + _height - yStart, textMask,  c_white,   null, 0.33 * this.fadeIn, this.font, HAlign.LEFT, VAlign.BOTTOM)  
-      GPU.render.text(_x + xStart, _y + _height - yStart + offset, textLife,  c_lime,    null, 0.33 * this.fadeIn, this.font, HAlign.LEFT, VAlign.BOTTOM)  
-      GPU.render.text(_x + xStart, _y + _height - yStart + offset, textBomb,  c_yellow,  null, 0.33 * this.fadeIn, this.font, HAlign.LEFT, VAlign.BOTTOM)
+      GPU.render.text(_x + xStart + offset, _y + _height - yStart, textLabel, 1.0, 0.0, 0.20 * this.fadeIn, c_fuchsia, this.font, HAlign.LEFT, VAlign.BOTTOM)  
+      GPU.render.text(_x + xStart, _y + _height - yStart - offset, textPoint, 1.0, 0.0, 0.66 * this.fadeIn, c_blue,    this.font, HAlign.LEFT, VAlign.BOTTOM)  
+      GPU.render.text(_x + xStart, _y + _height - yStart - offset, textForce, 1.0, 0.0, 0.66 * this.fadeIn, c_red,     this.font, HAlign.LEFT, VAlign.BOTTOM)  
+      GPU.render.text(_x + xStart + offset, _y + _height - yStart, textMask,  1.0, 0.0, 0.33 * this.fadeIn, c_white,   this.font, HAlign.LEFT, VAlign.BOTTOM)  
+      GPU.render.text(_x + xStart, _y + _height - yStart + offset, textLife,  1.0, 0.0, 0.33 * this.fadeIn, c_lime,    this.font, HAlign.LEFT, VAlign.BOTTOM)  
+      GPU.render.text(_x + xStart, _y + _height - yStart + offset, textBomb,  1.0, 0.0, 0.33 * this.fadeIn, c_yellow,  this.font, HAlign.LEFT, VAlign.BOTTOM)
 
       if (player.stats.godModeCooldown > 0) {
         var textHeight = string_height(textMask)
         var factor = 1.0 - (ceil(player.stats.godModeCooldown) - player.stats.godModeCooldown)
-        GPU.render.text(_x + (_width / 2.0), _y + _height - yStart - (textHeight / 2.0), $"{ceil(player.stats.godModeCooldown)}", c_white, c_black, 0.7 * this.fadeIn * factor, this.fontGodMode, HAlign.CENTER, VAlign.CENTER)
-        GPU.render.text(_x + (_width / 2.0), _y + _height - yStart, "INVINCIBILITY", c_white, c_black, 0.4 * this.fadeIn * (player.stats.godModeCooldown < 1.0 ? factor : 1.0), this.font, HAlign.CENTER, VAlign.BOTTOM)
+        GPU.render.text(
+          _x + (_width / 2.0),
+          _y + _height - yStart - (textHeight / 2.0),
+          $"{ceil(player.stats.godModeCooldown)}",
+          1.0,
+          0.0,
+          0.7 * this.fadeIn * factor,
+          c_white,
+          this.fontGodMode,
+          HAlign.CENTER,
+          VAlign.CENTER,
+          c_black
+        )
+
+        GPU.render.text(
+          _x + (_width / 2.0),
+          _y + _height - yStart,
+          "INVINCIBILITY",
+          1.0,
+          0.0,
+          0.4 * this.fadeIn * (player.stats.godModeCooldown < 1.0 ? factor : 1.0),
+          c_white,
+          this.font,
+          HAlign.CENTER,
+          VAlign.BOTTOM,
+          c_black
+        )
       }
     }
 

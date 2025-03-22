@@ -24,7 +24,8 @@ function Grid(_width, _height, defaultValue = null, _type = any) constructor {
   ///@param {Number} _x
   ///@param {Number} _y
   ///@return {any}
-  get = function(_x, _y) {
+  static get = function(_x, _y) {
+    gml_pragma("forceinline")
     return _x < this.width && _y < this.height
       ? this.container[_y][_x]
       : null
@@ -34,7 +35,8 @@ function Grid(_width, _height, defaultValue = null, _type = any) constructor {
   ///@param {Number} _y
   ///@throws {AssertException}
   ///@return {Grid}
-  set = function(_x, _y, value) {
+  static set = function(_x, _y, value) {
+    gml_pragma("forceinline")
     Assert.isType(value, this.type)
     if (_x >= this.width || _y >= this.height) {
       return this
@@ -48,7 +50,8 @@ function Grid(_width, _height, defaultValue = null, _type = any) constructor {
   ///@param {Callable} callback
   ///@param {any} [acc]
   ///@return {Grid}
-  forEach = function(callback, acc = null) {
+  static forEach = function(callback, acc = null) {
+    gml_pragma("forceinline")
     for (var _y = 0; _y < this.height; _y++) {
       for (var _x = 0; _x < this.width; _x++) {
         callback(this.container[_y][_x], _x, _y, acc)

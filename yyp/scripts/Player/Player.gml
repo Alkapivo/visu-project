@@ -319,9 +319,52 @@ function PlayerStats(_player, json) constructor {
               return
             }
 
+            var time = ceil(this.state.timer.finished ? this.state.timer.duration : this.state.timer.time)
+            var col1 = time mod 2 != 0 ? "#371848" : "#FF00FF"
+            var col2 = time mod 2 != 0 ? "#FF00FF" : "#371848"
+            controller.subtitleService.send(new Event("add", {
+              template: new SubtitleTemplate("sub-bomb", {
+                lines: [
+                  $"DROP THE BOMB"
+                ],
+              }),
+              timeout: null,
+              font: FontUtil.fetch("font_kodeo_mono_48_bold"),
+              fontHeight: 96,
+              color: ColorUtil.parse(col1).toGMColor(),
+              outline: ColorUtil.parse(col2).toGMColor(),
+              align: {
+                v: VAlign.TOP,
+                h: HAlign.CENTER,
+              },
+              area: new Rectangle({ 
+                x: 0.25,
+                y: 0.4,
+                width: 0.5,
+                height: 0.2,
+              }),
+              charSpeed: 0.25,
+              lineDelay: new Timer(0.1),
+              finishDelay: new Timer(1.0),
+              angleTransformer: new NumberTransformer({
+                value: 270.0,
+                target: 270.0,
+                factor: 0.1,
+                increase: 0.0,
+              }),
+              speedTransformer: new NumberTransformer({
+                value: 0.0,
+                target: 128.0,
+                factor: 0.03,
+                increase: 0.0003,
+              }),
+              fadeIn: 0.5,
+              fadeOut: 0.5,
+            }))
+
             controller.shroomService.shrooms.forEach(function(shroom, index, player) {
               var length = Math.fetchLength(shroom.x, shroom.y, player.x, player.y)
-              if (length <= 1.0) {
+              if (length <= 1.41) {
                 shroom.signal("kill")
               }
             }, player)
@@ -333,7 +376,8 @@ function PlayerStats(_player, json) constructor {
                 beginY: (player.y - view.y) * GRID_SERVICE_PIXEL_HEIGHT,
                 endX: (player.x - view.x) * GRID_SERVICE_PIXEL_WIDTH,
                 endY: (player.y - view.y) * GRID_SERVICE_PIXEL_HEIGHT,
-                duration: 0.0,
+                duration: 1.0,
+                interval: 0.5,
                 amount: 2,
               }))
 
@@ -361,6 +405,48 @@ function PlayerStats(_player, json) constructor {
           })
         controller.executor.add(task)
 
+        var time = 1
+        var col1 = time mod 2 != 0 ? "#371848" : "#FF00FF"
+        var col2 = time mod 2 != 0 ? "#FF00FF" : "#371848"
+        controller.subtitleService.send(new Event("add", {
+          template: new SubtitleTemplate("sub-bomb", {
+            lines: [
+              $"DROP THE BOMB"
+            ],
+          }),
+          timeout: null,
+          font: FontUtil.fetch("font_kodeo_mono_48_bold"),
+          fontHeight: 96,
+          color: ColorUtil.parse(col1).toGMColor(),
+          outline: ColorUtil.parse(col2).toGMColor(),
+          align: {
+            v: VAlign.TOP,
+            h: HAlign.CENTER,
+          },
+          area: new Rectangle({ 
+            x: 0.25,
+            y: 0.4,
+            width: 0.5,
+            height: 0.2,
+          }),
+          charSpeed: 0.25,
+          lineDelay: new Timer(0.1),
+          finishDelay: new Timer(1.00),
+          angleTransformer: new NumberTransformer({
+            value: 270.0,
+            target: 270.0,
+            factor: 0.1,
+            increase: 0.0,
+          }),
+          speedTransformer: new NumberTransformer({
+            value: 0.0,
+            target: 128.0,
+            factor: 0.03,
+            increase: 0.0003,
+          }),
+          fadeIn: 0.5,
+          fadeOut: 0.5,
+        }))
         controller.sfxService.play("player-use-bomb")
       }
       return this
@@ -592,33 +678,30 @@ function Player(template): GridItem(template) constructor {
 
     var view = controller.gridService.view
     var targetLocked = controller.gridService.targetLocked
-    if (targetLocked.isLockedX) { 
-      var width = controller.gridService.properties.borderHorizontalLength
-      var offsetX = (this.sprite.getWidth()) / GRID_SERVICE_PIXEL_WIDTH
-      var anchorX = view.x
-      this.x = clamp(
-        this.x,
-        clamp(anchorX - width + offsetX + (view.width / 2.0), 0.0, view.worldWidth),
-        clamp(anchorX + width - offsetX + (view.width / 2.0), 0.0, view.worldWidth)
-      )
+    if (targetLocked.isLockedX && Optional.is(targetLocked.lockX)) { 
+      var horizontal = controller.gridService.properties.borderHorizontalLength / 2.0
+      var width = (this.sprite.getWidth() / 2.0) / GRID_SERVICE_PIXEL_WIDTH
+      var xMin = targetLocked.lockX + (view.width / 2.0) - horizontal + width
+      var xMax = targetLocked.lockX + (view.width / 2.0) + horizontal - width
+      var xMinOffset = xMin < 0 ? abs(xMin) : 0.0
+      var xMaxOffset = xMax > view.worldWidth ? xMax - view.worldWidth : 0.0
+      xMin = clamp(xMin - xMaxOffset, 0.0, view.worldWidth)
+      xMax = clamp(xMax + xMinOffset, 0.0, view.worldWidth)
+        
+      this.x = clamp(this.x, xMin, xMax)
     }
 
-    if (targetLocked.isLockedY) {
-      var height = controller.gridService.properties.borderVerticalLength
-      var anchorY = view.y
-      var platformerY = this.y
-      this.y = clamp(
-        this.y, 
-        clamp(anchorY - height + (view.height / 2.0), 0.0, view.worldHeight),
-        clamp(anchorY + height + (view.height / 2.0), 0.0, view.worldHeight)
-      )
-      if (this.gameMode != null 
-        && this.gameMode.type == PlayerPlatformerGameMode
-        && controller.visuRenderer.gridRenderer.player2DCoords.y > controller.visuRenderer.gridRenderer.gridSurface.height) {
+    if (targetLocked.isLockedY && Optional.is(targetLocked.lockY)) { 
+      var vertical = controller.gridService.properties.borderVerticalLength / 2.0
+      var height = (this.sprite.getHeight() / 2.0) / GRID_SERVICE_PIXEL_HEIGHT
+      var yMin = targetLocked.lockY + (view.height / 2.0) - vertical + height
+      var yMax = targetLocked.lockY + (view.height / 2.0) + vertical - height
+      var yMinOffset = yMin < 0 ? abs(yMin) : 0.0
+      var yMaxOffset = yMax > view.worldHeight ? yMax - view.worldHeight : 0.0
+      yMin = clamp(yMin - yMaxOffset, 0.0, view.worldHeight)
+      yMax = clamp(yMax + yMinOffset, 0.0, view.worldHeight)
 
-        this.y = clamp(platformerY, 0.0, view.worldHeight + view.height)
-        targetLocked.isLockedY = false
-      }
+      this.y = clamp(this.y, yMin, yMax)
     }
 
     this.x = clamp(this.x, 0.0, view.worldWidth)
@@ -627,10 +710,7 @@ function Player(template): GridItem(template) constructor {
   }
 
   this.gameModes
-    .set(GameMode.RACING, PlayerRacingGameMode(Struct
-      .getDefault(Struct.get(template, "gameModes"), "racing", {})))
-    .set(GameMode.BULLETHELL, PlayerBulletHellGameMode(Struct
-      .getDefault(Struct.get(template, "gameModes"), "bulletHell", {})))
-    .set(GameMode.PLATFORMER, PlayerPlatformerGameMode(Struct
-      .getDefault(Struct.get(template, "gameModes"), "platformer", {})))
+    .set(GameMode.BULLETHELL, PlayerBulletHellGameMode(Struct.getDefault(Struct.get(template, "gameModes"), "bulletHell", {})))
+    //.set(GameMode.RACING, PlayerRacingGameMode(Struct.getDefault(Struct.get(template, "gameModes"), "racing", {})))
+    //.set(GameMode.PLATFORMER, PlayerPlatformerGameMode(Struct.getDefault(Struct.get(template, "gameModes"), "platformer", {})))
 }

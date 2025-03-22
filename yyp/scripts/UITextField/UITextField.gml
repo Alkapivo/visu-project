@@ -5,6 +5,8 @@
 global.__GMTF_COLOR_DICTIONARY = new Map(String, String, {
   "colorBackgroundUnfocused": "c_bkg_unfocused",
   "colorBackgroundFocused": "c_bkg_focused",
+  "colorOutlineUnfocused": "c_outline_unfocused",
+  "colorOutlineFocused": "c_outline_focused",
   "colorTextUnfocused": "c_text_unfocused",
   "colorTextFocused": "c_text_focused",
   "colorSelection": "c_selection",

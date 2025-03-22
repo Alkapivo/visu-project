@@ -60,6 +60,7 @@ function _Beans() constructor {
   ///@param {String} name
   ///@return {Boolean}
   static exists = function(name) {
+    gml_pragma("forceinline")
     if (this.beans.contains(name)) {
       var bean = this.beans.get(name)
       if (!Core.isType(bean, Bean)) {
@@ -83,6 +84,7 @@ function _Beans() constructor {
   ///@param {String} name
   ///@return {?Struct}
   static get = function(name) {
+    gml_pragma("forceinline")
     if (this.exists(name)) {
       return this.beans.get(name).get()
     }
@@ -94,6 +96,7 @@ function _Beans() constructor {
   ///@param {String} name
   ///@return {?Bean}
   static getBean = function(name) {
+    gml_pragma("forceinline")
     if (this.exists(name)) {
       return this.beans.get(name)
     }
@@ -108,6 +111,7 @@ function _Beans() constructor {
   ///@param {Struct} context
   ///@return {Bean}
   static factory = function(name, type, layerId, context) {
+    gml_pragma("forceinline")
     return new Bean(name, Core
       .getConstructor(context), GMObjectUtil
       .factoryStructInstance(type, layerId, context))
@@ -117,6 +121,7 @@ function _Beans() constructor {
   ///@throws {BeanAlreadyExistsException}
   ///@return {Beans}
   static add = function(bean) {
+    gml_pragma("forceinline")
     if (this.exists(bean.name)) {
       throw new BeanAlreadyExistsException(
         $"Bean already exists: '{name}'")
@@ -135,6 +140,7 @@ function _Beans() constructor {
   ///@param {String}
   ///@return {Beans}
   static kill = function(name) {
+    gml_pragma("forceinline")
     var bean = this.beans.get(name)
     if (Core.isType(bean, Bean)) {
       Logger.info("Beans", $"Kill bean: {name}\n", bean)
@@ -148,6 +154,7 @@ function _Beans() constructor {
   ///@param {String} name
   ///@return {Beans}
   static remove = function(name) {
+    gml_pragma("forceinline")
     Logger.info("Beans", $"Remove bean: {name}")
     this.beans.remove(name)
     return this
@@ -156,6 +163,7 @@ function _Beans() constructor {
   ///@private
   ///@return {Beans}
   static healthcheck = function() {
+    gml_pragma("forceinline")
     static checkBeanHealth = function(bean, name, gc) {
       if (!Core.isType(bean, Bean) || !Core.isType(bean.asset, bean.prototype)) {
         gc.push(name)
@@ -179,6 +187,7 @@ function _Beans() constructor {
   ///@param {Number} interval
   ///@return {Beans}
   static setHealthcheckInterval = function(interval) {
+    gml_pragma("forceinline")
     this.timer.changeDuration(interval)
     return this
   }
@@ -186,12 +195,14 @@ function _Beans() constructor {
   ///@param {Boolean} use
   ///@return {Beans}
   static useHealthcheck = function(use) {
+    gml_pragma("forceinline")
     this._useHealthcheck = use
     return this
   }
 
   ///@return {Beans}
   static update = function() {
+    gml_pragma("forceinline")
     if (this._useHealthcheck) {
       this.timer.update()
     }

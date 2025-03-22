@@ -66,13 +66,17 @@ function ShroomService(_controller, config = {}): Service() constructor {
       : template
   }
 
+  ///@param {Boolean}
+  optimalizationSortEntitiesByTxGroup = false
+
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "spawn-shroom": function(event) {
       var view = this.controller.gridService.view
+      var locked = this.controller.gridService.targetLocked
       var template = new ShroomTemplate(event.data.template, this
         .getTemplate(event.data.template)
-        /*.serialize()*/)
+        .serialize())
       
       /*
       var spawnX = Assert.isType(Struct
@@ -95,8 +99,8 @@ function ShroomService(_controller, config = {}): Service() constructor {
       var spawnY = event.data.spawnY
       var angle = event.data.angle
       var spd = event.data.speed
-      var viewX = event.data.snapH ? floor(view.x / (view.width / 2.0)) * (view.width / 2.0) : view.x
-      var viewY = event.data.snapV ? floor(view.y / (view.height / 2.0)) * (view.height / 2.0) : view.y
+      var viewX = event.data.snapH ? locked.snapH : view.x
+      var viewY = event.data.snapV ? locked.snapV : view.y
 
       Struct.set(template, "x", viewX + spawnX)
       Struct.set(template, "y", viewY + spawnY)
@@ -110,7 +114,7 @@ function ShroomService(_controller, config = {}): Service() constructor {
       this.shrooms.add(shroom)
       this.chunkService.add(shroom)
 
-      if (Visu.settings.getValue("visu.optimalization.sort-entities-by-txgroup")) {
+      if (this.optimalizationSortEntitiesByTxGroup) {
         this.controller.gridService.textureGroups.sortItems(this.shrooms)
       }
     },
@@ -120,20 +124,42 @@ function ShroomService(_controller, config = {}): Service() constructor {
     },
     "reset-templates": function(event) {
       this.templates.clear()
+      this.dispatcher.container.clear()
     },
   }))
 
+  static spawnShroom = function(name, spawnX, spawnY, angle, spd, snapH, snapV) {
+    var view = this.controller.gridService.view
+    var locked = this.controller.gridService.targetLocked
+    var viewX = snapH ? locked.snapH : view.x
+    var viewY = snapV ? locked.snapV : view.y
+    var template = this.getTemplate(name).serializeSpawn(viewX + spawnX, viewY + spawnY, spd / 1000.0, angle, this.controller.gridService.generateUID())
+    
+    var shroom = new Shroom(template)
+    shroom.updateGameMode(this.controller.gameMode)
+
+    this.shrooms.add(shroom)
+    this.chunkService.add(shroom)
+
+    if (this.optimalizationSortEntitiesByTxGroup) {
+      this.controller.gridService.textureGroups.sortItems(this.shrooms)
+    }
+  }
+
   ///@param {Event} event
   ///@return {?Promise}
-  send = function(event) {
+  static send = function(event) {
+    gml_pragma("forceinline")
     return this.dispatcher.send(event)
   }
 
-  updateGameMode = function(shroom, index, gameMode) {
+  static updateGameMode = function(shroom, index, gameMode) {
+    gml_pragma("forceinline")
     shroom.updateGameMode(gameMode)
   }
 
-  updateShroom = function(shroom, index, context) {
+  static updateShroom = function(shroom, index, context) {
+    gml_pragma("forceinline")
     shroom.update(context.controller)
     if (shroom.signals.kill) {
       context.shrooms.addToGC(index)
@@ -143,6 +169,7 @@ function ShroomService(_controller, config = {}): Service() constructor {
 
   ///@return {ShroomService}
   update = function() {
+    this.optimalizationSortEntitiesByTxGroup = Visu.settings.getValue("visu.optimalization.sort-entities-by-txgroup")
     if (controller.gameMode != this.gameMode) {
       this.gameMode = this.controller.gameMode
       this.shrooms.forEach(this.updateGameMode, this.gameMode)

@@ -135,8 +135,8 @@
   "size":18.0,
   "styleName":"Bold",
   "textureGroupId":{
-    "name":"Default",
-    "path":"texturegroups/Default",
+    "name":"texturegroup_ui",
+    "path":"texturegroups/texturegroup_ui",
   },
   "TTFName":"C:\\Users\\1\\projects\\io.alkapivo\\visu-project\\yyp\\fonts\\font_kodeo_mono_18_bold\\KodeMono-Bold.ttf",
   "usesSDF":false,

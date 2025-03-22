@@ -136,12 +136,14 @@ function GridECS(_controller) constructor {
     var depths = renderer.controller.gridService.properties.depths
       
     var cameraDistance = 1 ///@todo extract parameter
+    var cameraPitch = renderer.camera.pitch + (sin(renderer.camera.breathTimer1.time) * BREATH_TIMER_FACTOR_1)
+    var cameraAngle = renderer.camera.angle + (sin(renderer.camera.breathTimer2.time) * BREATH_TIMER_FACTOR_2)
     var xto = renderer.camera.x
     var yto = renderer.camera.y
-    var zto = renderer.camera.z + renderer.camera.zoom
-    var xfrom = xto + cameraDistance * dcos(renderer.camera.angle) * dcos(renderer.camera.pitch)
-    var yfrom = yto - cameraDistance * dsin(renderer.camera.angle) * dcos(renderer.camera.pitch)
-    var zfrom = zto - cameraDistance * dsin(renderer.camera.pitch)
+    var zto = renderer.camera.z
+    var xfrom = xto + cameraDistance * dcos(cameraAngle) * dcos(cameraPitch)
+    var yfrom = yto - cameraDistance * dsin(cameraAngle) * dcos(cameraPitch)
+    var zfrom = zto - cameraDistance * dsin(cameraPitch)
     var baseX = GRID_SERVICE_PIXEL_WIDTH + GRID_SERVICE_PIXEL_WIDTH * 0.5
     var baseY = GRID_SERVICE_PIXEL_HEIGHT + GRID_SERVICE_PIXEL_HEIGHT * 0.5
     renderer.camera.viewMatrix = matrix_build_lookat(xfrom, yfrom, zfrom, xto, yto, zto, 0, 0, 1)

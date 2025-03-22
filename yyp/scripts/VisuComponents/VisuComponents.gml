@@ -29,6 +29,32 @@ global.__VisuComponents = new Map(String, Callable, {
     ])
   },
 
+    ///@param {String} name
+  ///@param {UILayout} layout
+  ///@param {?Struct} [config]
+  ///@return {Array<UIItem>}
+  "menu-label-entry": function(name, layout, config = null) {
+    return new Array(UIItem, [
+      UIText(
+        $"label_{name}_menu-label-entry",
+        Struct.appendRecursive(
+          Struct.appendRecursive(
+            { 
+              layout: layout.nodes.label,
+              updateArea: Callable
+                .run(UIUtil.updateAreaTemplates
+                .get("applyCollectionLayout")),
+            }, 
+            VisuStyles.get("menu-label-entry").label,
+            false
+          ),
+          Struct.get(config, "label"),
+          false
+        )
+      ),
+    ])
+  },
+
   ///@param {String} name
   ///@param {UILayout} layout
   ///@param {?Struct} [config]
@@ -161,10 +187,10 @@ global.__VisuComponents = new Map(String, Callable, {
             { 
               increment: -1,
               onMouseHoverOver: function(event) {
-                this.sprite.setBlend(ColorUtil.fromHex(VETheme.color.accentLight).toGMColor())
+                this.sprite.setBlend(ColorUtil.fromHex("#ffffff").toGMColor())
               },
               onMouseHoverOut: function(event) {
-                this.sprite.setBlend(c_white)
+                this.sprite.setBlend(ColorUtil.fromHex(VETheme.color.textFocus).toGMColor())
               },            
             },
             Struct.get(config, "previous"), 
@@ -191,10 +217,10 @@ global.__VisuComponents = new Map(String, Callable, {
             { 
               increment: 1,
               onMouseHoverOver: function(event) {
-                this.sprite.setBlend(ColorUtil.fromHex(VETheme.color.accentLight).toGMColor())
+                this.sprite.setBlend(ColorUtil.fromHex("#ffffff").toGMColor())
               },
               onMouseHoverOut: function(event) {
-                this.sprite.setBlend(c_white)
+                this.sprite.setBlend(ColorUtil.fromHex(VETheme.color.textFocus).toGMColor())
               },            
             },
             Struct.get(config, "next"),

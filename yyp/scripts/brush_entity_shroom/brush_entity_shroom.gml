@@ -184,7 +184,9 @@ function brush_entity_shroom(json) {
                 return
               }
 
-              var view = Beans.get(BeanVisuController).gridService.view
+              var controller = Beans.get(BeanVisuController)
+              var locked = controller.gridService.targetLocked
+              var view = controller.gridService.view
   
               if (!Struct.contains(this, "spawnerXTimer")) {
                 Struct.set(this, "spawnerXTimer", new Timer(pi * 2, { 
@@ -200,7 +202,7 @@ function brush_entity_shroom(json) {
               }
 
               if (store.getValue("en-shr_snap-x")) {
-                _x = _x - (view.x - floor(view.x / view.width) * view.width)
+                _x = _x - (view.x - locked.snapH)
               }
 
               if (!Struct.contains(this, "spawnerYTimer")) {
@@ -217,7 +219,7 @@ function brush_entity_shroom(json) {
               }
 
               if (store.getValue("en-shr_snap-y")) {
-                _y = _y - (view.y - floor(view.y / view.height) * view.height)
+                _y = _y - (view.y - locked.snapV)
               }
 
               if (!Struct.contains(this, "spawnerAngleTimer")) {

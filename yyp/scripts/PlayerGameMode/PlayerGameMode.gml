@@ -245,14 +245,24 @@ function PlayerBulletHellGameMode(json) {
           }
 
           gun.cooldown.update()
-          acc.controller.bulletService.send(new Event("spawn-bullet", {
-            x: acc.player.x + (gun.offsetX / GRID_SERVICE_PIXEL_WIDTH),
-            y: acc.player.y + (gun.offsetY / GRID_SERVICE_PIXEL_HEIGHT),
-            producer: Player,
-            angle: gun.angle,
-            speed: gun.speed,
-            template: gun.bullet,
-          }))
+
+          acc.controller.bulletService.spawnBullet(
+            gun.bullet, 
+            acc.player.x + (gun.offsetX / GRID_SERVICE_PIXEL_WIDTH), 
+            acc.player.y + (gun.offsetY / GRID_SERVICE_PIXEL_HEIGHT),
+            gun.angle,
+            gun.speed,
+            Player
+          )
+
+          //acc.controller.bulletService.send(new Event("spawn-bullet", {
+          //  x: acc.player.x + (gun.offsetX / GRID_SERVICE_PIXEL_WIDTH),
+          //  y: acc.player.y + (gun.offsetY / GRID_SERVICE_PIXEL_HEIGHT),
+          //  producer: Player,
+          //  angle: gun.angle,
+          //  speed: gun.speed,
+          //  template: gun.bullet,
+          //}))
 
           acc.controller.sfxService.play("player-shoot")
         }, {

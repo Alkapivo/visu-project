@@ -106,8 +106,8 @@ function UIService(_context, config = {}): Service(config) constructor {
       container.update()
     }
 
-    this.dispatcher.update()
     this.containers.forEach(updateContainer)
+    this.dispatcher.update()
     return this
   }
 

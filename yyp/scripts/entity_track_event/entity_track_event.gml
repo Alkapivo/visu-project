@@ -51,38 +51,76 @@ global.__entity_track_event = {
       var controller = Beans.get(BeanVisuController)
 
       ///@description feature TODO entity.shroom.spawn
-      controller.shroomService.send(new Event("spawn-shroom", {
-        template: Struct.get(data, "en-shr_template"),
-        speed: abs(Struct.get(data, "en-shr_spd")
-          + (Struct.get(data, "en-shr_use-spd-rng")
-            ? (random(Struct.get(data, "en-shr_spd-rng") / 2.0)
-              * choose(1.0, -1.0))
-            : 0.0)),
-        angle: Math.normalizeAngle(Struct.get(data, "en-shr_dir")
-          + (Struct.get(data, "en-shr_use-dir-rng")
-            ? (random(Struct.get(data, "en-shr_dir-rng") / 2.0)
-            * choose(1.0, -1.0))
-          : 0.0)),
-        spawnX: Struct.get(data, "en-shr_x")
-          * (SHROOM_SPAWN_CHANNEL_SIZE / SHROOM_SPAWN_CHANNEL_AMOUNT)
-          + 0.5
-          + (Struct.get(data, "en-shr_use-rng-x")
-            ? (random(Struct.get(data, "en-shr_rng-x") / 2.0)
-              * (SHROOM_SPAWN_CHANNEL_SIZE / SHROOM_SPAWN_CHANNEL_AMOUNT)
-              * choose(1.0, -1.0))
-            : 0.0),
-        snapH: Struct.getDefault(data, "en-shr_snap-x", false),
-        spawnY: Struct.get(data, "en-shr_y")
-          * (SHROOM_SPAWN_ROW_SIZE / SHROOM_SPAWN_ROW_AMOUNT)
-          - 0.5
-          + (Struct.get(data, "en-shr_use-rng-y")
-            ? (random(Struct.get(data, "en-shr_rng-y") / 2.0)
-              * (SHROOM_SPAWN_ROW_SIZE / SHROOM_SPAWN_ROW_AMOUNT)
-              * choose(1.0, -1.0))
-            : 0.0),
-        snapV: Struct.getDefault(data, "en-shr_snap-y", false),
-      }))
+      //controller.shroomService.send(new Event("spawn-shroom", {
+      //  template: Struct.get(data, "en-shr_template"),
+      //  speed: abs(Struct.get(data, "en-shr_spd")
+      //    + (Struct.get(data, "en-shr_use-spd-rng")
+      //      ? (random(Struct.get(data, "en-shr_spd-rng") / 2.0)
+      //        * choose(1.0, -1.0))
+      //      : 0.0)),
+      //  angle: Math.normalizeAngle(Struct.get(data, "en-shr_dir")
+      //    + (Struct.get(data, "en-shr_use-dir-rng")
+      //      ? (random(Struct.get(data, "en-shr_dir-rng") / 2.0)
+      //      * choose(1.0, -1.0))
+      //    : 0.0)),
+      //  spawnX: Struct.get(data, "en-shr_x")
+      //    * (SHROOM_SPAWN_CHANNEL_SIZE / SHROOM_SPAWN_CHANNEL_AMOUNT)
+      //    + 0.5
+      //    + (Struct.get(data, "en-shr_use-rng-x")
+      //      ? (random(Struct.get(data, "en-shr_rng-x") / 2.0)
+      //        * (SHROOM_SPAWN_CHANNEL_SIZE / SHROOM_SPAWN_CHANNEL_AMOUNT)
+      //        * choose(1.0, -1.0))
+      //      : 0.0),
+      //  snapH: Struct.getDefault(data, "en-shr_snap-x", false),
+      //  spawnY: Struct.get(data, "en-shr_y")
+      //    * (SHROOM_SPAWN_ROW_SIZE / SHROOM_SPAWN_ROW_AMOUNT)
+      //    - 0.5
+      //    + (Struct.get(data, "en-shr_use-rng-y")
+      //      ? (random(Struct.get(data, "en-shr_rng-y") / 2.0)
+      //        * (SHROOM_SPAWN_ROW_SIZE / SHROOM_SPAWN_ROW_AMOUNT)
+      //        * choose(1.0, -1.0))
+      //      : 0.0),
+      //  snapV: Struct.getDefault(data, "en-shr_snap-y", false),
+      //}))
       
+      var spd = abs(Struct.get(data, "en-shr_spd")
+        + (Struct.get(data, "en-shr_use-spd-rng")
+          ? (random(Struct.get(data, "en-shr_spd-rng") / 2.0)
+            * choose(1.0, -1.0))
+          : 0.01))
+      var angle = Math.normalizeAngle(Struct.get(data, "en-shr_dir")
+        + (Struct.get(data, "en-shr_use-dir-rng")
+          ? (random(Struct.get(data, "en-shr_dir-rng") / 2.0)
+          * choose(1.0, -1.0))
+        : 0.0)),
+      var spawnX = Struct.get(data, "en-shr_x")
+        * (SHROOM_SPAWN_CHANNEL_SIZE / SHROOM_SPAWN_CHANNEL_AMOUNT)
+        + 0.5
+        + (Struct.get(data, "en-shr_use-rng-x")
+          ? (random(Struct.get(data, "en-shr_rng-x") / 2.0)
+            * (SHROOM_SPAWN_CHANNEL_SIZE / SHROOM_SPAWN_CHANNEL_AMOUNT)
+            * choose(1.0, -1.0))
+          : 0.0)
+      var snapH = Struct.getDefault(data, "en-shr_snap-x", false)
+      var spawnY = Struct.get(data, "en-shr_y")
+        * (SHROOM_SPAWN_ROW_SIZE / SHROOM_SPAWN_ROW_AMOUNT)
+        - 0.5
+        + (Struct.get(data, "en-shr_use-rng-y")
+          ? (random(Struct.get(data, "en-shr_rng-y") / 2.0)
+            * (SHROOM_SPAWN_ROW_SIZE / SHROOM_SPAWN_ROW_AMOUNT)
+            * choose(1.0, -1.0))
+          : 0.0)
+      var snapV = Struct.getDefault(data, "en-shr_snap-y", false)
+      controller.shroomService.spawnShroom(
+        Struct.get(data, "en-shr_template"),
+        spawnX,
+        spawnY,
+        angle,
+        spd,
+        snapH,
+        snapV
+      )
+
       ///@description ecs
       /*
       var controller = Beans.get(BeanVisuController)

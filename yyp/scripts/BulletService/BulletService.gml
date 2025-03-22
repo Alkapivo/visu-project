@@ -54,12 +54,15 @@ function BulletService(_controller, config = {}): Service() constructor {
       : template
   }
 
+  ///@param {Boolean}
+  optimalizationSortEntitiesByTxGroup = false
+
   ///@type {EventPump}
   dispatcher = new EventPump(this, new Map(String, Callable, {
     "spawn-bullet": function(event, dispatcher) {
       var template = new BulletTemplate(event.data.template, this
         .getTemplate(event.data.template)
-        /*.serialize()*/)
+        .serialize())
         
       Struct.set(template, "x", event.data.x)
       Struct.set(template, "y", event.data.y)
@@ -80,7 +83,7 @@ function BulletService(_controller, config = {}): Service() constructor {
 
       this.bullets.add(bullet)
 
-      if (Visu.settings.getValue("visu.optimalization.sort-entities-by-txgroup")) {
+      if (this.optimalizationSortEntitiesByTxGroup) {
         this.controller.gridService.textureGroups.sortItems(this.bullets)
       }
     },
@@ -90,20 +93,43 @@ function BulletService(_controller, config = {}): Service() constructor {
     },
     "reset-templates": function(event) {
       this.templates.clear()
+      this.dispatcher.container.clear()
     },
   }))
 
+  static spawnBullet = function(name, x, y, angle, speed, producer) {
+    var template = this.getTemplate(name).serializeSpawn(x, y, angle, speed / 1000.0, producer, this.controller.gridService.generateUID())
+    if (producer == Shroom) {
+      controller.sfxService.play("shroom-shoot")
+    }
+    
+    var bullet = new Bullet(template)
+    if (producer == Player) {
+      this.chunkService.add(bullet)
+    }
+    //bullet.updateGameMode(this.controller.gameMode)
+
+    this.bullets.add(bullet)
+
+    if (this.optimalizationSortEntitiesByTxGroup) {
+      this.controller.gridService.textureGroups.sortItems(this.bullets)
+    }
+  }
+
   ///@param {Event} event
   ///@return {?Promise}
-  send = function(event) {
+  static send = function(event) {
+    gml_pragma("forceinline")
     return this.dispatcher.send(event)
   }
 
-  updateGameMode = function(bullet, index, gameMode) {
+  static updateGameMode = function(bullet, index, gameMode) {
+    gml_pragma("forceinline")
     bullet.updateGameMode(gameMode)
   }
 
-  updateBullet = function(bullet, index, context) {
+  static updateBullet = function(bullet, index, context) {
+    gml_pragma("forceinline")
     bullet.update(context.controller)
     if (!bullet.signals.kill) {
       return
@@ -128,29 +154,35 @@ function BulletService(_controller, config = {}): Service() constructor {
         ? (rngSpd + (bullet.speed * 1000.0) + bullet.onDeathSpeed) 
         : (rngSpd + bullet.onDeathSpeed)), 0.1, 99.9)
 
-      context.send(new Event("spawn-bullet", {
-        x: bullet.x,
-        y: bullet.y,
-        angle: dir,
-        speed: spd,
-        producer: bullet.producer,
-        template: bullet.onDeath,
-      }))
+      context.spawnBullet(
+        bullet.onDeath, 
+        bullet.x, 
+        bullet.y,
+        dir,
+        spd,
+        bullet.producer
+      )        
+      //context.send(new Event("spawn-bullet", {
+      //  x: bullet.x,
+      //  y: bullet.y,
+      //  angle: dir,
+      //  speed: spd,
+      //  producer: bullet.producer,
+      //  template: bullet.onDeath,
+      //}))
     }
   }
 
-  ///@override
   ///@return {BulletService}
   update = function() { 
-    //if (controller.gameMode != this.gameMode) {
-    //  this.gameMode = this.controller.gameMode
-    //  this.bullets.forEach(this.updateGameMode, this.gameMode)
-    //}
+    this.optimalizationSortEntitiesByTxGroup = Visu.settings.getValue("visu.optimalization.sort-entities-by-txgroup")
+    if (controller.gameMode != this.gameMode) {
+      this.gameMode = this.controller.gameMode
+      this.bullets.forEach(this.updateGameMode, this.gameMode)
+    }
 
     this.dispatcher.update()
     this.bullets.forEach(this.updateBullet, this).runGC()
     return this
   }
-
-  this.send(new Event("reset-templates"))
 }

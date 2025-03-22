@@ -40,11 +40,17 @@ function VisuIO() constructor {
   ///@param {VisuController} controller
   ///@return {VisuIO}
   fullscreenKeyboardEvent = function(controller) {
+    if (Core.getRuntimeType() == RuntimeType.GXGAMES) {
+      return this
+    }
+
     if (this.keyboard.keys.fullscreen.pressed) {
       var fullscreen = controller.displayService.getFullscreen()
       Logger.debug("VisuIO", String.join("Set fullscreen to", fullscreen ? "'false'" : "'true'", "."))
       controller.displayService.setFullscreen(!fullscreen)
     }
+
+    return this
   }
 
   ///@private

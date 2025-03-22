@@ -31,7 +31,7 @@ function VETimeline(_editor) constructor {
   ///@return {ChunkService}
   factoryChunkService = function() {
     return new ChunkService(this, {
-      step: 15,
+      step: 30,
       fetchKey: function(timestamp) {
         var from = timestamp div this.step * this.step
         var to = from + this.step
@@ -425,7 +425,7 @@ function VETimeline(_editor) constructor {
       "ve-timeline-form": {
         name: "ve-timeline-form",
         state: new Map(String, any, {
-          "background-color": ColorUtil.fromHex(VETheme.color.side).toGMColor(),
+          "background-color": ColorUtil.fromHex(VETheme.color.sideShadow).toGMColor(),
           "store": Beans.get(BeanVisuEditorController).store,
         }),
         updateTimer: new Timer(FRAME_MS * 2, { loop: Infinity, shuffle: true }),
@@ -448,7 +448,7 @@ function VETimeline(_editor) constructor {
                   button: { 
                     label: { 
                       text: "Add",
-                      font: "font_inter_10_bold",
+                      font: "font_inter_8_bold",
                     },
                     onMouseHoverOver: function(event) {
                       this.backgroundColor = ColorUtil.fromHex(this.colorHoverOver).toGMColor()
@@ -1008,28 +1008,6 @@ function VETimeline(_editor) constructor {
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("scrollableY")),
         updateCustom: function() {
           var store = Beans.get(BeanVisuEditorController).store
-          //if ((mouse_check_button(mb_right) && !keyboard_check(vk_control))
-          //    || (mouse_check_button(mb_left) && store.getValue("tool") == ToolType.ERASE)) {
-          if ((mouse_check_button(mb_right))
-              || (mouse_check_button(mb_left) 
-              && store.getValue("tool") == ToolType.ERASE)) {
-            var mouseX = device_mouse_x_to_gui(0)
-            var mouseY = device_mouse_y_to_gui(0)
-            var areaX = this.area.getX()
-            var areaY = this.area.getY()
-            var areaWidth = this.area.getWidth()
-            var areaHeight = this.area.getHeight()
-            if (point_in_rectangle(mouseX, mouseY, areaX, areaY, areaX + areaWidth, areaY + areaHeight)) {
-              this.finishUpdateTimer()
-              this.items.forEach(this.itemMouseEraseEvent, { 
-                data: {
-                  x: mouseX, 
-                  y: mouseY, 
-                  store: store,
-                },
-              })
-            }
-          }
 
           //if (mouse_check_button(mb_right) && keyboard_check(vk_control)) {
           //  var mouseX = device_mouse_x_to_gui(0)
@@ -1084,6 +1062,28 @@ function VETimeline(_editor) constructor {
           this.state.set("speed", spd)
           this.state.set("position", position)
 
+          //if ((mouse_check_button(mb_right) && !keyboard_check(vk_control))
+          //    || (mouse_check_button(mb_left) && store.getValue("tool") == ToolType.ERASE)) {
+          if ((mouse_check_button(mb_right))
+              || (mouse_check_button(mb_left) && store.getValue("tool") == ToolType.ERASE)) {
+            var mouseX = device_mouse_x_to_gui(0)
+            var mouseY = device_mouse_y_to_gui(0)
+            var areaX = this.area.getX()
+            var areaY = this.area.getY()
+            var areaWidth = this.area.getWidth()
+            var areaHeight = this.area.getHeight()
+            if (point_in_rectangle(mouseX, mouseY, areaX, areaY, areaX + areaWidth, areaY + areaHeight)) {
+              this.finishUpdateTimer()
+              this.items.forEach(this.itemMouseEraseEvent, { 
+                data: {
+                  x: mouseX, 
+                  y: mouseY, 
+                  store: store,
+                },
+              })
+            }
+          }
+
           ///@todo refactor
           if (this.state.get("initialized") == false) {
             var initializeChannels = this.state.get("initializeChannels")
@@ -1118,7 +1118,40 @@ function VETimeline(_editor) constructor {
 
             this.state.set("initialized", true)
           }
-        }, 
+        },
+        update: function() {
+          if (this.enableScrollbarY && Struct.get(this.scrollbarY, "isDragEvent")) {
+            if (mouse_check_button(mb_left) ///@todo button should be a parameter
+              && Optional.is(Struct.get(this, "onMousePressedLeft"))) {
+              this.onMousePressedLeft(new Event("MouseOnLeft", { 
+                x: MouseUtil.getMouseX(), 
+                y: MouseUtil.getMouseY(),
+              }))
+            } else {
+              Struct.set(scrollbarY, "isDragEvent", false)
+            }
+          }
+
+          if (Optional.is(this.updateCustom)) {
+            this.updateCustom()
+          }
+
+          if (Optional.is(this.updateArea)) {
+            if (Optional.is(this.updateTimer)) {
+              if (this.updateTimer.update().finished) {
+                this.updateArea()
+                if (Optional.is(this.updateItems)) {
+                  this.updateItems()
+                }
+              }
+            } else {
+              this.updateArea()
+              if (Optional.is(this.updateItems)) {
+                this.updateItems()
+              }
+            }
+          }
+        },
         renderClipboard: new BindIntent(function() {
           var dropEvent = Beans.get(BeanVisuEditorIO).mouse.getClipboard()
           if (!Optional.is(dropEvent)) {
@@ -1188,7 +1221,8 @@ function VETimeline(_editor) constructor {
             color: VETheme.color.textFocus,
             align: { v: VAlign.CENTER, h: HAlign.CENTER },
             outline: true,
-            outlineColor: "#000000"
+            outlineColor: "#000000",
+            useScale: false,
           })
 
           //render previous
@@ -1220,7 +1254,7 @@ function VETimeline(_editor) constructor {
           //render timestamp
           label.render(
             16 + this.offset.x + min(previousX, nextX) + (abs(previousX - nextX) / 2),
-            16 + this.offset.y + eventY
+            16 + this.offset.y + eventY,
           )
         }),
         renderItem: Callable.run(UIUtil.renderTemplates.get("renderItemDefaultScrollable")),
@@ -1398,28 +1432,20 @@ function VETimeline(_editor) constructor {
             var tool = Beans.get(BeanVisuEditorController).store.getValue("tool")
             switch (tool) {
               case ToolType.SELECT:
-                if (cursor == Cursor.DEFAULT) {
-                  displayService.setCursor(Cursor.NONE)
-                  cursor_sprite = texture_ve_cursor_tool_select
-                }
+                displayService.setCursor(Cursor.NONE)
+                cursor_sprite = texture_ve_cursor_tool_select
                 break
               case ToolType.CLONE:
-                if (cursor == Cursor.DEFAULT) {
-                  displayService.setCursor(Cursor.NONE)
-                  cursor_sprite = texture_ve_cursor_tool_clone
-                }
+                displayService.setCursor(Cursor.NONE)
+                cursor_sprite = texture_ve_cursor_tool_clone
                 break
               case ToolType.BRUSH:
-                if (cursor == Cursor.DEFAULT) {
-                  displayService.setCursor(Cursor.NONE)
-                  cursor_sprite = texture_ve_cursor_tool_brush
-                }
+                displayService.setCursor(Cursor.NONE)
+                cursor_sprite = texture_ve_cursor_tool_brush
                 break
               case ToolType.ERASE:
-                if (cursor == Cursor.DEFAULT) {
-                  displayService.setCursor(Cursor.NONE)
-                  cursor_sprite = texture_ve_cursor_tool_erase
-                }
+                displayService.setCursor(Cursor.NONE)
+                cursor_sprite = texture_ve_cursor_tool_erase
                 break
             }
           } else {
@@ -1435,6 +1461,7 @@ function VETimeline(_editor) constructor {
           this.renderDefaultScrollable()
         },
         onInit: function() {
+          this.deselect()
           this.scrollbarY = null
           this.lastIndex = 0
           this.state.set("amount", 0)
@@ -2558,9 +2585,9 @@ function VETimeline(_editor) constructor {
           var color = this.state.get("color")
           var textColor = this.state.get("textColor")
           var height = this.area.getHeight()
-          draw_set_font(font_inter_8_bold)
-          draw_set_halign(HAlign.LEFT)
-          draw_set_valign(VAlign.BOTTOM)
+          GPU.set.font(font_inter_8_bold)
+          GPU.set.align.h(HAlign.LEFT)
+          GPU.set.align.v(VAlign.BOTTOM)
           for (var index = 0; index < viewSize; index++) {
             var _beginX = beginX + (spd * index * stepSize)
             draw_line_color(

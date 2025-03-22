@@ -21,6 +21,7 @@ function GridItemFeature(json) constructor {
 
   ///@return {Boolean}
   static checkConditions = function(gridItem, controller) {
+    gml_pragma("forceinline")
     if (this.conditions == null) {
       return true
     }
@@ -36,6 +37,7 @@ function GridItemFeature(json) constructor {
 
   ///@return {Boolean}
   static updateTimer = function() {
+    gml_pragma("forceinline")
     return this.timer == null ? true : this.timer.update().finished
   }
 

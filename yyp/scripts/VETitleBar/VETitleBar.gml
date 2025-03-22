@@ -64,12 +64,6 @@ function VETitleBar(_editor) constructor {
             y: function() { return 0 },
             width: function() { return 256 },
           },
-          sceneConfigPreview: {
-            x: function() { return this.context.nodes.trackControl.left() 
-              - this.width() - this.margin.right },
-            y: function() { return 0 },
-            width: function() { return this.context.height() },
-          },
           trackControl: {
             name: "title-bar.trackControl",
             x: function() { return this.context.nodes.event.left() 
@@ -93,6 +87,12 @@ function VETitleBar(_editor) constructor {
           },
           brush: {
             name: "title-bar.brush",
+            x: function() { return this.context.nodes.sceneConfigPreview.left() 
+              - this.width() - this.margin.right },
+            y: function() { return 0 },
+            width: function() { return this.context.height() },
+          },
+          sceneConfigPreview: {
             x: function() { return this.context.nodes.fullscreen.left() 
               - this.width() - this.margin.right },
             y: function() { return 0 },
@@ -176,6 +176,38 @@ function VETitleBar(_editor) constructor {
         spriteOn: json.spriteOn,
         spriteOff: json.spriteOff,
         updateArea: Callable.run(UIUtil.updateAreaTemplates.get("applyLayout")),
+        onMouseHoverOver: function(event) {
+          this.backgroundColor = ColorUtil.fromHex(this.backgroundColorSelected).toGMColor()
+        },
+        onMouseHoverOut: function(event) {
+          var item = this
+          var controller = Beans.get(BeanVisuController)
+          controller.executor.tasks.forEach(function(task, iterator, item) {
+            if (Struct.get(task.state, "item") == item) {
+              task.fullfill()
+            }
+          }, item)
+          
+          var task = new Task($"onMouseHoverOut_{item.name}")
+            .setTimeout(10.0)
+            .setState({
+              item: item,
+              transformer: new ColorTransformer({
+                value: item.backgroundColorSelected,
+                target: item.backgroundColorOut,
+                factor: 0.026,
+              })
+            })
+            .whenUpdate(function(executor) {
+              if (this.state.transformer.update().finished) {
+                this.fullfill()
+              }
+
+              this.state.item.backgroundColor = this.state.transformer.get().toGMColor()
+            })
+
+          controller.executor.add(task)
+        },
       }
 
       if (Optional.is(Struct.get(json, "store"))) {

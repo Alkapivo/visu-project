@@ -1,9 +1,0 @@
-{
-  "version":"1",
-  "data":{
-    "sound_external":{
-      "file":"digitalshadowfinalunmixed.ogg"
-    }
-  },
-  "model":"Collection<io.alkapivo.core.service.sound.SoundIntent>"
-}

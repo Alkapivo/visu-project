@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"brush_view_layer",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"brush_view_layer",
+  "parent":{
+    "name":"view",
+    "path":"folders/io.alkapivo.visu/src/editor/service/brush/view.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}
