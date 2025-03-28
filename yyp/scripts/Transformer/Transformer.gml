@@ -17,29 +17,29 @@ function Transformer(json = null) constructor {
   overrideValue = Struct.get(json, "overrideValue") == true
 
   ///@return {any}
-  get = function() {
+  static get = function() {
     return this.value
   }
 
   ///@param {any} value
   ///@return {Transformer}
-  set = function(value) {
+  static set = function(value) {
     this.value = value 
     return this
   }
 
   ///@return {Transformer}
-  update = function() { return this }
+  static update = function() { return this }
 
   ///@return {Struct} 
-  serialize = function() {
+  static serialize = function() {
     return {
       value: this.value
     }
   }
 
   ///@return {Transformer}
-  reset = function() {
+  static reset = function() {
     this.finished = false 
     this.value = this.startValue
     return this
@@ -111,10 +111,10 @@ function ColorTransformer(json = null) constructor {
     this.finished = false
 
     var color = ColorUtil.fromHex(this.startValue)
-    this.value.r = color.r
-    this.value.g = color.g
-    this.value.b = color.b
-    this.value.a = color.a
+    this.value.red = color.red
+    this.value.green = color.green
+    this.value.blue = color.blue
+    this.value.alpha = color.alpha
     return this
   }
 }

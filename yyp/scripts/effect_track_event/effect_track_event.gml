@@ -302,6 +302,13 @@ global.__effect_track_event = {
         "renderCombinedShaders",
         properties)
 
+      ///@description feature TODO effect.particle.clear
+      Visu.resolveSendEventTrackEvent(data,
+        "ef-cfg_cls-part",
+        "clear-particles",
+        null,
+        controller.particleService.dispatcher)
+
       ///@description feature TODO effect.shader.all.render
       Visu.resolveBooleanTrackEvent(data,
         "ef-cfg_use-cls-frame",

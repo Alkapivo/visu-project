@@ -282,6 +282,7 @@ global.__ve_shader_configs = new Map(String, Struct, {
     "iDarkmatter": { __type: "FLOAT" },
     "iDistfading": { __type: "FLOAT" },
     "iSaturation": { __type: "FLOAT" },
+    "iBlend": { __type: "VECTOR3" },
   },
 })
 #macro VE_SHADER_CONFIGS global.__ve_shader_configs

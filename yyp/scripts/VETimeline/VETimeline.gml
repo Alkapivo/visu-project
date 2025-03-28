@@ -33,7 +33,7 @@ function VETimeline(_editor) constructor {
     return new ChunkService(this, {
       step: 30,
       fetchKey: function(timestamp) {
-        var from = timestamp div this.step * this.step
+        var from = floor(timestamp / this.step) * this.step
         var to = from + this.step
         var key = $"{from}-{to}"
         return key
@@ -43,8 +43,8 @@ function VETimeline(_editor) constructor {
           key: key,
           type: UIItem,
           data:  new Map(String, UIItem),
-          add: function(item) {
-            this.data.add(item, item.name)
+          add: function(item, name) {
+            this.data.add(item, name)
             return this
           },
           get: function(name) {
@@ -1619,7 +1619,7 @@ function VETimeline(_editor) constructor {
             var channel = acc.context.getMovedChannelName(acc.sourceChannel, acc.targetChannel, selectedEvent.channel)
             var transactionService = acc.context.controller.transactionService
             var trackEventConfig = selectedEvent.data.serialize()
-            trackEventConfig.timestamp = clamp(trackEventConfig.timestamp + acc.offset, 0.0, acc.duration - 0.2)
+            trackEventConfig.timestamp = clamp(trackEventConfig.timestamp + acc.offset, 0.0, abs(acc.duration - 0.2))
             var sizeBefore = transactionService.applied.size()
             var uiItem = acc.context.addEvent(channel, new TrackEvent(trackEventConfig, {
               handlers: Beans.get(BeanVisuController).trackService.handlers,
@@ -1842,7 +1842,7 @@ function VETimeline(_editor) constructor {
                   var channel = acc.context.getMovedChannelName(acc.sourceChannel, acc.targetChannel, selectedEvent.channel)
                   var transactionService = acc.context.controller.transactionService
                   var trackEventConfig = selectedEvent.data.serialize()
-                  trackEventConfig.timestamp = clamp(trackEventConfig.timestamp + acc.offset, 0.0, acc.duration - 0.2)
+                  trackEventConfig.timestamp = clamp(trackEventConfig.timestamp + acc.offset, 0.0, abs(acc.duration - 0.2))
                   var sizeBefore = transactionService.applied.size()
                   var uiItem = acc.context.addEvent(channel, new TrackEvent(trackEventConfig, {
                     handlers: Beans.get(BeanVisuController).trackService.handlers,
@@ -2012,9 +2012,9 @@ function VETimeline(_editor) constructor {
             return
           }
 
-          var channelName = this.getChannelNameFromMouseY(event.data.y)
-          if (Optional.is(channelName)) {
-            this.removeEvent(channelName, item.name)
+          var channel = item.state.get("channel")
+          if (Core.isType(channel, String)) {
+            this.removeEvent(channel, item.name)
           }
 
           var selected = event.data.store.getValue("selected-event")
@@ -2061,7 +2061,7 @@ function VETimeline(_editor) constructor {
         getChannelNameFromMouseY: new BindIntent(function(mouseY) {
           var channelName = this.controller.containers
             .get("ve-timeline-channels").collection
-            .findKeyByIndex((mouseY - this.area.getY() - this.offset.y) div 32)
+            .findKeyByIndex(floor((mouseY - this.area.getY() - this.offset.y) / 32))
           return Optional.is(channelName) ? channelName : null
         }),
 
@@ -2070,7 +2070,7 @@ function VETimeline(_editor) constructor {
         getChannelIndexFromMouseY: new BindIntent(function(mouseY) {
           var channel = this.controller.containers
             .get("ve-timeline-channels").collection
-            .findByIndex((mouseY - this.area.getY() - this.offset.y) div 32)
+            .findByIndex(floor((mouseY - this.area.getY() - this.offset.y) / 32))
           return Optional.is(channel) ? channel.index : null
         }),
 
@@ -2196,11 +2196,7 @@ function VETimeline(_editor) constructor {
                 var tool = store.getValue("tool")
                 switch (tool) {
                   case ToolType.ERASE:
-                    var channelName = this.context.getChannelNameFromMouseY(event.data.y)
-                    if (Optional.is(channelName)) {
-                      this.context.removeEvent(channelName, this.name)
-                    }
-
+                    this.context.removeEvent(channel, this.name)
                     var selected = store.getValue("selected-event")
                     if (Optional.is(selected) && selected.name == this.name) {
                       store.get("selected-event").set(null)
@@ -2226,9 +2222,9 @@ function VETimeline(_editor) constructor {
                 }
               },
               onMousePressedRight: function(event) {
-                var channelName = this.context.getChannelNameFromMouseY(event.data.y)
-                if (Optional.is(channelName) && !keyboard_check(vk_control)) {
-                  this.context.removeEvent(channelName, this.name)
+                var channel = this.state.get("channel")
+                if (Core.isType(channel, String) && !keyboard_check(vk_control)) {
+                  this.context.removeEvent(channel, this.name)
                 }
 
                 this.context.deselect({ name: this.name })
@@ -2288,8 +2284,7 @@ function VETimeline(_editor) constructor {
               return this
             },
             rollback: function() {
-              Beans.get(BeanVisuController).trackService.track
-                .removeEvent(this.data.channelName, this.data.event)
+              Beans.get(BeanVisuController).trackService.track.removeEvent(this.data.channelName, this.data.event)
               this.data.context.remove(this.data.uiItem.name)
               this.data.key = this.data.uiItem.name
 
@@ -2332,8 +2327,7 @@ function VETimeline(_editor) constructor {
               key: name,
             },
             apply: function() {
-              Beans.get(BeanVisuController).trackService.track
-                .removeEvent(this.data.channelName, this.data.event)
+              Beans.get(BeanVisuController).trackService.track.removeEvent(this.data.channelName, this.data.event)
               this.data.context.remove(this.data.uiItem.name)
               this.data.key = this.data.uiItem.name
 
@@ -2551,7 +2545,7 @@ function VETimeline(_editor) constructor {
           if (Optional.is(mouseX) && !mouse_check_button(mb_left)) {
             var timestamp = this.state.get("mouseXTime")
             if (timestamp + FRAME_MS >= duration) {
-              timestamp = duration - (FRAME_MS * 4.0)
+              timestamp = abs(duration - (FRAME_MS * 4.0))
             }
             this.state.set("mouseX", null)
             this.state.set("time", timestamp)
@@ -2579,7 +2573,7 @@ function VETimeline(_editor) constructor {
           var spd = this.state.get("speed")
           var position = this.state.get("position")
           var camera = this.state.get("camera")
-          var timestamp = camera div spd
+          var timestamp = floor(camera / spd)
           var beginX = (timestamp * spd) - camera
           var beginY = 0
           var color = this.state.get("color")
@@ -2734,7 +2728,7 @@ function VETimeline(_editor) constructor {
           var duration = Beans.get(BeanVisuController).trackService.duration
           var timestamp = this.state.get("mouseXTime")
           if (timestamp + FRAME_MS >= duration) {
-            timestamp = duration - (FRAME_MS * 4.0)
+            timestamp = abs(duration - (FRAME_MS * 4.0))
           }
           this.state.set("mouseX", null)
           this.state.set("mouseXTime", null)

@@ -588,7 +588,7 @@ function VisuEditorController() constructor {
     }, {
       enable: brushNode.maxWidth > 24,
       updateTimer: brushNodePreviousMaxWidth != brushNode.maxWidth
-          && choose(false, false, true),
+          && choose(false, false, false, false, true),
     })
 
     var renderTimeline = this.store.getValue("render-timeline")
@@ -604,7 +604,7 @@ function VisuEditorController() constructor {
       enable: timelineNode.maxHeight > 24,
       updateTimer: timelineNodePreviousMaxHeight != timelineNode.maxHeight
           || brushNodePreviousMaxWidth != brushNode.maxWidth
-          && choose(false, false, true),
+          && choose(false, false, false, false, true),
     }
     switch (this.timeline.channelsMode) {
       case "list":
@@ -648,7 +648,7 @@ function VisuEditorController() constructor {
       enable: accordionNode.maxWidth > 24,
       updateTimer: timelineNodePreviousMaxHeight != timelineNode.maxHeight
           || accordionNodePreviousMaxWidth != accordionNode.maxWidth
-          && choose(false, false, true),
+          && choose(false, false, false, false, true),
     }
 
     this.accordion.containers.forEach(updateAccordion, accordionAcc)

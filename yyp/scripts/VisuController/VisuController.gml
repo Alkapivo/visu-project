@@ -741,9 +741,10 @@ function VisuController(layerName) constructor {
       }
     },
     "spawn-track-event": function(event) {
-      var callable = Assert.isType(this.trackService.handlers
-        .get(event.data.callable), Callable)
-      callable(event.data.data)
+      var handler = this.trackService.handlers.get(Struct.get(event.data, "callable"))
+      if (Optional.is(handler)) {
+        handler.run(handler.parse(Struct.get(event.data, "config")))
+      }
     },
     "transform-property": Callable.run(Struct.get(EVENT_DISPATCHERS, "transform-property")),
     "fade-sprite": Callable.run(Struct.get(EVENT_DISPATCHERS, "fade-sprite")),
@@ -1119,7 +1120,7 @@ function VisuController(layerName) constructor {
       var json = JSON.parse(buffer_read(event.buffer, buffer_string))
       Logger.debug(BeanVisuController, $"'onNetworkEvent' parse json: {json}")
 
-      this.send(new Event(json.event, json.data.data))
+      this.send(new Event(json.name, Struct.get(json, "data")))
     } catch (exception) {
       var message = $"'onNetworkEvent' fatal error: {exception.message}"
       this.send(new Event("spawn-popup", { message: message }))

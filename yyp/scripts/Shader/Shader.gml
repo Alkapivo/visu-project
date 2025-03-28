@@ -443,7 +443,8 @@ global.__shaders = {
       "iBrightness": "FLOAT",
       "iDarkmatter": "FLOAT",
       "iDistfading": "FLOAT",
-      "iSaturation": "FLOAT"
+      "iSaturation": "FLOAT",
+      "iBlend": "VECTOR3",
     }
   },
 }

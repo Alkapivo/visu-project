@@ -316,7 +316,7 @@ function TrackChannel(json, config = null) constructor {
       var lastExecutedEvent = this.pointer != null ? this.events.get(this.pointer) : null
       var trackEvent = this.events.get(index)
       this.events.remove(index)
-      Logger.debug("TrackChannel", $"TrackEvent removed: channel: '{this.name}', timestamp: {trackEvent.timestamp}, callable: '{trackEvent.callableName}'")
+      //Logger.debug("TrackChannel", $"TrackEvent removed: channel: '{this.name}', timestamp: {trackEvent.timestamp}, callable: '{trackEvent.callableName}'")
       if (this.pointer == null) {
         return this
       }
@@ -413,7 +413,7 @@ function TrackEvent(json, config = null): Event("TrackEvent") constructor {
   data = Struct.getIfType(json, "data", Struct, { })
 
   ///@type {Number}
-  timestamp = Assert.isType(Struct.get(json, "timestamp"), Number)
+  timestamp = abs(Assert.isType(Struct.get(json, "timestamp"), Number))
 
   ///@type {String}
   callableName = Struct.getIfType(json, "callable", String, "dummy")

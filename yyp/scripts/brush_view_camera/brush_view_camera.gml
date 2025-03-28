@@ -26,6 +26,10 @@ function brush_view_camera(json) {
         type: Boolean,
         value: Struct.get(json, "vw-cam_follow"),
       },
+      "vw-cam_reset-follow": {
+        type: Boolean,
+        value: Struct.get(json, "vw-cam_reset-follow"),
+      },
       "vw-cam_use-follow-x": {
         type: Boolean,
         value: Struct.get(json, "vw-cam_use-follow-x"),
@@ -216,6 +220,7 @@ function brush_view_camera(json) {
           },
         },
       },
+      /*
       {
         name: "vw-cam_follow-title",
         template: VEComponents.get("property"),
@@ -230,6 +235,24 @@ function brush_view_camera(json) {
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
             store: { key: "vw-cam_follow" },
+          },
+        },
+      },
+      */
+      {
+        name: "vw-cam_reset-follow-title",
+        template: VEComponents.get("property"),
+        layout: VELayouts.get("property"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: {
+            text: "Reset view position",
+            enable: { key: "vw-cam_reset-follow" },
+          },
+          checkbox: { 
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+            store: { key: "vw-cam_reset-follow" },
           },
         },
       },

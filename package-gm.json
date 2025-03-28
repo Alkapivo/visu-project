@@ -8,11 +8,11 @@
   "dependencies": {
     "core": {
       "remote": "https://github.com/Alkapivo/core-gml.git",
-      "revision": "25.03.22"
+      "revision": "25.03.28"
     },
     "visu": {
       "remote": "https://github.com/Alkapivo/visu-gml.git",
-      "revision": "25.03.22"
+      "revision": "25.03.28"
     },
     "gmtf": {
       "remote": "https://github.com/Alkapivo/mh-cz.gmtf-gml.git",

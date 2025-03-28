@@ -20,6 +20,7 @@ uniform float iBrightness; // 1.25
 uniform float iDarkmatter; // 0.3
 uniform float iDistfading; // 0.8
 uniform float iSaturation; // 8.5
+uniform vec3 iBlend; // vec3(1.0) -> white
 
 
 void main() {
@@ -70,10 +71,10 @@ void main() {
 		fade *= iDistfading; // distance fading
 		s += stepsize;
 	}
-	v = mix(vec3(length(v)), v, (iSaturation / 10.0)); //color adjust
+	v = mix(vec3(length(v)), v, (iSaturation / 10.0))* 0.01 * iBlend; //color adjust
 
   vec4 textureColor = texture2D(gm_BaseTexture, vTexcoord);
-  vec3 pixel = mix(v * 0.01, vec3(textureColor.r, textureColor.g, textureColor.b), 0.17);
+  vec3 pixel = mix(v, vec3(textureColor.r, textureColor.g, textureColor.b), 0.17);
   gl_FragColor = vec4(
     pixel.x, 
     pixel.y, 

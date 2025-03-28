@@ -855,7 +855,7 @@ global.__VELayouts = new Map(String, Callable, {
     return {
       name: "texture-field",
       type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
-      height: function() { return this.nodes.alpha.bottom() - this.y() },
+      height: function() { return (5 * 28) + 24 + 144 },//this.nodes.alpha.bottom() - this.y() },
       nodes: {
         title: {
           name: "texture-field.title",
@@ -903,7 +903,7 @@ global.__VELayouts = new Map(String, Callable, {
     return {
       name: "texture-field",
       type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
-      height: function() { return this.nodes.speed.bottom() - this.y() },
+      height: function() { return (4 * 28) + 24 + 144 },//this.nodes.speed.bottom() - this.y() },
       nodes: {
         title: {
           name: "texture-field-simple.title",
@@ -945,7 +945,7 @@ global.__VELayouts = new Map(String, Callable, {
     return {
       name: "texture-field-ext",
       type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
-      height: function() { return this.nodes.scaleY.bottom() - this.y() },
+      height: function() { return (7 * 28) + 24 + 144 },//this.nodes.scaleY.bottom() - this.y() },
       nodes: {
         title: {
           name: "texture-field-ext.title",
@@ -1303,7 +1303,7 @@ global.__VELayouts = new Map(String, Callable, {
     return {
       name: "transform-numeric-uniform",
       type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
-      height: function() { return this.nodes.increment.bottom() - this.y() },
+      height: function() { return 5 * 28 }, //this.nodes.increment.bottom() - this.y() },
       margin: Struct.get(config, "margin"),
       nodes: {
         title: {
@@ -1342,7 +1342,7 @@ global.__VELayouts = new Map(String, Callable, {
       name: "transform-vec-property-uniform",
       type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
       height: function() { 
-        return this.nodes.line.y() + this.nodes.line.margin.bottom - this.nodes.title.y()
+        return (5 * 28) + 10; //this.nodes.line.y() + this.nodes.line.margin.bottom - this.nodes.title.y()
       },
       margin: Struct.get(config, "margin"),
       nodes: {
@@ -1386,7 +1386,7 @@ global.__VELayouts = new Map(String, Callable, {
     return {
       name: "vec4-field",
       type: Assert.isEnum(Struct.getDefault(config, "type", UILayoutType.NONE), UILayoutType),
-      height: function() { return this.nodes.a.bottom() - this.y() },
+      height: function() { return 28 * 4 }, //this.nodes.a.bottom() - this.y() },
       margin: Struct.get(config, "margin"),
       nodes: {
         x: {

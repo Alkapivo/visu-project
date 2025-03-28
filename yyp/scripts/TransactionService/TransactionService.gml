@@ -1,7 +1,7 @@
 ///@package io.alkapivo.core.service.transaction
 
 ///@type {Number}
-#macro TRANSACTION_SERVICE_DEFAULT_LIMIT 100
+#macro TRANSACTION_SERVICE_DEFAULT_LIMIT 1000
 
 ///@type {Number}
 #macro TRANSACTION_SERVICE_MAX_LIMIT 2000

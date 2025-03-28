@@ -35,8 +35,8 @@ function ChunkService(_context, config): Service(config) constructor {
       return this.chunks.contains(key)
     }
 
-  ///@param {any} key
-  ///@return {any}
+  ///@param {String} key
+  ///@return {Chunk}
   fetch = Struct.contains(config, "fetch")
     ? method(this, Assert.isType(config.fetch, Callable))
     : function(key) {

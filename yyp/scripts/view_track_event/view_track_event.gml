@@ -12,6 +12,7 @@ global.__view_track_event = {
         "vw-cam_use-lock-y": Struct.parse.boolean(data, "vw-cam_use-lock-y"),
         "vw-cam_lock-y": Struct.parse.boolean(data, "vw-cam_lock-y"),
         "vw-cam_follow": Struct.parse.boolean(data, "vw-cam_follow"),
+        "vw-cam_reset-follow": Struct.parse.boolean(data, "vw-cam_reset-follow"),
         "vw-cam_use-follow-x": Struct.parse.boolean(data, "vw-cam_use-follow-x"),
         "vw-cam_follow-x": Struct.parse.number(data, "vw-cam_follow-x", 0.35, -25.0, 25.0),
         "vw-cam_use-follow-y": Struct.parse.boolean(data, "vw-cam_use-follow-y"),
@@ -89,6 +90,19 @@ global.__view_track_event = {
         "isLockedY",
         lock)
       gridService.targetLocked.lockY = null
+
+      if (Struct.get(data, "vw-cam_reset-follow") == true) {
+        gridService.view.x = (gridService.width - gridService.view.width) / 2.0
+        gridService.view.y = gridService.height - gridService.view.height
+        gridService.view.derivativeX = 0
+        gridService.view.derivativeY = 0
+        gridService.targetLocked.x = gridService.view.x + (gridService.view.width / 2.0)
+        gridService.targetLocked.y = gridService.view.y + (gridService.view.height / 2.0)
+        gridService.targetLocked.snapH = floor(gridService.view.x / (gridService.view.width / 2.0)) * (gridService.view.width / 2.0)
+        gridService.targetLocked.snapV = floor(gridService.view.y / (gridService.view.height / 2.0)) * (gridService.view.height / 2.0)
+        gridService.targetLocked.lockX = null
+        gridService.targetLocked.lockY = null
+      }
 
       ///@description feature TODO view.camera.follow.x
       Visu.resolvePropertyTrackEvent(data,

@@ -119,59 +119,18 @@ function GridRenderer() constructor {
     var mode = gridService.properties.separatorsMode
     switch (mode) {
       case "SINGLE":
-        for (var index = -1 * primaryBegin; index <= primaryBegin; index++) {
+        for (var index = -1 * primaryBegin; index < size; index++) {
           var beginX = -4.0 * GRID_SERVICE_PIXEL_WIDTH
           var beginY = ((-6.0 * view.height) + (index * separatorHeight) + offset + time) * GRID_SERVICE_PIXEL_HEIGHT
           var endX = (view.width + 4.0) * GRID_SERVICE_PIXEL_WIDTH
           var endY = beginY
-          var _alpha = index == (-1 * primaryBegin) ? primaryAlpha * (1.0 - borderRatio) : primaryAlpha
-          if (index + 1 > primaryBegin) {
-            _alpha = primaryAlpha * borderRatio
-          } else if (index < 0.0) {
-            _alpha = ((primaryBegin - abs(index)) / primaryBegin) * _alpha
-          }
-
-          GPU.render.texturedLineSimple(
-            beginX, beginY, 
-            endX, endY, 
-            primaryThickness, 
-            _alpha, 
-            primaryColor,
-            this.textureLine
-          )
-        }
-
-        for (var index = primaryEnd; index <= size; index++) {
-          var beginX = -4.0 * GRID_SERVICE_PIXEL_WIDTH
-          var beginY = ((-6.0 * view.height) + (index * separatorHeight) + offset + time) * GRID_SERVICE_PIXEL_HEIGHT
-          var endX = (view.width + 4.0) * GRID_SERVICE_PIXEL_WIDTH
-          var endY = beginY
-          var _alpha = index == primaryEnd ? primaryAlpha * (1.0 - borderRatio) : primaryAlpha
-          if (index + 1 > size) {
-            _alpha = primaryAlpha * borderRatio
-          }
-    
-          GPU.render.texturedLineSimple(
-            beginX, beginY, 
-            endX, endY, 
-            primaryThickness, 
-            _alpha, 
-            primaryColor,
-            this.textureLine
-          )
-        }
-
-        for (var index = primaryBegin; index <= primaryEnd; index++) {
-          var beginX = -4.0 * GRID_SERVICE_PIXEL_WIDTH
-          var beginY = ((-6.0 * view.height) + (index * separatorHeight) + offset + time) * GRID_SERVICE_PIXEL_HEIGHT
-          var endX = (view.width + 4.0) * GRID_SERVICE_PIXEL_WIDTH
-          var endY = beginY
-
+          var _alpha = index < 0.0 ? ((primaryBegin - abs(index)) / primaryBegin) * primaryAlpha : primaryAlpha
+          _alpha = index > primaryEnd ? (size - index) / (size - primaryEnd) * primaryAlpha : _alpha
           GPU.render.texturedLineSimple(
             beginX, beginY, 
             endX, endY, 
             primaryThickness,
-            primaryAlpha, 
+            _alpha, 
             primaryColor,
             this.textureLine
           )
