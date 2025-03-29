@@ -22,6 +22,9 @@ function AngleFeature(json) {
     ///@type {Boolean}
     isAngleSet: false,
 
+    ///@type {Boolean}
+    isRelative: Struct.getIfType(data, "isRelative", Boolean, true),
+
     ///@type {?NumberTransformer}
     transform: Struct.contains(data, "transform")
       ? new NumberTransformer(data.transform)
@@ -46,7 +49,7 @@ function AngleFeature(json) {
           this.transform.value = item.angle
           this.transform.startValue = item.angle
           this.transform.target = item.angle + ((this.transform.factor >= 0 ? 1 : -1)
-            * Math.fetchPointsAngleDiff(item.angle, item.angle+ this.transform.target))
+            * Math.fetchPointsAngleDiff(item.angle, (this.isRelative ? item.angle : 0.0) + this.transform.target))
           this.transform.factor = abs(this.transform.factor)
           this.isAngleSet = true
         }
