@@ -217,8 +217,8 @@ global.__EVENT_DISPATCHERS = {
 
       var tiled = Struct.getIfType(event.data, "tiled", Boolean, false)
       var replace = Struct.getIfType(event.data, "replace", Boolean, false)
-      var lifespawn = Struct.getIfType(event.data, "lifespawn", Number)
-      var lifespawnTimer = Optional.is(lifespawn) ? new Timer(lifespawn) : null
+      var lifespan = Struct.getIfType(event.data, "lifespan", Number)
+      var lifespanTimer = Optional.is(lifespan) ? new Timer(lifespan) : null
       var task = new Task(event.name)
         .setState(new Map(String, any, {
           type: type,
@@ -243,7 +243,7 @@ global.__EVENT_DISPATCHERS = {
           yScaleTransformer: yScaleTransformer,
           tiled: tiled,
           replace: replace,
-          lifespawn: lifespawnTimer,
+          lifespan: lifespanTimer,
         }))
         .whenUpdate(function() {
           var stage = this.state.get("stage")
@@ -302,8 +302,8 @@ global.__EVENT_DISPATCHERS = {
           this.state.set("x", _x)
           this.state.set("y", _y)
           
-          var lifespawn = this.state.get("lifespawn")
-          if (Optional.is(lifespawn) && lifespawn.update().finished) {
+          var lifespan = this.state.get("lifespan")
+          if (Optional.is(lifespan) && lifespan.update().finished) {
             stage = "fade-out"
             this.state.set("stage", stage)
           }

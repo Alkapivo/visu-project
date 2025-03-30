@@ -289,8 +289,8 @@ function VESceneConfigPreview(_config = null) constructor {
           var xScale = task.state.get("xScale")
           var yScale = task.state.get("yScale")
 
-          var lifespawn = Optional.is(task.state.get("lifespawn"))
-            ? task.state.get("lifespawn").time
+          var lifespan = Optional.is(task.state.get("lifespan"))
+            ? task.state.get("lifespan").time
             : "N/A"
 
           var fadeInSpeed = task.state.get("fadeInSpeed")
@@ -313,7 +313,7 @@ function VESceneConfigPreview(_config = null) constructor {
             + $"              X: {xScale}\n"
             + $"              Y: {yScale}\n"
             + $"          Layer:\n"
-            + $"            Lifespawn: {lifespawn}\n"
+            + $"            Lifespan: {lifespan}\n"
             + $"            FadeInSpeed: {fadeInSpeed}\n"
             + $"            FadeOutSpeed: {fadeOutSpeed}\n"
             + $"            BlendMode:\n"
@@ -342,7 +342,7 @@ function VESceneConfigPreview(_config = null) constructor {
           var angle = Core.isType(subtitle.angleTransformer, NumberTransformer) ? subtitle.angleTransformer.value : "N/A"
           var _speed = Core.isType(subtitle.speedTransformer, NumberTransformer) ? subtitle.speedTransformer.value : "N/A"
           stringBuilder.append($"      - SubtitleTemplate: {subtitle.template}\n"
-            + $"        Lifespawn: {task.state.time}\n"
+            + $"        Lifespan: {task.state.time}\n"
             + $"        Char speed: {subtitle.charSpeed}\n"
             + $"        Fade in: {subtitle.fadeIn}\n"
             + $"        Fade out: {subtitle.fadeOut}\n"

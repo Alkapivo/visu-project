@@ -174,13 +174,13 @@ function brush_view_layer(json = null) {
         type: Boolean,
         value: Struct.get(json, "vw-layer_texture-reset-pos"),
       },
-      "vw-layer_texture-use-lifespawn": {
+      "vw-layer_texture-use-lifespan": {
         type: Boolean,
-        value: Struct.get(json, "vw-layer_texture-use-lifespawn"),
+        value: Struct.get(json, "vw-layer_texture-use-lifespan"),
       },
-      "vw-layer_texture-lifespawn": {
+      "vw-layer_texture-lifespan": {
         type: Number,
-        value: Struct.get(json, "vw-layer_texture-lifespawn"),
+        value: Struct.get(json, "vw-layer_texture-lifespan"),
         passthrough: UIUtil.passthrough.getClampedStringNumber(),
         data: new Vector2(0.0, 9999.9),
       },
@@ -361,47 +361,47 @@ function brush_view_layer(json = null) {
         config: { layout: { type: UILayoutType.VERTICAL } },
       },
       {
-        name: "vw-layer_texture-lifespawn",
+        name: "vw-layer_texture-lifespan",
         template: VEComponents.get("numeric-input"),
         layout: VELayouts.get("div"),
         config: {
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Lifespawn",
-            enable: { key: "vw-layer_texture-use-lifespawn" },
+            text: "Lifespan",
+            enable: { key: "vw-layer_texture-use-lifespan" },
           },
           field: { 
-            store: { key: "vw-layer_texture-lifespawn" },
-            enable: { key: "vw-layer_texture-use-lifespawn" },
+            store: { key: "vw-layer_texture-lifespan" },
+            enable: { key: "vw-layer_texture-use-lifespan" },
           },
           decrease: {
-            store: { key: "vw-layer_texture-lifespawn" },
-            enable: { key: "vw-layer_texture-use-lifespawn" },
+            store: { key: "vw-layer_texture-lifespan" },
+            enable: { key: "vw-layer_texture-use-lifespan" },
             factor: -0.25,
           },
           increase: {
-            store: { key: "vw-layer_texture-lifespawn" },
-            enable: { key: "vw-layer_texture-use-lifespawn" },
+            store: { key: "vw-layer_texture-lifespan" },
+            enable: { key: "vw-layer_texture-use-lifespan" },
             factor: 0.25,
           },
           stick: {
-            store: { key: "vw-layer_texture-lifespawn" },
-            enable: { key: "vw-layer_texture-use-lifespawn" },
+            store: { key: "vw-layer_texture-lifespan" },
+            enable: { key: "vw-layer_texture-use-lifespan" },
             factor: 0.001,
           },
           checkbox: { 
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "vw-layer_texture-use-lifespawn" },
+            store: { key: "vw-layer_texture-use-lifespan" },
           },
           title: { 
             text: "Override",
-            enable: { key: "vw-layer_texture-use-lifespawn" },
+            enable: { key: "vw-layer_texture-use-lifespan" },
           },
         }
       },
       {
-        name: "vw-layer_lifespawn-line-h",
+        name: "vw-layer_lifespan-line-h",
         template: VEComponents.get("line-h"),
         layout: VELayouts.get("line-h"),
         config: { layout: { type: UILayoutType.VERTICAL } },

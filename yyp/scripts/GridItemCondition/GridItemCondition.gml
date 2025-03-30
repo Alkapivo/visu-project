@@ -58,16 +58,16 @@ global.__VISU_GRID_CONDITIONS = {
       return shroom.signals.playerLeave
     }
   },
-  "lifespawn": function() {
+  "lifespan": function() {
     return function(item, controller) {
       var value = this.data.value
       switch (this.data.operator) {
-        case "equal": return item.lifespawn == value
-        case "greater": return item.lifespawn > value
-        case "less": return item.lifespawn < value
-        case "greaterOrEqual": return item.lifespawn >= value
-        case "lessOrEqual": return item.lifespawn <= value
-        default: throw new Exception($"Found unsupported operator for 'lifespawn': {this.data.operator}")
+        case "equal": return item.lifespan == value
+        case "greater": return item.lifespan > value
+        case "less": return item.lifespan < value
+        case "greaterOrEqual": return item.lifespan >= value
+        case "lessOrEqual": return item.lifespan <= value
+        default: throw new Exception($"Found unsupported operator for 'lifespan': {this.data.operator}")
       }
     }
   },

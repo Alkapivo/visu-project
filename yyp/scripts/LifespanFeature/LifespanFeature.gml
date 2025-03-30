@@ -2,7 +2,7 @@
 
 ///@param {Struct} json
 ///@return {GridItemFeature}
-function LifespawnFeature(json) {
+function LifespanFeature(json) {
   var data = Struct.map(Assert.isType(Struct
     .getDefault(json, "data", {}), Struct), GMArray
     .resolveRandom)
@@ -10,17 +10,17 @@ function LifespawnFeature(json) {
   return new GridItemFeature(Struct.append(json, {
 
     ///@param {Callable}
-    type: LifespawnFeature,
+    type: LifespanFeature,
 
     ///@type {Timer}
-    lifespawnTimer: new Timer(data.duration),
+    lifespanTimer: new Timer(data.duration),
 
     ///@override
     ///@param {GridItem} item
     ///@param {VisuController} controller
     update: function(item, controller) {
-      item.lifespawn = this.lifespawnTimer.update().time
-      if (this.lifespawnTimer.finished) {
+      item.lifespan = this.lifespanTimer.update().time
+      if (this.lifespanTimer.finished) {
         item.signal("kill")
       }
     },

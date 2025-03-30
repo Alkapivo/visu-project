@@ -121,7 +121,7 @@ function GridItem(config = {}) constructor {
   angle = Struct.getIfType(config, "angle", Number, 0.0)
 
   ///@type {Number}
-  lifespawn = Struct.getIfType(config, "lifespawn", Number, 0.0)
+  lifespan = Struct.getIfType(config, "lifespan", Number, 0.0)
 
   ///@type {GridItemSignals}
   signals = new GridItemSignals()

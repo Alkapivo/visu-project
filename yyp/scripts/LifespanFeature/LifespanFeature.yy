@@ -1,9 +1,9 @@
 {
   "$GMScript":"v1",
-  "%Name":"LifespawnFeature",
+  "%Name":"LifespanFeature",
   "isCompatibility":false,
   "isDnD":false,
-  "name":"LifespawnFeature",
+  "name":"LifespanFeature",
   "parent":{
     "name":"feature",
     "path":"folders/io.alkapivo.visu/src/service/grid/feature.yy",

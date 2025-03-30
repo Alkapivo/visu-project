@@ -19,6 +19,10 @@ global.__entity_track_event = {
         "icon": Struct.parse.sprite(data, "icon"),
         "en-shr_preview": Struct.parse.boolean(data, "en-shr_preview"),
         "en-shr_template": Struct.parse.text(data, "en-shr_template", "shroom-default"),
+        "en-shr_use-lifespan": Struct.parse.boolean(data, "en-shr_use-lifespan", false),
+        "en-shr_lifespan": Struct.parse.number(data, "en-shr_lifespan", 15.0),
+        "en-shr_use-hp": Struct.parse.boolean(data, "en-shr_use-hp", false),
+        "en-shr_hp": Struct.parse.number(data, "en-shr_hp", 1.0),
         "en-shr_spd": Struct.parse.number(data, "en-shr_spd", 10.0, 0.0, 99.9),
         "en-shr_use-spd-rng": Struct.parse.boolean(data, "en-shr_use-spd-rng"),
         "en-shr_spd-rng": Struct.parse.number(data, "en-shr_spd-rng", 0.0, 0.0, 99.9),
@@ -81,6 +85,12 @@ global.__entity_track_event = {
       //        * choose(1.0, -1.0))
       //      : 0.0),
       //  snapV: Struct.getDefault(data, "en-shr_snap-y", false),
+      //  lifespan: Struct.get(data, "en-shr_use-lifespan")
+      //      ? Struct.get(data, "en-shr_lifespan")
+      //      : null,
+      //  hp: Struct.get(data, "en-shr_use-hp")
+      //      ? Struct.get(data, "en-shr_hp")
+      //      : null,
       //}))
       
       var spd = abs(Struct.get(data, "en-shr_spd")
@@ -111,6 +121,8 @@ global.__entity_track_event = {
             * choose(1.0, -1.0))
           : 0.0)
       var snapV = Struct.getDefault(data, "en-shr_snap-y", false)
+      var lifespan = Struct.get(data, "en-shr_use-lifespan") ? Struct.get(data, "en-shr_lifespan") : null
+      var hp = Struct.get(data, "en-shr_use-hp") ? Struct.get(data, "en-shr_hp") : null
       controller.shroomService.spawnShroom(
         Struct.get(data, "en-shr_template"),
         spawnX,
@@ -118,7 +130,9 @@ global.__entity_track_event = {
         angle,
         spd,
         snapH,
-        snapV
+        snapV,
+        lifespan,
+        hp
       )
 
       ///@description ecs

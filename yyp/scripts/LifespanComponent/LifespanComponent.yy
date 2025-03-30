@@ -1,9 +1,9 @@
 {
   "$GMScript":"v1",
-  "%Name":"LifespawnComponent",
+  "%Name":"LifespanComponent",
   "isCompatibility":false,
   "isDnD":false,
-  "name":"LifespawnComponent",
+  "name":"LifespanComponent",
   "parent":{
     "name":"component",
     "path":"folders/io.alkapivo.visu/src/ecs/grid/component.yy",

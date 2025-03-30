@@ -150,8 +150,8 @@ function VETemplate(json) constructor {
       }
     }
 
-    if (this.store.getValue("shroom_use-lifespawn")) {
-      Struct.set(json, "lifespawnMax", this.store.getValue("shroom_lifespawn"))
+    if (this.store.getValue("shroom_use-lifespan")) {
+      Struct.set(json, "lifespanMax", this.store.getValue("shroom_lifespan"))
     }
 
     if (this.store.getValue("shroom_use-health-points")) {
@@ -170,8 +170,8 @@ function VETemplate(json) constructor {
     var sprite = this.store.getValue("bullet_texture")
     var json = {
       name: Assert.isType(this.store.getValue("template-name"), String),
-      lifespawnMax: this.store.getValue("bullet_use-lifespawn")
-        ? this.store.getValue("bullet_lifespawn")
+      lifespanMax: this.store.getValue("bullet_use-lifespan")
+        ? this.store.getValue("bullet_lifespan")
         : null,
       damage: this.store.getValue("bullet_use-damage")
         ? this.store.getValue("bullet_damage")

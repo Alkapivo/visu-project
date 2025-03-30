@@ -6,13 +6,13 @@ function template_shroom(json) {
   return {
     name: Assert.isType(json.name, String),
     store: new Map(String, Struct, {
-      "shroom_use-lifespawn": {
+      "shroom_use-lifespan": {
         type: Boolean,
-        value: Core.isType(Struct.get(json, "lifespawnMax"), Number),
+        value: Core.isType(Struct.get(json, "lifespanMax"), Number),
       },
-      "shroom_lifespawn": {
+      "shroom_lifespan": {
         type: Number,
-        value: Struct.getIfType(json, "lifespawnMax", Number, 15.0),
+        value: Struct.getIfType(json, "lifespanMax", Number, 15.0),
         passthrough: UIUtil.passthrough.getClampedStringNumber(),
         data: new Vector2(0.0, 99.9),
       },
@@ -62,73 +62,83 @@ function template_shroom(json) {
     }),
     components: new Array(Struct, [
       {
-        name: "shroom_lifespawn",
-        template: VEComponents.get("text-field-increase-checkbox"),
-        layout: VELayouts.get("text-field-increase-checkbox"),
+        name: "shroom_lifespan",
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Lifespawn",
-            enable: { key: "shroom_use-lifespawn" },
+            text: "Lifespan",
+            enable: { key: "shroom_use-lifespan" },
           },  
           field: { 
-            store: { key: "shroom_lifespawn" },
-            enable: { key: "shroom_use-lifespawn" },
+            store: { key: "shroom_lifespan" },
+            enable: { key: "shroom_use-lifespan" },
           },
           decrease: {
-            store: { key: "shroom_lifespawn" },
-            enable: { key: "shroom_use-lifespawn" },
-            factor: -0.25,
+            store: { key: "shroom_lifespan" },
+            enable: { key: "shroom_use-lifespan" },
+            factor: -0.1,
           },
           increase: {
-            store: { key: "shroom_lifespawn" },
-            enable: { key: "shroom_use-lifespawn" },
-            factor: 0.25,
+            store: { key: "shroom_lifespan" },
+            enable: { key: "shroom_use-lifespan" },
+            factor: 0.1,
           },
-          checkbox: { 
+          stick: {
+            store: { key: "shroom_lifespan" },
+            enable: { key: "shroom_use-lifespan" },
+            factor: 0.01,
+          },
+          checkbox: {
+            store: { key: "shroom_use-lifespan" },
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "shroom_use-lifespawn" },
           },
-          title: { 
+          title: {
             text: "Override",
-            enable: { key: "shroom_use-lifespawn" },
-          },
+            enable: { key: "shroom_use-lifespan" },
+          }
         },
       },
       {
         name: "shroom_health-points",
-        template: VEComponents.get("text-field-increase-checkbox"),
-        layout: VELayouts.get("text-field-increase-checkbox"),
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
             text: "Health",
-            enable: { key: "shroom_use-health-points" },
+            enable: { key: "shroom_shroom_use-health-points" },
           },  
           field: { 
             store: { key: "shroom_health-points" },
-            enable: { key: "shroom_use-health-points" },
+            enable: { key: "shroom_shroom_use-health-points" },
           },
           decrease: {
             store: { key: "shroom_health-points" },
-            enable: { key: "shroom_use-health-points" },
-            factor: -0.25,
+            enable: { key: "shroom_shroom_use-health-points" },
+            factor: -0.1,
           },
           increase: {
             store: { key: "shroom_health-points" },
-            enable: { key: "shroom_use-health-points" },
-            factor: 0.25,
+            enable: { key: "shroom_shroom_use-health-points" },
+            factor: 0.1,
           },
-          checkbox: { 
+          stick: {
+            store: { key: "shroom_health-points" },
+            enable: { key: "shroom_shroom_use-health-points" },
+            factor: 0.01,
+          },
+          checkbox: {
+            store: { key: "shroom_shroom_use-health-points" },
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
-            store: { key: "shroom_use-health-points" },
           },
-          title: { 
+          title: {
             text: "Override",
-            enable: { key: "shroom_use-health-points" },
-          },
+            enable: { key: "shroom_shroom_use-health-points" },
+          }
         },
       },
       {

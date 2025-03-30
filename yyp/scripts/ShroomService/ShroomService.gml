@@ -101,12 +101,18 @@ function ShroomService(_controller, config = {}): Service() constructor {
       var spd = event.data.speed
       var viewX = event.data.snapH ? locked.snapH : view.x
       var viewY = event.data.snapV ? locked.snapV : view.y
-
       Struct.set(template, "x", viewX + spawnX)
       Struct.set(template, "y", viewY + spawnY)
       Struct.set(template, "speed", spd / 1000.0)
       Struct.set(template, "angle", angle)
       Struct.set(template, "uid", this.controller.gridService.generateUID())
+      if (Optional.is(Struct.get(event.data, "lifespan"))) {
+        Struct.set(template, "lifespanMax", event.data.lifespan)
+      }
+
+      if (Optional.is(Struct.get(event.data, "hp"))) {
+        Struct.set(template, "healthPoints", event.data.hp)
+      }
       
       var shroom = new Shroom(template)
       shroom.updateGameMode(this.controller.gameMode)
@@ -128,12 +134,12 @@ function ShroomService(_controller, config = {}): Service() constructor {
     },
   }))
 
-  static spawnShroom = function(name, spawnX, spawnY, angle, spd, snapH, snapV) {
+  static spawnShroom = function(name, spawnX, spawnY, angle, spd, snapH, snapV, lifespan, hp) {
     var view = this.controller.gridService.view
     var locked = this.controller.gridService.targetLocked
     var viewX = snapH ? locked.snapH : view.x
     var viewY = snapV ? locked.snapV : view.y
-    var template = this.getTemplate(name).serializeSpawn(viewX + spawnX, viewY + spawnY, spd / 1000.0, angle, this.controller.gridService.generateUID())
+    var template = this.getTemplate(name).serializeSpawn(viewX + spawnX, viewY + spawnY, spd / 1000.0, angle, this.controller.gridService.generateUID(), lifespan, hp)
     
     var shroom = new Shroom(template)
     shroom.updateGameMode(this.controller.gameMode)

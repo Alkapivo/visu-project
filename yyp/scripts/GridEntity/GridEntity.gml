@@ -18,7 +18,7 @@ global.__GridComponentNames = {
   "GameModeComponent": "gameMode",
   "HealthComponent": "health",
   "HitBoxComponent": "hitBox",
-  "LifespawnComponent": "lifespawn",
+  "LifespanComponent": "lifespan",
   "ParticleBurstComponent": "particleBurst",
   "PositionComponent": "position",
   "RenderSpriteComponent": "renderSprite",

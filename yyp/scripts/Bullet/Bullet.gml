@@ -16,7 +16,7 @@ function BulletTemplate(_name, json) constructor {
   mask = Struct.getIfType(json, "mask", Struct)
 
   ///@type {Number}
-  lifespawnMax = Struct.getIfType(json, "lifespawnMax", Number, 15.0)
+  lifespanMax = Struct.getIfType(json, "lifespanMax", Number, 15.0)
 
   ///@type {Number}
   damage = Struct.getIfType(json, "damage", Number, 1.0)
@@ -96,7 +96,7 @@ function BulletTemplate(_name, json) constructor {
       useAngleOffset: this.useAngleOffset,
       changeAngleOffset: this.changeAngleOffset,
       damage: this.damage,
-      lifespawnMax: this.lifespawnMax,
+      lifespanMax: this.lifespanMax,
       mask: Optional.is(this.mask) ? JSON.clone(this.mask) : null,
       wiggle: this.wiggle,
       wiggleTime: this.wiggleTime,
@@ -128,7 +128,7 @@ function BulletTemplate(_name, json) constructor {
       useAngleOffset: this.useAngleOffset,
       changeAngleOffset: this.changeAngleOffset,
       damage: this.damage,
-      lifespawnMax: this.lifespawnMax,
+      lifespanMax: this.lifespanMax,
       mask: Optional.is(this.mask) ? JSON.clone(this.mask) : null,
       wiggle: this.wiggle,
       wiggleTime: this.wiggleTime,
@@ -174,7 +174,7 @@ function Bullet(template): GridItem(template) constructor {
 
   ///@private
   ///@type {Number}
-  lifespawnMax = Struct.get(template, "lifespawnMax")
+  lifespanMax = Struct.get(template, "lifespanMax")
   
   ///@type {Number}
   damage = Struct.get(template, "damage")
@@ -282,8 +282,8 @@ function Bullet(template): GridItem(template) constructor {
 
     this.speed = abs(this.startSpeed + componentSpeed)
     
-    this.lifespawn += DeltaTime.apply(FRAME_MS)
-    if (this.lifespawn >= this.lifespawnMax
+    this.lifespan += DeltaTime.apply(FRAME_MS)
+    if (this.lifespan >= this.lifespanMax
       || Optional.is(this.signals.shroomCollision)
       || Optional.is(this.signals.playerCollision)) {
       this.signal("kill")

@@ -245,8 +245,8 @@ global.__view_track_event = {
         "vw-layer_use-texture-tiled": Struct.parse.boolean(data, "vw-layer_use-texture-tiled", true),
         "vw-layer_use-texture-replace": Struct.parse.boolean(data, "vw-layer_use-texture-replace", true),
         "vw-layer_texture-reset-pos": Struct.parse.boolean(data, "vw-layer_texture-reset-pos", true),
-        "vw-layer_texture-use-lifespawn": Struct.parse.boolean(data, "vw-layer_texture-use-lifespawn"),
-        "vw-layer_texture-lifespawn": Struct.parse.number(data, "vw-layer_texture-lifespawn", 0.0, 0.0, 9999.9),
+        "vw-layer_texture-use-lifespan": Struct.parse.boolean(data, "vw-layer_texture-use-lifespan"),
+        "vw-layer_texture-lifespan": Struct.parse.number(data, "vw-layer_texture-lifespan", 0.0, 0.0, 9999.9),
       }
     },
     run: function(data) {
@@ -421,7 +421,7 @@ global.__view_track_event = {
           y: Struct.get(data, "vw-layer_texture-reset-pos") ? null : lastY,
           tiled: Struct.get(data, "vw-layer_use-texture-tiled"),
           replace: Struct.get(data, "vw-layer_use-texture-replace"),
-          lifespawn: Struct.get(data, "vw-layer_texture-use-lifespawn") ? Struct.get(data, "vw-layer_texture-lifespawn") : null,
+          lifespan: Struct.get(data, "vw-layer_texture-use-lifespan") ? Struct.get(data, "vw-layer_texture-lifespan") : null,
         },
         pump)
     },

@@ -78,6 +78,9 @@ function CLIParamParser(json) constructor {
     }
   
     var args = new Array()
+    //var args = IntStream.map(0, cliParam.args.size(), function(num, idx, params) {
+    //  return params.pop()
+    //}, params)
     IntStream.forEach(0, cliParam.args.size(), function(num, idx, acc) {
       acc.args.add(acc.params.pop())
     }, { args: args, params: params })

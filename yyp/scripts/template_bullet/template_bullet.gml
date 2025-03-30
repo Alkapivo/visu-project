@@ -6,13 +6,13 @@ function template_bullet(json = null) {
   var template = {
     name: Assert.isType(json.name, String),
     store: new Map(String, Struct, {
-      "bullet_use-lifespawn": {
+      "bullet_use-lifespan": {
         type: Boolean,
-        value: Core.isType(Struct.get(json, "lifespawnMax"), Number),
+        value: Core.isType(Struct.get(json, "lifespanMax"), Number),
       },
-      "bullet_lifespawn": {
+      "bullet_lifespan": {
         type: Number,
-        value: Core.isType(Struct.get(json, "lifespawnMax"), Number) ? json.lifespawnMax : 15.0,
+        value: Core.isType(Struct.get(json, "lifespanMax"), Number) ? json.lifespanMax : 15.0,
         passthrough: function(value) {
           return clamp(NumberUtil.parse(value, this.value), 0.0, 99.9)
         },
@@ -185,42 +185,42 @@ function template_bullet(json = null) {
     }),
     components: new Array(Struct, [
       {
-        name: "bullet_lifespawn",
+        name: "bullet_lifespan",
         template: VEComponents.get("numeric-input"),
         layout: VELayouts.get("div"),
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Lifespawn",
-            enable: { key: "bullet_use-lifespawn" },
+            text: "Lifespan",
+            enable: { key: "bullet_use-lifespan" },
           },  
           field: { 
-            store: { key: "bullet_lifespawn" },
-            enable: { key: "bullet_use-lifespawn" },
+            store: { key: "bullet_lifespan" },
+            enable: { key: "bullet_use-lifespan" },
           },
           decrease: {
-            store: { key: "bullet_lifespawn" },
-            enable: { key: "bullet_use-lifespawn" },
+            store: { key: "bullet_lifespan" },
+            enable: { key: "bullet_use-lifespan" },
             factor: -0.1,
           },
           increase: {
-            store: { key: "bullet_lifespawn" },
-            enable: { key: "bullet_use-lifespawn" },
+            store: { key: "bullet_lifespan" },
+            enable: { key: "bullet_use-lifespan" },
             factor: 0.1,
           },
           stick: {
-            store: { key: "bullet_lifespawn" },
-            enable: { key: "bullet_use-lifespawn" },
+            store: { key: "bullet_lifespan" },
+            enable: { key: "bullet_use-lifespan" },
             factor: 0.01,
           },
           checkbox: {
-            store: { key: "bullet_use-lifespawn" },
+            store: { key: "bullet_use-lifespan" },
             spriteOn: { name: "visu_texture_checkbox_on" },
             spriteOff: { name: "visu_texture_checkbox_off" },
           },
           title: {
             text: "Override",
-            enable: { key: "bullet_use-lifespawn" },
+            enable: { key: "bullet_use-lifespan" },
           }
         },
       },

@@ -223,7 +223,7 @@ function brush_view_subtitle(json = null) {
         config: { 
           layout: { type: UILayoutType.VERTICAL },
           label: { 
-            text: "Lifespawn",
+            text: "Lifespan",
             enable: { key: "vw-sub_use-timeout" },
           },  
           field: { 

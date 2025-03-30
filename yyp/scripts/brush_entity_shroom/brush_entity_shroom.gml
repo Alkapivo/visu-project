@@ -19,6 +19,26 @@ function brush_entity_shroom(json) {
           defaultValue: "shroom-default",
         },
       },
+      "en-shr_use-lifespan": {
+        type: Boolean,
+        value: Struct.get(json, "en-shr_use-lifespan")
+      },
+      "en-shr_lifespan": {
+        type: Number,
+        value: Struct.get(json, "en-shr_lifespan"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.0, 999.9),
+      },
+      "en-shr_use-hp": {
+        type: Boolean,
+        value: Struct.get(json, "en-shr_use-hp"),
+      },
+      "en-shr_hp": {
+        type: Number,
+        value: Struct.get(json, "en-shr_hp"),
+        passthrough: UIUtil.passthrough.getClampedStringNumber(),
+        data: new Vector2(0.0, 9999999.9),
+      },
       "en-shr_spd": {
         type: Number,
         value: Struct.get(json, "en-shr_spd"),
@@ -132,6 +152,86 @@ function brush_entity_shroom(json) {
           },
           label: { text: "Template" },
           field: { store: { key: "en-shr_template" } },
+        },
+      },
+      {
+        name: "en-shr_lifespan",
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Lifespan",
+            enable: { key: "en-shr_use-lifespan" },
+          },  
+          field: { 
+            store: { key: "en-shr_lifespan" },
+            enable: { key: "en-shr_use-lifespan" },
+          },
+          decrease: {
+            store: { key: "en-shr_lifespan" },
+            enable: { key: "en-shr_use-lifespan" },
+            factor: -0.1,
+          },
+          increase: {
+            store: { key: "en-shr_lifespan" },
+            enable: { key: "en-shr_use-lifespan" },
+            factor: 0.1,
+          },
+          stick: {
+            store: { key: "en-shr_lifespan" },
+            enable: { key: "en-shr_use-lifespan" },
+            factor: 0.01,
+          },
+          checkbox: {
+            store: { key: "en-shr_use-lifespan" },
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+          },
+          title: {
+            text: "Override",
+            enable: { key: "en-shr_use-lifespan" },
+          }
+        },
+      },
+      {
+        name: "en-shr_hp",
+        template: VEComponents.get("numeric-input"),
+        layout: VELayouts.get("div"),
+        config: { 
+          layout: { type: UILayoutType.VERTICAL },
+          label: { 
+            text: "Health",
+            enable: { key: "en-shr_use-hp" },
+          },  
+          field: { 
+            store: { key: "en-shr_hp" },
+            enable: { key: "en-shr_use-hp" },
+          },
+          decrease: {
+            store: { key: "en-shr_hp" },
+            enable: { key: "en-shr_use-hp" },
+            factor: -0.1,
+          },
+          increase: {
+            store: { key: "en-shr_hp" },
+            enable: { key: "en-shr_use-hp" },
+            factor: 0.1,
+          },
+          stick: {
+            store: { key: "en-shr_hp" },
+            enable: { key: "en-shr_use-hp" },
+            factor: 0.01,
+          },
+          checkbox: {
+            store: { key: "en-shr_use-hp" },
+            spriteOn: { name: "visu_texture_checkbox_on" },
+            spriteOff: { name: "visu_texture_checkbox_off" },
+          },
+          title: {
+            text: "Override",
+            enable: { key: "en-shr_use-hp" },
+          }
         },
       },
       {

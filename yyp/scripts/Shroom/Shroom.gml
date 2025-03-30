@@ -14,7 +14,7 @@ function ShroomTemplate(_name, json) constructor {
   mask = Struct.getIfType(json, "mask", Struct, null)
 
   ///@type {?Number}
-  lifespawnMax = Struct.getIfType(json, "lifespawnMax", Number, 15.0)
+  lifespanMax = Struct.getIfType(json, "lifespanMax", Number, 15.0)
 
   ///@type {?Number}
   healthPoints = Struct.getIfType(json, "healthPoints", Number, 1.0)
@@ -42,20 +42,20 @@ function ShroomTemplate(_name, json) constructor {
       name: this.name,
       sprite: JSON.clone(this.sprite),
       mask: Optional.is(this.mask) ? JSON.clone(this.mask) : null,
-      lifespawnMax: this.lifespawnMax,
+      lifespanMax: this.lifespanMax,
       healthPoints: this.healthPoints,
       hostile: this.hostile,
       gameModes: JSON.clone(this.gameModes),
     }
   }
 
-  serializeSpawn = function(x, y, speed, angle, uid) {
+  serializeSpawn = function(x, y, speed, angle, uid, lifespan = null, hp = null) {
     return {
       name: this.name,
       sprite: JSON.clone(this.sprite),
       mask: Optional.is(this.mask) ? JSON.clone(this.mask) : null,
-      lifespawnMax: this.lifespawnMax,
-      healthPoints: this.healthPoints,
+      lifespanMax: Optional.is(lifespan) ? lifespan : this.lifespanMax,
+      healthPoints: Optional.is(hp) ? hp : this.healthPoints,
       hostile: this.hostile,
       gameModes: JSON.clone(this.gameModes),
       x: x,
@@ -72,7 +72,7 @@ function ShroomTemplate(_name, json) constructor {
 function Shroom(template): GridItem(template) constructor {
 
   ///@type {Number}
-  lifespawnMax = template.lifespawnMax
+  lifespanMax = template.lifespanMax
 
   ///@type {Number}
   healthPoints = template.healthPoints
@@ -92,13 +92,16 @@ function Shroom(template): GridItem(template) constructor {
       gameMode.update(this, controller)
     }
 
-    this.lifespawn += DeltaTime.apply(FRAME_MS)
-    if (this.lifespawn >= this.lifespawnMax) {
-      this.signal("kill")
-    }
-
     if (this.fadeIn < 1.0) {
       this.fadeIn = clamp(this.fadeIn + this.fadeInFactor, 0.0, 1.0)
+    }
+
+    this.lifespan += DeltaTime.apply(FRAME_MS)
+    if (this.lifespan >= this.lifespanMax - 0.5) {
+      this.fadeIn = clamp((this.lifespanMax - this.lifespan) / 0.5, 0.0, 1.0)
+      if (this.lifespan >= this.lifespanMax) {
+        this.signal("kill")
+      }
     }
 
     return this
