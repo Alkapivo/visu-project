@@ -2,3 +2,6 @@ bin/*
 gm_modules/*
 yyp/out/*
 yyp/tmp/*
+
+# Tracks should be commited to https://github.com/Barons-Keep/visu-track
+yyp/datafiles/track/*
