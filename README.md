@@ -1,4 +1,4 @@
-# 【ＶＩＳＵ】
+
 ### Play visu at [itch.io](https://alkapivo.itch.io/visu-project) or watch gameplay on [YouTube](https://www.youtube.com/Alkapivo)
 ![visu-project_thumbnail](visu-editor.jpg)
 
@@ -14,13 +14,34 @@ The current version includes six levels, but **Visu is still a work in progress*
 
 For the full experience, the **Windows version is recommended**, as it includes all features and the most stable performance. However, I’ve also provided an **experimental browser build**, allowing you to try Visu directly in your browser. Keep in mind that this version may have limitations or reduced performance.
 
-### Ready to dive into a glitched-out reality? 🚀
+**Ready to dive into a glitched-out reality? 🚀**
+
 ---
 
-This repository only keeps gamemaker yyp project, the actual development & code is keep in:
-- [core-gml](https://github.com/Alkapivo/core-gml)
-- [visu-gml](https://github.com/Alkapivo/visu-gml)
-- [visu-track](https://github.com/Barons-Keep/visu-track) - *You need to bare checkout this repository in `yyp/datafiles/track` by replacing the whole folder*
+### Building
+Before running a project, whether in the GameMaker IDE or using the CLI, some additional data must be downloaded separately.  
+With the [gm-cli](https://github.com/Alkapivo/gm-cli) tool, this can be done automatically:  
+```bash
+gm-cli install 
+gm-cli run setup
+```  
+This operation must be performed **after every update** to make sure new tracks were loaded successfuly. Then, the project can be built and launched with the command:  
+```bash
+gm-cli make -r YYP -l
+```  
+Please remember that for `gm-cli make` to work, some environment variables must be set up. They can be added manually or by creating a `gm-cli.env` file in this repository. Example:  
+```bash
+GMS_IGOR_PATH="{PATH_TO_IGOR_EXE}"
+GMS_PROJECT_NAME="visu-project"
+GMS_PROJECT_PATH="{PATH_TO_VISU_PROJECT_REPOSITORY}/yyp"
+GMS_USER_PATH="{PATH_TO_ROAMING_GAMEMAKERSTUDIO2_USER_FOLDER}"
+GMS_RUNTIME_PATH="{PATH_TO_RUNTIME_2024.6.1.208}"
+GMS_RUNTIME="VM"
+GMS_TARGET="windows"
+```
+---
 
-And synced with this repository using [gm-cli](https://github.com/Alkapivo/gm-cli). As a result I dont have to use GameMaker IDE or GMEdit, I can just use visual studio code 😎
+This repository only contains the GameMaker YYP project. The actual development and code are kept in [visu-gml](https://github.com/Barons-Keep/visu-gml) and [visu-track](https://github.com/Barons-Keep/visu-track) and are synced with this repository using [gm-cli](https://github.com/Alkapivo/gm-cli).  
+
+As a result, I don't have to use the GameMaker IDE or GMEdit—I can just use Visual Studio Code. 😎  
 
