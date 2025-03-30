@@ -27,7 +27,7 @@ gm-cli run setup
 ```  
 This operation must be performed **after every update** to make sure new tracks were loaded successfuly. Then, the project can be built and launched with the command:  
 ```bash
-gm-cli make -r YYP -l
+gm-cli make -r YYC -l
 ```  
 Please remember that for `gm-cli make` to work, some environment variables must be set up. They can be added manually or by creating a `gm-cli.env` file in this repository. Example:  
 ```bash
